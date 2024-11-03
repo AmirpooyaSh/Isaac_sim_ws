@@ -9,6 +9,8 @@
 # its affiliates is strictly prohibited.
 #
 
+import asyncio
+
 
 try:
     # Third Party
@@ -309,11 +311,13 @@ class Isaac_Robot(object):
                                                     timeout=5.0)
 
             return
+    
 
         def simulation_exec(self):
 
             # Simulation Step Counter
             i=0
+            self.cmd_idx = 0
             while simulation_app.is_running():
                 self._my_world.step(render=True)
 
@@ -366,7 +370,7 @@ class Isaac_Robot(object):
                 )
                 # print(_Tar_Home)
 
-                Tar2_Q = self.euler_to_quat(0, 0, -np.pi)
+                Tar2_Q = self.euler_to_quat(0, 0, np.pi)
                 _Tar_Pick: tuple[np.ndarray, np.ndarray] = (
                     np.array([-0.49, -1.54, 0.44]),
                     np.array([Tar2_Q[0], Tar2_Q[1], Tar2_Q[2], Tar2_Q[3]])
@@ -380,7 +384,7 @@ class Isaac_Robot(object):
                 )
                 # print(_Tar_Place)
 
-                self.cu_calc_plan(_Tar_Pick)
+                self.cu_calc_plan([-0.49, -1.54, 0.44], [Tar2_Q[0], Tar2_Q[1], Tar2_Q[2], Tar2_Q[3]])
     
                 
 
@@ -388,77 +392,86 @@ class Isaac_Robot(object):
 
                 # self.cu_calc_plan(_Tar_Home)
             
-            simulation_app.close()
+            # simulation_app.close()
   
-        def cu_calc_plan(self, target: Tuple[np.ndarray, np.ndarray]):
+        def cu_calc_plan(self, pose, orientation):
+
+            print("starting execution")
+            print(pose)
+            print("___________________________________")
+            print(orientation)
+            print("___________________________________")
+
             sim_js = self._robot.get_joints_state()
             sim_js_names = self._robot.dof_names
             if np.any(np.isnan(sim_js.positions)):
                 log_error("isaac sim has returned NAN joint position values.")
 
-            # Setting Up Current Pose (JointState)
-            cu_js = JointState(
-                position=self._tensor_args.to_device(sim_js.positions),
-                velocity=self._tensor_args.to_device(sim_js.velocities),# * 0.0,
-                acceleration=self._tensor_args.to_device(sim_js.velocities) * 0.0,
-                jerk=self._tensor_args.to_device(sim_js.velocities) * 0.0,
-                joint_names=sim_js_names,
-            )
+            robot_static = False
+            if (np.max(np.abs(sim_js.velocities)) < 0.2):
+                robot_static = True
+            if (robot_static):
+                # Setting Up Current Pose (JointState)
+                cu_js = JointState(
+                    position=self._tensor_args.to_device(sim_js.positions),
+                    velocity=self._tensor_args.to_device(sim_js.velocities),# * 0.0,
+                    acceleration=self._tensor_args.to_device(sim_js.velocities) * 0.0,
+                    jerk=self._tensor_args.to_device(sim_js.velocities) * 0.0,
+                    joint_names=sim_js_names,
+                )
 
-            cu_js = cu_js.get_ordered_joint_state(self._motion_gen.kinematics.joint_names)
+                cu_js = cu_js.get_ordered_joint_state(self._motion_gen.kinematics.joint_names)
 
-            # Skipping Sphere Visualization
+                # Skipping Sphere Visualization
 
-            # Setting Target Pose (Cartesian Pose of TCP)
-            ik_goal = Pose(
-                position=self._tensor_args.to_device(target[0]),
-                quaternion=self._tensor_args.to_device(target[1]),
-            )
+                # Setting Target Pose (Cartesian Pose of TCP)
+                ik_goal = Pose(
+                    position=self._tensor_args.to_device(pose),
+                    quaternion=self._tensor_args.to_device(orientation),
+                )
 
-            self._plan_config.pose_cost_metric = self._pose_metric
+                self._plan_config.pose_cost_metric = self._pose_metric
 
-            # Returning the Executed Plan
-            returning_plan = self._motion_gen.plan_single(cu_js.unsqueeze(0), ik_goal, self._plan_config)
+                # Returning the Executed Plan
+                returning_plan = self._motion_gen.plan_single(cu_js.unsqueeze(0), ik_goal, self._plan_config)
 
-            if returning_plan.success.item():
-                cmd_plan = returning_plan.get_interpolated_plan()
-                cmd_plan = self._motion_gen.get_full_js(cmd_plan)
+                if returning_plan.success.item():
+                    cmd_plan = returning_plan.get_interpolated_plan()
+                    cmd_plan = self._motion_gen.get_full_js(cmd_plan)
 
-                # get only joint names that are in both:
-                idx_list = []
-                common_js_names = []
-                for x in sim_js_names:
-                    if x in cmd_plan.joint_names:
-                        idx_list.append(self._robot.get_dof_index(x))
-                        common_js_names.append(x)
+                    # get only joint names that are in both:
+                    idx_list = []
+                    common_js_names = []
+                    for x in sim_js_names:
+                        if x in cmd_plan.joint_names:
+                            idx_list.append(self._robot.get_dof_index(x))
+                            common_js_names.append(x)
 
-                cmd_plan = cmd_plan.get_ordered_joint_state(common_js_names)
-                cmd_idx = 0
+                    cmd_plan = cmd_plan.get_ordered_joint_state(common_js_names)
 
-                if cmd_plan is not None:
-                    cmd_state = cmd_plan[cmd_idx]
-                    past_cmd = cmd_state.clone()
-                    # get full dof state
-                    art_action = ArticulationAction(
-                        cmd_state.position.cpu().numpy(),
-                        cmd_state.velocity.cpu().numpy(),
-                        joint_indices=idx_list,
-                    )
-                    # set desired joint angles obtained from IK:
-                    self._articulation_ctr.apply_action(art_action)
+                    cmd_idx = 0
 
-                    cmd_idx += 1
-                    for _ in range(2):
-                        self._my_world.step(render=False)
-                    if cmd_idx >= len(cmd_plan.position):
-                        cmd_idx = 0
-                        cmd_plan = None
-                        past_cmd = None
+                    if cmd_plan is not None:
+                        cmd_state = cmd_plan[cmd_idx]
+                        past_cmd = cmd_state.clone()
+                        # get full dof state
+                        art_action = ArticulationAction(
+                            cmd_state.position.cpu().numpy(),
+                            cmd_state.velocity.cpu().numpy(),
+                            joint_indices=idx_list,
+                        )
+                        # set desired joint angles obtained from IK:
+                        self._articulation_ctr.apply_action(art_action)
 
-
-            else:
-                carb.log_warn("Plan did not converge to a solution: " + str(returning_plan.status))
-                return
+                        cmd_idx += 1
+                        for _ in range(2):
+                            self._my_world.step(render=False)
+                        if cmd_idx >= len(cmd_plan.position):
+                            cmd_idx = 0
+                            cmd_plan = None
+                            past_cmd = None
+                    else:
+                        carb.log_warn("Plan did not converge to a solution: " + str(returning_plan.status))
                 
         def __del__(self):
             print("Simulation Done")

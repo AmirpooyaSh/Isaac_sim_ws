@@ -1,0 +1,406 @@
+from isaacsim import SimulationApp
+
+simulation_app = SimulationApp({"headless": False}) # we can also run as headless.
+
+from omni.isaac.core import World
+import numpy as np
+
+# Adding mesh to the world (Standalone Format)
+from omni.physx.scripts import utils
+from omni.isaac.core.utils.stage import add_reference_to_stage
+from omni.isaac.core.robots import Robot
+
+# This is a CuRobo Library that Converts world_model to USD format for Isaac Sim
+from curobo.util.usd_helper import UsdHelper
+# This is a CuRobo Library to import Different Object Types to the world model
+from curobo.geom.types import WorldConfig, Mesh, Cuboid
+# This is a CuRobo Library to create Tensors 
+from curobo.types.base import TensorDeviceType
+# These are CuRobo Libraries to Read/Write Robot Information
+from curobo.util_file import (
+    get_assets_path,
+    get_filename,
+    get_path_of_dir,
+    get_robot_configs_path,
+    get_world_configs_path,
+    join_path,
+    load_yaml,
+)
+from curobo.util.logger import log_error, setup_curobo_logger
+# MotionGen CuRobo
+from curobo.wrap.reacher.motion_gen import (
+    MotionGen,
+    MotionGenConfig,
+    MotionGenPlanConfig,
+    PoseCostMetric,
+)
+from curobo.geom.sdf.world import CollisionCheckerType
+from curobo.geom.types import WorldConfig, Mesh, Cuboid
+from curobo.types.base import TensorDeviceType
+from curobo.types.math import Pose
+from curobo.types.robot import JointState
+from curobo.types.state import JointState
+
+import carb
+
+# CuRobo helper library to create scene !!!
+from helper import add_extensions, add_robot_to_scene
+
+# ArticulationAction is used to control Robots ArticulationController (You can move them by using apply_action() command)
+from omni.isaac.core.utils.types import ArticulationAction
+from omni.isaac.core.controllers.articulation_controller import ArticulationController
+from omni.isaac.core.prims.xform_prim import XFormPrim
+from omni.isaac.core.robots import Robot
+from omni.isaac.core.scenes.scene import Scene
+
+# This is used to make VScode understand ArticulationController's type (which is fed from the robot privately)
+from typing import cast
+
+from omni.isaac.core.utils.extensions import enable_extension
+# enable ROS bridge extension
+enable_extension("omni.isaac.ros_bridge")
+simulation_app.update()
+
+# check if rosmaster node is running
+# this is to prevent this sample from waiting indefinetly if roscore is not running
+# can be removed in regular usage
+import rosgraph
+
+if not rosgraph.is_master_online():
+    carb.log_error("Please run roscore before executing this script")
+    simulation_app.close()
+    exit()
+
+import rospy
+
+# Class (World Manager)
+class WorldManager(object):
+    def __init__(self):
+        super(WorldManager, self).__init__()
+        # Giving the World (Meter Scale)
+        self._my_world = World(stage_units_in_meters=1.0)
+        # Creating "Prim !"
+        self._stage = self._my_world.stage
+        self._xform = self._stage.DefinePrim("/World", "Xform")
+        self._stage.SetDefaultPrim(self._xform)
+        # stage.DefinePrim("/curobo", "Xform")
+        self._stage = self._my_world.stage
+
+        # Adding the default Ground to the World
+        cast(Scene, self._my_world.scene).add_default_ground_plane()
+
+        # Creating USD Helper (CuRobo Object) to handle objects
+        self._usd_help = UsdHelper()
+        
+        # ?????
+        self._usd_help.load_stage(self._my_world.stage)
+
+        # Adding the required Isaac Sim Extensions to the Simulation (Using CuRobo Helper Library)
+        add_extensions(simulation_app, "False")
+
+        # Adding CuRobo World Config to the Stage !!!
+        self._curobo_world_cfg = self.init_world_model()
+        self._usd_help.add_world_to_stage(self._curobo_world_cfg, base_frame="/World")
+    
+    def world_reset(self):
+        self._my_world.reset()
+    
+    def init_world_model(self):
+        cur_dir = "/home/apshirazi/Isaac_sim_ws/"
+
+        MatTable_3Level = Mesh(
+            name="MatTable_3Level",
+            pose=[0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0],
+            file_path= cur_dir + "meshes/MatTable_3Level.stl",
+            scale=[0.001, 0.001, 0.001],
+        )
+        MatTable_6Level = Mesh(
+            name="MatTable_6Level",
+            pose=[0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0],
+            file_path= cur_dir + "meshes/MatTable_6Level.stl",
+            scale=[0.001, 0.001, 0.001],
+        )
+        MatTable_tilted = Mesh(
+            name="MatTable_tilted",
+            pose=[0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0],
+            file_path= cur_dir + "meshes/MatTable_tilted.stl",
+            scale=[0.001, 0.001, 0.001],
+        )
+        NewConvn1_V2 = Mesh(
+            name="NewConvn1_V2",
+            pose=[0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0],
+            file_path= cur_dir + "meshes/NewConvn1_V2.stl",
+            scale=[0.001, 0.001, 0.001],
+        )
+        NewConvn2_V2 = Mesh(
+            name="NewConvn2_V2",
+            pose=[0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0],
+            file_path= cur_dir + "meshes/NewConvn2_V2.stl",
+            scale=[0.001, 0.001, 0.001],
+        )
+        NewSheathingRack = Mesh(
+            name="NewSheathingRack",
+            pose=[0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0],
+            file_path= cur_dir + "meshes/NewSheathingRack.stl",
+            scale=[0.001, 0.001, 0.001],
+        )
+
+        SheathingPlate = Cuboid(
+            name="SheathingPlate",
+            pose=[-1.8, -2.1, 0.37, 0, 0, 0, 1],
+            dims=[3, 1.5, 0.015],
+            color=[0.87, 0.72, 0.53, 1]
+        )
+
+        world_model = WorldConfig(
+            mesh=[MatTable_3Level, MatTable_6Level, MatTable_tilted, NewConvn1_V2, NewConvn2_V2, NewSheathingRack],
+            cuboid=[SheathingPlate],
+            capsule=[],
+            cylinder=[],
+            sphere=[],
+        )
+
+        return world_model
+
+class CuRoboRobot(object):
+    def __init__(self,
+                 working_world: WorldManager, 
+                 pose: np.array = np.array([0, 0, 0]),
+                 #This Feature has not been added to CuRobo
+                 orientation: np.array = np.array([1, 0, 0, 0]),
+                 input_tool: str = "tool0",
+                 w_dir: str = "/home/apshirazi/Isaac_sim_ws/robot", 
+                 r_conf_name: str = "IRB6620_Config.yaml",):
+        
+        super(CuRoboRobot, self).__init__()
+        # Reading Robot Configuration (Generated by CuRobo Robot Setup Steps)
+        self._tensor_args = TensorDeviceType()
+        self._robot_cfg_path = w_dir
+        self._robot_cfg = load_yaml(join_path(self._robot_cfg_path, r_conf_name))["robot_cfg"]
+        self._j_names = self._robot_cfg["kinematics"]["cspace"]["joint_names"]
+        self._default_config = self._robot_cfg["kinematics"]["cspace"]["retract_config"]
+        
+        # Setting up TCP
+        self._current_tool = input_tool
+        self._robot_cfg["kinematics"]["ee_link"] = self._current_tool
+
+        # Adding Robot to the Scene (Identifying robot type as Robot (omni.isaac.core.robots Robot))
+        self._temp_world_manager = working_world
+        self._robot: Robot
+        self._robot, self._robot_prim_path = add_robot_to_scene(robot_config=self._robot_cfg,
+                                                                my_world=self._temp_world_manager._my_world,
+                                                                position=pose)
+        
+        # Reseting World to see the new robot
+        self._temp_world_manager.world_reset()
+
+        self._articulation_controller: ArticulationController = None
+
+        # Creating and Warming Up the MotionGen
+        self._r_conf_name = r_conf_name
+        self.motion_gen_warmup()
+
+        self._spheres = None
+
+    def articulation_controller_init(self, step_index):
+        if self._articulation_controller is None:
+            self._articulation_controller = cast(ArticulationController, self._robot.get_articulation_controller())
+        if step_index < 2:
+            self._temp_world_manager._my_world.reset()       
+            self._robot._articulation_view.initialize()
+            idx_list = [self._robot.get_dof_index(x) for x in self._j_names]
+            self._robot.set_joint_positions(self._default_config, idx_list)
+
+            self._robot._articulation_view.set_max_efforts(
+                values=np.array([5000 for i in range(len(idx_list))]), joint_indices=idx_list
+            )
+
+    def motion_gen_warmup(self):
+        # Default Parameters
+        trajopt_dt = None
+        optimize_dt = False
+        trajopt_tsteps = 32
+        trim_steps = None
+        max_attempts = 4
+        interpolation_dt = 0.05
+        enable_finetune_trajopt = False
+        # MotionGen StartUp
+        r_cfg_path = "/" + self._robot_cfg_path + "/" + self._r_conf_name
+        print(r_cfg_path)
+        self._motion_gen_config = MotionGenConfig.load_from_robot_config(
+            r_cfg_path,
+            self._temp_world_manager.init_world_model(),
+            self._tensor_args,
+            collision_checker_type=CollisionCheckerType.MESH,
+            num_trajopt_seeds=12,
+            num_graph_seeds=12,
+            interpolation_dt=interpolation_dt,
+            optimize_dt=optimize_dt,
+            trajopt_dt=trajopt_dt,
+            trajopt_tsteps=trajopt_tsteps,
+            trim_steps=trim_steps,
+        )
+        self._motion_gen = MotionGen(self._motion_gen_config)
+        print("warming up...")
+        self._motion_gen.warmup(enable_graph=True, warmup_js_trajopt=False)
+        print("Curobo for robot ( " + self._r_conf_name + " ) is ready ... | TCP = " + self._current_tool)
+
+        self._plan_config = MotionGenPlanConfig(
+            enable_graph=False,
+            enable_graph_attempt=2,
+            max_attempts=max_attempts,
+            enable_finetune_trajopt=enable_finetune_trajopt,
+            time_dilation_factor=0.5,
+        )
+    
+    def plan_and_render(self,
+                        tcp_name: str = "tool1",
+                        target_pose: np.array = [0, 0, 0],
+                        target_orientation: np.array = [1, 0, 0, 0]):
+        i = 0
+        cmd_plan = None
+        cmd_idx = 0
+        Exit_Flag = False
+        while simulation_app.is_running():
+            self._temp_world_manager._my_world.step(render=True)
+            if not self._temp_world_manager._my_world.is_playing():
+                if i % 100 == 0:
+                    print("**** Click Play to start simulation *****")
+                i += 1
+                continue
+
+            step_index = self._temp_world_manager._my_world.current_time_step_index
+            self.articulation_controller_init(step_index)
+
+            if step_index < 20:
+                continue
+
+            if step_index == 50 or step_index % 1000 == 0.0:
+                print("Updating world, reading w.r.t.", self._robot_prim_path)
+                obstacles = self._temp_world_manager._usd_help.get_obstacles_from_stage(
+                    reference_prim_path=self._robot_prim_path,
+                    ignore_substring=[
+                        self._robot_prim_path,
+                        "/World/defaultGroundPlane",
+                        # Other Robot's Prim Path Should also be Ignored !
+                        # This feature is to be developed (MPC)
+                    ],
+                ).get_collision_check_world()
+                print(len(obstacles.objects))
+
+                self._motion_gen.update_world(obstacles)
+                print("Updated World")
+                carb.log_info("Synced CuRobo world from stage for Robot : " + self._r_conf_name)
+
+            sim_js = self._robot.get_joints_state()
+            sim_js_names = self._robot.dof_names
+            if np.any(np.isnan(sim_js.positions)):
+                log_error("isaac sim has returned NAN joint position values for Robot : " + self._r_conf_name)
+            
+            cu_js = JointState(
+                position=self._tensor_args.to_device(sim_js.positions),
+                velocity=self._tensor_args.to_device(sim_js.velocities), # * 0.0,
+                acceleration=self._tensor_args.to_device(sim_js.velocities) * 0.0,
+                jerk=self._tensor_args.to_device(sim_js.velocities) * 0.0,
+                joint_names=sim_js_names,
+            )
+            cu_js.velocity *= 0.0
+            cu_js.acceleration *= 0.0
+            cu_js = cu_js.get_ordered_joint_state(self._motion_gen.kinematics.joint_names)
+            robot_static = False
+
+            # An Approach to make the robot static
+            if (np.max(np.abs(sim_js.velocities)) < 0.02):
+                robot_static = True
+            
+            if(robot_static and not Exit_Flag):
+                ik_goal = Pose(
+                    position=self._tensor_args.to_device(target_pose),
+                    quaternion=self._tensor_args.to_device(target_orientation),
+                )
+
+                result = self._motion_gen.plan_single(cu_js.unsqueeze(0), ik_goal, self._plan_config)
+                succ = result.success.item()  # ik_result.success.item()
+
+                if succ:
+                    Exit_Flag = True
+                    cmd_plan = result.get_interpolated_plan()
+                    cmd_plan = self._motion_gen.get_full_js(cmd_plan)
+                    # get only joint names that are in both:
+                    idx_list = []
+                    common_js_names = []
+                    for x in sim_js_names:
+                        if x in cmd_plan.joint_names:
+                            idx_list.append(self._robot.get_dof_index(x))
+                            common_js_names.append(x)
+                    # idx_list = [robot.get_dof_index(x) for x in sim_js_names]
+
+                    cmd_plan = cmd_plan.get_ordered_joint_state(common_js_names)
+                    cmd_idx = 0
+
+                else:
+                    carb.log_warn("Plan did not converge to a solution: " + str(result.status))
+            
+            if cmd_plan is not None:
+                cmd_state = cmd_plan[cmd_idx]
+                past_cmd = cmd_state.clone()
+                # get full Truedof state
+                art_action = ArticulationAction(
+                    cmd_state.position.cpu().numpy(),
+                    cmd_state.velocity.cpu().numpy(),
+                    joint_indices=idx_list,
+                )
+
+                # set desired joint angles obtained from IK:
+                self._articulation_controller.apply_action(art_action)
+
+
+                cmd_idx += 1
+                for _ in range(2):
+                    self._temp_world_manager._my_world.step(render=False)
+                
+                if cmd_idx >= len(cmd_plan.position) and Exit_Flag:
+                    Exit_Flag = False
+                    cmd_idx = 0
+                    cmd_plan = None
+                    # Breaking the Execution Loop
+                    return True
+
+
+def euler_to_quat(roll, pitch, yaw):
+    cy = np.cos(yaw * 0.5)
+    sy = np.sin(yaw * 0.5)
+    cp = np.cos(pitch * 0.5)
+    sp = np.sin(pitch * 0.5)
+    cr = np.cos(roll * 0.5)
+    sr = np.sin(roll * 0.5)
+
+    q_w = cr * cp * cy + sr * sp * sy
+    q_x = sr * cp * cy - cr * sp * sy
+    q_y = cr * sp * cy + sr * cp * sy
+    q_z = cr * cp * sy - sr * sp * cy
+
+    return q_x, q_y, q_z, q_w
+
+def main():
+
+    rospy.init_node("tutorial_subscriber", anonymous=True)
+    test = WorldManager()
+    IRB6620_R1 = CuRoboRobot(working_world=test,
+                             input_tool="tool1",
+                             w_dir= "home/apshirazi/Isaac_sim_ws/robot",
+                             r_conf_name= "IRB6620_Config.yaml")
+    
+
+    quat = euler_to_quat(0, 0, -np.pi)
+    IRB6620_R1.plan_and_render(target_pose=np.array([-0.49, -1.54, 0.44]),
+                            target_orientation=np.array([quat[0], quat[1], quat[2], quat[3]]))
+
+    print("Hellllllow")
+    quat_2= euler_to_quat(np.pi/2, 0, np.pi)
+    IRB6620_R1.plan_and_render(target_pose=np.array([0, 1.5, 0.08]),
+                            target_orientation=np.array([quat_2[0], quat_2[1], quat_2[2], quat_2[3]]))
+    
+
+if __name__ == "__main__":
+    main()

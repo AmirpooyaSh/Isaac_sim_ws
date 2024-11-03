@@ -111,6 +111,7 @@ from omni.isaac.core.objects import cuboid, sphere
 
 ########### OV #################
 from omni.isaac.core.utils.types import ArticulationAction
+from omni.isaac.core.controllers.articulation_controller import ArticulationController
 
 # CuRobo
 # from curobo.wrap.reacher.ik_solver import IKSolver, IKSolverConfig
@@ -148,6 +149,9 @@ from curobo.wrap.reacher.motion_gen import (
 from omni.isaac.core.articulations import Articulation
 
 ############################################################
+
+# This is used to make VScode understand ArticulationController's type (which is fed from the robot privately)
+from typing import cast
 
 
 ########### OV #################;;;;;
@@ -355,7 +359,7 @@ def main():
         # print(step_index)
         if articulation_controller is None:
             # robot.initialize()
-            articulation_controller = robot.get_articulation_controller()
+            articulation_controller = cast(ArticulationController, robot.get_articulation_controller())
         if step_index < 2:
             my_world.reset()
             robot._articulation_view.initialize()
@@ -518,8 +522,12 @@ def main():
                 cmd_state.velocity.cpu().numpy(),
                 joint_indices=idx_list,
             )
+            print(len(cmd_plan))
+            print("_________________________________________________________________")
+
             # set desired joint angles obtained from IK:
             articulation_controller.apply_action(art_action)
+
 
             cmd_idx += 1
             for _ in range(2):
