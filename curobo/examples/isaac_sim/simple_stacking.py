@@ -9,6 +9,7 @@
 # its affiliates is strictly prohibited.
 #
 
+SurfaceGripper()
 
 try:
     # Third Party

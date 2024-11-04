@@ -139,7 +139,7 @@ world.reset()
 
 while simulation_app.is_running():
     r=1
-    world.step(render=True) # execute one physics step and one rendering step
+    # world.step(render=True) # execute one physics step and one rendering step
 
 
 simulation_app.close()
