@@ -21,6 +21,7 @@
 
     // Those paths are automatically filled by build system, see `repo.toml` for configuration:
     "python.analysis.extraPaths": [
+        "/opt/ros/noetic/lib/python3/dist-packages",
         "~/Isaac_sim_ws/curobo/src/",
         "~/Isaac_sim_ws/scripts/helper.py",
         "~/.local/share/ov/pkg/isaac-sim-4.2.0/exts/omni.exporter.urdf",
