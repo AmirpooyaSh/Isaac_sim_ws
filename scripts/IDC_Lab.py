@@ -36,7 +36,7 @@ from curobo.wrap.reacher.motion_gen import (
     PoseCostMetric,
 )
 from curobo.geom.sdf.world import CollisionCheckerType
-from curobo.geom.types import WorldConfig, Mesh, Cuboid
+from curobo.geom.types import WorldConfig, Mesh, Cuboid, Cylinder, Sphere
 from curobo.types.base import TensorDeviceType
 from curobo.types.math import Pose
 from curobo.types.robot import JointState
@@ -55,7 +55,7 @@ from omni.isaac.core.robots import Robot
 from omni.isaac.core.scenes.scene import Scene
 
 # This is used to make VScode understand ArticulationController's type (which is fed from the robot privately)
-from typing import cast, List, Optional
+from typing import cast, List, Optional, Any
 
 from omni.isaac.core.utils.extensions import enable_extension
 # enable ROS bridge extension
@@ -80,7 +80,8 @@ import sensor_msgs
 
 # Xform Creation and Transform
 import omni.kit.commands as cmd
-from pxr import Gf, Usd, Sdf, UsdGeom
+# Adding UsdPhysics to Add Mass To the Object
+from pxr import Gf, Usd, Sdf, UsdGeom, UsdPhysics
 import omni.usd
 # Creating SurfaceGripper OmniGraph
 import omni.graph.core as og
@@ -178,16 +179,16 @@ class WorldManager(object):
             scale=[0.001, 0.001, 0.001],
         )
 
-        SheathingPlate = Cuboid(
-            name="SheathingPlate",
-            pose=[-1.8, -2.1, 0.37, 0, 0, 0, 1],
-            dims=[3, 1.5, 0.015],
-            color=[0.87, 0.72, 0.53, 1]
-        )
+        # SheathingPlate = Cuboid(
+        #     name="SheathingPlate",
+        #     pose=[-1.8, -2.1, 0.37, 0, 0, 0, 1],
+        #     dims=[3, 1.5, 0.015],
+        #     color=[0.87, 0.72, 0.53, 1]
+        # )
 
         world_model = WorldConfig(
             mesh=[MatTable_3Level, MatTable_6Level, MatTable_tilted, NewConvn1_V2, NewConvn2_V2, NewSheathingRack],
-            cuboid=[SheathingPlate],
+            cuboid=[],
             capsule=[],
             cylinder=[],
             sphere=[],
@@ -551,15 +552,54 @@ def euler_to_quat(roll, pitch, yaw):
 
     return q_x, q_y, q_z, q_w
 
+# Default Assumption (Cuboid), but it can be changed to Capsule and Mesh
+def Add_Rigid_Object_To_Scene(World_Manager: WorldManager,
+                              ObjectType: str = "Cuboid",
+                              obj: Any = Cuboid
+                              ):
+    Added_Obj_Prim_Root: str = None
+    if ObjectType == "Cuboid":
+        Added_Obj_Prim_Root = World_Manager._usd_help.add_cuboid_to_stage(obstacle=obj,
+                                                                          enable_physics= True)
+    if ObjectType == "Mesh":
+        Added_Obj_Prim_Root = World_Manager._usd_help.add_mesh_to_stage(obstacle=obj,
+                                                                        enable_physics= True)
+    if ObjectType == "Cylinder":
+        Added_Obj_Prim_Root = World_Manager._usd_help.add_cylinder_to_stage(obstacle=obj,
+                                                                            enable_physics= True)
+    if ObjectType == "Sphere":
+        Added_Obj_Prim_Root = World_Manager._usd_help.add_sphere_to_stage(obstacle=obj,
+                                                                          enable_physics= True)
+
+    # Adding Mass + DisableGravity Attribute to the Object (To Avoid Robot Effort Conflict)
+    stage = World_Manager._my_world.stage
+
+    mass_API = UsdPhysics.MassAPI.Apply(stage.GetPrimAtPath(Added_Obj_Prim_Root))
+    mass_API.CreateMassAttr().Set(0.000001)
+
+    # body_API = UsdPhysics.RigidBodyAPI(stage.GetPrimAtPath(Added_Obj_Prim_Root))
+    # body_API.CreateDisableGravityAttr().Set(True)
+
+    return True
+
+
 def main():
 
     rospy.init_node("tutorial_subscriber", anonymous=True)
-
 
     i=0
 
     for robot in robots:
         robot._js_pub_interval = rospy.Timer(rospy.Duration(10.0 / publish_rate), robot.ros_js_publisher)
+
+    SheathingPlate = Cuboid(
+        name="SheathingPlate",
+        pose=[-1.8, -2.1, 0.37, 0, 0, 0, 1],
+        dims=[3, 1.5, 0.015],
+        color=[0.87, 0.72, 0.53, 1]
+    )
+
+    Add_Rigid_Object_To_Scene(test, "Cuboid", SheathingPlate)
 
     while simulation_app.is_running():
         # Rendering The World
@@ -577,6 +617,12 @@ def main():
 
         if step_index < 20:
             continue
+
+        # mesh_names = []
+        # for prim in test._stage.Traverse():
+        #     if prim.GetPath().IsPrimPath("World") and prim.HasAttribute("mesh"):
+        #         mesh_names.append(prim.GetName())
+        # print(mesh_names)
 
         # Movement Publish !
         # for robot in robots:
