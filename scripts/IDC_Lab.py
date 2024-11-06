@@ -55,11 +55,13 @@ from omni.isaac.core.robots import Robot
 from omni.isaac.core.scenes.scene import Scene
 
 # This is used to make VScode understand ArticulationController's type (which is fed from the robot privately)
-from typing import cast
+from typing import cast, List, Optional
 
 from omni.isaac.core.utils.extensions import enable_extension
 # enable ROS bridge extension
 enable_extension("omni.isaac.ros_bridge")
+# enable SurfaceGripper extention
+enable_extension("omni.isaac.surface_gripper")
 simulation_app.update()
 
 # check if rosmaster node is running
@@ -74,7 +76,17 @@ if not rosgraph.is_master_online():
 
 import rospy
 import sensor_msgs
+# import omni.graph.core as og
+
+# Xform Creation and Transform
+import omni.kit.commands as cmd
+from pxr import Gf, Usd, Sdf, UsdGeom
+import omni.usd
+# Creating SurfaceGripper OmniGraph
 import omni.graph.core as og
+
+from omni.isaac.surface_gripper import SurfaceGripper
+
 
 
 import re
@@ -82,7 +94,18 @@ import re
 # Rate for Publishing ROS Topics from this project !
 publish_rate = 10.0  # Frequency in Hz
 
- 
+# Class Robot Gripper
+class RobotGripper(object):
+    def __init__(self,
+                 RobName: str = "IRB6620_R1",
+                 ParentLink: str = "Link_7",
+                 TCP_Name: str = "T1",
+                 C_Pose: List[float] = [0, 0, 0]):
+        self.RobName = RobName
+        self.ParentLink = ParentLink
+        self.TCP_Name = TCP_Name
+        self.C_Pose = cast(List[float], C_Pose)
+
 # Class (World Manager)
 class WorldManager(object):
     def __init__(self):
@@ -180,7 +203,8 @@ class CuRoboRobot(object):
                  orientation: np.array = np.array([1, 0, 0, 0]),
                  input_tool: str = "tool0",
                  w_dir: str = "/home/apshirazi/Isaac_sim_ws/robot", 
-                 r_conf_name: str = "IRB6620_Config.yaml",):
+                 r_conf_name: str = "IRB6620_Config.yaml",
+                 Gripper_List: Optional[List[RobotGripper]] = None):
         
         super(CuRoboRobot, self).__init__()
 
@@ -204,6 +228,89 @@ class CuRoboRobot(object):
         
         # Reseting World to see the new robot
         self._temp_world_manager.world_reset()
+
+        # Creating SurfaceGripper for each Robot Gripper
+        for Gripper in Gripper_List:
+            # Creating Prims !
+            PrimPathX = "/"+Gripper.RobName+"/"+Gripper.ParentLink+"/"+"GripPosition_"+Gripper.TCP_Name+"_X"
+            PrimPathY = "/"+Gripper.RobName+"/"+Gripper.ParentLink+"/"+"GripPosition_"+Gripper.TCP_Name+"_Y"
+            PrimPathZ = "/"+Gripper.RobName+"/"+Gripper.ParentLink+"/"+"GripPosition_"+Gripper.TCP_Name+"_Z"
+            XformX = self._temp_world_manager._stage.DefinePrim(PrimPathX, "Xform")
+            XformY = self._temp_world_manager._stage.DefinePrim(PrimPathY, "Xform")
+            XformZ = self._temp_world_manager._stage.DefinePrim(PrimPathZ, "Xform")
+
+            # Creating xyz rpy Attributes !
+            XformableX = UsdGeom.Xformable(XformX)
+            XformableY = UsdGeom.Xformable(XformY)
+            XformableZ = UsdGeom.Xformable(XformZ)
+
+            xyz_attr_X = XformX.CreateAttribute("xyz", Sdf.ValueTypeNames.Float3, True)
+            rpy_attr_X = XformX.CreateAttribute("rpy", Sdf.ValueTypeNames.Float3, True)
+            xyz_attr_Y = XformY.CreateAttribute("xyz", Sdf.ValueTypeNames.Float3, True)
+            rpy_attr_Y = XformY.CreateAttribute("rpy", Sdf.ValueTypeNames.Float3, True)
+            xyz_attr_Z = XformZ.CreateAttribute("xyz", Sdf.ValueTypeNames.Float3, True)
+            rpy_attr_Z = XformZ.CreateAttribute("rpy", Sdf.ValueTypeNames.Float3, True)
+
+            Grip_Offset_Position = Gf.Vec3d(Gripper.C_Pose[0], Gripper.C_Pose[1], Gripper.C_Pose[2])
+
+            Grip_Offset_Orientation_X = Gf.Vec3d(0, -90, 0)
+            Grip_Offset_Orientation_Y = Gf.Vec3d(0, 0, 90)
+            Grip_Offset_Orientation_Z = Gf.Vec3d(-90, -180, 0)
+
+            # X
+            xyz_attr_X.Set(Grip_Offset_Position)
+            translate_op_x = XformableX.AddTranslateOp()
+            translate_op_x.Set(Grip_Offset_Position)
+            rpy_attr_X.Set(Grip_Offset_Orientation_X)
+            rotate_op_x = XformableX.AddRotateXYZOp()
+            rotate_op_x.Set(Grip_Offset_Orientation_X)
+
+            # Y
+            xyz_attr_Y.Set(Grip_Offset_Position)
+            translate_op_y = XformableY.AddTranslateOp()
+            translate_op_y.Set(Grip_Offset_Position)
+            rpy_attr_Y.Set(Grip_Offset_Orientation_Y)
+            rotate_op_y = XformableY.AddRotateXYZOp()
+            rotate_op_y.Set(Grip_Offset_Orientation_Y)            
+
+            # Z
+            xyz_attr_Z.Set(Grip_Offset_Position)
+            translate_op_z = XformableZ.AddTranslateOp()
+            translate_op_z.Set(Grip_Offset_Position)
+            rpy_attr_Z.Set(Grip_Offset_Orientation_Z)
+            rotate_op_z = XformableZ.AddRotateXYZOp()
+            rotate_op_z.Set(Grip_Offset_Orientation_Z)
+
+            # Creating SurfaceGripper OmniGraph for Each TCP !!!
+            keys = og.Controller.Keys
+            (graph_handle, list_of_nodes, _, _) = og.Controller.edit(
+                {"graph_path": "/action_graph_"+Gripper.RobName+"_"+Gripper.TCP_Name, "evaluator_name": "execution"},
+                {
+                    keys.CREATE_NODES: [
+                        ("surfX","omni.isaac.surface_gripper.SurfaceGripper"),
+                        ("surfY","omni.isaac.surface_gripper.SurfaceGripper"),
+                        ("surfZ","omni.isaac.surface_gripper.SurfaceGripper"),
+                        ("tick","omni.graph.action.OnTick")
+
+                    ],
+                    keys.SET_VALUES: [
+                        ("surfX.inputs:GripPosition", PrimPathX),
+                        ("surfY.inputs:GripPosition", PrimPathY),
+                        ("surfZ.inputs:GripPosition", PrimPathZ),
+                        ("surfX.inputs:ParentRigidBody", "/"+Gripper.RobName+"/"+Gripper.ParentLink),
+                        ("surfY.inputs:ParentRigidBody", "/"+Gripper.RobName+"/"+Gripper.ParentLink),
+                        ("surfZ.inputs:ParentRigidBody", "/"+Gripper.RobName+"/"+Gripper.ParentLink),
+                        ("surfX.inputs:DisableGravity", True),
+                        ("surfY.inputs:DisableGravity", True),
+                        ("surfZ.inputs:DisableGravity", True),
+                    ],
+                    keys.CONNECT: [
+                        ("tick.outputs:tick", "surfX.inputs:onStep"),
+                        ("tick.outputs:tick", "surfY.inputs:onStep"),
+                        ("tick.outputs:tick", "surfZ.inputs:onStep")
+                    ],
+                },
+            )
 
         self._articulation_controller: ArticulationController = None
 
@@ -281,18 +388,16 @@ class CuRoboRobot(object):
         cmd_idx = 0
         Exit_Flag = False
         while simulation_app.is_running():
+
             self._temp_world_manager._my_world.step(render=True)
-            if not self._temp_world_manager._my_world.is_playing():
-                if i % 100 == 0:
-                    print("**** Click Play to start simulation *****")
-                i += 1
-                continue
 
             step_index = self._temp_world_manager._my_world.current_time_step_index
-            self.articulation_controller_init(step_index)
 
-            if step_index < 20:
-                continue
+            # Movement Publish
+            # Publishing Robots JointStates
+            # for robot in robots:
+            #         robot.ros_js_publisher()
+
 
             if step_index == 50 or step_index % 1000 == 0.0:
                 print("Updating world, reading w.r.t.", self._robot_prim_path)
@@ -414,6 +519,22 @@ class CuRoboRobot(object):
             rospy.logwarn(f"Error publishing joint state: {e}")
 
 
+test = WorldManager()
+
+robots = [
+    # IRB6620_R1
+    CuRoboRobot(working_world=test, 
+                input_tool="tool1", 
+                w_dir="home/apshirazi/Isaac_sim_ws/robot", 
+                r_conf_name="IRB6620_Config.yaml",
+                Gripper_List=[RobotGripper(RobName= "IRB6620_R1",
+                                           ParentLink= "Link_7",
+                                           TCP_Name= "T1",
+                                           C_Pose= [0.175 , 0.43, 0.52]),
+                            #   Grippers Should be Defined Manually to Create SurfaceGripper Extension !
+                                           ])
+    # Add more robots as needed
+]
 
 def euler_to_quat(roll, pitch, yaw):
     cy = np.cos(yaw * 0.5)
@@ -433,27 +554,10 @@ def euler_to_quat(roll, pitch, yaw):
 def main():
 
     rospy.init_node("tutorial_subscriber", anonymous=True)
-    test = WorldManager()
 
-    robots = [
-        # IRB6620_R1
-        CuRoboRobot(working_world=test, 
-                    input_tool="tool1", 
-                    w_dir="home/apshirazi/Isaac_sim_ws/robot", 
-                    r_conf_name="IRB6620_Config.yaml")
-        # Add more robots as needed
-    ]
-
-    # quat = euler_to_quat(0, 0, -np.pi)
-    # IRB6620_R1.plan_and_render(target_pose=np.array([-0.49, -1.54, 0.44]),
-    #                         target_orientation=np.array([quat[0], quat[1], quat[2], quat[3]]))
-
-    # print("Hellllllow")
-    # quat_2= euler_to_quat(np.pi/2, 0, np.pi)
-    # IRB6620_R1.plan_and_render(target_pose=np.array([0, 1.5, 0.08]),
-    #                         target_orientation=np.array([quat_2[0], quat_2[1], quat_2[2], quat_2[3]]))
 
     i=0
+
     for robot in robots:
         robot._js_pub_interval = rospy.Timer(rospy.Duration(10.0 / publish_rate), robot.ros_js_publisher)
 
@@ -474,7 +578,21 @@ def main():
         if step_index < 20:
             continue
 
+        # Movement Publish !
+        # for robot in robots:
+        #         robot.ros_js_publisher()
 
+        # quat = euler_to_quat(0, 0, -np.pi)
+        # robots[0].plan_and_render(target_pose=np.array([-0.49, -1.54, 0.44]),
+        #                         target_orientation=np.array([quat[0], quat[1], quat[2], quat[3]]))
+
+        # quat_2= euler_to_quat(np.pi/2, 0, np.pi)
+        # robots[0].plan_and_render(target_pose=np.array([0, 1.5, 0.08]),
+        #                         target_orientation=np.array([quat_2[0], quat_2[1], quat_2[2], quat_2[3]]))
+
+
+        # 5 Sec of sleep to enable reinitialization
+        # rospy.sleep(5)
         # rospy.spin()
     
 

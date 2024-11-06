@@ -311,5 +311,13 @@
         <parent link="flange" />
         <child link="tool3" />
     </joint>
+
+    <!-- Creating Surface Gripper Xforms for Isaac Sim Surface Gripper Extension (Attach/Detach) -->
+    <!-- <link name="GripPosition_T1_X">
+    <joint name="GT1X_To_L7" type="fixed">
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <parent link="Link_7">
+        <child link="GripPosition_T1_X"/>
+    </joint> -->
    
 </robot>
