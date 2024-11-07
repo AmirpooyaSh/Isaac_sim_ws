@@ -88,6 +88,8 @@ import omni.graph.core as og
 
 from omni.isaac.surface_gripper import SurfaceGripper
 
+from omni.kit.commands import execute
+
 
 
 import re
@@ -558,29 +560,42 @@ def Add_Rigid_Object_To_Scene(World_Manager: WorldManager,
                               obj: Any = Cuboid
                               ):
     Added_Obj_Prim_Root: str = None
+    # It's better not to use CuRobo's enable_physics Attribute !
     if ObjectType == "Cuboid":
         Added_Obj_Prim_Root = World_Manager._usd_help.add_cuboid_to_stage(obstacle=obj,
-                                                                          enable_physics= True)
+                                                                          enable_physics= False)
     if ObjectType == "Mesh":
         Added_Obj_Prim_Root = World_Manager._usd_help.add_mesh_to_stage(obstacle=obj,
-                                                                        enable_physics= True)
+                                                                        enable_physics= False)
     if ObjectType == "Cylinder":
         Added_Obj_Prim_Root = World_Manager._usd_help.add_cylinder_to_stage(obstacle=obj,
-                                                                            enable_physics= True)
+                                                                            enable_physics= False)
     if ObjectType == "Sphere":
         Added_Obj_Prim_Root = World_Manager._usd_help.add_sphere_to_stage(obstacle=obj,
-                                                                          enable_physics= True)
+                                                                          enable_physics= False)
 
-    # Adding Mass + DisableGravity Attribute to the Object (To Avoid Robot Effort Conflict)
     stage = World_Manager._my_world.stage
 
-    mass_API = UsdPhysics.MassAPI.Apply(stage.GetPrimAtPath(Added_Obj_Prim_Root))
-    mass_API.CreateMassAttr().Set(0.000001)
+    Obj_Prim = stage.GetPrimAtPath(Added_Obj_Prim_Root)
+    # Adding RigidBody
+    execute("AddPhysicsComponentCommand",
+                          usd_prim=Obj_Prim,
+                          component="PhysicsRigidBodyAPI")
+    # Adding Colliders
+    execute("AddPhysicsComponentCommand",
+                          usd_prim=Obj_Prim,
+                          component="PhysicsCollisionAPI")
+    # Adding Colliders
+    execute("AddPhysicsComponentCommand",
+                          usd_prim=Obj_Prim,
+                          component="PhysicsMassAPI")
+    # Adding a Small Positive Mass to Avoid Robot's Effort Calculation using CuRobo
+    Mass_Succ = Obj_Prim.GetAttribute("physics:mass").Set(0.0001)
+    # Disabling Gravity
+    Dis_Grav = Obj_Prim.GetAttribute("physxRigidBody:disableGravity").Set(True)
 
-    # body_API = UsdPhysics.RigidBodyAPI(stage.GetPrimAtPath(Added_Obj_Prim_Root))
-    # body_API.CreateDisableGravityAttr().Set(True)
-
-    return True
+    print("For Obj (" + obj.name + ") Mass Creation : " + str(Mass_Succ))
+    print("For Obj (" + obj.name + ") DisableGravity Creation : " + str(Dis_Grav))
 
 
 def main():
