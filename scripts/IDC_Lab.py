@@ -502,8 +502,13 @@ class CuRoboRobot(object):
                    tcp_name: str = "T1"):
         # Close
         og.Controller.set(og.Controller.attribute("/action_graph_"+robot_name+"_"+tcp_name+"/close_tick.state:enableImpulse"), True)
+    
+    def tcp_detach(self,
+                   robot_name: str = "IRB6620_R1",
+                   tcp_name: str = "T1"):
         # Open
         og.Controller.set(og.Controller.attribute("/action_graph_"+robot_name+"_"+tcp_name+"/open_tick.state:enableImpulse"), True)
+        
 
     def ros_js_publisher(self, event):
 
@@ -636,8 +641,6 @@ def main():
 
     Add_Rigid_Object_To_Scene(test, "Cuboid", SheathingPlate)
 
-    testing_flg: bool = False
-
     while simulation_app.is_running():
         # Rendering The World
         test._my_world.step(render=True)
@@ -654,10 +657,6 @@ def main():
 
         if step_index < 20:
             continue
-
-        if not testing_flg :
-            robots[0].tcp_attach(World_Manager=test)
-            testing_flg = True
 
         # mesh_names = []
         # for prim in test._stage.Traverse():
