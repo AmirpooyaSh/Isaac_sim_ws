@@ -293,7 +293,8 @@ class CuRoboRobot(object):
                         ("surfX","omni.isaac.surface_gripper.SurfaceGripper"),
                         ("surfY","omni.isaac.surface_gripper.SurfaceGripper"),
                         ("surfZ","omni.isaac.surface_gripper.SurfaceGripper"),
-                        ("tick","omni.graph.action.OnTick")
+                        ("close_tick","omni.graph.action.OnImpulseEvent"),
+                        ("open_tick","omni.graph.action.OnImpulseEvent"),
 
                     ],
                     keys.SET_VALUES: [
@@ -308,9 +309,12 @@ class CuRoboRobot(object):
                         ("surfZ.inputs:DisableGravity", True),
                     ],
                     keys.CONNECT: [
-                        ("tick.outputs:tick", "surfX.inputs:onStep"),
-                        ("tick.outputs:tick", "surfY.inputs:onStep"),
-                        ("tick.outputs:tick", "surfZ.inputs:onStep")
+                        ("close_tick.outputs:execOut", "surfX.inputs:Close"),
+                        ("close_tick.outputs:execOut", "surfY.inputs:Close"),
+                        ("close_tick.outputs:execOut", "surfZ.inputs:Close"),
+                        ("open_tick.outputs:execOut", "surfX.inputs:Open"),
+                        ("open_tick.outputs:execOut", "surfY.inputs:Open"),
+                        ("open_tick.outputs:execOut", "surfZ.inputs:Open"),
                     ],
                 },
             )
@@ -493,6 +497,14 @@ class CuRoboRobot(object):
                     # Breaking the Execution Loop
                     return True
 
+    def tcp_attach(self,
+                   robot_name: str = "IRB6620_R1",
+                   tcp_name: str = "T1"):
+        # Close
+        og.Controller.set(og.Controller.attribute("/action_graph_"+robot_name+"_"+tcp_name+"/close_tick.state:enableImpulse"), True)
+        # Open
+        og.Controller.set(og.Controller.attribute("/action_graph_"+robot_name+"_"+tcp_name+"/open_tick.state:enableImpulse"), True)
+
     def ros_js_publisher(self, event):
 
         try:
@@ -609,12 +621,22 @@ def main():
 
     SheathingPlate = Cuboid(
         name="SheathingPlate",
-        pose=[-1.8, -2.1, 0.37, 0, 0, 0, 1],
+        pose=[-1.8, -2.1, 0.37, 1, 0, 0, 0],
         dims=[3, 1.5, 0.015],
         color=[0.87, 0.72, 0.53, 1]
     )
 
+    # Creating Surf Gripper Test Object
+    Test_Obj = Cuboid(
+        name="SG_Tester",
+        pose=[2.16, 0.197, 1.66, 1.0, 0, 0, 0],
+        dims=[0.5, 0.5, 0.5]
+    )
+    Add_Rigid_Object_To_Scene(test, "Cuboid", Test_Obj)
+
     Add_Rigid_Object_To_Scene(test, "Cuboid", SheathingPlate)
+
+    testing_flg: bool = False
 
     while simulation_app.is_running():
         # Rendering The World
@@ -632,6 +654,10 @@ def main():
 
         if step_index < 20:
             continue
+
+        if not testing_flg :
+            robots[0].tcp_attach(World_Manager=test)
+            testing_flg = True
 
         # mesh_names = []
         # for prim in test._stage.Traverse():
