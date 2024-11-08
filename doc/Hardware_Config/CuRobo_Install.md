@@ -13,6 +13,7 @@ As a rule of thump, Isaac Sim's virtual environment is going to be set as **"omn
 ```shell
 echo "alias omni_python='~/.local/share/ov/pkg/isaac_sim-4.0.0/python.sh'" >> ~/.bashrc
 ```
+<br>
 
 # CuRobo Installation in Isaac Sim's Virtual Environment
 
@@ -41,4 +42,13 @@ You can hit the play bottun and move the **Red Cube** to make the franka robot m
 # Enclosure
 
 [Reference Link 1](https://curobo.org/get_started/1_install_instructions.html) 
+
+<br>
+
 [Reference Link 2](https://curobo.org/get_started/2b_isaacsim_examples.html)
+
+<br>
+
+# What's Next
+
+[Running IDC Lab's Provided Example =>](https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/Setup/IDC_Lab_Example.md)

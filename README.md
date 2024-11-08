@@ -15,8 +15,8 @@ Following the given tutorials in the `/doc` directory, you should be able to wor
 
 1. [**Hardware Configuration**](https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/Hardware_Config/Ubuntu_Cuda_VScode.md) (Ubuntu + CUDA + VSCode)
 2. [**Isaac Sim Installation**](https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/Hardware_Config/Isaac_Sim.md)
-3. **CuRobo Installation**
-4. **Running IDC Lab's Provided Example**
+3. [**CuRobo Installation**](https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/Hardware_Config/CuRobo_Install.md)
+4. [**Running IDC Lab's Provided Example**](https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/Setup/IDC_Lab_Example.md)
 
 
 # Isaac Sim Setup
