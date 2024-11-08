@@ -1,4 +1,4 @@
-# CuRobo Installation (In Isaac Sim Environment)
+# CuRobo Installation
 
 It's worth mentioning that even though Isaac Sim is installed on your Ubuntu 20.04 OS, it's working environment is different. Isaac Sim is running the developed materials using **Python Virtual Enviroment** which is located at:
 
@@ -13,3 +13,32 @@ As a rule of thump, Isaac Sim's virtual environment is going to be set as **"omn
 ```shell
 echo "alias omni_python='~/.local/share/ov/pkg/isaac_sim-4.0.0/python.sh'" >> ~/.bashrc
 ```
+
+# CuRobo Installation in Isaac Sim's Virtual Environment
+
+- Execute the following commands **(Dependencies Installation)**:
+
+    ```shell
+    sudo apt install git-lfs
+    omni_python -m pip install tomli wheel ninja
+    ```
+- Clone and Install CuRobo:
+
+    ```shell
+    git clone https://github.com/NVlabs/curobo.git
+    cd curobo
+    omni_python -m pip install -e .[isaacsim] --no-build-isolation
+    ```
+- Check if CuRobo is installed by executing this command **(You Should Be In CuRobo Subdirectory)**:
+
+    ```shell
+    omni_python examples/isaac_sim/motion_gen_reacher.py --robot franka
+    ```
+    ![Franka Motion Generator](https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/imgs/franka.png)
+
+You can hit the play bottun and move the **Red Cube** to make the franka robot move.
+
+# Enclosure
+
+[Reference Link 1](https://curobo.org/get_started/1_install_instructions.html) 
+[Reference Link 2](https://curobo.org/get_started/2b_isaacsim_examples.html)
