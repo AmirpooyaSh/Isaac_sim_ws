@@ -18,7 +18,7 @@
 - Installing CUDA:
 
     - [CUDA 11.8](https://developer.nvidia.com/cuda-11-8-0-download-archive?target_os=Linux&target_arch=x86_64&Distribution=Ubuntu&target_version=20.04&target_type=deb_local)
-    - Follow the provided terminal commads provided in the link
+    - Follow the provided commads **(Same as the ones provided link)**
 
         ```shell
         wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-ubuntu2004.pin
@@ -40,8 +40,21 @@
         export PATH=/usr/local/cuda-11.8/bin${PATH:+:${PATH}}
         export LD_LIBRARY_PATH=/usr/local/cuda-11.8/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
         ```
+    - Reboot your device and you should be able to get CUDA's version by typing:
+
+        ```shell
+        nvcc --version
+        ```
+
+        - Expected Result:
+            ![CUDA Version Test](https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/imgs/cuda.png)
 
 Following the provided terminal commands **(Might be Outdated, so its better to use NVIDIA website's link than the provided command lines)** you should be able to install CUDA, but some of the packages might show installation error **(Which is because of the outdated Cuda Toolkit installation alongside with CUDA 11.8)**
 
 - Updating the **CUDA Toolkit**:
+
+    - Remove Outdated CUDA DKMS files:
+        ```shell
+
+        ```
 
