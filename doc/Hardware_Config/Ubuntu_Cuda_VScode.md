@@ -106,9 +106,8 @@ Now you have to install the newer version of **CUDA Toolkit** to make things wor
 
 If you've done everything as mentioned, Ubuntu should come up without any preprocesses. Once it came up, check the **CUDA Toolkit** version by:
 
-    ```shell
     nvidia-smi
-    ```
+
 
 **If you get something like below, you're all fine !!!!!**
 
