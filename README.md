@@ -13,7 +13,7 @@ This repository belongs to the Smart IDC Lab (supervised by Dr. Aladdin Alwisy -
 
 Following the given tutorials in the `/doc` directory, you should be able to work with the package:
 
-1. **Hardware Configuration** (Ubuntu + CUDA + VSCode)
+1. [**Hardware Configuration**](https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/Hardware_Config/Ubuntu_Cuda_VScode.md) (Ubuntu + CUDA + VSCode)
 2. **Isaac Sim Installation**
 3. **CuRobo Installation**
 4. **Running IDC Lab's Provided Example**
@@ -23,8 +23,8 @@ Following the given tutorials in the `/doc` directory, you should be able to wor
 
 After testing the provided example, the following tutorials will let you understand the logic behind the provided developement (you should be able to create your own world following the provided sections)
 
-1. [**Robot Setup** (CuRobo)](https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/Robot_Setup.md)
-2. [**Robot Object Explanation** (Can be Expanded to any Robotic Arm) - *Dual IRB6620 (11/08/2024)*](https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/Robot_Object.md)
+1. [**Robot Setup** (CuRobo)](https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/Setup/Robot_Setup.md)
+2. [**Robot Object Explanation** (Can be Expanded to any Robotic Arm) - *Dual IRB6620 (11/08/2024)*](https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/Setup/Robot_Object.md)
 
 
 # Author
