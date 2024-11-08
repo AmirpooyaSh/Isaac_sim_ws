@@ -26,14 +26,33 @@ robot_cfg:
 
         # 
         #
-        collision_link_names: null
-        collision_spheres: null
+        collision_link_names: ["base_link", "Link_1", "Link_2", "Link_3", "Link_4", "Link_5", "Link_6", "Link_7","Link_8"]
+        collision_spheres: "/home/apshirazi/Isaac_sim_ws/robot_2/IRB6620_R2_Lula_modified.yaml"
 
         # Don't Ever Touch This !!!!
         collision_sphere_buffer: 0.005
-        extra_collision_spheres: {}
-        self_collision_ignore: null
-        self_collision_buffer: null
+        extra_collision_spheres: {"tool0": 100}
+        self_collision_ignore: {
+          "base_link": ["Link_1", "Link_2", "Link_3", "Link_4", "Link_5", "Link_6", "Link_8"],
+          "Link_1": ["Link_2", "Link_3", "Link_4", "Link_5", "Link_6", "Link_8"],
+          "Link_2": ["Link_3", "Link_4", "Link_5", "Link_6", "Link_8"],
+          "Link_3": ["Link_4", "Link_5", "Link_6", "Link_8"],
+          "Link_4": ["Link_5", "Link_6", "Link_8"],
+          "Link_5": ["Link_6", "Link_7", "Link_8"],
+          "Link_6": ["Link_7", "Link_8"],
+          "Link_7": ["Link_8"],
+        }
+        self_collision_buffer: {
+          'base_link': 0,
+          'Link_1': 0,
+          'Link_2': 0,
+          'Link_3': 0,
+          'Link_4': 0,
+          'Link_5': 0,
+          'Link_6': 0,
+          'Link_7': 0,
+          'Link_8': 0,
+        }
         use_global_cumul: True
         mesh_link_names: null # List[str]
 
