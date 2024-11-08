@@ -50,12 +50,61 @@
 
             ![CUDA Version Test](https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/imgs/cuda.png)
 
-Following the provided terminal commands **(Might be Outdated, so its better to use NVIDIA website's link than the provided command lines)** you should be able to install CUDA, but some of the packages might show installation error **(Which is because of the outdated Cuda Toolkit installation alongside with CUDA 11.8)**
+Following the provided terminal commands **(might be outdated, so its better to use NVIDIA website's link than the provided command lines)** you should be able to install CUDA, but some of the packages might show installation error **(which is because of the outdated Cuda Toolkit installation alongside with CUDA 11.8)**.
 
 - Updating the **CUDA Toolkit**:
 
     - Remove Outdated CUDA DKMS files:
-        ```shell
 
+        ```shell
+        sudo rm -r /var/lib/dkms/nvidia
         ```
+    - Remove Outdated ToolKit:
+
+        ```shell
+        sudo apt-get purge 'nvidia-*'
+        ```
+    - Reinstall basic Ubuntu DKMS files:
+
+        ```shell
+        sudo apt-get install build-essential dkms
+        sudo apt-get install linux-headers-$(uname -r)
+        ```
+    - Reboot the device **(Read the following section before Rebooting)**
+
+Now that you uninstalled the outdated **CUDA Toolkit** and its **Booting Kernels** ubuntu won't come up by itself and you will see a black screen, because the OS tries to boot using GPU interface, but there is no GPU software to support that. At this point you should boot your OS with its default kernel **nomodeset**.
+
+- Booting Ubuntu on default Kernel:
+
+    - On boot menu **(GRUB Menu)** press **e**
+    - Add the word **nomodeset** to the line before the ending line which starts with:
+
+        ```shell
+        linux        /boot/...........                      nomodeset
+        ```
+    
+    - Press **Ctrl+X** to boot into Ubuntu
+
+Now you have to install the newer version of **CUDA Toolkit** to make things work again.
+
+- Installing **CUDA Toolkit 535.183.01**
+
+    - Open a terminal and write:
+        
+        ```shell
+        sudo apt-get install nvidia-driver-535
+        sudo update-initramfs -u
+        ```
+    
+    - Reboot the device
+
+If you've done everything as mentioned, Ubuntu should come up without any preprocesses. Once it came up, check the **CUDA Toolkit** version by:
+
+    ```shell
+    nvidia-smi
+    ```
+
+**If you get something like below, you're all fine !!!!!**
+
+![CUDA Toolkit check](https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/imgs/cuda_toolkit.png)
 
