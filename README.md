@@ -20,8 +20,11 @@ Following the given tutorials in the `/doc` directory, you should be able to wor
 
 
 # Isaac Sim Setup
-1. Robot Setup (CuRobo)
-2. Robot Object Explanation (Can be Expanded to any Robotic Arm) - Dual IRB6620 (11/08/2024)
+
+After testing the provided example, the following tutorials will let you understand the logic behind the provided developement (you should be able to create your own world following the provided sections)
+
+1. [**Robot Setup** (CuRobo)](https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/Robot_Setup.md)
+2. [**Robot Object Explanation** (Can be Expanded to any Robotic Arm) - *Dual IRB6620 (11/08/2024)*](https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/Robot_Object.md)
 
 
 # Author
