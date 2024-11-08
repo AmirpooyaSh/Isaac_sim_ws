@@ -11,10 +11,10 @@ This repository belongs to the Smart IDC Lab (supervised by Dr. Aladdin Alwisy -
 
 # Installation
 - Following the given tutorials in /doc directory, you should be able to work with the package
-1. Hardware Configuration (Ubuntu + CUDA + VScode)
-2. Isaac Sim Installation
-3. CuRobo Installation
-4. Running IDC Lab's provided example
+    1. Hardware Configuration (Ubuntu + CUDA + VScode)
+    2. Isaac Sim Installation
+    3. CuRobo Installation
+    4. Running IDC Lab's provided example
 
 # Isaac Sim Setup
 1. Robot Setup (CuRobo)
