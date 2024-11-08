@@ -36,6 +36,8 @@ For the purpose of this research project, Isaac Sim 4.2.0 has been selected. The
 
     - Omniverse Isaac Sim
 
+<br>
+
 - Running Isaac Sim
 
     - Once you downloaded/installed the packages using OmniverseLauncher, you should be able to launch Isaac Sim
