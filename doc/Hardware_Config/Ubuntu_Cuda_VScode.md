@@ -47,6 +47,7 @@
         ```
 
         - Expected Result:
+
             ![CUDA Version Test](https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/imgs/cuda.png)
 
 Following the provided terminal commands **(Might be Outdated, so its better to use NVIDIA website's link than the provided command lines)** you should be able to install CUDA, but some of the packages might show installation error **(Which is because of the outdated Cuda Toolkit installation alongside with CUDA 11.8)**
