@@ -153,5 +153,5 @@ The provided installation guides are essential to learn/develope algorithms with
 
 # What's Next?
 
-[Isaac Sim](https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/Hardware_Config/Isaac_Sim.md) Installation
+[Isaac Sim Installation =>](https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/Hardware_Config/Isaac_Sim.md) 
 
