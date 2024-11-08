@@ -35,3 +35,26 @@ For the purpose of this research project, Isaac Sim 4.2.0 has been selected. The
             ![Isaac Sim Compat](https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/imgs/isaac_compat.png)
 
     - Omniverse Isaac Sim
+
+- Running Isaac Sim
+
+    - Once you downloaded/installed the packages using OmniverseLauncher, you should be able to launch Isaac Sim
+
+        ![Isaac Sim Compat](https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/imgs/isaac_sim.png)
+
+
+- You can play with Isaac Sim as it's our **Simulation Enviroment** from now on.
+
+<br>
+
+# Enclosure
+
+[Reference Link](https://docs.omniverse.nvidia.com/isaacsim/latest/installation/install_workstation.html)
+
+[Isaac Sim Basic Tutorial](https://docs.omniverse.nvidia.com/isaacsim/latest/introductory_tutorials/tutorial_intro_interface.html#isaac-sim-app-tutorial-intro-interface)
+
+<br>
+
+# What's Next?
+
+[CuRobo Installation =>](https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/Hardware_Config/CuRobo_Install.md) 
