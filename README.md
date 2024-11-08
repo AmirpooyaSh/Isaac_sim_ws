@@ -19,7 +19,7 @@ Following the given tutorials in the `/doc` directory, you should be able to wor
 4. [**Running IDC Lab's Provided Example**](https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/Setup/IDC_Lab_Example.md)
 
 
-# Isaac Sim Setup
+# Developemental Tutorials
 
 After testing the provided example, the following tutorials will let you understand the logic behind the provided developement (you should be able to create your own world following the provided sections)
 
