@@ -124,3 +124,34 @@ If you've done everything as mentioned, Ubuntu should come up without any prepro
 
 # VScode (Just For Developing Codes)
 
+- Download the **Debian** version of VScode using this link: [VScode-Installer](https://code.visualstudio.com/download)
+
+- Double click on the downloaded file and let it get installed
+
+- You can check the installation by searching **"VSCode"** at this point
+
+- Useful Extensions on VSCode:
+
+    - Python
+    - Pylance
+    - C/C++
+    - C/C++ Extension Pack
+    - C/C++ Themes
+    - CMake
+    - CMake Tools
+    - Docker **(Docker Developement Purposes)**
+    - Dev Containers **(Docker Developement Purposes)**
+    - Rainbow CSV **(Optional)**
+
+<br>
+
+# Enclosure
+
+The provided installation guides are essential to learn/develope algorithms with **ROS + Isaac Sim**. Therefore, make sure to complete all the steps in this section before getting into the next section.
+
+<br>
+
+# What's Next?
+
+[Isaac Sim](https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/Hardware_Config/Isaac_Sim.md) Installation
+

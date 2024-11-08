@@ -14,7 +14,7 @@ This repository belongs to the Smart IDC Lab (supervised by Dr. Aladdin Alwisy -
 Following the given tutorials in the `/doc` directory, you should be able to work with the package:
 
 1. [**Hardware Configuration**](https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/Hardware_Config/Ubuntu_Cuda_VScode.md) (Ubuntu + CUDA + VSCode)
-2. **Isaac Sim Installation**
+2. [**Isaac Sim Installation**] (https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/Hardware_Config/Isaac_Sim.md)
 3. **CuRobo Installation**
 4. **Running IDC Lab's Provided Example**
 
