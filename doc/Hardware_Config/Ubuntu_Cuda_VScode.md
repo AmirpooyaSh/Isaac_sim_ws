@@ -5,6 +5,7 @@
 4. Follow the tutorials to install Ubuntu
 5. You should be able to login to the installed Ubuntu by the next reboot
 
+
 # CUDA (GPU Computation Library) Installation
 
 - Prerequisites:
@@ -14,6 +15,7 @@
         - *CUDA ToolKit = 535.183.01*
             - Tested GPUs: *RTX 2070S, 4070TI, 4090*
     - Having a Beginner to Intermediate knowledge of working with **Ubuntu Command Terminal**
+
 
 - Installing CUDA:
 
@@ -50,6 +52,7 @@
 
             ![CUDA Version Test](https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/imgs/cuda.png)
 
+
 Following the provided terminal commands **(might be outdated, so its better to use NVIDIA website's link than the provided command lines)** you should be able to install CUDA, but some of the packages might show installation error **(which is because of the outdated Cuda Toolkit installation alongside with CUDA 11.8)**.
 
 - Updating the **CUDA Toolkit**:
@@ -72,11 +75,12 @@ Following the provided terminal commands **(might be outdated, so its better to 
         ```
     - Reboot the device **(Read the following section before Rebooting)**
 
+
 Now that you uninstalled the outdated **CUDA Toolkit** and its **Booting Kernels** ubuntu won't come up by itself and you will see a black screen, because the OS tries to boot using GPU interface, but there is no GPU software to support that. At this point you should boot your OS with its default kernel **nomodeset**.
 
 - Booting Ubuntu on default Kernel:
 
-    - On boot menu **(GRUB Menu)** press **e**
+    - On boot menu **(GRUB Menu)** press **"e"**
     - Add the word **nomodeset** to the line before the ending line which starts with:
 
         ```shell
@@ -84,6 +88,7 @@ Now that you uninstalled the outdated **CUDA Toolkit** and its **Booting Kernels
         ```
     
     - Press **Ctrl+X** to boot into Ubuntu
+
 
 Now you have to install the newer version of **CUDA Toolkit** to make things work again.
 
@@ -98,6 +103,7 @@ Now you have to install the newer version of **CUDA Toolkit** to make things wor
     
     - Reboot the device
 
+
 If you've done everything as mentioned, Ubuntu should come up without any preprocesses. Once it came up, check the **CUDA Toolkit** version by:
 
     ```shell
@@ -107,4 +113,7 @@ If you've done everything as mentioned, Ubuntu should come up without any prepro
 **If you get something like below, you're all fine !!!!!**
 
 ![CUDA Toolkit check](https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/imgs/cuda_toolkit.png)
+
+
+# VScode (Just For Developing Codes)
 
