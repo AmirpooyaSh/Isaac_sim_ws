@@ -33,6 +33,7 @@ from curobo.wrap.reacher.motion_gen import (
     MotionGen,
     MotionGenConfig,
     MotionGenPlanConfig,
+    MotionGenResult,
     PoseCostMetric,
 )
 from curobo.geom.sdf.world import CollisionCheckerType
@@ -92,6 +93,10 @@ from omni.kit.commands import execute
 
 
 import re
+import time
+import torch
+
+
 
 # Rate for Publishing ROS Topics from this project !
 publish_rate = 10.0  # Frequency in Hz
@@ -374,11 +379,11 @@ class CuRoboRobot(object):
             trajopt_dt=trajopt_dt,
             trajopt_tsteps=trajopt_tsteps,
             trim_steps=trim_steps,
-            collision_cache={"obb":50, "mesh": 10}
+            collision_cache={"obb":10, "mesh": 10}
         )
         self._motion_gen = MotionGen(self._motion_gen_config)
         print("warming up...")
-        self._motion_gen.warmup(enable_graph=True, warmup_js_trajopt=False)
+        self._motion_gen.warmup(enable_graph=False, warmup_js_trajopt=False)
         print("Curobo for robot ( " + self._r_conf_name + " ) is ready ... | TCP = " + self._current_tool)
 
         self._plan_config = MotionGenPlanConfig(
@@ -393,110 +398,110 @@ class CuRoboRobot(object):
                         tcp_name: str = "tool1",
                         target_pose: np.array = [0, 0, 0],
                         target_orientation: np.array = [1, 0, 0, 0]):
-        i = 0
+        
         cmd_plan = None
         cmd_idx = 0
-        Exit_Flag = False
-        while simulation_app.is_running():
+                
+        # A New Approach to Avoid CUDA Memory Occupation:
 
+        # 1. Get an Update of the Collision World for the Robot:
+        print("Updating world, reading w.r.t.", self._robot_prim_path)
+        obstacles = self._temp_world_manager._usd_help.get_obstacles_from_stage(
+            reference_prim_path=self._robot_prim_path,
+            ignore_substring=[
+                self._robot_prim_path,
+                "/World/defaultGroundPlane",
+                # Other Robot's Prim Path Should also be Ignored !
+                # This feature is to be developed (MPC)
+            ],
+        ).get_collision_check_world()
+
+        self._motion_gen.update_world(obstacles)
+        print("Updated World")
+        carb.log_info("Synced CuRobo world from stage for Robot : " + self._r_conf_name)
+
+
+        result: MotionGenResult = None
+        succ = None
+        # Start the timer
+        TimeOut_Timer = time.time()
+
+        # Giving a 5-second timer to solve IK
+        while (time.time() - TimeOut_Timer <= 100):
+            # Render
             self._temp_world_manager._my_world.step(render=True)
-
-            step_index = self._temp_world_manager._my_world.current_time_step_index
-
-            # Movement Publish
-            # Publishing Robots JointStates
-            # for robot in robots:
-            #         robot.ros_js_publisher()
-            
-            if step_index == 50 or step_index % 1000 == 0.0:
-                print("Updating world, reading w.r.t.", self._robot_prim_path)
-                obstacles = self._temp_world_manager._usd_help.get_obstacles_from_stage(
-                    reference_prim_path=self._robot_prim_path,
-                    ignore_substring=[
-                        self._robot_prim_path,
-                        "/World/defaultGroundPlane",
-                        # Other Robot's Prim Path Should also be Ignored !
-                        # This feature is to be developed (MPC)
-                    ],
-                ).get_collision_check_world()
-
-                self._motion_gen.update_world(obstacles)
-                print("Updated World")
-                carb.log_info("Synced CuRobo world from stage for Robot : " + self._r_conf_name)
-
+            # 2. Getting Current JS
             sim_js = self._robot.get_joints_state()
             sim_js_names = self._robot.dof_names
-            if np.any(np.isnan(sim_js.positions)):
-                log_error("isaac sim has returned NAN joint position values for Robot : " + self._r_conf_name)
-            
+
             cu_js = JointState(
                 position=self._tensor_args.to_device(sim_js.positions),
-                velocity=self._tensor_args.to_device(sim_js.velocities), # * 0.0,
+                velocity=self._tensor_args.to_device(sim_js.velocities) * 0.0,
                 acceleration=self._tensor_args.to_device(sim_js.velocities) * 0.0,
                 jerk=self._tensor_args.to_device(sim_js.velocities) * 0.0,
                 joint_names=sim_js_names,
             )
-            cu_js.velocity *= 0.0
-            cu_js.acceleration *= 0.0
             cu_js = cu_js.get_ordered_joint_state(self._motion_gen.kinematics.joint_names)
-            robot_static = False
 
-            # An Approach to make the robot static
-            if (np.max(np.abs(sim_js.velocities)) < 0.02):
-                robot_static = True
+            # 3. Check for a Solution
+            ik_goal = Pose(
+                position=self._tensor_args.to_device(target_pose),
+                quaternion=self._tensor_args.to_device(target_orientation),
+            )
+            result = self._motion_gen.plan_single(cu_js.unsqueeze(0), ik_goal, self._plan_config)
+            succ = result.success.item()
+            if succ and np.max(np.abs(sim_js.velocities)) < 0.02:
+                print("solution found")
+                break
+            # Clear the cache after each iteration to avoid memory buildup
+            del result
+            del succ
+            torch.cuda.empty_cache()
+
+        if succ:
+            cmd_plan = result.get_interpolated_plan()
+            cmd_plan = self._motion_gen.get_full_js(cmd_plan)
+            # get only joint names that are in both:
+            idx_list = []
+            common_js_names = []
+            for x in sim_js_names:
+                if x in cmd_plan.joint_names:
+                    idx_list.append(self._robot.get_dof_index(x))
+                    common_js_names.append(x)
+            # idx_list = [robot.get_dof_index(x) for x in sim_js_names]
+
+            cmd_plan = cmd_plan.get_ordered_joint_state(common_js_names)
+            cmd_idx = 0
+
+        else:
+            carb.log_warn("Plan did not converge to a solution: " + str(result.status))
+            # No IK could solve this movement within 5 sec
+            return False
+        
+        # 4. Execution
+        while cmd_idx < len(cmd_plan.position):
+            self._temp_world_manager._my_world.step(render=True)
             
-            if(robot_static and not Exit_Flag):
-                ik_goal = Pose(
-                    position=self._tensor_args.to_device(target_pose),
-                    quaternion=self._tensor_args.to_device(target_orientation),
-                )
-
-                result = self._motion_gen.plan_single(cu_js.unsqueeze(0), ik_goal, self._plan_config)
-                succ = result.success.item()  # ik_result.success.item()
-
-                if succ:
-                    Exit_Flag = True
-                    cmd_plan = result.get_interpolated_plan()
-                    cmd_plan = self._motion_gen.get_full_js(cmd_plan)
-                    # get only joint names that are in both:
-                    idx_list = []
-                    common_js_names = []
-                    for x in sim_js_names:
-                        if x in cmd_plan.joint_names:
-                            idx_list.append(self._robot.get_dof_index(x))
-                            common_js_names.append(x)
-                    # idx_list = [robot.get_dof_index(x) for x in sim_js_names]
-
-                    cmd_plan = cmd_plan.get_ordered_joint_state(common_js_names)
-                    cmd_idx = 0
-
-                else:
-                    carb.log_warn("Plan did not converge to a solution: " + str(result.status))
-            
-            if cmd_plan is not None:
-                cmd_state = cmd_plan[cmd_idx]
-                past_cmd = cmd_state.clone()
-                # get full Truedof state
-                art_action = ArticulationAction(
-                    cmd_state.position.cpu().numpy(),
-                    cmd_state.velocity.cpu().numpy(),
-                    joint_indices=idx_list,
-                )
-
-                # set desired joint angles obtained from IK:
-                self._articulation_controller.apply_action(art_action)
+            cmd_state = cmd_plan[cmd_idx]
+            past_cmd = cmd_state.clone()
+            # get full Truedof state
+            art_action = ArticulationAction(
+                cmd_state.position.cpu().numpy(),
+                cmd_state.velocity.cpu().numpy(),
+                joint_indices=idx_list,
+            )
+            # set desired joint angles obtained from IK:
+            self._articulation_controller.apply_action(art_action)
+            cmd_idx += 1
+            for _ in range(2):
+                self._temp_world_manager._my_world.step(render=False)
+        
+        return True
+        
 
 
-                cmd_idx += 1
-                for _ in range(2):
-                    self._temp_world_manager._my_world.step(render=False)
-                
-                if cmd_idx >= len(cmd_plan.position) and Exit_Flag:
-                    Exit_Flag = False
-                    cmd_idx = 0
-                    cmd_plan = None
-                    # Breaking the Execution Loop
-                    return True
+
+
 
     def tcp_attach(self,
                    robot_name: str = "IRB6620_R1",
@@ -685,16 +690,16 @@ def main():
         quat_2= euler_to_quat(np.pi/2, 0, np.pi)
         quat_test= euler_to_quat(np.pi, 0, 0)
 
-        robots[0].plan_and_render(target_pose=np.array([-0.49, -1.54, 0.44]),
-                                target_orientation=np.array([quat[0], quat[1], quat[2], quat[3]]))
+        # robots[0].plan_and_render(target_pose=np.array([-0.49, -1.54, 0.44]),
+        #                         target_orientation=np.array([quat[0], quat[1], quat[2], quat[3]]))
 
 
-        robots[0].plan_and_render(target_pose=np.array([0, 1.5, 0.08]),
-                                target_orientation=np.array([quat_2[0], quat_2[1], quat_2[2], quat_2[3]]))
+        # robots[0].plan_and_render(target_pose=np.array([0, 1.5, 0.08]),
+        #                         target_orientation=np.array([quat_2[0], quat_2[1], quat_2[2], quat_2[3]]))
 
 
-        robots[1].plan_and_render(target_pose=np.array([-0.022, -1.85, 0.57]),
-                                target_orientation=np.array([quat_test[0], quat_test[1], quat_test[2], quat_test[3]]))
+        # robots[1].plan_and_render(target_pose=np.array([-0.022, -1.85, 0.57]),
+        #                         target_orientation=np.array([quat_test[0], quat_test[1], quat_test[2], quat_test[3]]))
 
 
         # 5 Sec of sleep to enable reinitialization
