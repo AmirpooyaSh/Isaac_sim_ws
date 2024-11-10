@@ -18,7 +18,7 @@ robot_cfg:
         asset_root_path: "/home/apshirazi/Isaac_sim_ws/meshes"
 
         base_link: "base_link"
-        ee_link: "tool0"
+        ee_link: "tool1"
         link_names: null
         lock_joints: null
         extra_links: null
@@ -27,17 +27,17 @@ robot_cfg:
         # 
         #
         collision_link_names: ["base_link", "Link_1", "Link_2", "Link_3", "Link_4", "Link_5", "Link_6", "Link_7","Link_8"]
-        collision_spheres: "/home/apshirazi/Isaac_sim_ws/robot_2/IRB6620_R2_Lula_modified.yaml"
+        collision_spheres: "/home/apshirazi/Isaac_sim_ws/robot_2/lol.yaml"
 
         # Don't Ever Touch This !!!!
         collision_sphere_buffer: 0.005
-        extra_collision_spheres: {"tool0": 100}
+        extra_collision_spheres: {}
         self_collision_ignore: {
           "base_link": ["Link_1", "Link_2", "Link_3", "Link_4", "Link_5", "Link_6", "Link_8"],
           "Link_1": ["Link_2", "Link_3", "Link_4", "Link_5", "Link_6", "Link_8"],
           "Link_2": ["Link_3", "Link_4", "Link_5", "Link_6", "Link_8"],
           "Link_3": ["Link_4", "Link_5", "Link_6", "Link_8"],
-          "Link_4": ["Link_5", "Link_6", "Link_8"],
+          "Link_4": ["Link_5", "Link_6"],
           "Link_5": ["Link_6", "Link_7", "Link_8"],
           "Link_6": ["Link_7", "Link_8"],
           "Link_7": ["Link_8"],

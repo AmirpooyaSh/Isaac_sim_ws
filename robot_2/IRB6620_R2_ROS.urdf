@@ -8,7 +8,7 @@
 <!-- BASE LINK -->
     <link name="base_link">
         <visual>
-            <origin xyz="0 0 0" rpy="0 0 0" />
+            <origin xyz="0 0 0" rpy="0 0 3.14159" />
             <geometry>
                 <mesh filename="/home/apshirazi/Isaac_sim_ws/meshes/visual/base_link.stl" />
             </geometry>
@@ -17,7 +17,7 @@
             </material>
         </visual>
         <collision>
-            <origin xyz="0 0 0" rpy="0 0 0" />
+            <origin xyz="0 0 0" rpy="0 0 3.14159" />
             <geometry>
                 <mesh filename="/home/apshirazi/Isaac_sim_ws/meshes/collision/base_link_mod.stl" />
             </geometry>
@@ -42,7 +42,7 @@
             </geometry>
         </collision>
     </link>
-    <!-- ROBOT 1 BASE PLATE TO BASE LINK -->
+    <!-- ROBOT 2 BASE PLATE TO BASE LINK -->
     <joint name="base_rob2_plate" type="fixed">
         <origin xyz="0 0 -0.0125" rpy="0 0 0" />
         <parent link="base_link" />
@@ -70,7 +70,7 @@
     </link>
     <!-- ROBOT 2 LINK 1 TO BASE LINK -->
     <joint name="Joint_1" type="revolute">
-        <origin xyz="0 0 0.2135" rpy="0 0 0" />
+        <origin xyz="0 0 0.2135" rpy="0 0 3.14159" />
         <parent link="base_link" />
         <child link="Link_1" />
         <axis xyz="0 0 1" />
