@@ -1,5 +1,5 @@
 from isaacsim import SimulationApp
-import sensor_msgs.msg
+# import sensor_msgs.msg
 
 simulation_app = SimulationApp({"headless": False}) # we can also run as headless.
 
@@ -59,7 +59,7 @@ from typing import cast, List, Optional, Any
 
 from omni.isaac.core.utils.extensions import enable_extension
 # enable ROS bridge extension
-enable_extension("omni.isaac.ros_bridge")
+# enable_extension("omni.isaac.ros_bridge")
 # enable SurfaceGripper extention
 enable_extension("omni.isaac.surface_gripper")
 simulation_app.update()
@@ -67,15 +67,15 @@ simulation_app.update()
 # check if rosmaster node is running
 # this is to prevent this sample from waiting indefinetly if roscore is not running
 # can be removed in regular usage
-import rosgraph
+# import rosgraph
 
-if not rosgraph.is_master_online():
-    carb.log_error("Please run roscore before executing this script")
-    simulation_app.close()
-    exit()
+# if not rosgraph.is_master_online():
+#     carb.log_error("Please run roscore before executing this script")
+#     simulation_app.close()
+#     exit()
 
-import rospy
-import sensor_msgs
+# import rospy
+# import sensor_msgs
 # import omni.graph.core as og
 
 # Xform Creation and Transform
@@ -95,11 +95,20 @@ from omni.kit.commands import execute
 import re
 import time
 import torch
+import threading
 
 
 
 # Rate for Publishing ROS Topics from this project !
 publish_rate = 10.0  # Frequency in Hz
+
+General_plan_config = MotionGenPlanConfig(
+    enable_graph=False,
+    enable_graph_attempt=2,
+    max_attempts=1,
+    enable_finetune_trajopt=False,
+    time_dilation_factor=0.5,
+)
 
 # Class Robot Gripper
 class RobotGripper(object):
@@ -339,7 +348,7 @@ class CuRoboRobot(object):
         # Creating JointState Publishing Topic:
         self._js_working_name = re.match(r"^(.*_Config)", r_conf_name).group(1)
         self._ros_js_publsiher = self._ROS_JS_robot_indicator + "_joint_state"
-        self._js_publisher = rospy.Publisher(self._ros_js_publsiher, sensor_msgs.msg.JointState, queue_size=10)
+        # self._js_publisher = rospy.Publisher(self._ros_js_publsiher, sensor_msgs.msg.JointState, queue_size=10)
         self._js_pub_interval: None
 
     def articulation_controller_init(self, step_index):
@@ -361,7 +370,7 @@ class CuRoboRobot(object):
         optimize_dt = False
         trajopt_tsteps = 32
         trim_steps = None
-        max_attempts = 4
+        max_attempts = 1
         interpolation_dt = 0.05
         enable_finetune_trajopt = False
         # MotionGen StartUp
@@ -379,20 +388,15 @@ class CuRoboRobot(object):
             trajopt_dt=trajopt_dt,
             trajopt_tsteps=trajopt_tsteps,
             trim_steps=trim_steps,
-            collision_cache={"obb":10, "mesh": 10}
+            # This Cache Value needs to be set PROPERLY
+            collision_cache={"obb":50, "mesh": 50}
         )
         self._motion_gen = MotionGen(self._motion_gen_config)
         print("warming up...")
         self._motion_gen.warmup(enable_graph=False, warmup_js_trajopt=False)
         print("Curobo for robot ( " + self._r_conf_name + " ) is ready ... | TCP = " + self._current_tool)
 
-        self._plan_config = MotionGenPlanConfig(
-            enable_graph=False,
-            enable_graph_attempt=2,
-            max_attempts=max_attempts,
-            enable_finetune_trajopt=enable_finetune_trajopt,
-            time_dilation_factor=0.5,
-        )
+        self._plan_config = General_plan_config
     
     def plan_and_render(self,
                         tcp_name: str = "tool1",
@@ -418,8 +422,10 @@ class CuRoboRobot(object):
 
         self._motion_gen.update_world(obstacles)
         print("Updated World")
-        carb.log_info("Synced CuRobo world from stage for Robot : " + self._r_conf_name)
 
+        self._temp_world_manager._my_world.step(render=True)
+        
+        carb.log_info("Synced CuRobo world from stage for Robot : " + self._r_conf_name)
 
         result: MotionGenResult = None
         succ = None
@@ -427,7 +433,7 @@ class CuRoboRobot(object):
         TimeOut_Timer = time.time()
 
         # Giving a 5-second timer to solve IK
-        while (time.time() - TimeOut_Timer <= 100):
+        while (time.time() - TimeOut_Timer <= 5):
             # Render
             self._temp_world_manager._my_world.step(render=True)
             # 2. Getting Current JS
@@ -516,33 +522,33 @@ class CuRoboRobot(object):
         og.Controller.set(og.Controller.attribute("/action_graph_"+robot_name+"_"+tcp_name+"/open_tick.state:enableImpulse"), True)
         
 
-    def ros_js_publisher(self, event):
+    # def ros_js_publisher(self, event):
+    #     r=1
+    #     try:
+    #         # Check if the simulation is running and playing
+    #         if self._temp_world_manager._my_world.is_playing() and (self._temp_world_manager._my_world.current_time_step_index > 20):
+    #             # self._temp_world_manager._my_world.step(render=False)
+    #             sim_js = self._robot.get_joints_state()
+    #             sim_js_names = self._robot.dof_names
 
-        try:
-            # Check if the simulation is running and playing
-            if self._temp_world_manager._my_world.is_playing() and (self._temp_world_manager._my_world.current_time_step_index > 20):
-                # self._temp_world_manager._my_world.step(render=False)
-                sim_js = self._robot.get_joints_state()
-                sim_js_names = self._robot.dof_names
-
-                # Check for NaN values
-                if np.any(np.isnan(sim_js.positions)):
-                    log_error("Can't Publish JointState for Robot: " + self._js_working_name)
-                    return
+    #             # Check for NaN values
+    #             if np.any(np.isnan(sim_js.positions)):
+    #                 log_error("Can't Publish JointState for Robot: " + self._js_working_name)
+    #                 return
 
                 # Create and populate the JointState message
-                joint_state_msg = sensor_msgs.msg.JointState()
-                joint_state_msg.header.stamp = rospy.Time.now()
-                joint_state_msg.name = sim_js_names
-                joint_state_msg.position = self._tensor_args.to_device(sim_js.positions).cpu().numpy().tolist()
-                joint_state_msg.velocity = self._tensor_args.to_device(sim_js.velocities).cpu().numpy().tolist()
-                joint_state_msg.effort = [0.0] * len(sim_js_names)
+                # joint_state_msg = sensor_msgs.msg.JointState()
+                # joint_state_msg.header.stamp = rospy.Time.now()
+                # joint_state_msg.name = sim_js_names
+                # joint_state_msg.position = self._tensor_args.to_device(sim_js.positions).cpu().numpy().tolist()
+                # joint_state_msg.velocity = self._tensor_args.to_device(sim_js.velocities).cpu().numpy().tolist()
+                # joint_state_msg.effort = [0.0] * len(sim_js_names)
 
                 # Publish the joint state
-                self._js_publisher.publish(joint_state_msg)
+                # self._js_publisher.publish(joint_state_msg)
 
-        except Exception as e:
-            rospy.logwarn(f"Error publishing joint state: {e}")
+        # except Exception as e:
+            # rospy.logwarn(f"Error publishing joint state: {e}")
 
 
 test = WorldManager()
@@ -588,6 +594,25 @@ def euler_to_quat(roll, pitch, yaw):
     q_z = cr * cp * sy - sr * sp * cy
 
     return q_x, q_y, q_z, q_w
+
+
+# Define the functions for each robot's plan and render task
+def plan_and_render_robot_0():
+    quat_2= euler_to_quat(np.pi/2, 0, np.pi)
+    robots[0].plan_and_render(
+        target_pose=np.array([0, 1.5, 0.08]),
+        target_orientation=np.array([quat_2[0], quat_2[1], quat_2[2], quat_2[3]])
+    )
+
+def plan_and_render_robot_1():
+    quat_test= euler_to_quat(np.pi, 0, 0)
+    robots[1].plan_and_render(
+        target_pose=np.array([-0.022, -1.85, 0.57]),
+        target_orientation=np.array([quat_test[0], quat_test[1], quat_test[2], quat_test[3]])
+    )
+
+
+
 
 # Default Assumption (Cuboid), but it can be changed to Capsule and Mesh
 def Add_Rigid_Object_To_Scene(World_Manager: WorldManager,
@@ -635,12 +660,12 @@ def Add_Rigid_Object_To_Scene(World_Manager: WorldManager,
 
 def main():
 
-    rospy.init_node("tutorial_subscriber", anonymous=True)
+    # rospy.init_node("tutorial_subscriber", anonymous=True)
 
     i=0
 
-    for robot in robots:
-        robot._js_pub_interval = rospy.Timer(rospy.Duration(10.0 / publish_rate), robot.ros_js_publisher)
+    # for robot in robots:
+        # robot._js_pub_interval = rospy.Timer(rospy.Duration(10.0 / publish_rate), robot.ros_js_publisher)
 
     SheathingPlate = Cuboid(
         name="SheathingPlate",
@@ -658,6 +683,7 @@ def main():
     # Add_Rigid_Object_To_Scene(test, "Cuboid", Test_Obj)
 
     Add_Rigid_Object_To_Scene(test, "Cuboid", SheathingPlate)
+
 
     while simulation_app.is_running():
         # Rendering The World
@@ -687,12 +713,33 @@ def main():
         #         robot.ros_js_publisher()
 
         quat = euler_to_quat(0, 0, -np.pi)
-        quat_2= euler_to_quat(np.pi/2, 0, np.pi)
         quat_test= euler_to_quat(np.pi, 0, 0)
+        quat_2= euler_to_quat(np.pi/2, 0, np.pi)
 
-        # robots[0].plan_and_render(target_pose=np.array([-0.49, -1.54, 0.44]),
-        #                         target_orientation=np.array([quat[0], quat[1], quat[2], quat[3]]))
+        robots[0].plan_and_render(target_pose=np.array([-0.49, -1.54, 0.44]),
+                                target_orientation=np.array([quat[0], quat[1], quat[2], quat[3]]))
+        
+        # Create CUDA streams for parallel execution on the GPU
+        stream_0 = torch.cuda.Stream()
+        stream_1 = torch.cuda.Stream()
 
+        # Execute robot 0's task on stream 0
+        with torch.cuda.stream(stream_0):
+            robots[0].plan_and_render(
+                target_pose=np.array([0, 1.5, 0.08]),
+                target_orientation=np.array([quat_2[0], quat_2[1], quat_2[2], quat_2[3]])
+            )
+
+        # Execute robot 1's task on stream 1
+        with torch.cuda.stream(stream_1):
+            robots[1].plan_and_render(
+                target_pose=np.array([-0.022, -1.85, 0.57]),
+                target_orientation=np.array([quat_test[0], quat_test[1], quat_test[2], quat_test[3]])
+            )
+            
+        # Synchronize streams to ensure all GPU operations are completed
+        stream_0.synchronize()
+        stream_1.synchronize()
 
         # robots[0].plan_and_render(target_pose=np.array([0, 1.5, 0.08]),
         #                         target_orientation=np.array([quat_2[0], quat_2[1], quat_2[2], quat_2[3]]))
