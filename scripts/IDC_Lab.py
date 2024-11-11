@@ -352,6 +352,11 @@ class CuRoboRobot(object):
         # self._js_publisher = rospy.Publisher(self._ros_js_publsiher, sensor_msgs.msg.JointState, queue_size=10)
         self._js_pub_interval: None
 
+        self._computed_path_result: MotionGenResult = None
+        self._computed_cmd_plan: JointState = None
+        self._computed_idx_list = []
+
+
     def articulation_controller_init(self, step_index):
         if self._articulation_controller is None:
             self._articulation_controller = cast(ArticulationController, self._robot.get_articulation_controller())
@@ -405,13 +410,10 @@ class CuRoboRobot(object):
                                                 enable_finetune_trajopt=enable_finetune_trajopt,
                                                 time_dilation_factor=0.5)
     
-    def plan_and_render(self,
+    def plan(self,
                         tcp_name: str = "tool1",
                         target_pose: np.array = [0, 0, 0],
                         target_orientation: np.array = [1, 0, 0, 0]):
-        
-        cmd_plan = None
-        cmd_idx = 0
                 
         # A New Approach to Avoid CUDA Memory Occupation:
 
@@ -463,53 +465,79 @@ class CuRoboRobot(object):
             )
             result = self._motion_gen.plan_single(cu_js.unsqueeze(0), ik_goal, self._plan_config)
             succ = result.success.item()
+
+            # Adding the solution to Robot Object
+            self._computed_path_result = result
+
             if succ and np.max(np.abs(sim_js.velocities)) < 0.02:
                 print("solution found")
                 break
+
             # Clear the cache after each iteration to avoid memory buildup
-            del result
-            del succ
             torch.cuda.empty_cache()
 
         if succ:
-            cmd_plan = result.get_interpolated_plan()
-            cmd_plan = self._motion_gen.get_full_js(cmd_plan)
-            # get only joint names that are in both:
-            idx_list = []
+            self._computed_cmd_plan = self._computed_path_result.get_interpolated_plan()
+            self._computed_cmd_plan = self._motion_gen.get_full_js(self._computed_cmd_plan)
+            self._computed_idx_list = []
             common_js_names = []
+            sim_js_names = self._robot.dof_names
+
             for x in sim_js_names:
-                if x in cmd_plan.joint_names:
-                    idx_list.append(self._robot.get_dof_index(x))
+                if x in self._computed_cmd_plan.joint_names:
+                    self._computed_idx_list.append(self._robot.get_dof_index(x))
                     common_js_names.append(x)
-            # idx_list = [robot.get_dof_index(x) for x in sim_js_names]
-
-            cmd_plan = cmd_plan.get_ordered_joint_state(common_js_names)
-            cmd_idx = 0
-
+            self._computed_cmd_plan = self._computed_cmd_plan.get_ordered_joint_state(common_js_names)
+            return True
         else:
             carb.log_warn("Plan did not converge to a solution: " + str(result.status))
             # No IK could solve this movement within 5 sec
             return False
+
+    def render_exec(self,
+                    renderInstance: bool = True):
+
+        if not self._computed_path_result.success.item():
+            print("Path was not Generated")
+        else:
+            cmd_plan = self._computed_path_result.get_interpolated_plan()
+            cmd_plan = self._motion_gen.get_full_js(cmd_plan)
+            # get only joint names that are in both:
+            idx_list = []
+            common_js_names = []
+            sim_js_names = self._robot.dof_names
+
+            for x in sim_js_names:
+                if x in cmd_plan.joint_names:
+                    idx_list.append(self._robot.get_dof_index(x))
+                    common_js_names.append(x)
+            cmd_plan = cmd_plan.get_ordered_joint_state(common_js_names)
+            cmd_idx = 0
+
+            while cmd_idx < len(cmd_plan.position):
+                if renderInstance:
+                    self._temp_world_manager._my_world.step(render=True)
+
+                cmd_state = cmd_plan[cmd_idx]
+
+                # get full Truedof state
+                art_action = ArticulationAction(
+                    cmd_state.position.cpu().numpy(),
+                    cmd_state.velocity.cpu().numpy(),
+                    joint_indices=idx_list,
+                )
+
+                # set desired joint angles obtained from IK:
+                self._articulation_controller.apply_action(art_action)
+                cmd_idx += 1
+                if renderInstance:
+                    for _ in range(2):
+                        self._temp_world_manager._my_world.step(render=False)
         
-        # 4. Execution
-        while cmd_idx < len(cmd_plan.position):
-            self._temp_world_manager._my_world.step(render=True)
-            
-            cmd_state = cmd_plan[cmd_idx]
-            past_cmd = cmd_state.clone()
-            # get full Truedof state
-            art_action = ArticulationAction(
-                cmd_state.position.cpu().numpy(),
-                cmd_state.velocity.cpu().numpy(),
-                joint_indices=idx_list,
-            )
-            # set desired joint angles obtained from IK:
-            self._articulation_controller.apply_action(art_action)
-            cmd_idx += 1
-            for _ in range(2):
-                self._temp_world_manager._my_world.step(render=False)
-        
-        return True
+        # Cleaning out !
+        self._computed_path_result = None
+        self._computed_cmd_plan = None
+        self._computed_idx_list = []
         
     def tcp_attach(self,
                    robot_name: str = "IRB6620_R1",
@@ -598,23 +626,6 @@ def euler_to_quat(roll, pitch, yaw):
     return q_x, q_y, q_z, q_w
 
 
-# Define the functions for each robot's plan and render task
-def plan_and_render_robot_0():
-    quat_2= euler_to_quat(np.pi/2, 0, np.pi)
-    robots[0].plan_and_render(
-        target_pose=np.array([0, 1.5, 0.08]),
-        target_orientation=np.array([quat_2[0], quat_2[1], quat_2[2], quat_2[3]])
-    )
-
-def plan_and_render_robot_1():
-    quat_test= euler_to_quat(np.pi, 0, 0)
-    robots[1].plan_and_render(
-        target_pose=np.array([-0.022, -1.85, 0.57]),
-        target_orientation=np.array([quat_test[0], quat_test[1], quat_test[2], quat_test[3]])
-    )
-
-
-
 
 # Default Assumption (Cuboid), but it can be changed to Capsule and Mesh
 def Add_Rigid_Object_To_Scene(World_Manager: WorldManager,
@@ -659,6 +670,38 @@ def Add_Rigid_Object_To_Scene(World_Manager: WorldManager,
     print("For Obj (" + obj.name + ") Mass Creation : " + str(Mass_Succ))
     print("For Obj (" + obj.name + ") DisableGravity Creation : " + str(Dis_Grav))
 
+def parallel_movement(
+    Rob_idx_list: List[int] = [0, 1],
+    Goal_List_Pose: List[np.ndarray] = [np.array([-0.49, -1.54, 0.44], dtype=float), np.array([-0.022, -1.85, 0.57], dtype=float)],
+    Goal_List_Orientation: List[np.ndarray] = [np.array([1, 0, 0, 0], dtype=float), np.array([1, 0, 0, 0], dtype=float)]
+):
+    for idx in Rob_idx_list:
+        # Ensure each pose and orientation is in the correct format
+        target_pose = np.array(Goal_List_Pose[idx][:3], dtype=float).reshape(3)
+        target_orientation = np.array(Goal_List_Orientation[idx][:4], dtype=float).reshape(4)
+
+        # Call plan with the correctly shaped pose and orientation
+        robots[idx].plan(target_pose, target_orientation)
+
+    cmd_idx = 0
+    while cmd_idx < len(robots[Rob_idx_list[0]]._computed_cmd_plan.position):
+        test._my_world.step(render=True)
+        
+        for idx in Rob_idx_list:
+            cmd_state = robots[idx]._computed_cmd_plan[cmd_idx]
+
+            # Apply articulation action
+            art_action = ArticulationAction(
+                cmd_state.position.cpu().numpy(),
+                cmd_state.velocity.cpu().numpy(),
+                joint_indices=robots[idx]._computed_idx_list,
+            )
+            robots[idx]._articulation_controller.apply_action(art_action)
+            for _ in range(2):
+                test._my_world.step(render=False)
+        
+        cmd_idx += 1
+        
 
 def main():
 
@@ -712,37 +755,24 @@ def main():
         quat_test= euler_to_quat(np.pi, 0, 0)
         quat_2= euler_to_quat(np.pi/2, 0, np.pi)
 
-        robots[0].plan_and_render(target_pose=np.array([-0.49, -1.54, 0.44]),
+        robots[0].plan(target_pose=np.array([-0.49, -1.54, 0.44]),
                                 target_orientation=np.array([quat[0], quat[1], quat[2], quat[3]]))
         
-        # Create CUDA streams for parallel execution on the GPU
-        # stream_0 = torch.cuda.Stream()
-        # stream_1 = torch.cuda.Stream()
+        robots[1].plan(target_pose=np.array([-0.022, -1.85, 0.57]),
+                        target_orientation=np.array([quat_test[0], quat_test[1], quat_test[2], quat_test[3]]))
+        
+        robots[0].render_exec(renderInstance=True)
+        robots[1].render_exec(renderInstance=True)
+        
 
-        # Execute robot 0's task on stream 0
-        # with torch.cuda.stream(stream_0):
-        #     robots[0].plan_and_render(
-        #         target_pose=np.array([0, 1.5, 0.08]),
-        #         target_orientation=np.array([quat_2[0], quat_2[1], quat_2[2], quat_2[3]])
-        #     )
-
-        # Execute robot 1's task on stream 1
-        # with torch.cuda.stream(stream_1):
-        #     robots[1].plan_and_render(
-        #         target_pose=np.array([-0.022, -1.85, 0.57]),
-        #         target_orientation=np.array([quat_test[0], quat_test[1], quat_test[2], quat_test[3]])
-        #     )
-            
-        # Synchronize streams to ensure all GPU operations are completed
-        # stream_0.synchronize()
-        # stream_1.synchronize()
-
-        robots[0].plan_and_render(target_pose=np.array([0, 1.5, 0.08]),
+        robots[0].plan(target_pose=np.array([0, 1.5, 0.08]),
                                 target_orientation=np.array([quat_2[0], quat_2[1], quat_2[2], quat_2[3]]))
+        robots[0].render_exec(renderInstance=True)
+        
+        # robots[0].render_exec(renderInstance=True)
 
-
-        robots[1].plan_and_render(target_pose=np.array([-0.022, -1.85, 0.57]),
-                                target_orientation=np.array([quat_test[0], quat_test[1], quat_test[2], quat_test[3]]))
+        # parallel_movement(Goal_List_Orientation=[np.array([quat[0], quat[1], quat[2], quat[3]]),
+        #                                          np.array([quat_test[0], quat_test[1], quat_test[2], quat_test[3]])])
 
 
         # 5 Sec of sleep to enable reinitialization
@@ -752,3 +782,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
