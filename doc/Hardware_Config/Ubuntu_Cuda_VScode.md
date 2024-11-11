@@ -11,7 +11,7 @@
         - **Normal installation**
         - **Download updates while installting ubuntu**
         - **Install third-party software for ...**
-        - ![Ubuntu_Installation](https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/imgs/ubuntu_install.png)
+        ![Ubuntu_Installation](https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/imgs/ubuntu_install.png)
 5. You should be able to login to the installed Ubuntu by the next reboot
 6. You should be able to check the installed NVIDIA Driver by running the command below **(This is the driver Ubuntu installer decided to install which is the most recommended one for your GPU and should not be removed/changed manually)**:
     ```shell
@@ -43,7 +43,7 @@
         ```
         - Through the installation process, make sure to hit **Continue** instead of Abort and uncheck the installation of NVIDIA Driver **520.61.05**
         - The suggesting NVIDIA Driver **(520.61.05)** is providing an outdated installation which can lead into **Ubuntu Boot Problems** if you install it
-        - ![CUDA_TK](https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/imgs/cuda_tk_install.png)
+        ![CUDA_TK](https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/imgs/cuda_tk_install.png)
     - Open ~/.bashrc by:
 
         ```shell
