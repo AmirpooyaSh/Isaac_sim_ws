@@ -60,6 +60,7 @@ from typing import cast, List, Optional, Any
 from omni.isaac.core.utils.extensions import enable_extension
 # enable ROS bridge extension
 # enable_extension("omni.isaac.ros_bridge")
+
 # enable SurfaceGripper extention
 enable_extension("omni.isaac.surface_gripper")
 simulation_app.update()
@@ -369,8 +370,8 @@ class CuRoboRobot(object):
         trajopt_dt = None
         optimize_dt = False
         trajopt_tsteps = 32
-        trim_steps = None
-        max_attempts = 1
+        trim_steps = [1, None]
+        max_attempts = 2
         interpolation_dt = 0.05
         enable_finetune_trajopt = False
         # MotionGen StartUp
@@ -389,14 +390,20 @@ class CuRoboRobot(object):
             trajopt_tsteps=trajopt_tsteps,
             trim_steps=trim_steps,
             # This Cache Value needs to be set PROPERLY
-            collision_cache={"obb":50, "mesh": 50}
+            collision_cache={"obb":30, "mesh": 100}
         )
+        
         self._motion_gen = MotionGen(self._motion_gen_config)
+        
         print("warming up...")
         self._motion_gen.warmup(enable_graph=False, warmup_js_trajopt=False)
         print("Curobo for robot ( " + self._r_conf_name + " ) is ready ... | TCP = " + self._current_tool)
 
-        self._plan_config = General_plan_config
+        self._plan_config = MotionGenPlanConfig(enable_graph=False,
+                                                enable_graph_attempt=2,
+                                                max_attempts=max_attempts,
+                                                enable_finetune_trajopt=enable_finetune_trajopt,
+                                                time_dilation_factor=0.5)
     
     def plan_and_render(self,
                         tcp_name: str = "tool1",
@@ -433,7 +440,7 @@ class CuRoboRobot(object):
         TimeOut_Timer = time.time()
 
         # Giving a 5-second timer to solve IK
-        while (time.time() - TimeOut_Timer <= 5):
+        while (time.time() - TimeOut_Timer <= 10):
             # Render
             self._temp_world_manager._my_world.step(render=True)
             # 2. Getting Current JS
@@ -504,11 +511,6 @@ class CuRoboRobot(object):
         
         return True
         
-
-
-
-
-
     def tcp_attach(self,
                    robot_name: str = "IRB6620_R1",
                    tcp_name: str = "T1"):
@@ -702,12 +704,6 @@ def main():
         if step_index < 20:
             continue
 
-        # mesh_names = []
-        # for prim in test._stage.Traverse():
-        #     if prim.GetPath().IsPrimPath("World") and prim.HasAttribute("mesh"):
-        #         mesh_names.append(prim.GetName())
-        # print(mesh_names)
-
         # Movement Publish !
         # for robot in robots:
         #         robot.ros_js_publisher()
@@ -720,33 +716,33 @@ def main():
                                 target_orientation=np.array([quat[0], quat[1], quat[2], quat[3]]))
         
         # Create CUDA streams for parallel execution on the GPU
-        stream_0 = torch.cuda.Stream()
-        stream_1 = torch.cuda.Stream()
+        # stream_0 = torch.cuda.Stream()
+        # stream_1 = torch.cuda.Stream()
 
         # Execute robot 0's task on stream 0
-        with torch.cuda.stream(stream_0):
-            robots[0].plan_and_render(
-                target_pose=np.array([0, 1.5, 0.08]),
-                target_orientation=np.array([quat_2[0], quat_2[1], quat_2[2], quat_2[3]])
-            )
+        # with torch.cuda.stream(stream_0):
+        #     robots[0].plan_and_render(
+        #         target_pose=np.array([0, 1.5, 0.08]),
+        #         target_orientation=np.array([quat_2[0], quat_2[1], quat_2[2], quat_2[3]])
+        #     )
 
         # Execute robot 1's task on stream 1
-        with torch.cuda.stream(stream_1):
-            robots[1].plan_and_render(
-                target_pose=np.array([-0.022, -1.85, 0.57]),
-                target_orientation=np.array([quat_test[0], quat_test[1], quat_test[2], quat_test[3]])
-            )
+        # with torch.cuda.stream(stream_1):
+        #     robots[1].plan_and_render(
+        #         target_pose=np.array([-0.022, -1.85, 0.57]),
+        #         target_orientation=np.array([quat_test[0], quat_test[1], quat_test[2], quat_test[3]])
+        #     )
             
         # Synchronize streams to ensure all GPU operations are completed
-        stream_0.synchronize()
-        stream_1.synchronize()
+        # stream_0.synchronize()
+        # stream_1.synchronize()
 
-        # robots[0].plan_and_render(target_pose=np.array([0, 1.5, 0.08]),
-        #                         target_orientation=np.array([quat_2[0], quat_2[1], quat_2[2], quat_2[3]]))
+        robots[0].plan_and_render(target_pose=np.array([0, 1.5, 0.08]),
+                                target_orientation=np.array([quat_2[0], quat_2[1], quat_2[2], quat_2[3]]))
 
 
-        # robots[1].plan_and_render(target_pose=np.array([-0.022, -1.85, 0.57]),
-        #                         target_orientation=np.array([quat_test[0], quat_test[1], quat_test[2], quat_test[3]]))
+        robots[1].plan_and_render(target_pose=np.array([-0.022, -1.85, 0.57]),
+                                target_orientation=np.array([quat_test[0], quat_test[1], quat_test[2], quat_test[3]]))
 
 
         # 5 Sec of sleep to enable reinitialization
