@@ -18,7 +18,7 @@ This repository belongs to the Smart IDC Lab (supervised by Dr. Aladdin Alwisy -
         ubuntu-drivers devices
         ```
 
-    - Any NVIDIA driver >= 450-80-02 means that CUDA 11.8 can work with your GPU's NVIDIA driver.
+    - Any NVIDIA driver >= 450-80-02 means that CUDA 11.8 can work with your GPU's NVIDIA driver
 
 <br>
 

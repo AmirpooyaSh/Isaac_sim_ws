@@ -1,12 +1,24 @@
 # Ubuntu 20.04 (OS) Installation
-1. Download [Ubuntu 20.04 Focal](https://releases.ubuntu.com/focal/) Image (64bit PC AMD64)
+1. Download [Ubuntu 22.04.5 LTS (Jammy Jellyfish)](https://releases.ubuntu.com/jammy/) Image (64bit PC AMD64)
 2. Create a bootable image of the downloaded file using [BalenaEtcher](https://etcher.balena.io/#download-etcher)
     - Make sure to turn off **Secure Boot** on your device using **BIOS Setting** before proceeding to the installation
     - Turn off **RTS/RAID on** on your device using **BIOS Setting**
     - If you're doing a dual boot **Windows/Ubuntu**, make sure to follow [this tutorial](https://www.youtube.com/watch?v=YRu__8ggMSY) before proceeding to the installation
-3. Reboot your **Desktop/Laptop** and press **F12/F2** depending to load the **Boot Menu**
+3. Reboot your **Desktop/Laptop** and press **F12** depending to load the **Boot Menu**
 4. Follow the tutorials to install Ubuntu
+    - In the process of installing Ubuntu, connect your device to the internet
+    - in the Installation section, make sure to check:
+        - **Normal installation**
+        - **Download updates while installting ubuntu**
+        - **Install third-party software for ...**
+        - ![Ubuntu_Installation](https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/imgs/ubuntu_install.png)
 5. You should be able to login to the installed Ubuntu by the next reboot
+6. You should be able to check the installed NVIDIA Driver by running the command below **(This is the driver Ubuntu installer decided to install which is the most recommended one for your GPU and should not be removed/changed manually)**:
+    ```shell
+    nvidia-smi
+    ```
+    ![CUDA Toolkit check](https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/imgs/cuda_toolkit.png)
+
 
 <br>
 
@@ -16,26 +28,22 @@
     - Having a CUDA Capable **Nvidia Graphical Processor Unit (GPU)**
     - The **GPU** should be compatible with:
         - *CUDA>=11.0*
-        - *CUDA ToolKit = 535.183.01*
-            - Tested GPUs: *RTX 2070S, 4070TI, 4090*
     - Having a Beginner to Intermediate knowledge of working with **Ubuntu Command Terminal**
 
 <br><br>
 
 - Installing CUDA:
 
-    - [CUDA 11.8](https://developer.nvidia.com/cuda-11-8-0-download-archive?target_os=Linux&target_arch=x86_64&Distribution=Ubuntu&target_version=20.04&target_type=deb_local)
+    - [CUDA 11.8](https://developer.nvidia.com/cuda-11-8-0-download-archive?target_os=Linux&target_arch=x86_64&Distribution=Ubuntu&target_version=22.04&target_type=runfile_local
     - Follow the provided commads **(Same as the ones provided link)**
 
         ```shell
-        wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-ubuntu2004.pin
-        sudo mv cuda-ubuntu2004.pin /etc/apt/preferences.d/cuda-repository-pin-600
-        wget https://developer.download.nvidia.com/compute/cuda/11.8.0/local_installers/cuda-repo-ubuntu2004-11-8-local_11.8.0-520.61.05-1_amd64.deb
-        sudo dpkg -i cuda-repo-ubuntu2004-11-8-local_11.8.0-520.61.05-1_amd64.deb
-        sudo cp /var/cuda-repo-ubuntu2004-11-8-local/cuda-*-keyring.gpg /usr/share/keyrings/
-        sudo apt-get update
-        sudo apt-get -y install cuda
+        wget https://developer.download.nvidia.com/compute/cuda/11.8.0/local_installers/cuda_11.8.0_520.61.05_linux.run
+        sudo sh cuda_11.8.0_520.61.05_linux.run
         ```
+        - Through the installation process, make sure to hit **Continue** instead of Abort and uncheck the installation of NVIDIA Driver **520.61.05**
+        - The suggesting NVIDIA Driver **(520.61.05)** is providing an outdated installation which can lead into **Ubuntu Boot Problems** if you install it
+        - ![CUDA_TK](https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/imgs/cuda_tk_install.png)
     - Open ~/.bashrc by:
 
         ```shell
@@ -58,72 +66,6 @@
             ![CUDA Version Test](https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/imgs/cuda.png)
 
 <br><br>
-
-Following the provided terminal commands **(might be outdated, so its better to use NVIDIA website's link than the provided command lines)** you should be able to install CUDA, but some of the packages might show installation error **(which is because of the outdated Cuda Toolkit installation alongside with CUDA 11.8)**.
-
-- Updating the **CUDA Toolkit**:
-
-    - Remove Outdated CUDA DKMS files:
-
-        ```shell
-        sudo rm -r /var/lib/dkms/nvidia
-        ```
-    - Remove Outdated ToolKit:
-
-        ```shell
-        sudo apt-get purge 'nvidia-*'
-        ```
-    - Reinstall basic Ubuntu DKMS files:
-
-        ```shell
-        sudo apt-get install build-essential dkms
-        sudo apt-get install linux-headers-$(uname -r)
-        ```
-    - Reboot the device **(Read the following section before Rebooting)**
-
-<br><br>
-
-Now that you uninstalled the outdated **CUDA Toolkit** and its **Booting Kernels** ubuntu won't come up by itself and you will see a black screen, because the OS tries to boot using GPU interface, but there is no GPU software to support that. At this point you should boot your OS with its default kernel **nomodeset**.
-
-- Booting Ubuntu on default Kernel:
-
-    - On boot menu **(GRUB Menu)** press **"e"**
-    - Add the word **nomodeset** to the line before the ending line which starts with:
-
-        ```shell
-        linux        /boot/...........                      nomodeset
-        ```
-    
-    - Press **Ctrl+X** to boot into Ubuntu
-
-<br><br>
-
-Now you have to install the newer version of **CUDA Toolkit** to make things work again.
-
-- Installing **CUDA Toolkit 535.183.01**
-
-    - Open a terminal and write:
-        
-        ```shell
-        sudo apt-get install nvidia-driver-535
-        sudo update-initramfs -u
-        ```
-    
-    - Reboot the device
-
-<br><br>
-
-If you've done everything as mentioned, Ubuntu should come up without any preprocesses. Once it came up, check the **CUDA Toolkit** version by:
-
-    nvidia-smi
-
-<br><br>
-
-**If you get something like below, you're all fine !!!!!**
-
-![CUDA Toolkit check](https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/imgs/cuda_toolkit.png)
-
-<br>
 
 # VScode (Just For Developing Codes)
 
