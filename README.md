@@ -11,14 +11,19 @@ This repository belongs to the Smart IDC Lab (supervised by Dr. Aladdin Alwisy -
     </div>
 
     To make sure, you can run the command below and check for the availability:
+
 <br>
+
         ```shell
         sudo add-apt-repository ppa:graphics-drivers/ppa
         sudo apt update
         ubuntu-drivers devices
         ```
+
 <br>
+
     Any NVIDIA driver >= 450-80-02 means that CUDA 11.8 can work with your GPU's NVIDIA driver.
+
 <br>
 
 - NVIDIA Driver >= 535.183.01 **(Tested with 535.183.01 (RTX 2070S), 550.127.05 (RTX 4070TI), 565.57.01 (RTX 4090))**
