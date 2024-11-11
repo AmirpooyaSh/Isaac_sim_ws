@@ -30,11 +30,11 @@
         - *CUDA>=11.0*
     - Having a Beginner to Intermediate knowledge of working with **Ubuntu Command Terminal**
 
-<br><br>
+<br>
 
 - Installing CUDA:
 
-    - [CUDA 11.8](https://developer.nvidia.com/cuda-11-8-0-download-archive?target_os=Linux&target_arch=x86_64&Distribution=Ubuntu&target_version=22.04&target_type=runfile_local
+    - [CUDA 11.8](https://developer.nvidia.com/cuda-11-8-0-download-archive?target_os=Linux&target_arch=x86_64&Distribution=Ubuntu&target_version=22.04&target_type=runfile_local)
     - Follow the provided commads **(Same as the ones provided link)**
 
         ```shell
@@ -65,7 +65,9 @@
 
             ![CUDA Version Test](https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/imgs/cuda.png)
 
-<br><br>
+If **nvidia-smi** and **nvcc --version** commands are working, then you're all set.
+
+<br>
 
 # VScode (Just For Developing Codes)
 
