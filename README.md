@@ -14,11 +14,9 @@ This repository belongs to the Smart IDC Lab (supervised by Dr. Aladdin Alwisy -
 
 <br>
 
-        ```shell
         sudo add-apt-repository ppa:graphics-drivers/ppa
         sudo apt update
         ubuntu-drivers devices
-        ```
 
 <br>
 
