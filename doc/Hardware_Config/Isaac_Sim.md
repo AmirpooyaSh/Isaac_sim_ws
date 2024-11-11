@@ -13,6 +13,11 @@ For the purpose of this research project, Isaac Sim 4.2.0 has been selected. The
     ```shell
     sudo chmod 777 omniverse-launcher-linux.AppImage
     ```
+- Install FUSE:
+
+    ```shell
+    sudo apt update && sudo apt install libfuse2
+    ```
 
 - Double Click on it to launch the OmniverLauncher
 

@@ -11,7 +11,7 @@ Therefore, to use any additional library in Isaac Sim, it's essential to install
 As a rule of thump, Isaac Sim's virtual environment is going to be set as **"omni_python"** from now on, and it should be set in the **~/.bashrc** file by executing the below command:
 
 ```shell
-echo "alias omni_python='~/.local/share/ov/pkg/isaac_sim-4.0.0/python.sh'" >> ~/.bashrc
+echo "alias omni_python='~/.local/share/ov/pkg/isaac-sim-4.2.0/python.sh'" >> ~/.bashrc
 ```
 <br>
 
@@ -21,7 +21,9 @@ echo "alias omni_python='~/.local/share/ov/pkg/isaac_sim-4.0.0/python.sh'" >> ~/
 
     ```shell
     sudo apt install git-lfs
+    source ~/.bashrc
     omni_python -m pip install tomli wheel ninja
+    omni_python -m pip install --upgrade pip
     ```
 - Clone and Install CuRobo:
 
