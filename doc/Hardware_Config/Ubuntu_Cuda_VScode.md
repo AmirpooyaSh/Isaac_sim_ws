@@ -44,7 +44,7 @@
         - Through the installation process, make sure to hit **Continue** instead of Abort and uncheck the installation of NVIDIA Driver **520.61.05**
         - The suggesting NVIDIA Driver **(520.61.05)** is providing an outdated installation which can lead into **Ubuntu Boot Problems** if you install it
         <br>
-        ![CUDA_TK](https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/imgs/cuda_tk_install.png)
+        - ![CUDA_TK](https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/imgs/cuda_tk_install.png)
     - Open ~/.bashrc by:
 
         ```shell
