@@ -6,7 +6,7 @@ This repository belongs to the Smart IDC Lab (supervised by Dr. Aladdin Alwisy -
 - CUDA = 11.8
 - NVIDIA GPU (Your device's GPU should be able to run on NVIDIA Driver >= 450.80.02)
 
-            ![GPU Capability](https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/imgs/gpu_capability.png)
+    -   -   ![GPU Capability](https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/imgs/gpu_capability.png)
 
 
     - To make sure, you can run the command below and check for the availability:
