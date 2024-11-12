@@ -681,7 +681,10 @@ def parallel_movement(
         target_orientation = np.array(Goal_List_Orientation[idx][:4], dtype=float).reshape(4)
 
         # Call plan with the correctly shaped pose and orientation
-        robots[idx].plan(target_pose, target_orientation)
+        robots[idx].plan(tcp_name="tool1",
+                         target_pose=target_pose,
+                         target_orientation= target_orientation)
+        print("ROBOT_" + robots[idx]._ROS_JS_robot_indicator + "Path Waypoints:" + str(len(robots[idx]._computed_cmd_plan.position)))
 
     cmd_idx = 0
     while cmd_idx < len(robots[Rob_idx_list[0]]._computed_cmd_plan.position):
@@ -758,11 +761,11 @@ def main():
         robots[0].plan(target_pose=np.array([-0.49, -1.54, 0.44]),
                                 target_orientation=np.array([quat[0], quat[1], quat[2], quat[3]]))
         
-        robots[1].plan(target_pose=np.array([-0.022, -1.85, 0.57]),
-                        target_orientation=np.array([quat_test[0], quat_test[1], quat_test[2], quat_test[3]]))
+        # robots[1].plan(target_pose=np.array([-0.022, -1.85, 0.57]),
+        #                 target_orientation=np.array([quat_test[0], quat_test[1], quat_test[2], quat_test[3]]))
         
         robots[0].render_exec(renderInstance=True)
-        robots[1].render_exec(renderInstance=True)
+        # robots[1].render_exec(renderInstance=True)
         
 
         robots[0].plan(target_pose=np.array([0, 1.5, 0.08]),
@@ -771,8 +774,8 @@ def main():
         
         # robots[0].render_exec(renderInstance=True)
 
-        # parallel_movement(Goal_List_Orientation=[np.array([quat[0], quat[1], quat[2], quat[3]]),
-        #                                          np.array([quat_test[0], quat_test[1], quat_test[2], quat_test[3]])])
+        parallel_movement(Goal_List_Orientation=[np.array([quat[0], quat[1], quat[2], quat[3]]),
+                                                 np.array([quat_test[0], quat_test[1], quat_test[2], quat_test[3]])])
 
 
         # 5 Sec of sleep to enable reinitialization
