@@ -356,6 +356,8 @@ class CuRoboRobot(object):
         self._computed_cmd_plan: JointState = None
         self._computed_idx_list = []
 
+        self._world_updater_counter = 0
+
 
     def articulation_controller_init(self, step_index):
         if self._articulation_controller is None:
@@ -428,6 +430,11 @@ class CuRoboRobot(object):
                 # This feature is to be developed (MPC)
             ],
         ).get_collision_check_world()
+
+        # Saving the Updated World !
+        # file_path = "World_For_" + self._ROS_JS_robot_indicator + "_Step_" + str(self._world_updater_counter) + "_.obj"
+        # obstacles.save_world_as_mesh(file_path)
+        # self._world_updater_counter += 1
 
         self._motion_gen.update_world(obstacles)
         print("Updated World")
@@ -705,7 +712,7 @@ def parallel_movement(
         cmd_idx += 1
 
 # Timer to check for updating the 
-cc_world_step_updater = 100
+cc_world_step_updater = 200
 
 def mpc_movement(
     Rob_idx_list: List[int] = [0, 1],
