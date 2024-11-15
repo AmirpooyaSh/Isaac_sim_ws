@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Created by Amirpooya Shirazi -->
+
+<!-- Smart Conveyor V1 -->
+<robot name="Smart_Conveyor">
+
+    <!-- Box -->
+    <link name="box_set_link">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+            <box size="0.1 0.1 0.025"/>
+            </geometry>      
+            <material name="">
+                <color rgba="0 0 0 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+            <box size="0.1 0.1 0.025"/>
+            </geometry>
+        </collision>
+    </link>
+
+
+    <!-- Smart Conveyor Base Track -->
+    <link name="base_link">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="/home/apshirazi/Isaac_sim_ws/smart_conveyor/Conv_Base.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+            <material name="">
+                <color rgba="1 1 1 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="/home/apshirazi/Isaac_sim_ws/smart_conveyor/Conv_Base.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <!-- Robot to Box -->
+    <joint name="rob_to_box" type="fixed">
+        <origin xyz="0 0 0.2" rpy="1.57 0 0" />
+        <parent link="box_set_link" />
+        <child link="base_link" />
+        <axis xyz="0 0 0"/>
+    </joint>
+
+    <!-- Robotic Track -->
+    <link name="track_link">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="/home/apshirazi/Isaac_sim_ws/smart_conveyor/Robotic_Track.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+            <material name="">
+                <color rgba="1 1 1 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="/home/apshirazi/Isaac_sim_ws/smart_conveyor/Robotic_Track.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <!-- Robotic Track to Base Link -->
+    <joint name="track_to_base" type="fixed">
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <parent link="base_link" />
+        <child link="track_link" />
+        <axis xyz="0 0 0"/>
+    </joint>
+
+    <!-- Robotic Track -->
+    <link name="Link_1">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="/home/apshirazi/Isaac_sim_ws/smart_conveyor/Belt_Base.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+            <material name="">
+                <color rgba="1 1 1 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="/home/apshirazi/Isaac_sim_ws/smart_conveyor/Belt_Base.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <!-- Robotic Track to Base Link -->
+    <joint name="Joint_1" type="prismatic">
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <parent link="track_link" />
+        <child link="Link_1" />
+        <axis xyz="0 0 -1"/>
+        <limit effort="100" lower="0" upper="20" velocity="10"/>
+    </joint>
+
+    <!-- Robotic Track Surface -->
+    <link name="Link_2">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="/home/apshirazi/Isaac_sim_ws/smart_conveyor/Belt_Surface.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+            <material name="">
+                <color rgba="1 1 1 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="/home/apshirazi/Isaac_sim_ws/smart_conveyor/Belt_Surface.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <!-- Robotic Track Surface to Base -->
+    <joint name="Joint_2" type="prismatic">
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <parent link="Link_1" />
+        <child link="Link_2" />
+        <axis xyz="0 1 0"/>
+        <limit effort="100" lower="0" upper="20" velocity="10"/>
+    </joint>
+   
+</robot>

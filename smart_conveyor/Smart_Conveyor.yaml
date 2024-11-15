@@ -1,0 +1,35 @@
+robot_cfg:
+    kinematics:
+        usd_path: "/home/apshirazi/Isaac_sim_ws/smart_conveyor/smart_conv.usd"
+        usd_robot_root: "/robot"
+        isaac_usd_path: ""
+        usd_flip_joints: {}
+        usd_flip_joint_limits: []
+
+        urdf_path: "/home/apshirazi/Isaac_sim_ws/smart_conveyor/smart_conv.urdf"
+        asset_root_path: "/home/apshirazi/Isaac_sim_ws/smart_conveyor"
+
+        base_link: "base_link"
+        ee_link: "Link_2"
+        link_names: null
+        lock_joints: null
+        extra_links: null
+
+
+        collision_link_names: null # List[str]
+        collision_spheres: null #
+        collision_sphere_buffer: 0.005
+        extra_collision_spheres: {}
+        self_collision_ignore: null # Dict[str, List[str]]
+        self_collision_buffer: null # Dict[str, float]
+
+        use_global_cumul: True
+        mesh_link_names: null # List[str]
+
+        cspace:
+            joint_names: ['Joint_1', 'Joint_2']
+            retract_config:  [0, 0]
+            null_space_weight:  [1.0, 1.0]
+            cspace_distance_weight: [1.0, 1.0]
+            max_jerk: 100.0
+            max_acceleration: 15.0
