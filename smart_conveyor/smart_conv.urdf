@@ -39,14 +39,14 @@
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <mesh filename="/home/apshirazi/Isaac_sim_ws/smart_conveyor/Conv_Base.stl" scale="0.001 0.001 0.001"/>
+                <mesh filename="/home/apshirazi/Isaac_sim_ws/smart_conveyor/collision/Conv_Base_Coll.stl" scale="0.001 0.001 0.001"/>
             </geometry>
         </collision>
     </link>
 
     <!-- Robot to Box -->
     <joint name="rob_to_box" type="fixed">
-        <origin xyz="0 0 0.2" rpy="1.57 0 0" />
+        <origin xyz="0 0 0.2" rpy="1.57 0 1.57" />
         <parent link="box_set_link" />
         <child link="base_link" />
         <axis xyz="0 0 0"/>
@@ -66,7 +66,7 @@
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <mesh filename="/home/apshirazi/Isaac_sim_ws/smart_conveyor/Robotic_Track.stl" scale="0.001 0.001 0.001"/>
+                <mesh filename="/home/apshirazi/Isaac_sim_ws/smart_conveyor/collision/Robotic_Track_Coll.stl" scale="0.001 0.001 0.001"/>
             </geometry>
         </collision>
     </link>
@@ -93,7 +93,7 @@
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <mesh filename="/home/apshirazi/Isaac_sim_ws/smart_conveyor/Belt_Base.stl" scale="0.001 0.001 0.001"/>
+                <mesh filename="/home/apshirazi/Isaac_sim_ws/smart_conveyor/collision/Belt_Base_Coll.stl" scale="0.001 0.001 0.001"/>
             </geometry>
         </collision>
     </link>
@@ -104,7 +104,7 @@
         <parent link="track_link" />
         <child link="Link_1" />
         <axis xyz="0 0 -1"/>
-        <limit effort="100" lower="0" upper="20" velocity="10"/>
+        <limit effort="100" lower="0" upper="4.55" velocity="10"/>
     </joint>
 
     <!-- Robotic Track Surface -->
@@ -121,7 +121,7 @@
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <mesh filename="/home/apshirazi/Isaac_sim_ws/smart_conveyor/Belt_Surface.stl" scale="0.001 0.001 0.001"/>
+                <mesh filename="/home/apshirazi/Isaac_sim_ws/smart_conveyor/collision/Belt_Surface.stl" scale="0.001 0.001 0.001"/>
             </geometry>
         </collision>
     </link>
@@ -132,7 +132,7 @@
         <parent link="Link_1" />
         <child link="Link_2" />
         <axis xyz="0 1 0"/>
-        <limit effort="100" lower="0" upper="20" velocity="10"/>
+        <limit effort="100" lower="0" upper="0.5" velocity="10"/>
     </joint>
    
 </robot>
