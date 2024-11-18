@@ -33,14 +33,14 @@ cspace_to_urdf_rules:
 
 collision_spheres:
   - base_link:
-    - "center": [-0.001, 0.001, -1.417]
+    - "center": [0.0, 0.0, 0.0]
       "radius": 0.1
   - track_link:
-    - "center": [-0.001, 0.001, -0.897]
+    - "center": [0.0, 0.0, -0.457]
       "radius": 0.1
   - Link_1:
-    - "center": [0.002, -0.002, 1.909]
+    - "center": [0.0, 0.001, -0.755]
       "radius": 0.1
   - Link_2:
-    - "center": [0.002, -0.002, 2.554]
+    - "center": [0.0, 0.001, -1.46]
       "radius": 0.1

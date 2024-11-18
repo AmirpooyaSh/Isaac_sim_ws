@@ -202,9 +202,9 @@ class WorldManager(object):
         #     color=[0.87, 0.72, 0.53, 1]
         # )
 
-        # Excluded models : Conveyors : NewConvn1_V2, NewConvn2_V2
+        # Excluded models : Conveyors : NewConvn1_V2, NewConvn2_V2, MatTable_3Level, MatTable_6Level, MatTable_tilted, NewSheathingRack
         world_model = WorldConfig(
-            mesh=[MatTable_3Level, MatTable_6Level, MatTable_tilted, NewSheathingRack],
+            mesh=[],
             cuboid=[],
             capsule=[],
             cylinder=[],
@@ -385,8 +385,8 @@ class CuRoboRobot(object):
         # Creating and Warming Up the MotionGen
         self._r_conf_name = r_conf_name
 
-        # 11/05/2024 Commented for Test (Shouldn't Be)
-        self.motion_gen_warmup()
+        # 11/17/2024 Commented for Test (Shouldn't Be)
+        # self.motion_gen_warmup()
 
         self._spheres = None
 
@@ -459,33 +459,34 @@ class CuRoboRobot(object):
     def plan(self,
                         tcp_name: str = "tool1",
                         target_pose: np.array = [0, 0, 0],
-                        target_orientation: np.array = [1, 0, 0, 0]):
+                        target_orientation: np.array = [1, 0, 0, 0],
+                        update_world_needed: bool = True):
                 
         # A New Approach to Avoid CUDA Memory Occupation:
+        if(update_world_needed):
+            # 1. Get an Update of the Collision World for the Robot:
+            print("Updating world, reading w.r.t.", self._robot_prim_path)
+            obstacles = self._temp_world_manager._usd_help.get_obstacles_from_stage(
+                reference_prim_path=self._robot_prim_path,
+                ignore_substring=[
+                    self._robot_prim_path,
+                    "/World/defaultGroundPlane",
+                    # Other Robot's Prim Path Should also be Ignored !
+                    # This feature is to be developed (MPC)
+                ],
+            ).get_collision_check_world()
 
-        # 1. Get an Update of the Collision World for the Robot:
-        print("Updating world, reading w.r.t.", self._robot_prim_path)
-        obstacles = self._temp_world_manager._usd_help.get_obstacles_from_stage(
-            reference_prim_path=self._robot_prim_path,
-            ignore_substring=[
-                self._robot_prim_path,
-                "/World/defaultGroundPlane",
-                # Other Robot's Prim Path Should also be Ignored !
-                # This feature is to be developed (MPC)
-            ],
-        ).get_collision_check_world()
+            # Saving the Updated World !
+            # file_path = "World_For_" + self._ROS_JS_robot_indicator + "_Step_" + str(self._world_updater_counter) + ".obj"
+            # obstacles.save_world_as_mesh(file_path)
+            # self._world_updater_counter += 1
 
-        # Saving the Updated World !
-        # file_path = "World_For_" + self._ROS_JS_robot_indicator + "_Step_" + str(self._world_updater_counter) + "_.obj"
-        # obstacles.save_world_as_mesh(file_path)
-        # self._world_updater_counter += 1
+            self._motion_gen.update_world(obstacles)
+            print("Updated World")
 
-        self._motion_gen.update_world(obstacles)
-        print("Updated World")
-
-        self._temp_world_manager._my_world.step(render=True)
-        
-        carb.log_info("Synced CuRobo world from stage for Robot : " + self._r_conf_name)
+            self._temp_world_manager._my_world.step(render=True)
+            
+            carb.log_info("Synced CuRobo world from stage for Robot : " + self._r_conf_name)
 
         result: MotionGenResult = None
         succ = None
@@ -589,7 +590,24 @@ class CuRoboRobot(object):
         
     def tcp_attach(self,
                    robot_name: str = "IRB6620_R1",
-                   tcp_name: str = "T1"):NewConvn2_V2
+                   tcp_name: str = "T1"):
+        # Close
+        og.Controller.set(og.Controller.attribute("/action_graph_"+robot_name+"_"+tcp_name+"/close_tick.state:enableImpulse"), True)
+    
+    def tcp_detach(self,
+                   robot_name: str = "IRB6620_R1",
+                   tcp_name: str = "T1"):
+        # Open
+        og.Controller.set(og.Controller.attribute("/action_graph_"+robot_name+"_"+tcp_name+"/open_tick.state:enableImpulse"), True)
+        
+    # def ros_js_publisher(self, event):
+    #     r=1
+    #     try:
+    #         # Check if the simulation is running and playing
+    #         if self._temp_world_manager._my_world.is_playing() and (self._temp_world_manager._my_world.current_time_step_index > 20):
+    #             # self._temp_world_manager._my_world.step(render=False)
+    #             sim_js = self._robot.get_joints_state()
+    #             sim_js_names = self._robot.dof_names
     #             # Check for NaN values
     #             if np.any(np.isnan(sim_js.positions)):
     #                 log_error("Can't Publish JointState for Robot: " + self._js_working_name)
@@ -608,6 +626,7 @@ class CuRoboRobot(object):
 
         # except Exception as e:
             # rospy.logwarn(f"Error publishing joint state: {e}")
+
 
 
 test = WorldManager()
@@ -643,7 +662,7 @@ conveyors = [
     # Smart Conveyor
     CuRoboConv(working_world=test,
                Conv_Name="Smart_Conveyor",
-               pose=[2.3, 4.5, 0],
+               pose=[2.3, -4.5, 0],
                w_dir="/home/apshirazi/Isaac_sim_ws/smart_conveyor",
                c_conf_name="Smart_Conveyor.yaml")
 ]
@@ -846,19 +865,21 @@ def main():
         quat_test= euler_to_quat(np.pi, 0, 0)
         quat_2= euler_to_quat(np.pi/2, 0, np.pi)
 
-        robots[0].plan(target_pose=np.array([-0.49, -1.54, 0.44]),
-                                target_orientation=np.array([quat[0], quat[1], quat[2], quat[3]]))
+        # robots[0].plan(target_pose=np.array([-0.49, -1.54, 0.44]),
+        #                         target_orientation=np.array([quat[0], quat[1], quat[2], quat[3]]),
+        #                         update_world_needed=True)
         
         # robots[1].plan(target_pose=np.array([-0.022, -1.85, 0.57]),
         #                 target_orientation=np.array([quat_test[0], quat_test[1], quat_test[2], quat_test[3]]))
         
-        robots[0].render_exec(renderInstance=True)
+        # robots[0].render_exec(renderInstance=True)
         # robots[1].render_exec(renderInstance=True)
         
 
-        robots[0].plan(target_pose=np.array([0, 1.5, 0.08]),
-                                target_orientation=np.array([quat_2[0], quat_2[1], quat_2[2], quat_2[3]]))
-        robots[0].render_exec(renderInstance=True)
+        # robots[0].plan(target_pose=np.array([0, 1.5, 0.08]),
+        #                         target_orientation=np.array([quat_2[0], quat_2[1], quat_2[2], quat_2[3]]),
+        #                         update_world_needed=False)
+        # robots[0].render_exec(renderInstance=True)
         
         # robots[0].render_exec(renderInstance=True)
 
@@ -869,7 +890,13 @@ def main():
         # 5 Sec of sleep to enable reinitialization
         # rospy.sleep(5)
         # rospy.spin()
-    
+
+        # obstacles = test._usd_help.get_obstacles_from_stage().get_collision_check_world()
+
+        # # Saving the Updated World !
+        # file_path = "World_For.obj"
+        # obstacles.save_world_as_mesh(file_path)
+        # time.sleep(500)
 
 if __name__ == "__main__":
     main()

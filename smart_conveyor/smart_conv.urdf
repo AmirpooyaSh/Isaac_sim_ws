@@ -46,7 +46,7 @@
 
     <!-- Robot to Box -->
     <joint name="rob_to_box" type="fixed">
-        <origin xyz="0 0 0.2" rpy="1.57 0 1.57" />
+        <origin xyz="0 0 0.2" rpy="1.57 0 0" />
         <parent link="box_set_link" />
         <child link="base_link" />
         <axis xyz="0 0 0"/>
