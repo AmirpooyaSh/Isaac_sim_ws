@@ -678,6 +678,8 @@ test = WorldManager()
 robots = [
     # IRB6620_R1
     CuRoboRobot(working_world=test, 
+                R_Name="IRB6620_R1",
+                pose=[0,0,0.025],
                 input_tool="tool1", 
                 w_dir="home/apshirazi/Isaac_sim_ws/robot", 
                 r_conf_name="IRB6620_Config.yaml",
@@ -690,7 +692,7 @@ robots = [
     # IRB6620_R2
     CuRoboRobot(working_world=test,
                 R_Name="IRB6620_R2",
-                pose=[4.6, 0, 0],
+                pose=[4.6, 0, 0.025],
                 input_tool="tool1",
                 w_dir="home/apshirazi/Isaac_sim_ws/robot_2",
                 r_conf_name="IRB6620_Config.yaml",
@@ -862,22 +864,22 @@ def main():
     # for robot in robots:
         # robot._js_pub_interval = rospy.Timer(rospy.Duration(10.0 / publish_rate), robot.ros_js_publisher)
 
-    SheathingPlate = Cuboid(
-        name="SheathingPlate",
-        pose=[-1.8, -2.1, 0.37, 1, 0, 0, 0],
-        dims=[3, 1.5, 0.015],
-        color=[0.87, 0.72, 0.53, 1]
-    )
+    # SheathingPlate = Cuboid(
+    #     name="SheathingPlate",
+    #     pose=[-1.8, -2.1, 0.37, 1, 0, 0, 0],
+    #     dims=[3, 1.5, 0.015],
+    #     color=[0.87, 0.72, 0.53, 1]
+    # )
 
     # Creating Surf Gripper Test Object
-    Test_Obj = Cuboid(
-        name="SG_Tester",
-        pose=[2.16, -2.5, 1.3, 1.0, 0, 0, 0],
-        dims=[0.5, 0.5, 0.5]
-    )
-    Add_Rigid_Object_To_Scene(test, "Cuboid", Test_Obj)
+    # Test_Obj = Cuboid(
+    #     name="SG_Tester",
+    #     pose=[2.16, -2.5, 1.3, 1.0, 0, 0, 0],
+    #     dims=[0.5, 0.5, 0.5]
+    # )
+    # Add_Rigid_Object_To_Scene(test, "Cuboid", Test_Obj)
 
-    Add_Rigid_Object_To_Scene(test, "Cuboid", SheathingPlate)
+    # Add_Rigid_Object_To_Scene(test, "Cuboid", SheathingPlate)
 
 
     while simulation_app.is_running():
