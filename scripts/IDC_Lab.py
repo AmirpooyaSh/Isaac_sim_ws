@@ -256,6 +256,41 @@ class CuRoboConv(object):
                 values=np.array([5000 for i in range(len(idx_list))]), joint_indices=idx_list
             )
 
+    def render_exec(self,
+                    target_joint_states: List = [2.0,0.5]):
+        print("Joint numbers/limits should not missmatch the target conveyor, or the program will crash")
+
+        self._temp_world_manager._my_world.step(render=True)
+        print("+++++++++++++++++++++++++++++++++++")
+        print(self._robot.get_joint_positions())
+        print("+++++++++++++++++++++++++++++++++++")
+        print(self._robot.dof_names)
+        print("+++++++++++++++++++++++++++++++++++")
+        print(self._robot.get_joint_velocities())
+
+        joint_idx = 0
+        # Creating an implementing Pose Matrix
+        pose_matrix = self._robot.get_joint_positions()
+
+        while joint_idx < len(target_joint_states):
+            print("Next Joint")
+
+            pose_descreter = (target_joint_states[joint_idx] - self._robot.get_joint_positions()[joint_idx]) / 100
+            desired_pose = self._robot.get_joint_positions()[joint_idx]
+
+            while (abs(desired_pose - target_joint_states[joint_idx]) > 2e-4):
+                self._temp_world_manager._my_world.step(render=True)
+                desired_pose += pose_descreter
+                pose_matrix[joint_idx] = desired_pose
+
+                art_action = ArticulationAction(
+                    joint_positions=pose_matrix
+                )
+                print(art_action)
+                self._articulation_controller.apply_action(art_action)
+                time.sleep(0.01)
+            joint_idx += 1
+
 class CuRoboRobot(object):
     def __init__(self,
                  working_world: WorldManager,
@@ -416,7 +451,8 @@ class CuRoboRobot(object):
                 values=np.array([5000 for i in range(len(idx_list))]), joint_indices=idx_list
             )
 
-    def motion_gen_warmup(self):
+    def motion_gen_warmup(self,
+                          TCP_Name: str = None):
         # Default Parameters
         trajopt_dt = None
         optimize_dt = False
@@ -426,10 +462,14 @@ class CuRoboRobot(object):
         interpolation_dt = 0.05
         enable_finetune_trajopt = False
         # MotionGen StartUp
-        r_cfg_path = "/" + self._robot_cfg_path + "/" + self._r_conf_name
-        print(r_cfg_path)
+
+        # This means that there is no need to change the current TCP Config
+        if TCP_Name != None:
+            self._robot_cfg["kinematics"]["ee_link"] = TCP_Name
+        
+        # Creating MotionGenConfig after updating the TCP !
         self._motion_gen_config = MotionGenConfig.load_from_robot_config(
-            r_cfg_path,
+            self._robot_cfg,
             self._temp_world_manager.init_world_model(),
             self._tensor_args,
             collision_checker_type=CollisionCheckerType.MESH,
@@ -461,7 +501,11 @@ class CuRoboRobot(object):
                         target_pose: np.array = [0, 0, 0],
                         target_orientation: np.array = [1, 0, 0, 0],
                         update_world_needed: bool = True):
-                
+        
+        # Updating MotionGenConfig if there is any new TCP Being Used
+        if tcp_name != self._robot_cfg["kinematics"]["ee_link"]:
+            self.motion_gen_warmup(TCP_Name=tcp_name)
+
         # A New Approach to Avoid CUDA Memory Occupation:
         if(update_world_needed):
             # 1. Get an Update of the Collision World for the Robot:
@@ -722,10 +766,10 @@ def Add_Rigid_Object_To_Scene(World_Manager: WorldManager,
     # Adding a Small Positive Mass to Avoid Robot's Effort Calculation using CuRobo
     Mass_Succ = Obj_Prim.GetAttribute("physics:mass").Set(0.0001)
     # Disabling Gravity
-    Dis_Grav = Obj_Prim.GetAttribute("physxRigidBody:disableGravity").Set(True)
+    # Dis_Grav = Obj_Prim.GetAttribute("physxRigidBody:disableGravity").Set(True)
 
     print("For Obj (" + obj.name + ") Mass Creation : " + str(Mass_Succ))
-    print("For Obj (" + obj.name + ") DisableGravity Creation : " + str(Dis_Grav))
+    # print("For Obj (" + obj.name + ") DisableGravity Creation : " + str(Dis_Grav))
 
 def parallel_movement(
     Rob_idx_list: List[int] = [0, 1],
@@ -826,12 +870,12 @@ def main():
     )
 
     # Creating Surf Gripper Test Object
-    # Test_Obj = Cuboid(
-    #     name="SG_Tester",
-    #     pose=[2.16, 0.197, 1.66, 1.0, 0, 0, 0],
-    #     dims=[0.5, 0.5, 0.5]
-    # )
-    # Add_Rigid_Object_To_Scene(test, "Cuboid", Test_Obj)
+    Test_Obj = Cuboid(
+        name="SG_Tester",
+        pose=[2.16, -2.5, 1.3, 1.0, 0, 0, 0],
+        dims=[0.5, 0.5, 0.5]
+    )
+    Add_Rigid_Object_To_Scene(test, "Cuboid", Test_Obj)
 
     Add_Rigid_Object_To_Scene(test, "Cuboid", SheathingPlate)
 
@@ -865,6 +909,7 @@ def main():
         quat_test= euler_to_quat(np.pi, 0, 0)
         quat_2= euler_to_quat(np.pi/2, 0, np.pi)
 
+
         # robots[0].plan(target_pose=np.array([-0.49, -1.54, 0.44]),
         #                         target_orientation=np.array([quat[0], quat[1], quat[2], quat[3]]),
         #                         update_world_needed=True)
@@ -897,6 +942,9 @@ def main():
         # file_path = "World_For.obj"
         # obstacles.save_world_as_mesh(file_path)
         # time.sleep(500)
+        # time.sleep(2)
+        # conveyors[0].render_exec([4.0,0.2])
+        # conveyors[0].render_exec([0,0])
 
 if __name__ == "__main__":
     main()

@@ -121,7 +121,7 @@
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <mesh filename="/home/apshirazi/Isaac_sim_ws/smart_conveyor/collision/Belt_Surface.stl" scale="0.001 0.001 0.001"/>
+                <mesh filename="/home/apshirazi/Isaac_sim_ws/smart_conveyor/collision/Belt_Surf_CH.stl" scale="0.001 0.001 0.001"/>
             </geometry>
         </collision>
     </link>
