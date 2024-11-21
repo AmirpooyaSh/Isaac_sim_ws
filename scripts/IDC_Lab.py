@@ -257,39 +257,30 @@ class CuRoboConv(object):
             )
 
     def render_exec(self,
-                    target_joint_states: List = [2.0,0.5]):
-        print("Joint numbers/limits should not missmatch the target conveyor, or the program will crash")
-
-        self._temp_world_manager._my_world.step(render=True)
-        print("+++++++++++++++++++++++++++++++++++")
-        print(self._robot.get_joint_positions())
-        print("+++++++++++++++++++++++++++++++++++")
-        print(self._robot.dof_names)
-        print("+++++++++++++++++++++++++++++++++++")
-        print(self._robot.get_joint_velocities())
-
+                    joint_name: str = 'Joint_1',
+                    joint_goal: float = 1.5):
+        # Need To Be FIXED
         joint_idx = 0
-        # Creating an implementing Pose Matrix
+        j_s = self._robot.dof_names
+        for joint in j_s:
+            print(joint + " != " + joint_name)
+            if joint == joint_name:
+                break
+            joint_idx +=1
+        
         pose_matrix = self._robot.get_joint_positions()
+        pose_descreter = (joint_goal - pose_matrix[joint_idx]) / 100
+        desired_pose = pose_matrix[joint_idx]
+        while (abs(desired_pose - joint_goal) < 2e-4):
+            self._temp_world_manager._my_world.step(render=True)
+            desired_pose += pose_descreter
+            pose_matrix[joint_idx] = desired_pose
 
-        while joint_idx < len(target_joint_states):
-            print("Next Joint")
-
-            pose_descreter = (target_joint_states[joint_idx] - self._robot.get_joint_positions()[joint_idx]) / 100
-            desired_pose = self._robot.get_joint_positions()[joint_idx]
-
-            while (abs(desired_pose - target_joint_states[joint_idx]) > 2e-4):
-                self._temp_world_manager._my_world.step(render=True)
-                desired_pose += pose_descreter
-                pose_matrix[joint_idx] = desired_pose
-
-                art_action = ArticulationAction(
-                    joint_positions=pose_matrix
-                )
-                print(art_action)
-                self._articulation_controller.apply_action(art_action)
-                time.sleep(0.01)
-            joint_idx += 1
+            art_action = ArticulationAction(
+                joint_positions=pose_matrix
+            )
+            self._articulation_controller.apply_action(art_action)
+            time.sleep(0.01)
 
 class CuRoboRobot(object):
     def __init__(self,
@@ -687,7 +678,10 @@ robots = [
                                            ParentLink= "Link_7",
                                            TCP_Name= "T1",
                                            C_Pose= [0.175 , 0.43, 0.52]),
-                            #   Grippers Should be Defined Manually to Create SurfaceGripper Extension !
+                                RobotGripper(RobName= "IRB6620_R1",
+                                             ParentLink= "Link_7",
+                                             TCP_Name= "T0",
+                                             C_Pose= [0.28, 0.3, 0.035])
                                            ]),
     # IRB6620_R2
     CuRoboRobot(working_world=test,
@@ -698,8 +692,8 @@ robots = [
                 r_conf_name="IRB6620_Config.yaml",
                 Gripper_List=[RobotGripper(RobName= "IRB6620_R2",
                                            ParentLink= "Link_7",
-                                           TCP_Name="T1",
-                                           C_Pose=[0, 0, 0]),
+                                           TCP_Name="T0",
+                                           C_Pose=[0.11, -0.45, -0.57]),
                                            ])
     # Add more robots as needed
 ]
@@ -947,6 +941,11 @@ def main():
         # time.sleep(2)
         # conveyors[0].render_exec([4.0,0.2])
         # conveyors[0].render_exec([0,0])
+
+        conveyors[0].render_exec('Joint_1', 4.0)
+        conveyors[0].render_exec('Joint_2', 0.2)
+        conveyors[0].render_exec('Joint_2', 0.0)
+        conveyors[0].render_exec('Joint_1', 0.0)
 
 if __name__ == "__main__":
     main()
