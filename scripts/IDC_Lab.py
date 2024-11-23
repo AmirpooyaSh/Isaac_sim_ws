@@ -5,6 +5,7 @@ simulation_app = SimulationApp({"headless": False}) # we can also run as headles
 
 from omni.isaac.core import World
 import numpy as np
+import math
 
 # Adding mesh to the world (Standalone Format)
 from omni.physx.scripts import utils
@@ -103,14 +104,6 @@ import threading
 # Rate for Publishing ROS Topics from this project !
 publish_rate = 10.0  # Frequency in Hz
 
-General_plan_config = MotionGenPlanConfig(
-    enable_graph=False,
-    enable_graph_attempt=2,
-    max_attempts=1,
-    enable_finetune_trajopt=False,
-    time_dilation_factor=0.5,
-)
-
 # Class Robot Gripper
 class RobotGripper(object):
     def __init__(self,
@@ -155,27 +148,54 @@ class WorldManager(object):
     def world_reset(self):
         self._my_world.reset()
     
+    def quat_transfer_world_generator(self, roll, pitch, yaw):
+        # Convert degrees to radians
+        roll = math.radians(roll)
+        pitch = math.radians(pitch)
+        yaw = math.radians(yaw)
+
+        # Calculate half-angles
+        half_roll = roll / 2
+        half_pitch = pitch / 2
+        half_yaw = yaw / 2
+
+        # Compute cosines and sines of half-angles
+        cos_r = math.cos(half_roll)
+        sin_r = math.sin(half_roll)
+        cos_p = math.cos(half_pitch)
+        sin_p = math.sin(half_pitch)
+        cos_y = math.cos(half_yaw)
+        sin_y = math.sin(half_yaw)
+
+        # Compute quaternion components
+        q_w = cos_r * cos_p * cos_y + sin_r * sin_p * sin_y
+        q_x = sin_r * cos_p * cos_y - cos_r * sin_p * sin_y
+        q_y = cos_r * sin_p * cos_y + sin_r * cos_p * sin_y
+        q_z = cos_r * cos_p * sin_y - sin_r * sin_p * cos_y
+
+        return q_w, q_x, q_y, q_z
+    
     def init_world_model(self):
         cur_dir = "/home/apshirazi/Isaac_sim_ws/"
 
-        MatTable_3Level = Mesh(
-            name="MatTable_3Level",
-            pose=[0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0],
-            file_path= cur_dir + "meshes/MatTable_3Level.stl",
-            scale=[0.001, 0.001, 0.001],
-        )
-        MatTable_6Level = Mesh(
-            name="MatTable_6Level",
-            pose=[0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0],
-            file_path= cur_dir + "meshes/MatTable_6Level.stl",
-            scale=[0.001, 0.001, 0.001],
-        )
-        MatTable_tilted = Mesh(
-            name="MatTable_tilted",
-            pose=[0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0],
-            file_path= cur_dir + "meshes/MatTable_tilted.stl",
-            scale=[0.001, 0.001, 0.001],
-        )
+        # MatTable_3Level = Mesh(
+        #     name="MatTable_3Level",
+        #     pose=[0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0],
+        #     file_path= cur_dir + "meshes/MatTable_3Level.stl",
+        #     scale=[0.001, 0.001, 0.001],
+        # )
+        # MatTable_6Level = Mesh(
+        #     name="MatTable_6Level",
+        #     pose=[0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0],
+        #     file_path= cur_dir + "meshes/MatTable_6Level.stl",
+        #     scale=[0.001, 0.001, 0.001],
+        # )
+        # MatTable_tilted = Mesh(
+        #     name="MatTable_tilted",
+        #     pose=[0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0],
+        #     file_path= cur_dir + "meshes/MatTable_tilted.stl",
+        #     scale=[0.001, 0.001, 0.001],
+        # )
         # NewConvn1_V2 = Mesh(
         #     name="NewConvn1_V2",
         #     pose=[0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0],
@@ -188,12 +208,12 @@ class WorldManager(object):
         #     file_path= cur_dir + "meshes/NewConvn2_V2.stl",
         #     scale=[0.001, 0.001, 0.001],
         # )
-        NewSheathingRack = Mesh(
-            name="NewSheathingRack",
-            pose=[0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0],
-            file_path= cur_dir + "meshes/NewSheathingRack.stl",
-            scale=[0.001, 0.001, 0.001],
-        )
+        # NewSheathingRack = Mesh(
+        #     name="NewSheathingRack",
+        #     pose=[0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0],
+        #     file_path= cur_dir + "meshes/NewSheathingRack.stl",
+        #     scale=[0.001, 0.001, 0.001],
+        # )
 
         # SheathingPlate = Cuboid(
         #     name="SheathingPlate",
@@ -202,9 +222,23 @@ class WorldManager(object):
         #     color=[0.87, 0.72, 0.53, 1]
         # )
 
+        # Smart Material Table
+        Smart_Mat_Table_Quat = self.quat_transfer_world_generator(90, 0, 180)
+
+        Smart_Mat_Table = Mesh(
+            name="Smart_Mat_Table",
+            pose=[-3.0, -0.1, -0.039, Smart_Mat_Table_Quat[0], 
+                                      Smart_Mat_Table_Quat[1],
+                                      Smart_Mat_Table_Quat[2],
+                                      Smart_Mat_Table_Quat[3]],
+            file_path= cur_dir + "smart_table/Smart_Mat_Supply.stl",
+            scale=[0.001, 0.001, 0.001],
+        )
+
+
         # Excluded models : Conveyors : NewConvn1_V2, NewConvn2_V2, MatTable_3Level, MatTable_6Level, MatTable_tilted, NewSheathingRack
         world_model = WorldConfig(
-            mesh=[],
+            mesh=[Smart_Mat_Table],
             cuboid=[],
             capsule=[],
             cylinder=[],
@@ -243,6 +277,9 @@ class CuRoboConv(object):
         # Articulation Controller
         self._articulation_controller: ArticulationController = None
 
+        #Test
+        self._world_updater_counter = 0
+
     def articulation_controller_init(self, step_index):
         if self._articulation_controller is None:
             self._articulation_controller = cast(ArticulationController, self._robot.get_articulation_controller())
@@ -259,22 +296,18 @@ class CuRoboConv(object):
     def render_exec(self,
                     joint_name: str = 'Joint_1',
                     joint_goal: float = 1.5):
-        # Need To Be FIXED
         joint_idx = 0
         j_s = self._robot.dof_names
         for joint in j_s:
-            print(joint + " != " + joint_name)
             if joint == joint_name:
                 break
             joint_idx +=1
         
         pose_matrix = self._robot.get_joint_positions()
         pose_descreter = (joint_goal - pose_matrix[joint_idx]) / 100
-        desired_pose = pose_matrix[joint_idx]
-        while (abs(desired_pose - joint_goal) < 2e-4):
+        while (abs(pose_matrix[joint_idx] - joint_goal) > 2e-4):
             self._temp_world_manager._my_world.step(render=True)
-            desired_pose += pose_descreter
-            pose_matrix[joint_idx] = desired_pose
+            pose_matrix[joint_idx] += pose_descreter
 
             art_action = ArticulationAction(
                 joint_positions=pose_matrix
@@ -702,7 +735,7 @@ conveyors = [
     # Smart Conveyor
     CuRoboConv(working_world=test,
                Conv_Name="Smart_Conveyor",
-               pose=[2.3, -4.5, 0],
+               pose=[2.3, -3.25, 0],
                w_dir="/home/apshirazi/Isaac_sim_ws/smart_conveyor",
                c_conf_name="Smart_Conveyor.yaml")
 ]
@@ -869,7 +902,7 @@ def main():
     # Test_Obj = Cuboid(
     #     name="SG_Tester",
     #     pose=[2.16, -2.5, 1.3, 1.0, 0, 0, 0],
-    #     dims=[0.5, 0.5, 0.5]
+    #     dims=[0.05, 2.0, 0.1]
     # )
     # Add_Rigid_Object_To_Scene(test, "Cuboid", Test_Obj)
 
@@ -937,15 +970,11 @@ def main():
         # # Saving the Updated World !
         # file_path = "World_For.obj"
         # obstacles.save_world_as_mesh(file_path)
-        # time.sleep(500)
-        # time.sleep(2)
-        # conveyors[0].render_exec([4.0,0.2])
-        # conveyors[0].render_exec([0,0])
 
-        conveyors[0].render_exec('Joint_1', 4.0)
-        conveyors[0].render_exec('Joint_2', 0.2)
-        conveyors[0].render_exec('Joint_2', 0.0)
-        conveyors[0].render_exec('Joint_1', 0.0)
+        # conveyors[0].render_exec('Joint_1', 4.0)
+        # conveyors[0].render_exec('Joint_2', 0.2)
+        # conveyors[0].render_exec('Joint_2', 0.0)
+        # conveyors[0].render_exec('Joint_1', 0.0)
 
 if __name__ == "__main__":
     main()
