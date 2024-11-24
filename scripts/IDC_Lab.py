@@ -42,6 +42,8 @@ from curobo.geom.types import WorldConfig, Mesh, Cuboid, Cylinder, Sphere
 from curobo.types.math import Pose
 from curobo.types.robot import JointState
 from curobo.types.state import JointState
+from curobo.geom.sphere_fit import SphereFitType
+
 
 import carb
 
@@ -314,6 +316,21 @@ class CuRoboConv(object):
             )
             self._articulation_controller.apply_action(art_action)
             time.sleep(0.01)
+        
+        # print("Updating world, reading w.r.t.", self._robot_prim_path)
+        # obstacles = self._temp_world_manager._usd_help.get_obstacles_from_stage(
+        #     reference_prim_path=self._robot_prim_path,
+        #     ignore_substring=[
+        #         "/World/defaultGroundPlane",
+        #         # Other Robot's Prim Path Should also be Ignored !
+        #         # This feature is to be developed (MPC)
+        #     ],
+        # ).get_collision_check_world()
+
+        # # Saving the Updated World !
+        # file_path = "Full_Conv_World.obj"
+        # obstacles.save_world_as_mesh(file_path)
+
 
 class CuRoboRobot(object):
     def __init__(self,
@@ -655,19 +672,75 @@ class CuRoboRobot(object):
         self._computed_path_result = None
         self._computed_cmd_plan = None
         self._computed_idx_list = []
-        
-    def tcp_attach(self,
+
+    # Used for Simulation Attach
+    def isaac_tcp_attach(self,
                    robot_name: str = "IRB6620_R1",
                    tcp_name: str = "T1"):
         # Close
         og.Controller.set(og.Controller.attribute("/action_graph_"+robot_name+"_"+tcp_name+"/close_tick.state:enableImpulse"), True)
     
-    def tcp_detach(self,
+    # Used for Simulation Detach
+    def isaac_tcp_detach(self,
                    robot_name: str = "IRB6620_R1",
                    tcp_name: str = "T1"):
         # Open
         og.Controller.set(og.Controller.attribute("/action_graph_"+robot_name+"_"+tcp_name+"/open_tick.state:enableImpulse"), True)
+
+    def eef_attach(self,
+                   r_name: str = "IRB6620_R1",
+                   tool_name: str = "tool0",
+                   attaching_object_name: str = None):
+        if(attaching_object_name == None):
+            print("There should be a valid Object_Name => Attaching Failed")
+            return False
+
+        # Attaching the object withing the simulation to the virtual link (SurfaceGripper Attach)
+        CV_Tool_name = f"T{tool_name[-1]}"
+        self.isaac_tcp_attach(robot_name= r_name,
+                              tcp_name= CV_Tool_name)
         
+        # Attaching the object as spheres to the robot in MotionGen
+        # 2. Getting Current JS
+        sim_js = self._robot.get_joints_state()
+        sim_js_names = self._robot.dof_names
+
+        cu_js = JointState(
+            position=self._tensor_args.to_device(sim_js.positions),
+            velocity=self._tensor_args.to_device(sim_js.velocities) * 0.0,
+            acceleration=self._tensor_args.to_device(sim_js.velocities) * 0.0,
+            jerk=self._tensor_args.to_device(sim_js.velocities) * 0.0,
+            joint_names=sim_js_names,
+        )
+        cu_js = cu_js.get_ordered_joint_state(self._motion_gen.kinematics.joint_names)
+
+        # world_objects_pose_offset: Optional[Pose] = None,\
+        # World Object Pose Offset is a .tensor variable to suite the Pick/Place
+        # It should be read through the documentations before using it !!!
+
+        self._motion_gen.attach_objects_to_robot(
+            joint_state=cu_js,
+            object_names=[attaching_object_name],
+            surface_sphere_radius= 0.001,
+            link_name= tool_name,
+            sphere_fit_type= SphereFitType.VOXEL_VOLUME,
+        )
+    
+    def eef_detach(self,
+                   r_name: str = "IRB6620_R1",
+                   tool_name: str = "tool0"):
+        
+        # Detaching the item from the robot in simulation (SurfaceGripper Action Graph)
+        # Checking for tool prefix for calling the corresponding action graph e.g. => "tool0" => "T0"
+        CV_Tool_name = f"T{tool_name[-1]}"
+        self.isaac_tcp_detach(robot_name= r_name,
+                              tcp_name= CV_Tool_name)
+        
+
+        # Detaching the item from the actual MotionGen object (in CuRobo)
+        # It basically removes the generated sepheres attached to the virtual link (tool0 for example)
+        self._motion_gen.detach_object_from_robot(tool_name)
+     
     # def ros_js_publisher(self, event):
     #     r=1
     #     try:
@@ -971,7 +1044,7 @@ def main():
         # file_path = "World_For.obj"
         # obstacles.save_world_as_mesh(file_path)
 
-        # conveyors[0].render_exec('Joint_1', 4.0)
+        # conveyors[0].render_exec('Joint_1', 3.0)
         # conveyors[0].render_exec('Joint_2', 0.2)
         # conveyors[0].render_exec('Joint_2', 0.0)
         # conveyors[0].render_exec('Joint_1', 0.0)
