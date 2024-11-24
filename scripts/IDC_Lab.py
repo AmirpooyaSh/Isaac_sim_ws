@@ -238,6 +238,7 @@ class WorldManager(object):
         )
 
 
+        
         # Excluded models : Conveyors : NewConvn1_V2, NewConvn2_V2, MatTable_3Level, MatTable_6Level, MatTable_tilted, NewSheathingRack
         world_model = WorldConfig(
             mesh=[Smart_Mat_Table],
@@ -327,7 +328,7 @@ class CuRoboConv(object):
         #     ],
         # ).get_collision_check_world()
 
-        # # Saving the Updated World !
+        # Saving the Updated World !
         # file_path = "Full_Conv_World.obj"
         # obstacles.save_world_as_mesh(file_path)
 
