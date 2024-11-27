@@ -31,7 +31,7 @@ robot_cfg:
 
         # Don't Ever Touch This !!!!
         collision_sphere_buffer: 0.005
-        extra_collision_spheres: {}
+        extra_collision_spheres: {"tool0": 100}
         self_collision_ignore: {
           "base_link": ["Link_1", "Link_2", "Link_3", "Link_4", "Link_5", "Link_6", "Link_8"],
           "Link_1": ["Link_2", "Link_3", "Link_4", "Link_5", "Link_6", "Link_8"],

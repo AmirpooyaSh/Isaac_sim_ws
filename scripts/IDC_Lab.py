@@ -463,7 +463,7 @@ class CuRoboRobot(object):
         self._r_conf_name = r_conf_name
 
         # 11/17/2024 Commented for Test (Shouldn't Be)
-        # self.motion_gen_warmup()
+        self.motion_gen_warmup()
 
         self._spheres = None
 
@@ -677,14 +677,38 @@ class CuRoboRobot(object):
     # Used for Simulation Attach
     def isaac_tcp_attach(self,
                    robot_name: str = "IRB6620_R1",
-                   tcp_name: str = "T1"):
+                   tcp_name: str = "T1",
+                   obj_name: str = "Test_1"):
+        
+        # Adding Object Attributes to make the Surface Gripper Attach the Object to it!
+        Obj_Prim = self._temp_world_manager._stage.GetPrimAtPath("/world/obstacles/" + obj_name)
+        
+        # Adding RigidBody
+        execute("AddPhysicsComponentCommand",
+                              usd_prim=Obj_Prim,
+                              component="PhysicsRigidBodyAPI")
+        # Adding Colliders
+        execute("AddPhysicsComponentCommand",
+                              usd_prim=Obj_Prim,
+                              component="PhysicsCollisionAPI")
         # Close
         og.Controller.set(og.Controller.attribute("/action_graph_"+robot_name+"_"+tcp_name+"/close_tick.state:enableImpulse"), True)
+
+        # Adding Colliders
+        execute("AddPhysicsComponentCommand",
+                              usd_prim=Obj_Prim,
+                              component="PhysicsMassAPI")
+
+        # Adding a Small Positive Mass to Avoid Robot's Effort Calculation using CuRobo
+        Mass_Succ = Obj_Prim.GetAttribute("physics:mass").Set(0.0001)
+        # Disabling Gravity
+        Dis_Grav = Obj_Prim.GetAttribute("physxRigidBody:disableGravity").Set(True)
     
     # Used for Simulation Detach
     def isaac_tcp_detach(self,
                    robot_name: str = "IRB6620_R1",
-                   tcp_name: str = "T1"):
+                   tcp_name: str = "T1",
+                   obj_name: str = None):
         # Open
         og.Controller.set(og.Controller.attribute("/action_graph_"+robot_name+"_"+tcp_name+"/open_tick.state:enableImpulse"), True)
 
@@ -699,7 +723,8 @@ class CuRoboRobot(object):
         # Attaching the object withing the simulation to the virtual link (SurfaceGripper Attach)
         CV_Tool_name = f"T{tool_name[-1]}"
         self.isaac_tcp_attach(robot_name= r_name,
-                              tcp_name= CV_Tool_name)
+                              tcp_name= CV_Tool_name,
+                              obj_name=attaching_object_name)
         
         # Attaching the object as spheres to the robot in MotionGen
         # 2. Getting Current JS
@@ -722,20 +747,22 @@ class CuRoboRobot(object):
         self._motion_gen.attach_objects_to_robot(
             joint_state=cu_js,
             object_names=[attaching_object_name],
-            surface_sphere_radius= 0.001,
+            surface_sphere_radius= 0.005,
             link_name= tool_name,
             sphere_fit_type= SphereFitType.VOXEL_VOLUME,
         )
     
     def eef_detach(self,
                    r_name: str = "IRB6620_R1",
-                   tool_name: str = "tool0"):
+                   tool_name: str = "tool0",
+                   detaching_object_name: str = None):
         
         # Detaching the item from the robot in simulation (SurfaceGripper Action Graph)
         # Checking for tool prefix for calling the corresponding action graph e.g. => "tool0" => "T0"
         CV_Tool_name = f"T{tool_name[-1]}"
         self.isaac_tcp_detach(robot_name= r_name,
-                              tcp_name= CV_Tool_name)
+                              tcp_name= CV_Tool_name,
+                              obj_name=detaching_object_name)
         
 
         # Detaching the item from the actual MotionGen object (in CuRobo)
@@ -778,7 +805,7 @@ robots = [
     CuRoboRobot(working_world=test, 
                 R_Name="IRB6620_R1",
                 pose=[0,0,0.025],
-                input_tool="tool1", 
+                input_tool="tool0", 
                 w_dir="home/apshirazi/Isaac_sim_ws/robot", 
                 r_conf_name="IRB6620_Config.yaml",
                 Gripper_List=[RobotGripper(RobName= "IRB6620_R1",
@@ -788,7 +815,7 @@ robots = [
                                 RobotGripper(RobName= "IRB6620_R1",
                                              ParentLink= "Link_7",
                                              TCP_Name= "T0",
-                                             C_Pose= [0.28, 0.3, 0.035])
+                                             C_Pose= [0.4, 0, 0.035])
                                            ]),
     # IRB6620_R2
     CuRoboRobot(working_world=test,
@@ -800,7 +827,7 @@ robots = [
                 Gripper_List=[RobotGripper(RobName= "IRB6620_R2",
                                            ParentLink= "Link_7",
                                            TCP_Name="T0",
-                                           C_Pose=[0.11, -0.45, -0.57]),
+                                           C_Pose=[0.11, 0, -0.57]),
                                            ])
     # Add more robots as needed
 ]
@@ -853,25 +880,27 @@ def Add_Rigid_Object_To_Scene(World_Manager: WorldManager,
 
     stage = World_Manager._my_world.stage
 
+    # All the added object are in the prim path of : "/world/obstacles/<OBJ Name>"
     Obj_Prim = stage.GetPrimAtPath(Added_Obj_Prim_Root)
-    # Adding RigidBody
-    execute("AddPhysicsComponentCommand",
-                          usd_prim=Obj_Prim,
-                          component="PhysicsRigidBodyAPI")
-    # Adding Colliders
-    execute("AddPhysicsComponentCommand",
-                          usd_prim=Obj_Prim,
-                          component="PhysicsCollisionAPI")
-    # Adding Colliders
-    execute("AddPhysicsComponentCommand",
-                          usd_prim=Obj_Prim,
-                          component="PhysicsMassAPI")
-    # Adding a Small Positive Mass to Avoid Robot's Effort Calculation using CuRobo
-    Mass_Succ = Obj_Prim.GetAttribute("physics:mass").Set(0.0001)
-    # Disabling Gravity
+
+    # # Adding RigidBody
+    # execute("AddPhysicsComponentCommand",
+    #                       usd_prim=Obj_Prim,
+    #                       component="PhysicsRigidBodyAPI")
+    # # Adding Colliders
+    # execute("AddPhysicsComponentCommand",
+    #                       usd_prim=Obj_Prim,
+    #                       component="PhysicsCollisionAPI")
+    # # Adding Colliders
+    # execute("AddPhysicsComponentCommand",
+    #                       usd_prim=Obj_Prim,
+    #                       component="PhysicsMassAPI")
+    # # Adding a Small Positive Mass to Avoid Robot's Effort Calculation using CuRobo
+    # Mass_Succ = Obj_Prim.GetAttribute("physics:mass").Set(0.0001)
+    # # Disabling Gravity
     # Dis_Grav = Obj_Prim.GetAttribute("physxRigidBody:disableGravity").Set(True)
 
-    print("For Obj (" + obj.name + ") Mass Creation : " + str(Mass_Succ))
+    # print("For Obj (" + obj.name + ") Mass Creation : " + str(Mass_Succ))
     # print("For Obj (" + obj.name + ") DisableGravity Creation : " + str(Dis_Grav))
 
 def parallel_movement(
@@ -982,6 +1011,15 @@ def main():
 
     # Add_Rigid_Object_To_Scene(test, "Cuboid", SheathingPlate)
 
+    # Adding Test Stud
+    Picking_Stud = Cuboid(
+        name="Test_1",
+        pose=[1.455, 0.048, 1.5, 1, 0, 0, 0],
+        dims=[0.03, 2.0, 0.1]
+    )
+    Add_Rigid_Object_To_Scene(test, "Cuboid", Picking_Stud)
+    robots[0].isaac_tcp_attach(tcp_name="T0",
+                               obj_name= Picking_Stud.name)
 
     while simulation_app.is_running():
         # Rendering The World
@@ -1012,22 +1050,29 @@ def main():
         quat_test= euler_to_quat(np.pi, 0, 0)
         quat_2= euler_to_quat(np.pi/2, 0, np.pi)
 
+        robots[0].eef_attach(r_name= "IRB6620_R1",
+                             tool_name="tool0",
+                             attaching_object_name=Picking_Stud.name)
 
-        # robots[0].plan(target_pose=np.array([-0.49, -1.54, 0.44]),
-        #                         target_orientation=np.array([quat[0], quat[1], quat[2], quat[3]]),
-        #                         update_world_needed=True)
+        robots[0].plan(target_pose=np.array([-0.49, -1.54, 0.44]),
+                                target_orientation=np.array([quat[0], quat[1], quat[2], quat[3]]),
+                                update_world_needed=False)
         
         # robots[1].plan(target_pose=np.array([-0.022, -1.85, 0.57]),
         #                 target_orientation=np.array([quat_test[0], quat_test[1], quat_test[2], quat_test[3]]))
         
-        # robots[0].render_exec(renderInstance=True)
+        robots[0].render_exec(renderInstance=True)
         # robots[1].render_exec(renderInstance=True)
         
+        # robots[0].eef_detach(r_name="IRB6620_R1",
+        #                      tool_name="tool0",
+        #                      detaching_object_name=Picking_Stud.name)
 
-        # robots[0].plan(target_pose=np.array([0, 1.5, 0.08]),
-        #                         target_orientation=np.array([quat_2[0], quat_2[1], quat_2[2], quat_2[3]]),
-        #                         update_world_needed=False)
-        # robots[0].render_exec(renderInstance=True)
+        robots[0].plan(target_pose=np.array([0, 1.5, 0.08]),
+                                target_orientation=np.array([quat_2[0], quat_2[1], quat_2[2], quat_2[3]]),
+                                update_world_needed=False)
+        robots[0].render_exec(renderInstance=True)
+
         
         # robots[0].render_exec(renderInstance=True)
 
