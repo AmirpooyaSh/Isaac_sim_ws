@@ -45,6 +45,8 @@ from curobo.types.math import Pose
 from curobo.types.robot import JointState
 from curobo.types.state import JointState
 from curobo.geom.sphere_fit import SphereFitType
+from curobo.types.robot import RobotConfig
+from curobo.util.logger import log_error, log_info, log_warn
 
 
 import carb
@@ -684,7 +686,7 @@ class CuRoboRobot(object):
                     self._temp_world_manager._my_world.step(render=True)
 
                     # Visualizing Spheres
-                    if self._temp_world_manager._my_world.current_time_step_index % 2 == 0:
+                    if Show_Sphere == True and self._temp_world_manager._my_world.current_time_step_index % 2 == 0:
                         # Getting Robot JointState
                         sim_js = self._robot.get_joints_state()
                         sending_state = self._tensor_args.to_device(sim_js.positions)
@@ -692,35 +694,34 @@ class CuRoboRobot(object):
                         sph_list = self._motion_gen.kinematics.get_robot_as_spheres(sending_state)
 
                         # Check if the Sphere Representation is Generated Previously
-                        if self._spheres is None:
-                            spheres: List[sphere.VisualSphere] = []
+                        spheres: List[sphere.VisualSphere] = []
 
-                            # create spheres:
-                            s: Sphere
+                        # create spheres:
+                        s: Sphere
 
-                            # Appending the Created Spheres
-                            for si, s in enumerate(sph_list[0]):
-                                # We should Update Sphere Position with the Robot's Position (It's not 0, 0, 0 always)
-                                updated_s_pose = [s.position[0]+self._r_pose[0],
-                                                  s.position[1]+self._r_pose[1],
-                                                  s.position[2]+self._r_pose[2]]
-                                sp = sphere.VisualSphere(
-                                    prim_path="/curobo/"+self._ROS_JS_robot_indicator+"/sph" + str(si),
-                                    position=np.ravel(updated_s_pose),
-                                    radius=float(s.radius),
-                                    color=np.array([0, 0.8, 0.2]),
-                                )
-                                spheres.append(sp)
+                        # Appending the Created Spheres
+                        for si, s in enumerate(sph_list[0]):
+                            # We should Update Sphere Position with the Robot's Position (It's not 0, 0, 0 always)
+                            updated_s_pose = [s.position[0]+self._r_pose[0],
+                                                s.position[1]+self._r_pose[1],
+                                                s.position[2]+self._r_pose[2]]
+                            sp = sphere.VisualSphere(
+                                prim_path="/curobo/"+self._ROS_JS_robot_indicator+"/sph" + str(si),
+                                position=np.ravel(updated_s_pose),
+                                radius=float(s.radius),
+                                color=np.array([0, 0.8, 0.2]),
+                            )
+                            spheres.append(sp)
                         # If Sphere Representation Exists, Update it !
-                        else:
-                            for si, s in enumerate(sph_list[0]):
-                                if not np.isnan(s.position[0]):
-                                    # Updating Sphere Pose to the Robot's Pose
-                                    updated_s_pose = [s.position[0]+self._r_pose[0],
-                                        s.position[1]+self._r_pose[1],
-                                        s.position[2]+self._r_pose[2]]
-                                    spheres[si].set_world_pose(position=np.ravel(updated_s_pose))
-                                    spheres[si].set_radius(float(s.radius))
+                        # else:
+                        #     for si, s in enumerate(sph_list[0]):
+                        #         if not np.isnan(s.position[0]):
+                        #             # Updating Sphere Pose to the Robot's Pose
+                        #             updated_s_pose = [s.position[0]+self._r_pose[0],
+                        #                 s.position[1]+self._r_pose[1],
+                        #                 s.position[2]+self._r_pose[2]]
+                        #             spheres[si].set_world_pose(position=np.ravel(updated_s_pose))
+                        #             spheres[si].set_radius(float(s.radius))
 
                 cmd_state = cmd_plan[cmd_idx]
 
@@ -743,47 +744,139 @@ class CuRoboRobot(object):
         self._computed_cmd_plan = None
         self._computed_idx_list = []
 
+    # Attaching Object (CuRobo Logic)
+    def IDC_Attach_Object_To_Robot(self,
+                                    joint_state: JointState,
+                                    attaching_link_name: str,
+                                    object_names: List[str],
+                                    sphere_number: int = 100,
+                                    surface_sphere_radius: float = 0.001,
+                                    sphere_fit_type: SphereFitType = SphereFitType.VOXEL_VOLUME_SAMPLE_SURFACE,
+                                    voxelize_method: str = "ray",
+                                    world_object_pose_offset: Optional[Pose] = None,
+                                    remove_obstacles_from_world_config: bool = False) -> bool:
+        
+        """Attach an object or objects from world to a robot's link.
+
+        This method assumes that the objects exist in the world configuration. If attaching
+        objects that are not in world, use :meth:`MotionGen.attach_external_objects_to_robot`.
+
+        Args:
+            joint_state: Joint state of the robot.
+            object_name: Name of object in the world to attach to the robot.
+            surface_sphere_radius: Radius (in meters) to use for points sampled on surface of the
+                object. A smaller radius will allow for generating motions very close to obstacles.
+            link_name: Name of the link (frame) to attach the objects to. The assumption is that
+                this link does not have any geometry and all spheres of this link represent
+                attached objects.
+            sphere_fit_type: Sphere fit algorithm to use. See :ref:`attach_object_note` for more
+                details. The default method :attr:`SphereFitType.VOXEL_VOLUME_SAMPLE_SURFACE`
+                voxelizes the volume of the objects and adds spheres representing the voxels, then
+                samples points on the surface of the object, adds :attr:`surface_sphere_radius` to
+                these points. This should be used for most cases.
+            voxelize_method: Method to use for voxelization, passed to
+                :py:func:`trimesh.voxel.creation.voxelize`.
+            world_objects_pose_offset: Offset to apply to the object poses before attaching to the
+                robot. This is useful when attaching an object that's in contact with the world.
+                The offset is applied in the world frame before attaching to the robot.
+            remove_obstacles_from_world_config: Remove the obstacles from the world cache after
+                attaching to the robot to reduce memory usage. Note that when an object is attached
+                to the robot, it's disabled in the world collision checker. This flag when enabled,
+                also removes the object from world cache. For most cases, this should be set to
+                False.
+        """   
+
+        if(self._motion_gen.kinematics.ee_link != attaching_link_name):
+            print("Attaching is not possible | You should Rewarmup MotionGen with the Working TCP")
+            return False
+
+        log_info("MG: Attach objects to robot")
+        kin_state = self._motion_gen.compute_kinematics(joint_state)
+        ee_pose = kin_state.ee_pose
+        if world_object_pose_offset is not None:
+            ee_pose = world_object_pose_offset.inverse().multiply(ee_pose)
+        ee_pose = ee_pose.inverse()
+        max_spheres = self._motion_gen.robot_cfg.kinematics.kinematics_config.get_number_of_spheres(attaching_link_name)
+        print("______")
+        print(max_spheres)
+        print("______")
+        n_spheres = int(max_spheres / len(object_names))
+        sphere_tensor = torch.zeros((max_spheres, 4))
+        sphere_tensor[:, 3] = -10.0
+        sph_list = []
+
+        for i, x in enumerate(object_names):
+            obs = self._motion_gen.world_model.get_obstacle(x)
+            if obs is None:
+                log_error(
+                    "Object not found in world. Object name: "
+                    + x
+                    + " Name of objects in world: "
+                    + " ".join([i.name for i in self._motion_gen.world_model.objects])
+                )
+            sph = obs.get_bounding_spheres(
+                n_spheres,
+                surface_sphere_radius,
+                pre_transform_pose=ee_pose,
+                tensor_args=self._tensor_args,
+                fit_type=sphere_fit_type,
+                voxelize_method=voxelize_method,
+            )
+            sph_list += [s.position + [s.radius] for s in sph]
+
+            self._motion_gen.world_coll_checker.enable_obstacle(enable=False, name=x)
+            if remove_obstacles_from_world_config:
+                self._motion_gen.world_model.remove_obstacle(x)
+        log_info("MG: Computed spheres for attach objects to robot")
+
+        spheres = self._tensor_args.to_device(torch.as_tensor(sph_list)) 
+        if spheres.shape[0] >= max_spheres:
+            spheres = spheres[: spheres.shape[0]]
+        sphere_tensor[: spheres.shape[0], :] = spheres.contiguous()
+
+        self._motion_gen.attach_spheres_to_robot(sphere_tensor=sphere_tensor, link_name=attaching_link_name)
+        return True
+    
     # Used for Simulation Attach
     def isaac_tcp_attach(self,
                    robot_name: str = "IRB6620_R1",
                    tcp_name: str = "T1",
-                   obj_name: str = "Test_1"):
+                   obj_name: str = "SP"):
         
         # Adding Object Attributes to make the Surface Gripper Attach the Object to it!
         Obj_Prim = self._temp_world_manager._stage.GetPrimAtPath("/world/obstacles/" + obj_name)
         
-        # Adding RigidBody
-        execute("AddPhysicsComponentCommand",
-                              usd_prim=Obj_Prim,
-                              component="PhysicsRigidBodyAPI")
-        # Adding Colliders
-        execute("AddPhysicsComponentCommand",
-                              usd_prim=Obj_Prim,
-                              component="PhysicsCollisionAPI")
+        # Enabling Colliders !!
+        Dis_Collider = Obj_Prim.GetAttribute("physics:collisionEnabled").Set(True)
+
         # Close
         og.Controller.set(og.Controller.attribute("/action_graph_"+robot_name+"_"+tcp_name+"/close_tick.state:enableImpulse"), True)
-
-        # Adding Colliders
-        execute("AddPhysicsComponentCommand",
-                              usd_prim=Obj_Prim,
-                              component="PhysicsMassAPI")
-
-        # Adding a Small Positive Mass to Avoid Robot's Effort Calculation using CuRobo
-        Mass_Succ = Obj_Prim.GetAttribute("physics:mass").Set(0.0001)
-        # Disabling Gravity
-        Dis_Grav = Obj_Prim.GetAttribute("physxRigidBody:disableGravity").Set(True)
     
     # Used for Simulation Detach
     def isaac_tcp_detach(self,
                    robot_name: str = "IRB6620_R1",
                    tcp_name: str = "T1",
                    obj_name: str = None):
+        if obj_name == None:
+            print("An Object Name Should Be Mentioned | Otherwise detach won't work (Isaac Sim Purposes)")
+            return False
+        
         # Open
         og.Controller.set(og.Controller.attribute("/action_graph_"+robot_name+"_"+tcp_name+"/open_tick.state:enableImpulse"), True)
 
+        # Disabling Gravity Right After Detaching
+        Obj_Prim = self._temp_world_manager._stage.GetPrimAtPath("/world/obstacles/" + obj_name)
+        
+        # Re-Disabling Gravity For the Object
+        # Dis_Grav = Obj_Prim.GetAttribute("physxRigidBody:disableGravity").Set(False)
+        # Dis_Grav = Obj_Prim.GetAttribute("physxRigidBody:disableGravity").Set(True)
+
+        # Disabling Colliders !! (To Avoid Collision Problems After Detaching)
+        # Dis_Collider = Obj_Prim.GetAttribute("physics:collisionEnabled").Set(False)
+
     def eef_attach(self,
                    r_name: str = "IRB6620_R1",
-                   tool_name: str = "tool0",
+                   tool_name: str = "tool1",
                    attaching_object_name: str = None):
         if(attaching_object_name == None):
             print("There should be a valid Object_Name => Attaching Failed")
@@ -807,19 +900,30 @@ class CuRoboRobot(object):
             jerk=self._tensor_args.to_device(sim_js.velocities) * 0.0,
             joint_names=sim_js_names,
         )
-        cu_js = cu_js.get_ordered_joint_state(self._motion_gen.kinematics.joint_names)
 
         # world_objects_pose_offset: Optional[Pose] = None,\
         # World Object Pose Offset is a .tensor variable to suite the Pick/Place
         # It should be read through the documentations before using it !!!
 
+        Updated_Obj_Name = "/world/obstacles/" + attaching_object_name
         self._motion_gen.attach_objects_to_robot(
-            joint_state=cu_js,
-            object_names=[attaching_object_name],
-            surface_sphere_radius= 0.005,
-            link_name= tool_name,
-            sphere_fit_type= SphereFitType.VOXEL_VOLUME,
+            cu_js,
+            [Updated_Obj_Name],
+            link_name= "tool1",
+            sphere_fit_type=SphereFitType.VOXEL_VOLUME,
+            surface_sphere_radius=0.05
         )
+
+        # Using Corrent Motion Gen
+
+        # self.IDC_Attach_Object_To_Robot(
+        #     joint_state=cu_js,
+        #     object_names=[Updated_Obj_Name],
+        #     sphere_number= 200,
+        #     attaching_link_name= "tool1",
+        #     sphere_fit_type=SphereFitType.VOXEL_VOLUME,
+        #     surface_sphere_radius=0.05
+        # )
     
     def eef_detach(self,
                    r_name: str = "IRB6620_R1",
@@ -886,18 +990,18 @@ robots = [
                                              TCP_Name= "T0",
                                              C_Pose= [0.4, 0, 0.035])
                                            ]),
-    # IRB6620_R2
-    CuRoboRobot(working_world=test,
-                R_Name="IRB6620_R2",
-                pose=[4.6, 0, 0.025],
-                input_tool="tool1",
-                w_dir="home/apshirazi/Isaac_sim_ws/robot_2",
-                r_conf_name="IRB6620_Config.yaml",
-                Gripper_List=[RobotGripper(RobName= "IRB6620_R2",
-                                           ParentLink= "Link_7",
-                                           TCP_Name="T0",
-                                           C_Pose=[0.11, 0, -0.57]),
-                                           ])
+    # IRB6620_R2 (Commented)
+    # CuRoboRobot(working_world=test,
+    #             R_Name="IRB6620_R2",
+    #             pose=[4.6, 0, 0.025],
+    #             input_tool="tool1",
+    #             w_dir="home/apshirazi/Isaac_sim_ws/robot_2",
+    #             r_conf_name="IRB6620_Config.yaml",
+    #             Gripper_List=[RobotGripper(RobName= "IRB6620_R2",
+    #                                        ParentLink= "Link_7",
+    #                                        TCP_Name="T0",
+    #                                        C_Pose=[0.11, 0, -0.57]),
+    #                                        ])
     # Add more robots as needed
 ]
 
@@ -952,25 +1056,25 @@ def Add_Rigid_Object_To_Scene(World_Manager: WorldManager,
     # All the added object are in the prim path of : "/world/obstacles/<OBJ Name>"
     Obj_Prim = stage.GetPrimAtPath(Added_Obj_Prim_Root)
 
-    # # Adding RigidBody
-    # execute("AddPhysicsComponentCommand",
-    #                       usd_prim=Obj_Prim,
-    #                       component="PhysicsRigidBodyAPI")
-    # # Adding Colliders
-    # execute("AddPhysicsComponentCommand",
-    #                       usd_prim=Obj_Prim,
-    #                       component="PhysicsCollisionAPI")
-    # # Adding Colliders
-    # execute("AddPhysicsComponentCommand",
-    #                       usd_prim=Obj_Prim,
-    #                       component="PhysicsMassAPI")
-    # # Adding a Small Positive Mass to Avoid Robot's Effort Calculation using CuRobo
-    # Mass_Succ = Obj_Prim.GetAttribute("physics:mass").Set(0.0001)
-    # # Disabling Gravity
-    # Dis_Grav = Obj_Prim.GetAttribute("physxRigidBody:disableGravity").Set(True)
+    # Adding RigidBody
+    execute("AddPhysicsComponentCommand",
+                          usd_prim=Obj_Prim,
+                          component="PhysicsRigidBodyAPI")
+    # Adding Colliders
+    execute("AddPhysicsComponentCommand",
+                          usd_prim=Obj_Prim,
+                          component="PhysicsCollisionAPI")
+    # Adding Colliders
+    execute("AddPhysicsComponentCommand",
+                          usd_prim=Obj_Prim,
+                          component="PhysicsMassAPI")
+    # Adding a Small Positive Mass to Avoid Robot's Effort Calculation using CuRobo
+    Mass_Succ = Obj_Prim.GetAttribute("physics:mass").Set(0.0001)
+    # Disabling Gravity
+    Dis_Grav = Obj_Prim.GetAttribute("physxRigidBody:disableGravity").Set(True)
 
-    # print("For Obj (" + obj.name + ") Mass Creation : " + str(Mass_Succ))
-    # print("For Obj (" + obj.name + ") DisableGravity Creation : " + str(Dis_Grav))
+    print("For Obj (" + obj.name + ") Mass Creation : " + str(Mass_Succ))
+    print("For Obj (" + obj.name + ") DisableGravity Creation : " + str(Dis_Grav))
 
 def parallel_movement(
     Rob_idx_list: List[int] = [0, 1],
@@ -1081,14 +1185,12 @@ def main():
     # Add_Rigid_Object_To_Scene(test, "Cuboid", SheathingPlate)
 
     # Adding Test Stud
-    # Picking_Stud = Cuboid(
-    #     name="Test_1",
-    #     pose=[1.455, 0.048, 1.5, 1, 0, 0, 0],
-    #     dims=[0.03, 2.0, 0.1]
-    # )
-    # Add_Rigid_Object_To_Scene(test, "Cuboid", Picking_Stud)
-    # robots[0].isaac_tcp_attach(tcp_name="T0",
-    #                            obj_name= Picking_Stud.name)
+    Sheathing_Plate = Cuboid(
+        name="SP",
+        pose=[-1.4, -2.0, 0.4, 1, 0, 0, 0],
+        dims=[2.0, 1.0, 0.02]
+    )
+    Add_Rigid_Object_To_Scene(test, "Cuboid", Sheathing_Plate)
 
     while simulation_app.is_running():
         # Rendering The World
@@ -1119,36 +1221,39 @@ def main():
         quat_test= euler_to_quat(np.pi, 0, 0)
         quat_2= euler_to_quat(np.pi/2, 0, np.pi)
 
-# Attach Testing
-        # robots[0].eef_attach(r_name= "IRB6620_R1",
-        #                      tool_name="tool0",
-        #                      attaching_object_name=Picking_Stud.name)
 
 # R1 Suction Pick Position
         robots[0].plan(tcp_name="tool1",
                                 target_pose=np.array([-0.49, -1.54, 0.44]),
                                 target_orientation=np.array([quat[0], quat[1], quat[2], quat[3]]),
                                 update_world_needed=True)
-        robots[0].render_exec(renderInstance=True)
+        robots[0].render_exec(renderInstance=True,
+                                Show_Sphere = False)
+
+# Attach Testing
+        robots[0].eef_attach(r_name= "IRB6620_R1",
+                             tool_name="tool1",
+                             attaching_object_name=Sheathing_Plate.name)
 
 # R1 Suction Place Position
         robots[0].plan(tcp_name="tool1",
                                 target_pose=np.array([0, 1.5, 0.08]),
                                 target_orientation=np.array([quat_2[0], quat_2[1], quat_2[2], quat_2[3]]),
                                 update_world_needed=True)
-        robots[0].render_exec(renderInstance=True)
+        robots[0].render_exec(renderInstance=True,
+                              Show_Sphere = False)
 
 # Detach Testing
         # robots[0].eef_detach(r_name="IRB6620_R1",
-        #                      tool_name="tool0",
-        #                      detaching_object_name=Picking_Stud.name)   
+        #                      tool_name="tool1",
+        #                      detaching_object_name=Sheathing_Plate.name)   
 
 # R2 Gripper Movement Test
-        robots[1].plan(tcp_name="tool1",
-                                    target_pose=np.array([-0.022, -1.85, 0.57]),
-                                    target_orientation=np.array([quat_test[0], quat_test[1], quat_test[2], quat_test[3]]),
-                                    update_world_needed=True)
-        robots[1].render_exec(renderInstance=True)
+        # robots[1].plan(tcp_name="tool1",
+        #                             target_pose=np.array([-0.022, -1.85, 0.57]),
+        #                             target_orientation=np.array([quat_test[0], quat_test[1], quat_test[2], quat_test[3]]),
+        #                             update_world_needed=True)
+        # robots[1].render_exec(renderInstance=True)
         
 
 # Testing MPC Movement (Out Dated as of 12/04/2024)

@@ -28,10 +28,9 @@ robot_cfg:
         #
         collision_link_names: ["base_link", "Link_1", "Link_2", "Link_3", "Link_4", "Link_5", "Link_6", "Link_7","Link_8"]
         collision_spheres: "/home/apshirazi/Isaac_sim_ws/robot/IRB6620_R1_Lula_modified.yaml"
-
         # Don't Ever Touch This !!!!
         collision_sphere_buffer: 0.005
-        extra_collision_spheres: {"tool0": 100, "tool1": 100}
+        extra_collision_spheres: {"tool1": 100}
         self_collision_ignore: {
           "base_link": ["Link_1", "Link_2", "Link_3", "Link_4", "Link_5", "Link_6", "Link_8"],
           "Link_1": ["Link_2", "Link_3", "Link_4", "Link_5", "Link_6", "Link_8"],
@@ -55,7 +54,7 @@ robot_cfg:
         }
         use_global_cumul: True
         mesh_link_names: null # List[str]
-
+        
         cspace:
             joint_names: ['Joint_1', 'Joint_2', 'Joint_3', 'Joint_4', 'Joint_5', 'Joint_6', 'Joint_8']
             retract_config: [0, 0, 0, 0, 0, 0, 0]
