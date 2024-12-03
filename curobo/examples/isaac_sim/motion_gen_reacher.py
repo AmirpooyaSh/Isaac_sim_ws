@@ -99,6 +99,8 @@ simulation_app = SimulationApp(
 )
 # Standard Library
 from typing import Dict
+from typing import List
+
 
 # Third Party
 import carb
@@ -113,7 +115,7 @@ from omni.isaac.core.utils.types import ArticulationAction
 # CuRobo
 # from curobo.wrap.reacher.ik_solver import IKSolver, IKSolverConfig
 from curobo.geom.sdf.world import CollisionCheckerType
-from curobo.geom.types import WorldConfig
+from curobo.geom.types import WorldConfig, Sphere, Mesh
 from curobo.types.base import TensorDeviceType
 from curobo.types.math import Pose
 from curobo.types.robot import JointState
@@ -344,8 +346,10 @@ def main():
             sph_list = motion_gen.kinematics.get_robot_as_spheres(cu_js.position)
 
             if spheres is None:
-                spheres = []
+                spheres: List[sphere.VisualSphere] = []
                 # create spheres:
+
+                s: Sphere
 
                 for si, s in enumerate(sph_list[0]):
                     sp = sphere.VisualSphere(
