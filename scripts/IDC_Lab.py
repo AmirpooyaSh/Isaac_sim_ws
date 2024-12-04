@@ -366,6 +366,9 @@ class CuRoboRobot(object):
         self._current_tool = input_tool
         self._robot_cfg["kinematics"]["ee_link"] = self._current_tool
 
+        # Setting up Extra Tool Spheres
+        self._robot_cfg["kinematics"]["extra_collision_spheres"] = {"tool0": 50, "tool1": 100,}
+
         # Adding Robot to the Scene (Identifying robot type as Robot (omni.isaac.core.robots Robot))
         self._temp_world_manager = working_world
         self._robot: Robot
@@ -744,13 +747,13 @@ class CuRoboRobot(object):
         self._computed_cmd_plan = None
         self._computed_idx_list = []
 
-    # Attaching Object (CuRobo Logic)
+    # Attaching Object (CuRobo Logic) => Debug Purposes (No Need To be Implemented)
     def IDC_Attach_Object_To_Robot(self,
                                     joint_state: JointState,
-                                    attaching_link_name: str,
                                     object_names: List[str],
+                                    attaching_link_name: str = 'tool1',
                                     sphere_number: int = 100,
-                                    surface_sphere_radius: float = 0.001,
+                                    surface_sphere_radius: float = 0.05,
                                     sphere_fit_type: SphereFitType = SphereFitType.VOXEL_VOLUME_SAMPLE_SURFACE,
                                     voxelize_method: str = "ray",
                                     world_object_pose_offset: Optional[Pose] = None,
@@ -805,6 +808,8 @@ class CuRoboRobot(object):
         sphere_tensor[:, 3] = -10.0
         sph_list = []
 
+        Testing_Spheres: List[Sphere] = None
+
         for i, x in enumerate(object_names):
             obs = self._motion_gen.world_model.get_obstacle(x)
             if obs is None:
@@ -823,11 +828,32 @@ class CuRoboRobot(object):
                 voxelize_method=voxelize_method,
             )
             sph_list += [s.position + [s.radius] for s in sph]
+            Testing_Spheres = sph
 
             self._motion_gen.world_coll_checker.enable_obstacle(enable=False, name=x)
             if remove_obstacles_from_world_config:
                 self._motion_gen.world_model.remove_obstacle(x)
         log_info("MG: Computed spheres for attach objects to robot")
+
+# Visualizing Spheres
+        # # Check if the Sphere Representation is Generated Previously
+        # Vis_Seph: List[sphere.VisualSphere] = []
+        # # create spheres:
+        # s: Sphere
+
+        # # Appending the Created Spheres
+        # for si, s in enumerate(Testing_Spheres):
+        #     # We should Update Sphere Position with the Robot's Position (It's not 0, 0, 0 always)
+        #     updated_s_pose = [s.position[0],
+        #                         s.position[1],
+        #                         s.position[2]]
+        #     sp = sphere.VisualSphere(
+        #         prim_path="/curobo/AttachedObj" + "/sph_obj" + str(si),
+        #         position=np.ravel(updated_s_pose),
+        #         radius=float(s.radius),
+        #         color=np.array([0, 0.8, 0.2]),
+        #     )
+        #     Vis_Seph.append(sp)
 
         spheres = self._tensor_args.to_device(torch.as_tensor(sph_list)) 
         if spheres.shape[0] >= max_spheres:
@@ -877,7 +903,8 @@ class CuRoboRobot(object):
     def eef_attach(self,
                    r_name: str = "IRB6620_R1",
                    tool_name: str = "tool1",
-                   attaching_object_name: str = None):
+                   attaching_object_name: str = None,
+                   attaching_object_pose: Pose = [0,0,0,1,0,0,0]):
         if(attaching_object_name == None):
             print("There should be a valid Object_Name => Attaching Failed")
             return False
@@ -905,25 +932,45 @@ class CuRoboRobot(object):
         # World Object Pose Offset is a .tensor variable to suite the Pick/Place
         # It should be read through the documentations before using it !!!
 
+        print(str(self._motion_gen.kinematics.kinematics_config.get_number_of_spheres('tool1')))
+        print("Robot Spheres (Before Attaching) :" + str(len(self._motion_gen.robot_cfg.kinematics.kinematics_config.link_spheres)))
+        print("______________________")
+
         Updated_Obj_Name = "/world/obstacles/" + attaching_object_name
-        self._motion_gen.attach_objects_to_robot(
-            cu_js,
-            [Updated_Obj_Name],
-            link_name= "tool1",
-            sphere_fit_type=SphereFitType.VOXEL_VOLUME,
-            surface_sphere_radius=0.05
-        )
+        # self._motion_gen.attach_objects_to_robot(
+        #     cu_js,
+        #     [Updated_Obj_Name],
+        #     link_name= 'tool1',
+        #     sphere_fit_type=SphereFitType.VOXEL_VOLUME_SAMPLE_SURFACE,
+        #     surface_sphere_radius=0.05,
+        #     remove_obstacles_from_world_config= True,
+        #     world_object_pose_offset=Pose.from_list([attaching_object_pose[0],
+        #                                               attaching_object_pose[1],
+        #                                               attaching_object_pose[2],
+        #                                               attaching_object_pose[3],
+        #                                               attaching_object_pose[4],
+        #                                               attaching_object_pose[5],
+        #                                               attaching_object_pose[6]], self._tensor_args),
+        # )
 
         # Using Corrent Motion Gen
 
-        # self.IDC_Attach_Object_To_Robot(
-        #     joint_state=cu_js,
-        #     object_names=[Updated_Obj_Name],
-        #     sphere_number= 200,
-        #     attaching_link_name= "tool1",
-        #     sphere_fit_type=SphereFitType.VOXEL_VOLUME,
-        #     surface_sphere_radius=0.05
-        # )
+        self.IDC_Attach_Object_To_Robot(
+            cu_js,
+            [Updated_Obj_Name],
+            sphere_fit_type=SphereFitType.VOXEL_VOLUME_SAMPLE_SURFACE,
+            surface_sphere_radius=0.05,
+            world_object_pose_offset=Pose.from_list([0,0,-0.1,1,0,0,0], self._tensor_args),
+            remove_obstacles_from_world_config= True,
+        )
+
+        # Saving the World (Test)
+        # coll_sup_world = self._motion_gen.world_model.save_world_as_mesh("Test_X.obj")
+
+
+        print(str(self._motion_gen.kinematics.kinematics_config.get_number_of_spheres('tool1')))
+        print("Robot Spheres (After Attaching) :" + str(len(self._motion_gen.robot_cfg.kinematics.kinematics_config.link_spheres)))
+        print("______________________")
     
     def eef_detach(self,
                    r_name: str = "IRB6620_R1",
@@ -1230,10 +1277,17 @@ def main():
         robots[0].render_exec(renderInstance=True,
                                 Show_Sphere = False)
 
+
+
 # Attach Testing
         robots[0].eef_attach(r_name= "IRB6620_R1",
                              tool_name="tool1",
-                             attaching_object_name=Sheathing_Plate.name)
+                             attaching_object_name=Sheathing_Plate.name,
+                             attaching_object_pose= Sheathing_Plate.pose)
+
+        # T_Now = time.time()
+        # while time.time() - T_Now < 5:
+        #     test._my_world.step(render=True)
 
 # R1 Suction Place Position
         robots[0].plan(tcp_name="tool1",
@@ -1242,11 +1296,27 @@ def main():
                                 update_world_needed=True)
         robots[0].render_exec(renderInstance=True,
                               Show_Sphere = False)
+        
+        T_Now = time.time()
+        while time.time() - T_Now < 5:
+            test._my_world.step(render=True)
 
 # Detach Testing
-        # robots[0].eef_detach(r_name="IRB6620_R1",
-        #                      tool_name="tool1",
-        #                      detaching_object_name=Sheathing_Plate.name)   
+        robots[0].eef_detach(r_name="IRB6620_R1",
+                             tool_name="tool1",
+                             detaching_object_name=Sheathing_Plate.name)   
+
+# R1 Suction Pick Position
+        robots[0].plan(tcp_name="tool1",
+                                target_pose=np.array([-0.49, -1.54, 0.44]),
+                                target_orientation=np.array([quat[0], quat[1], quat[2], quat[3]]),
+                                update_world_needed=True)
+        robots[0].render_exec(renderInstance=True,
+                                Show_Sphere = False)
+
+        T_Now = time.time()
+        while time.time() - T_Now < 200:
+            test._my_world.step(render=True)
 
 # R2 Gripper Movement Test
         # robots[1].plan(tcp_name="tool1",
