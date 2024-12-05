@@ -474,6 +474,10 @@ class CuRoboRobot(object):
 
         # 12/03/2024 Commented for Test (Shouldn't Be)
         self.motion_gen_warmup()
+        # This will indicate if any object is attached to the robot or not
+        self._is_obj_attached: bool = False
+        # This will be used to prevent the world updater from grasping the attached object's mesh representation as world
+        self._attached_obj_prim: str = "/world/obstacles/DummyObstacle"
 
         # Sphere Generation Requirement
         self._spheres: List[Sphere] = None
@@ -590,7 +594,9 @@ class CuRoboRobot(object):
                     "/"+Rob_name+"/Link_5/visuals",
                     "/"+Rob_name+"/Link_6/visuals",
                     "/"+Rob_name+"/Link_7/visuals",
-                    "/"+Rob_name+"/Link_8/visuals",                            
+                    "/"+Rob_name+"/Link_8/visuals",
+                    # Attached Object's Prim (If Any)
+                    self._attached_obj_prim,                           
                     # Other Robot's Prim Path Should also be Ignored !
                     # This feature is to be developed (MPC)
                 ],
@@ -903,8 +909,7 @@ class CuRoboRobot(object):
     def eef_attach(self,
                    r_name: str = "IRB6620_R1",
                    tool_name: str = "tool1",
-                   attaching_object_name: str = None,
-                   attaching_object_pose: Pose = [0,0,0,1,0,0,0]):
+                   attaching_object_name: str = None):
         if(attaching_object_name == None):
             print("There should be a valid Object_Name => Attaching Failed")
             return False
@@ -928,14 +933,6 @@ class CuRoboRobot(object):
             joint_names=sim_js_names,
         )
 
-        # world_objects_pose_offset: Optional[Pose] = None,\
-        # World Object Pose Offset is a .tensor variable to suite the Pick/Place
-        # It should be read through the documentations before using it !!!
-
-        print(str(self._motion_gen.kinematics.kinematics_config.get_number_of_spheres('tool1')))
-        print("Robot Spheres (Before Attaching) :" + str(len(self._motion_gen.robot_cfg.kinematics.kinematics_config.link_spheres)))
-        print("______________________")
-
         Updated_Obj_Name = "/world/obstacles/" + attaching_object_name
         # self._motion_gen.attach_objects_to_robot(
         #     cu_js,
@@ -954,23 +951,28 @@ class CuRoboRobot(object):
         # )
 
         # Using Corrent Motion Gen
-
-        self.IDC_Attach_Object_To_Robot(
-            cu_js,
-            [Updated_Obj_Name],
-            sphere_fit_type=SphereFitType.VOXEL_VOLUME_SAMPLE_SURFACE,
-            surface_sphere_radius=0.05,
-            world_object_pose_offset=Pose.from_list([0,0,-0.1,1,0,0,0], self._tensor_args),
-            remove_obstacles_from_world_config= True,
-        )
-
-        # Saving the World (Test)
-        # coll_sup_world = self._motion_gen.world_model.save_world_as_mesh("Test_X.obj")
-
-
-        print(str(self._motion_gen.kinematics.kinematics_config.get_number_of_spheres('tool1')))
-        print("Robot Spheres (After Attaching) :" + str(len(self._motion_gen.robot_cfg.kinematics.kinematics_config.link_spheres)))
-        print("______________________")
+        Is_Attach_Succ: bool = False
+        Is_Attach_Succ = self.IDC_Attach_Object_To_Robot(
+                            cu_js,
+                            [Updated_Obj_Name],
+                            sphere_fit_type=SphereFitType.VOXEL_VOLUME_SAMPLE_SURFACE,
+                            surface_sphere_radius=0.05,
+                            # If you put 0 as Z axis, you have to avoid capturing the attaching object's collision representation
+                            # to prevent the INVALID.START.STATE.WORLD.COLLISION error
+                            
+                            # To do so, _is_obj_attached variable is being set to True after attaching
+                            # and this would avoid the collision world updated to get that object's mesh representation from Isaac Sim
+                            world_object_pose_offset=Pose.from_list([0,0,0,1,0,0,0], self._tensor_args),
+                            # remove_obstacles_from_world_config= True,
+                        )
+        
+        # If attaching was succesful, the Attached Object Information should be updated
+        if Is_Attach_Succ is True:
+            print("Object " + attaching_object_name + "Sphere Representation Generated : " +
+                    str(self._motion_gen.kinematics.kinematics_config.get_number_of_spheres(tool_name)) + " Spheres Used")
+            print("Object " + attaching_object_name + " Attached to " + self._ROS_JS_robot_indicator)
+            self._is_obj_attached = True
+            self._attached_obj_prim = Updated_Obj_Name
     
     def eef_detach(self,
                    r_name: str = "IRB6620_R1",
@@ -988,6 +990,11 @@ class CuRoboRobot(object):
         # Detaching the item from the actual MotionGen object (in CuRobo)
         # It basically removes the generated sepheres attached to the virtual link (tool0 for example)
         self._motion_gen.detach_object_from_robot(tool_name)
+
+        # Robot's Attaching Information Should Get Empty Again
+        print("Object " + detaching_object_name + " Detached from " + self._ROS_JS_robot_indicator)
+        self._is_obj_attached = False
+        self._attached_obj_prim = "/world/obstacles/DummyObstacle"
      
     # def ros_js_publisher(self, event):
     #     r=1
@@ -1282,8 +1289,7 @@ def main():
 # Attach Testing
         robots[0].eef_attach(r_name= "IRB6620_R1",
                              tool_name="tool1",
-                             attaching_object_name=Sheathing_Plate.name,
-                             attaching_object_pose= Sheathing_Plate.pose)
+                             attaching_object_name=Sheathing_Plate.name)
 
         # T_Now = time.time()
         # while time.time() - T_Now < 5:
@@ -1295,7 +1301,7 @@ def main():
                                 target_orientation=np.array([quat_2[0], quat_2[1], quat_2[2], quat_2[3]]),
                                 update_world_needed=True)
         robots[0].render_exec(renderInstance=True,
-                              Show_Sphere = False)
+                              Show_Sphere = True)
         
         T_Now = time.time()
         while time.time() - T_Now < 5:
@@ -1312,7 +1318,7 @@ def main():
                                 target_orientation=np.array([quat[0], quat[1], quat[2], quat[3]]),
                                 update_world_needed=True)
         robots[0].render_exec(renderInstance=True,
-                                Show_Sphere = False)
+                                Show_Sphere = True)
 
         T_Now = time.time()
         while time.time() - T_Now < 200:
