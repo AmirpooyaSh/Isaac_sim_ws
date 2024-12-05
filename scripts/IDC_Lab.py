@@ -452,9 +452,9 @@ class CuRoboRobot(object):
                         ("surfX.inputs:ParentRigidBody", "/"+Gripper.RobName+"/"+Gripper.ParentLink),
                         ("surfY.inputs:ParentRigidBody", "/"+Gripper.RobName+"/"+Gripper.ParentLink),
                         ("surfZ.inputs:ParentRigidBody", "/"+Gripper.RobName+"/"+Gripper.ParentLink),
-                        ("surfX.inputs:DisableGravity", True),
-                        ("surfY.inputs:DisableGravity", True),
-                        ("surfZ.inputs:DisableGravity", True),
+                        # ("surfX.inputs:DisableGravity", True),
+                        # ("surfY.inputs:DisableGravity", True),
+                        # ("surfZ.inputs:DisableGravity", True),
                     ],
                     keys.CONNECT: [
                         ("close_tick.outputs:execOut", "surfX.inputs:Close"),
@@ -806,9 +806,7 @@ class CuRoboRobot(object):
             ee_pose = world_object_pose_offset.inverse().multiply(ee_pose)
         ee_pose = ee_pose.inverse()
         max_spheres = self._motion_gen.robot_cfg.kinematics.kinematics_config.get_number_of_spheres(attaching_link_name)
-        print("______")
-        print(max_spheres)
-        print("______")
+
         n_spheres = int(max_spheres / len(object_names))
         sphere_tensor = torch.zeros((max_spheres, 4))
         sphere_tensor[:, 3] = -10.0
@@ -879,7 +877,12 @@ class CuRoboRobot(object):
         Obj_Prim = self._temp_world_manager._stage.GetPrimAtPath("/world/obstacles/" + obj_name)
         
         # Enabling Colliders !!
+        self._temp_world_manager._my_world.step(render= True)
+        Dis_RigidBody = Obj_Prim.GetAttribute("physics:rigidBodyEnabled").Set(True)
+        self._temp_world_manager._my_world.step(render= True)
         Dis_Collider = Obj_Prim.GetAttribute("physics:collisionEnabled").Set(True)
+        self._temp_world_manager._my_world.step(render= True)
+        Mass_Succ = Obj_Prim.GetAttribute("physics:mass").Set(0.0001)
 
         # Close
         og.Controller.set(og.Controller.attribute("/action_graph_"+robot_name+"_"+tcp_name+"/close_tick.state:enableImpulse"), True)
@@ -892,19 +895,26 @@ class CuRoboRobot(object):
         if obj_name == None:
             print("An Object Name Should Be Mentioned | Otherwise detach won't work (Isaac Sim Purposes)")
             return False
-        
-        # Open
-        og.Controller.set(og.Controller.attribute("/action_graph_"+robot_name+"_"+tcp_name+"/open_tick.state:enableImpulse"), True)
 
         # Disabling Gravity Right After Detaching
         Obj_Prim = self._temp_world_manager._stage.GetPrimAtPath("/world/obstacles/" + obj_name)
-        
-        # Re-Disabling Gravity For the Object
-        # Dis_Grav = Obj_Prim.GetAttribute("physxRigidBody:disableGravity").Set(False)
-        # Dis_Grav = Obj_Prim.GetAttribute("physxRigidBody:disableGravity").Set(True)
 
+        self._temp_world_manager._my_world.step(render= True)
+        Dis_Grav = Obj_Prim.GetAttribute("physxRigidBody:disableGravity").Set(False)
+
+        # Open
+        og.Controller.set(og.Controller.attribute("/action_graph_"+robot_name+"_"+tcp_name+"/open_tick.state:enableImpulse"), True)
+
+        self._temp_world_manager._my_world.step(render= True)       
+        # Re-Disabling Gravity For the Object    
+        Dis_Grav = Obj_Prim.GetAttribute("physxRigidBody:disableGravity").Set(True)
+
+        self._temp_world_manager._my_world.step(render= True)
+        Dis_Collider = Obj_Prim.GetAttribute("physics:collisionEnabled").Set(False)
+
+        self._temp_world_manager._my_world.step(render= True)
         # Disabling Colliders !! (To Avoid Collision Problems After Detaching)
-        # Dis_Collider = Obj_Prim.GetAttribute("physics:collisionEnabled").Set(False)
+        Dis_RigidBody = Obj_Prim.GetAttribute("physics:rigidBodyEnabled").Set(False)
 
     def eef_attach(self,
                    r_name: str = "IRB6620_R1",
@@ -968,7 +978,7 @@ class CuRoboRobot(object):
         
         # If attaching was succesful, the Attached Object Information should be updated
         if Is_Attach_Succ is True:
-            print("Object " + attaching_object_name + "Sphere Representation Generated : " +
+            print("Object " + attaching_object_name + " Sphere Representation Generated : " +
                     str(self._motion_gen.kinematics.kinematics_config.get_number_of_spheres(tool_name)) + " Spheres Used")
             print("Object " + attaching_object_name + " Attached to " + self._ROS_JS_robot_indicator)
             self._is_obj_attached = True
@@ -1301,11 +1311,11 @@ def main():
                                 target_orientation=np.array([quat_2[0], quat_2[1], quat_2[2], quat_2[3]]),
                                 update_world_needed=True)
         robots[0].render_exec(renderInstance=True,
-                              Show_Sphere = True)
+                              Show_Sphere = False)
         
-        T_Now = time.time()
-        while time.time() - T_Now < 5:
-            test._my_world.step(render=True)
+        # T_Now = time.time()
+        # while time.time() - T_Now < 200:
+        #     test._my_world.step(render=True)
 
 # Detach Testing
         robots[0].eef_detach(r_name="IRB6620_R1",
@@ -1318,10 +1328,10 @@ def main():
                                 target_orientation=np.array([quat[0], quat[1], quat[2], quat[3]]),
                                 update_world_needed=True)
         robots[0].render_exec(renderInstance=True,
-                                Show_Sphere = True)
+                                Show_Sphere = False)
 
         T_Now = time.time()
-        while time.time() - T_Now < 200:
+        while time.time() - T_Now < 2000:
             test._my_world.step(render=True)
 
 # R2 Gripper Movement Test
