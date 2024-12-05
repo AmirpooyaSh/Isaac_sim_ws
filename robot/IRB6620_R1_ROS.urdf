@@ -216,7 +216,8 @@
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <mesh filename="/home/apshirazi/Isaac_sim_ws/meshes/visual/Link_7.stl" />
+                <mesh filename="/home/apshirazi/Isaac_sim_ws/meshes/visual/Link_7.stl">
+                </mesh>
             </geometry>
             <material name="">
                 <color rgba="0 0 1 1" />
@@ -225,7 +226,8 @@
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <mesh filename="/home/apshirazi/Isaac_sim_ws/meshes/collision/Link_7.stl" />
+                <mesh filename="/home/apshirazi/Isaac_sim_ws/meshes/collision/Link_7.stl">
+                </mesh>
             </geometry>
         </collision>
     </link>

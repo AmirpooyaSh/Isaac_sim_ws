@@ -1005,7 +1005,15 @@ class CuRoboRobot(object):
         print("Object " + detaching_object_name + " Detached from " + self._ROS_JS_robot_indicator)
         self._is_obj_attached = False
         self._attached_obj_prim = "/world/obstacles/DummyObstacle"
-     
+
+    def disable_eef_collider(self):
+        Obj_Prim = self._temp_world_manager._stage.GetPrimAtPath("/IRB6620_R1/Link_7")
+
+        self._temp_world_manager._my_world.step(render=True)
+        Dis_RB = Obj_Prim.GetAttribute("physics:rigidBodyEnabled").Set(False)
+        self._temp_world_manager._my_world.step(render=True)
+        Dis_Co = Obj_Prim.GetAttribute("physics:collisionEnabled").Set(False)
+    
     # def ros_js_publisher(self, event):
     #     r=1
     #     try:
@@ -1248,13 +1256,21 @@ def main():
 
     # Add_Rigid_Object_To_Scene(test, "Cuboid", SheathingPlate)
 
-    # Adding Test Stud
+    # Adding Test Sheath
     Sheathing_Plate = Cuboid(
         name="SP",
         pose=[-1.4, -2.0, 0.4, 1, 0, 0, 0],
         dims=[2.0, 1.0, 0.02]
     )
     Add_Rigid_Object_To_Scene(test, "Cuboid", Sheathing_Plate)
+
+    # Adding Test Stud
+    Stud = Cuboid(
+        name= "stud_test",
+        pose= [2.6, 0.13, 1.77, 1, 0, 0, 0],
+        dims= [0.1, 3, 0.03]
+    )
+    Add_Rigid_Object_To_Scene(test, "Cuboid", Stud)
 
     while simulation_app.is_running():
         # Rendering The World
@@ -1287,52 +1303,52 @@ def main():
 
 
 # R1 Suction Pick Position
-        robots[0].plan(tcp_name="tool1",
-                                target_pose=np.array([-0.49, -1.54, 0.44]),
-                                target_orientation=np.array([quat[0], quat[1], quat[2], quat[3]]),
-                                update_world_needed=True)
-        robots[0].render_exec(renderInstance=True,
-                                Show_Sphere = False)
+        # robots[0].plan(tcp_name="tool1",
+        #                         target_pose=np.array([-0.49, -1.54, 0.44]),
+        #                         target_orientation=np.array([quat[0], quat[1], quat[2], quat[3]]),
+        #                         update_world_needed=True)
+        # robots[0].render_exec(renderInstance=True,
+        #                         Show_Sphere = False)
 
 
 
 # Attach Testing
-        robots[0].eef_attach(r_name= "IRB6620_R1",
-                             tool_name="tool1",
-                             attaching_object_name=Sheathing_Plate.name)
+        # robots[0].eef_attach(r_name= "IRB6620_R1",
+        #                      tool_name="tool1",
+        #                      attaching_object_name=Sheathing_Plate.name)
 
         # T_Now = time.time()
         # while time.time() - T_Now < 5:
         #     test._my_world.step(render=True)
 
 # R1 Suction Place Position
-        robots[0].plan(tcp_name="tool1",
-                                target_pose=np.array([0, 1.5, 0.08]),
-                                target_orientation=np.array([quat_2[0], quat_2[1], quat_2[2], quat_2[3]]),
-                                update_world_needed=True)
-        robots[0].render_exec(renderInstance=True,
-                              Show_Sphere = False)
+        # robots[0].plan(tcp_name="tool1",
+        #                         target_pose=np.array([0, 1.5, 0.08]),
+        #                         target_orientation=np.array([quat_2[0], quat_2[1], quat_2[2], quat_2[3]]),
+        #                         update_world_needed=True)
+        # robots[0].render_exec(renderInstance=True,
+        #                       Show_Sphere = False)
         
         # T_Now = time.time()
         # while time.time() - T_Now < 200:
         #     test._my_world.step(render=True)
 
 # Detach Testing
-        robots[0].eef_detach(r_name="IRB6620_R1",
-                             tool_name="tool1",
-                             detaching_object_name=Sheathing_Plate.name)   
+        # robots[0].eef_detach(r_name="IRB6620_R1",
+        #                      tool_name="tool1",
+        #                      detaching_object_name=Sheathing_Plate.name)   
 
 # R1 Suction Pick Position
-        robots[0].plan(tcp_name="tool1",
-                                target_pose=np.array([-0.49, -1.54, 0.44]),
-                                target_orientation=np.array([quat[0], quat[1], quat[2], quat[3]]),
-                                update_world_needed=True)
-        robots[0].render_exec(renderInstance=True,
-                                Show_Sphere = False)
+        # robots[0].plan(tcp_name="tool1",
+        #                         target_pose=np.array([-0.49, -1.54, 0.44]),
+        #                         target_orientation=np.array([quat[0], quat[1], quat[2], quat[3]]),
+        #                         update_world_needed=True)
+        # robots[0].render_exec(renderInstance=True,
+        #                         Show_Sphere = False)
 
-        T_Now = time.time()
-        while time.time() - T_Now < 2000:
-            test._my_world.step(render=True)
+        # T_Now = time.time()
+        # while time.time() - T_Now < 2000:
+        #     test._my_world.step(render=True)
 
 # R2 Gripper Movement Test
         # robots[1].plan(tcp_name="tool1",
