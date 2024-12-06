@@ -90,6 +90,7 @@ simulation_app.update()
 import omni.kit.commands as cmd
 # Adding UsdPhysics to Add Mass To the Object
 from pxr import Gf, Usd, Sdf, UsdGeom, UsdPhysics
+
 import omni.usd
 # Creating SurfaceGripper OmniGraph
 import omni.graph.core as og
@@ -361,6 +362,7 @@ class CuRoboRobot(object):
         self._robot_cfg = load_yaml(join_path(self._robot_cfg_path, r_conf_name))["robot_cfg"]
         self._j_names = self._robot_cfg["kinematics"]["cspace"]["joint_names"]
         self._default_config = self._robot_cfg["kinematics"]["cspace"]["retract_config"]
+
         
         # Setting up TCP
         self._current_tool = input_tool
@@ -496,6 +498,12 @@ class CuRoboRobot(object):
 
         self._world_updater_counter = 0
 
+        # Deactivating EndEffector's Collision Representation in the Simulation
+        # Attaching Surface Grippers to Link 6 rather than Link 7
+        # Everything Will Workd ^-^ !!!
+        self._EEF_Prim = self._temp_world_manager._stage.GetPrimAtPath("/" + self._ROS_JS_robot_indicator + "/Link_7/collisions")
+        self._Collider_Off = self._EEF_Prim.GetAttribute("physics:collisionEnabled").Set(False)
+
 
     def articulation_controller_init(self, step_index):
         if self._articulation_controller is None:
@@ -554,7 +562,50 @@ class CuRoboRobot(object):
                                                 max_attempts=max_attempts,
                                                 enable_finetune_trajopt=enable_finetune_trajopt,
                                                 time_dilation_factor=0.5)
-    
+
+    def motion_gen_update_world(self):
+
+        # 1. Get an Update of the Collision World for the Robot:
+        # Ignoring Other Robot's Visual Representation
+        # This should be updated for the list of robots !!!!
+        Rob_name: str= ""
+        if self._ROS_JS_robot_indicator == "IRB6620_R1":
+            Rob_name = "IRB6620_R2"
+        if self._ros_js_publsiher == "IRB6620_R2":
+            Rob_name = "IRB6620_R1"
+        
+        obstacles = self._temp_world_manager._usd_help.get_obstacles_from_stage(
+            reference_prim_path=self._robot_prim_path,
+            ignore_substring=[
+                self._robot_prim_path,
+                "/World/defaultGroundPlane",
+                # smart Conveyor's Visual Prims
+                "/Smart_Conveyor/base_link/visuals",
+                "/Smart_Conveyor/track_link/visuals",
+                "/Smart_Conveyor/Link_1/visuals",
+                "/Smart_Conveyor/Link_2/visuals",
+                # Other Robot's Visual Prims
+                "/"+Rob_name+"/base_link/visuals",
+                "/"+Rob_name+"/Link_1/visuals",
+                "/"+Rob_name+"/Link_2/visuals",
+                "/"+Rob_name+"/Link_3/visuals",
+                "/"+Rob_name+"/Link_4/visuals",
+                "/"+Rob_name+"/Link_5/visuals",
+                "/"+Rob_name+"/Link_6/visuals",
+                "/"+Rob_name+"/Link_7/visuals",
+                "/"+Rob_name+"/Link_8/visuals",
+                # Attached Object's Prim (If Any)
+                self._attached_obj_prim,                           
+                # Other Robot's Prim Path Should also be Ignored !
+                # This feature is to be developed (MPC)
+            ],
+        ).get_collision_check_world()
+
+        self._motion_gen.update_world(obstacles)
+        self._temp_world_manager._my_world.step(render=True)
+
+        print(" Collision World Updated for " + self._ROS_JS_robot_indicator)
+
     def plan(self,
                         tcp_name: str = "tool1",
                         target_pose: np.array = [0, 0, 0],
@@ -567,52 +618,7 @@ class CuRoboRobot(object):
 
         # A New Approach to Avoid CUDA Memory Occupation:
         if(update_world_needed):
-            # 1. Get an Update of the Collision World for the Robot:
-            print("Updating world, reading w.r.t.", self._robot_prim_path)
-            # Ignoring Other Robot's Visual Representation
-            Rob_name: str= ""
-            if self._ROS_JS_robot_indicator == "IRB6620_R1":
-                Rob_name = "IRB6620_R2"
-            if self._ros_js_publsiher == "IRB6620_R2":
-                Rob_name = "IRB6620_R1"
-            obstacles = self._temp_world_manager._usd_help.get_obstacles_from_stage(
-                reference_prim_path=self._robot_prim_path,
-                ignore_substring=[
-                    self._robot_prim_path,
-                    "/World/defaultGroundPlane",
-                    # smart Conveyor's Visual Prims
-                    "/Smart_Conveyor/base_link/visuals",
-                    "/Smart_Conveyor/track_link/visuals",
-                    "/Smart_Conveyor/Link_1/visuals",
-                    "/Smart_Conveyor/Link_2/visuals",
-                    # Other Robot's Visual Prims
-                    "/"+Rob_name+"/base_link/visuals",
-                    "/"+Rob_name+"/Link_1/visuals",
-                    "/"+Rob_name+"/Link_2/visuals",
-                    "/"+Rob_name+"/Link_3/visuals",
-                    "/"+Rob_name+"/Link_4/visuals",
-                    "/"+Rob_name+"/Link_5/visuals",
-                    "/"+Rob_name+"/Link_6/visuals",
-                    "/"+Rob_name+"/Link_7/visuals",
-                    "/"+Rob_name+"/Link_8/visuals",
-                    # Attached Object's Prim (If Any)
-                    self._attached_obj_prim,                           
-                    # Other Robot's Prim Path Should also be Ignored !
-                    # This feature is to be developed (MPC)
-                ],
-            ).get_collision_check_world()
-
-            # Saving the Updated World !
-            # file_path = "World_For_" + self._ROS_JS_robot_indicator + "_Step_" + str(self._world_updater_counter) + ".obj"
-            # obstacles.save_world_as_mesh(file_path)
-            # self._world_updater_counter += 1
-
-            self._motion_gen.update_world(obstacles)
-            print("Updated World")
-
-            self._temp_world_manager._my_world.step(render=True)
-            
-            carb.log_info("Synced CuRobo world from stage for Robot : " + self._r_conf_name)
+            self.motion_gen_update_world()
 
         result: MotionGenResult = None
         succ = None
@@ -757,7 +763,7 @@ class CuRoboRobot(object):
     def IDC_Attach_Object_To_Robot(self,
                                     joint_state: JointState,
                                     object_names: List[str],
-                                    attaching_link_name: str = 'tool1',
+                                    attaching_link_name: str = 'tool0',
                                     sphere_number: int = 100,
                                     surface_sphere_radius: float = 0.05,
                                     sphere_fit_type: SphereFitType = SphereFitType.VOXEL_VOLUME_SAMPLE_SURFACE,
@@ -920,9 +926,26 @@ class CuRoboRobot(object):
                    r_name: str = "IRB6620_R1",
                    tool_name: str = "tool1",
                    attaching_object_name: str = None):
+        
         if(attaching_object_name == None):
-            print("There should be a valid Object_Name => Attaching Failed")
+            print("No Object Name Mentioned As Robot " + self._ROS_JS_robot_indicator + " Attachment | Command Aborted")
+            print("Program will continue in 5 seconds ...")
+            T_Now = time.time()
+            while time.time() - T_Now <= 5:
+                self._temp_world_manager._my_world.step(render=True)
             return False
+
+        # Check for the active toolname
+        active_tool_name = self._motion_gen.kinematics.kinematics_config.ee_link
+        if(tool_name != active_tool_name):
+            print("MotionGen is warmed up for " + active_tool_name + " on " + self._ROS_JS_robot_indicator + ", but " + 
+                  tool_name + " is requested for attachement")
+            print("Program will rewarmup " + self._ROS_JS_robot_indicator + " for " + tool_name + " in 5 seconds ...")
+            T_Now = time.time()
+            while time.time() - T_Now <= 5:
+                self._temp_world_manager._my_world.step(render=True)
+
+            self.motion_gen_warmup(TCP_Name=tool_name)          
 
         # Attaching the object withing the simulation to the virtual link (SurfaceGripper Attach)
         CV_Tool_name = f"T{tool_name[-1]}"
@@ -966,7 +989,8 @@ class CuRoboRobot(object):
                             cu_js,
                             [Updated_Obj_Name],
                             sphere_fit_type=SphereFitType.VOXEL_VOLUME_SAMPLE_SURFACE,
-                            surface_sphere_radius=0.05,
+                            surface_sphere_radius=0.005,
+                            attaching_link_name= tool_name,
                             # If you put 0 as Z axis, you have to avoid capturing the attaching object's collision representation
                             # to prevent the INVALID.START.STATE.WORLD.COLLISION error
                             
@@ -1006,11 +1030,9 @@ class CuRoboRobot(object):
         self._is_obj_attached = False
         self._attached_obj_prim = "/world/obstacles/DummyObstacle"
 
+    # Debuging Purposes (To Deactivate Robot's EndEffector Collision => To Attach Studs to the Grippers)
     def disable_eef_collider(self):
-        Obj_Prim = self._temp_world_manager._stage.GetPrimAtPath("/IRB6620_R1/Link_7")
-
-        self._temp_world_manager._my_world.step(render=True)
-        Dis_RB = Obj_Prim.GetAttribute("physics:rigidBodyEnabled").Set(False)
+        Obj_Prim = self._temp_world_manager._stage.GetPrimAtPath("/" + self._ROS_JS_robot_indicator + "/Link_7/collisions")
         self._temp_world_manager._my_world.step(render=True)
         Dis_Co = Obj_Prim.GetAttribute("physics:collisionEnabled").Set(False)
     
@@ -1050,17 +1072,17 @@ robots = [
     CuRoboRobot(working_world=test, 
                 R_Name="IRB6620_R1",
                 pose=[0,0,0.025],
-                input_tool="tool1", 
+                input_tool="tool0", 
                 w_dir="home/apshirazi/Isaac_sim_ws/robot", 
                 r_conf_name="IRB6620_Config.yaml",
                 Gripper_List=[RobotGripper(RobName= "IRB6620_R1",
-                                           ParentLink= "Link_7",
-                                           TCP_Name= "T1",
-                                           C_Pose= [0.175 , 0.43, 0.52]),
+                                           ParentLink= "Link_6",
+                                           TCP_Name= "T0",
+                                           C_Pose= [0.09 , 0, -0.29]),
                                 RobotGripper(RobName= "IRB6620_R1",
-                                             ParentLink= "Link_7",
-                                             TCP_Name= "T0",
-                                             C_Pose= [0.4, 0, 0.035])
+                                             ParentLink= "Link_6",
+                                             TCP_Name= "T1",
+                                             C_Pose= [0.55, 0.435, -0.175])
                                            ]),
     # IRB6620_R2 (Commented)
     # CuRoboRobot(working_world=test,
@@ -1070,9 +1092,9 @@ robots = [
     #             w_dir="home/apshirazi/Isaac_sim_ws/robot_2",
     #             r_conf_name="IRB6620_Config.yaml",
     #             Gripper_List=[RobotGripper(RobName= "IRB6620_R2",
-    #                                        ParentLink= "Link_7",
+    #                                        ParentLink= "Link_6",
     #                                        TCP_Name="T0",
-    #                                        C_Pose=[0.11, 0, -0.57]),
+    #                                        C_Pose=[0.62, 0.15, -0.11]),
     #                                        ])
     # Add more robots as needed
 ]
@@ -1136,17 +1158,29 @@ def Add_Rigid_Object_To_Scene(World_Manager: WorldManager,
     execute("AddPhysicsComponentCommand",
                           usd_prim=Obj_Prim,
                           component="PhysicsCollisionAPI")
+    
+    # Here is an Alternative Method to add Collision Attribute (Using UsdPhysics)
+    # UsdPhysics.CollisionAPI.Apply(Obj_Prim)
+
+    # Adding ConvexHull for meshes (Not Working as of 12/06/2024)
+    # Obj_Prim.CreateAttribute("physics:approximation").Set(UsdPhysics.Tokens.boundingCube)
+    # print(dir(UsdPhysics.Tokens))
+
     # Adding Colliders
     execute("AddPhysicsComponentCommand",
                           usd_prim=Obj_Prim,
                           component="PhysicsMassAPI")
+
     # Adding a Small Positive Mass to Avoid Robot's Effort Calculation using CuRobo
     Mass_Succ = Obj_Prim.GetAttribute("physics:mass").Set(0.0001)
     # Disabling Gravity
     Dis_Grav = Obj_Prim.GetAttribute("physxRigidBody:disableGravity").Set(True)
 
-    print("For Obj (" + obj.name + ") Mass Creation : " + str(Mass_Succ))
-    print("For Obj (" + obj.name + ") DisableGravity Creation : " + str(Dis_Grav))
+    print("Object " + obj.name + " Added to the Simulation | PRIM: " + Added_Obj_Prim_Root)
+
+    # Updating the Collision World for Each Robot After Adding an Object to the Scene
+    for robot in robots:
+        robot.motion_gen_update_world()
 
 def parallel_movement(
     Rob_idx_list: List[int] = [0, 1],
@@ -1257,18 +1291,18 @@ def main():
     # Add_Rigid_Object_To_Scene(test, "Cuboid", SheathingPlate)
 
     # Adding Test Sheath
-    Sheathing_Plate = Cuboid(
-        name="SP",
-        pose=[-1.4, -2.0, 0.4, 1, 0, 0, 0],
-        dims=[2.0, 1.0, 0.02]
-    )
-    Add_Rigid_Object_To_Scene(test, "Cuboid", Sheathing_Plate)
+    # Sheathing_Plate = Cuboid(
+    #     name="SP",
+    #     pose=[-1.4, -2.0, 0.4, 1, 0, 0, 0],
+    #     dims=[2.0, 1.0, 0.02]
+    # )
+    # Add_Rigid_Object_To_Scene(test, "Cuboid", Sheathing_Plate)
 
     # Adding Test Stud
     Stud = Cuboid(
         name= "stud_test",
-        pose= [2.6, 0.13, 1.77, 1, 0, 0, 0],
-        dims= [0.1, 3, 0.03]
+        pose= [1.46, 0.14, 1.59, 1, 0, 0, 0],
+        dims= [0.03, 1.5, 0.1]
     )
     Add_Rigid_Object_To_Scene(test, "Cuboid", Stud)
 
@@ -1301,6 +1335,46 @@ def main():
         quat_test= euler_to_quat(np.pi, 0, 0)
         quat_2= euler_to_quat(np.pi/2, 0, np.pi)
 
+# R1 Gripper Attach (Stud)
+        robots[0].eef_attach(r_name= "IRB6620_R1",
+                             tool_name="tool0",
+                             attaching_object_name=Stud.name)
+
+# R1 Gripper Pose 1
+        Q_Gripper_Pick = euler_to_quat(-np.pi/2, 0, 0)
+        robots[0].plan(tcp_name="tool0",
+                       target_pose=np.array([-0.59, -0.74, 0.39]),
+                       target_orientation=np.array([Q_Gripper_Pick[0], Q_Gripper_Pick[1], Q_Gripper_Pick[2], Q_Gripper_Pick[3]]),
+                       update_world_needed=True)
+        robots[0].render_exec(renderInstance=True,
+                              Show_Sphere = True)
+
+# R1 Gripper Pose 2
+        Q_Gripper_Place = euler_to_quat(np.pi/3, 0, 0)
+        robots[0].plan(tcp_name="tool0",
+                target_pose=np.array([-0.59, 1.98, 0.39]),
+                target_orientation=np.array([Q_Gripper_Place[0], Q_Gripper_Place[1], Q_Gripper_Place[2], Q_Gripper_Place[3]]),
+                update_world_needed=True)
+        robots[0].render_exec(renderInstance=True,
+                              Show_Sphere = True)
+        
+# R1 Gripper Detach (Stud)
+        robots[0].eef_detach(r_name="IRB6620_R1",
+                             tool_name="tool0",
+                             detaching_object_name=Stud.name)
+
+# R1 Gripper Home Pose
+        Q_Gripper_Home = euler_to_quat(np.pi, 0, 0)
+        robots[0].plan(tcp_name="tool0",
+                target_pose=np.array([1.5, 0, 1.5]),
+                target_orientation=np.array([Q_Gripper_Home[0], Q_Gripper_Home[1], Q_Gripper_Home[2], Q_Gripper_Home[3]]),
+                update_world_needed=True)
+        robots[0].render_exec(renderInstance=True,
+                              Show_Sphere = True)                 
+
+        T_Now = time.time()
+        while time.time() - T_Now < 200:
+            test._my_world.step(render=True)
 
 # R1 Suction Pick Position
         # robots[0].plan(tcp_name="tool1",
@@ -1312,7 +1386,7 @@ def main():
 
 
 
-# Attach Testing
+# Attach Testing (SP)
         # robots[0].eef_attach(r_name= "IRB6620_R1",
         #                      tool_name="tool1",
         #                      attaching_object_name=Sheathing_Plate.name)
