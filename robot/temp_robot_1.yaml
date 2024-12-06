@@ -1,0 +1,55 @@
+robot_cfg:
+
+    kinematics:
+
+        # USD (Isaac SIM) IMPORT SECTION
+
+        usd_path: "/home/apshirazi/Isaac_sim_ws/robot/IRB6620_R1.usd"
+        usd_robot_root: "/robot"
+        isaac_usd_path: ""
+        usd_flip_joints: {}
+        usd_flip_joint_limits: []
+        
+        # END OF USD (Isaac SIM) IMPORT SECTION
+
+        # URDF IMPORT SECTION
+        ###Check for Path !
+        urdf_path: "/home/apshirazi/Isaac_sim_ws/robot/IRB6620_R1_ROS.urdf"
+        asset_root_path: "/home/apshirazi/Isaac_sim_ws/meshes"
+
+        base_link: "base_link"
+        ee_link: "tool0"
+        link_names: null
+        lock_joints: null
+        extra_links: null
+        # END OF URDF IMPORT SECTION
+
+        # 
+        #
+        collision_link_names: [
+          "base_link", 
+          "Link_1",
+          "Link_2",
+          "Link_3",
+          "Link_4",
+          "Link_5",
+          "Link_6",
+          "Link_7",
+          "Link_8",
+        ]
+        collision_spheres: ""
+        # Don't Ever Touch This !!!!
+        collision_sphere_buffer: 0.005
+        extra_collision_spheres: {}
+        self_collision_ignore: {}
+        self_collision_buffer: {}
+        use_global_cumul: True
+        mesh_link_names: null # List[str]
+        
+        cspace:
+            joint_names: ['Joint_1', 'Joint_2', 'Joint_3', 'Joint_4', 'Joint_5', 'Joint_6']
+            retract_config: [0, 0, 0, 0, 0, 0]
+            null_space_weight: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+            cspace_distance_weight: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+            max_jerk: 100.0
+            max_acceleration: 5.0
