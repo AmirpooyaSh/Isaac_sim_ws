@@ -369,7 +369,10 @@ class CuRoboRobot(object):
         self._robot_cfg["kinematics"]["ee_link"] = self._current_tool
 
         # Setting up Extra Tool Spheres
-        self._robot_cfg["kinematics"]["extra_collision_spheres"] = {"tool0": 50, "tool1": 100,}
+        if self._ROS_JS_robot_indicator == "IRB6620_R1":
+            self._robot_cfg["kinematics"]["extra_collision_spheres"] = {"tool0": 50, "tool1": 100,}
+        if self._ROS_JS_robot_indicator == "IRB6620_R2":
+            self._robot_cfg["kinematics"]["extra_collision_spheres"] = {"tool0": 50,}
 
         # Adding Robot to the Scene (Identifying robot type as Robot (omni.isaac.core.robots Robot))
         self._temp_world_manager = working_world
@@ -1429,8 +1432,12 @@ def main():
         #                             target_pose=np.array([-0.022, -1.85, 0.57]),
         #                             target_orientation=np.array([quat_test[0], quat_test[1], quat_test[2], quat_test[3]]),
         #                             update_world_needed=True)
-        # robots[1].render_exec(renderInstance=True)
-        
+        # robots[1].render_exec(renderInstance=True,
+        #                         Show_Sphere=True)
+
+        # T_Now = time.time()
+        # while time.time() - T_Now < 200:
+        #     test._my_world.step(render=True)       
 
 # Testing MPC Movement (Out Dated as of 12/04/2024)
         # mpc_movement(Goal_List_Orientation=[np.array([quat[0], quat[1], quat[2], quat[3]]),

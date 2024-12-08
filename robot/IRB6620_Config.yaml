@@ -39,7 +39,8 @@ robot_cfg:
           "tool0",
           "tool1",
         ]
-        collision_spheres: "/home/apshirazi/Isaac_sim_ws/robot/IRB6620_R1_Lula_modified.yaml"
+        # IRB6620_R1_Lula_modified
+        collision_spheres: "/home/apshirazi/Isaac_sim_ws/robot/test.yaml"
         # Don't Ever Touch This !!!!
         collision_sphere_buffer: 0.005
         extra_collision_spheres: {

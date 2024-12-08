@@ -443,18 +443,22 @@ def main():
                 # create spheres:
 
                 for si, s in enumerate(sph_list[0]):
+                    sph_test = s
+                    sph_test.position[0] += 4.6
                     sp = sphere.VisualSphere(
                         prim_path="/curobo/robot_sphere_" + str(si),
-                        position=np.ravel(s.position),
-                        radius=float(s.radius),
+                        position=np.ravel(sph_test.position),
+                        radius=float(sph_test.radius),
                         color=np.array([0, 0.8, 0.2]),
                     )
                     spheres.append(sp)
             else:
                 for si, s in enumerate(sph_list[0]):
                     if not np.isnan(s.position[0]):
-                        spheres[si].set_world_pose(position=np.ravel(s.position))
-                        spheres[si].set_radius(float(s.radius))
+                        sph_test = s
+                        sph_test.position[0] += 4.6
+                        spheres[si].set_world_pose(position=np.ravel(sph_test.position))
+                        spheres[si].set_radius(float(sph_test.radius))
 
         robot_static = False
         if (np.max(np.abs(sim_js.velocities)) < 0.2) or args.reactive:
