@@ -372,7 +372,7 @@ class CuRoboRobot(object):
         if self._ROS_JS_robot_indicator == "IRB6620_R1":
             self._robot_cfg["kinematics"]["extra_collision_spheres"] = {"tool0": 50, "tool1": 100,}
         if self._ROS_JS_robot_indicator == "IRB6620_R2":
-            self._robot_cfg["kinematics"]["extra_collision_spheres"] = {"tool0": 50,}
+            self._robot_cfg["kinematics"]["extra_collision_spheres"] = {"tool0": 100,}
 
         # Adding Robot to the Scene (Identifying robot type as Robot (omni.isaac.core.robots Robot))
         self._temp_world_manager = working_world
@@ -928,7 +928,9 @@ class CuRoboRobot(object):
     def eef_attach(self,
                    r_name: str = "IRB6620_R1",
                    tool_name: str = "tool1",
-                   attaching_object_name: str = None):
+                   attaching_object_name: str = None,
+                   gen_sphere_radius: float = 0.005,
+                   voxelization_method: SphereFitType = SphereFitType.VOXEL_VOLUME_SAMPLE_SURFACE):
         
         if(attaching_object_name == None):
             print("No Object Name Mentioned As Robot " + self._ROS_JS_robot_indicator + " Attachment | Command Aborted")
@@ -991,8 +993,8 @@ class CuRoboRobot(object):
         Is_Attach_Succ = self.IDC_Attach_Object_To_Robot(
                             cu_js,
                             [Updated_Obj_Name],
-                            sphere_fit_type=SphereFitType.VOXEL_VOLUME_SAMPLE_SURFACE,
-                            surface_sphere_radius=0.005,
+                            sphere_fit_type=voxelization_method,
+                            surface_sphere_radius=gen_sphere_radius,
                             attaching_link_name= tool_name,
                             # If you put 0 as Z axis, you have to avoid capturing the attaching object's collision representation
                             # to prevent the INVALID.START.STATE.WORLD.COLLISION error
@@ -1072,33 +1074,33 @@ test = WorldManager()
 
 robots = [
     # IRB6620_R1
-    CuRoboRobot(working_world=test, 
-                R_Name="IRB6620_R1",
-                pose=[0,0,0.025],
-                input_tool="tool0", 
-                w_dir="home/apshirazi/Isaac_sim_ws/robot", 
-                r_conf_name="IRB6620_Config.yaml",
-                Gripper_List=[RobotGripper(RobName= "IRB6620_R1",
-                                           ParentLink= "Link_6",
-                                           TCP_Name= "T0",
-                                           C_Pose= [0.09 , 0, -0.29]),
-                                RobotGripper(RobName= "IRB6620_R1",
-                                             ParentLink= "Link_6",
-                                             TCP_Name= "T1",
-                                             C_Pose= [0.55, 0.435, -0.175])
-                                           ]),
-    # IRB6620_R2 (Commented)
-    # CuRoboRobot(working_world=test,
-    #             R_Name="IRB6620_R2",
-    #             pose=[4.6, 0, 0.025],
-    #             input_tool="tool1",
-    #             w_dir="home/apshirazi/Isaac_sim_ws/robot_2",
+    # CuRoboRobot(working_world=test, 
+    #             R_Name="IRB6620_R1",
+    #             pose=[0,0,0.025],
+    #             input_tool="tool0", 
+    #             w_dir="home/apshirazi/Isaac_sim_ws/robot", 
     #             r_conf_name="IRB6620_Config.yaml",
-    #             Gripper_List=[RobotGripper(RobName= "IRB6620_R2",
+    #             Gripper_List=[RobotGripper(RobName= "IRB6620_R1",
     #                                        ParentLink= "Link_6",
-    #                                        TCP_Name="T0",
-    #                                        C_Pose=[0.62, 0.15, -0.11]),
-    #                                        ])
+    #                                        TCP_Name= "T0",
+    #                                        C_Pose= [0.09 , 0, -0.29]),
+    #                             RobotGripper(RobName= "IRB6620_R1",
+    #                                          ParentLink= "Link_6",
+    #                                          TCP_Name= "T1",
+    #                                          C_Pose= [0.55, 0.435, -0.175])
+    #                                        ]),
+    # IRB6620_R2 (Commented)
+    CuRoboRobot(working_world=test,
+                R_Name="IRB6620_R2",
+                pose=[4.6, 0, 0.025],
+                input_tool="tool0",
+                w_dir="home/apshirazi/Isaac_sim_ws/robot_2",
+                r_conf_name="IRB6620_Config.yaml",
+                Gripper_List=[RobotGripper(RobName= "IRB6620_R2",
+                                           ParentLink= "Link_6",
+                                           TCP_Name="T0",
+                                           C_Pose=[0.62, 0.15, -0.11]),
+                                           ])
     # Add more robots as needed
 ]
 
@@ -1309,6 +1311,14 @@ def main():
     )
     Add_Rigid_Object_To_Scene(test, "Cuboid", Stud)
 
+    #Adding Rob2 Test Stud
+    L_Stud = Cuboid(
+        name="L_Stud",
+        pose=[2.6, 0.97, 1.77, 1, 0, 0, 0],
+        dims= [0.1, 3.0, 0.05]
+    )
+    Add_Rigid_Object_To_Scene(test, "Cuboid", L_Stud)
+
     while simulation_app.is_running():
         # Rendering The World
         test._my_world.step(render=True)
@@ -1338,46 +1348,46 @@ def main():
         quat_test= euler_to_quat(np.pi, 0, 0)
         quat_2= euler_to_quat(np.pi/2, 0, np.pi)
 
-# R1 Gripper Attach (Stud)
-        robots[0].eef_attach(r_name= "IRB6620_R1",
-                             tool_name="tool0",
-                             attaching_object_name=Stud.name)
+# # R1 Gripper Attach (Stud)
+#         robots[0].eef_attach(r_name= "IRB6620_R1",
+#                              tool_name="tool0",
+#                              attaching_object_name=Stud.name)
 
-# R1 Gripper Pose 1
-        Q_Gripper_Pick = euler_to_quat(-np.pi/2, 0, 0)
-        robots[0].plan(tcp_name="tool0",
-                       target_pose=np.array([-0.59, -0.74, 0.39]),
-                       target_orientation=np.array([Q_Gripper_Pick[0], Q_Gripper_Pick[1], Q_Gripper_Pick[2], Q_Gripper_Pick[3]]),
-                       update_world_needed=True)
-        robots[0].render_exec(renderInstance=True,
-                              Show_Sphere = True)
+# # R1 Gripper Pose 1
+#         Q_Gripper_Pick = euler_to_quat(-np.pi/2, 0, 0)
+#         robots[0].plan(tcp_name="tool0",
+#                        target_pose=np.array([-0.59, -0.74, 0.39]),
+#                        target_orientation=np.array([Q_Gripper_Pick[0], Q_Gripper_Pick[1], Q_Gripper_Pick[2], Q_Gripper_Pick[3]]),
+#                        update_world_needed=True)
+#         robots[0].render_exec(renderInstance=True,
+#                               Show_Sphere = True)
 
-# R1 Gripper Pose 2
-        Q_Gripper_Place = euler_to_quat(np.pi/3, 0, 0)
-        robots[0].plan(tcp_name="tool0",
-                target_pose=np.array([-0.59, 1.98, 0.39]),
-                target_orientation=np.array([Q_Gripper_Place[0], Q_Gripper_Place[1], Q_Gripper_Place[2], Q_Gripper_Place[3]]),
-                update_world_needed=True)
-        robots[0].render_exec(renderInstance=True,
-                              Show_Sphere = True)
+# # R1 Gripper Pose 2
+#         Q_Gripper_Place = euler_to_quat(np.pi/3, 0, 0)
+#         robots[0].plan(tcp_name="tool0",
+#                 target_pose=np.array([-0.59, 1.98, 0.39]),
+#                 target_orientation=np.array([Q_Gripper_Place[0], Q_Gripper_Place[1], Q_Gripper_Place[2], Q_Gripper_Place[3]]),
+#                 update_world_needed=True)
+#         robots[0].render_exec(renderInstance=True,
+#                               Show_Sphere = True)
         
-# R1 Gripper Detach (Stud)
-        robots[0].eef_detach(r_name="IRB6620_R1",
-                             tool_name="tool0",
-                             detaching_object_name=Stud.name)
+# # R1 Gripper Detach (Stud)
+#         robots[0].eef_detach(r_name="IRB6620_R1",
+#                              tool_name="tool0",
+#                              detaching_object_name=Stud.name)
 
-# R1 Gripper Home Pose
-        Q_Gripper_Home = euler_to_quat(np.pi, 0, 0)
-        robots[0].plan(tcp_name="tool0",
-                target_pose=np.array([1.5, 0, 1.5]),
-                target_orientation=np.array([Q_Gripper_Home[0], Q_Gripper_Home[1], Q_Gripper_Home[2], Q_Gripper_Home[3]]),
-                update_world_needed=True)
-        robots[0].render_exec(renderInstance=True,
-                              Show_Sphere = True)                 
+# # R1 Gripper Home Pose
+#         Q_Gripper_Home = euler_to_quat(np.pi, 0, 0)
+#         robots[0].plan(tcp_name="tool0",
+#                 target_pose=np.array([1.5, 0, 1.5]),
+#                 target_orientation=np.array([Q_Gripper_Home[0], Q_Gripper_Home[1], Q_Gripper_Home[2], Q_Gripper_Home[3]]),
+#                 update_world_needed=True)
+#         robots[0].render_exec(renderInstance=True,
+#                               Show_Sphere = True)                 
 
-        T_Now = time.time()
-        while time.time() - T_Now < 200:
-            test._my_world.step(render=True)
+#         T_Now = time.time()
+#         while time.time() - T_Now < 200:
+#             test._my_world.step(render=True)
 
 # R1 Suction Pick Position
         # robots[0].plan(tcp_name="tool1",
@@ -1434,6 +1444,45 @@ def main():
         #                             update_world_needed=True)
         # robots[1].render_exec(renderInstance=True,
         #                         Show_Sphere=True)
+
+# R2 Attach/Detach Test (Tool0)
+
+# R2 Attach
+        robots[0].eef_attach(r_name= "IRB6620_R2",
+                             tool_name="tool0",
+                             attaching_object_name=L_Stud.name,
+                             gen_sphere_radius=0.005,
+                             voxelization_method= SphereFitType.SAMPLE_SURFACE)
+# R2 Pose 1
+        R2_Pose_1_Quat = euler_to_quat(np.pi, 0, 0)
+        robots[0].plan(tcp_name="tool0",
+                                    target_pose=np.array([0.735, -0.947, 0.271]),
+                                    target_orientation=np.array([R2_Pose_1_Quat[0], R2_Pose_1_Quat[1], R2_Pose_1_Quat[2], R2_Pose_1_Quat[3]]),
+                                    update_world_needed=True)
+        robots[0].render_exec(renderInstance=True,
+                                Show_Sphere=False)
+
+# R2 Pose 2 (Detech)
+        R2_Pose_2_Quat = euler_to_quat(-np.pi/2, 0, 0)
+        robots[0].plan(tcp_name="tool0",
+                                    target_pose=np.array([-0.7933, -0.984, 0.981]),
+                                    target_orientation=np.array([R2_Pose_2_Quat[0], R2_Pose_2_Quat[1], R2_Pose_2_Quat[2], R2_Pose_2_Quat[3]]),
+                                    update_world_needed=True)
+        robots[0].render_exec(renderInstance=True,
+                                Show_Sphere=False)
+# R2 Detach
+        robots[0].eef_detach(r_name="IRB6620_R2",
+                             tool_name="tool0",
+                             detaching_object_name=L_Stud.name)   
+
+#R2 Home Pose
+        R2_Pose_Home_Quat = euler_to_quat(np.pi, np.pi/2, np.pi)
+        robots[0].plan(tcp_name="tool0",
+                                    target_pose=np.array([-1.578, -0.431, 1.825]),
+                                    target_orientation=np.array([R2_Pose_Home_Quat[0], R2_Pose_Home_Quat[1], R2_Pose_Home_Quat[2], R2_Pose_Home_Quat[3]]),
+                                    update_world_needed=True)
+        robots[0].render_exec(renderInstance=True,
+                                Show_Sphere=False)
 
         # T_Now = time.time()
         # while time.time() - T_Now < 200:

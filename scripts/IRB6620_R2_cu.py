@@ -49,7 +49,7 @@ parser.add_argument(
     "--visualize_spheres",
     action="store_true",
     help="When True, visualizes robot spheres",
-    default=True,
+    default=False,
 )
 parser.add_argument(
     "--reactive",

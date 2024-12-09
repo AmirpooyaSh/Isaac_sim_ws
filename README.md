@@ -1,14 +1,6 @@
 # University of Florida - Smart IDC Lab Repository
 This repository belongs to the Smart IDC Lab (supervised by Dr. Aladdin Alwisy - M.E. Rinker School of Construction)
 
-# Current State of Practice
-[Watch the Video](https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/vids/Success_Move.webm)
-
-<video width="600" controls autoplay loop>
-  <source src="https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/vids/Success_Move.webm" type="video/webm">
-  Your browser does not support the video tag.
-</video>
-
 # Requirements
 - Ubuntu 22.04.5 LTS
 - CUDA = 11.8
