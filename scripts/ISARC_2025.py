@@ -61,6 +61,7 @@ from omni.isaac.core.prims.xform_prim import XFormPrim
 from omni.isaac.core.robots import Robot
 from omni.isaac.core.scenes.scene import Scene
 
+
 # This is used to make VScode understand ArticulationController's type (which is fed from the robot privately)
 from typing import cast, List, Optional, Any
 
@@ -98,6 +99,10 @@ import omni.graph.core as og
 from omni.isaac.surface_gripper import SurfaceGripper
 
 from omni.kit.commands import execute
+
+#Dynamic Control API
+from omni.isaac.dynamic_control import _dynamic_control
+
 
 
 
@@ -753,6 +758,20 @@ class CuRoboRobot(object):
                     cmd_state.velocity.cpu().numpy(),
                     joint_indices=idx_list,
                 )
+
+                Active_Tool_Name = self._motion_gen.kinematics.kinematics_config.ee_link
+                Tool_Prim_Path = "/"+self._ROS_JS_robot_indicator+"/"+Active_Tool_Name
+                #Tool_Prim = self._temp_world_manager._my_world.stage.GetPrimAtPath(Tool_Prim_Path)
+
+                # DYNAMIC INFORMATION TO GET THE POSITION/ORIENTATION
+
+                dc=_dynamic_control.acquire_dynamic_control_interface()
+                object=dc.get_rigid_body(Tool_Prim_Path)
+                object_pose=dc.get_rigid_body_pose(object)
+
+                print("position:", object_pose.p)
+                print("rotation:", object_pose.r)
+
 
                 # set desired joint angles obtained from IK:
                 self._articulation_controller.apply_action(art_action)

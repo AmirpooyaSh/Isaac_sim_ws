@@ -61,6 +61,18 @@ from omni.isaac.core.prims.xform_prim import XFormPrim
 from omni.isaac.core.robots import Robot
 from omni.isaac.core.scenes.scene import Scene
 
+#Dynamic Control API
+#Tutorial: https://forums.developer.nvidia.com/t/get-position-of-primitive/146702
+# Use Case:
+# dc=_dynamic_control.acquire_dynamic_control_interface()
+
+# object=dc.get_rigid_body("/Stage/bin/SmallKLT")
+# object_pose=dc.get_rigid_body_pose(object)
+
+# print("position:", object_pose.p)
+# print("rotation:", object_pose.r)
+from omni.isaac.dynamic_control import _dynamic_control
+
 # This is used to make VScode understand ArticulationController's type (which is fed from the robot privately)
 from typing import cast, List, Optional, Any
 
