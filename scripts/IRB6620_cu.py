@@ -49,7 +49,7 @@ parser.add_argument(
     "--visualize_spheres",
     action="store_true",
     help="When True, visualizes robot spheres",
-    default=True,
+    default=False,
 )
 parser.add_argument(
     "--reactive",
@@ -177,6 +177,24 @@ def quaternion_to_euler(x, y, z, w):
 
     return roll, pitch, yaw
 
+def euler_to_quat(roll, pitch, yaw):
+    cy = np.cos(yaw * 0.5)
+    sy = np.sin(yaw * 0.5)
+    cp = np.cos(pitch * 0.5)
+    sp = np.sin(pitch * 0.5)
+    cr = np.cos(roll * 0.5)
+    sr = np.sin(roll * 0.5)
+
+    q_w = cr * cp * cy + sr * sp * sy
+    q_x = sr * cp * cy - cr * sp * sy
+    q_y = cr * sp * cy + sr * cp * sy
+    q_z = cr * cp * sy - sr * sp * cy
+
+    return q_x, q_y, q_z, q_w
+
+
+
+
 def add_meshes_to_world():
 
     MatTable_3Level = Mesh(
@@ -202,18 +220,21 @@ def add_meshes_to_world():
         pose=[0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0],
         file_path="/home/apshirazi/Isaac_sim_ws/meshes/NewConvn1_V2.stl",
         scale=[0.001, 0.001, 0.001],
+        color=[0.36,0.25,0.20, 1.0],  
     )
     NewConvn2_V2 = Mesh(
         name="NewConvn2_V2",
         pose=[0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0],
         file_path="/home/apshirazi/Isaac_sim_ws/meshes/NewConvn2_V2.stl",
         scale=[0.001, 0.001, 0.001],
+        color=[0.36,0.25,0.20, 1.0],  
     )
     NewSheathingRack = Mesh(
         name="NewSheathingRack",
         pose=[0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0],
         file_path="/home/apshirazi/Isaac_sim_ws/meshes/NewSheathingRack.stl",
         scale=[0.001, 0.001, 0.001],
+        color=[0.36,0.25,0.20, 1.0],  
     )
 
     SheathingPlate = Cuboid(
@@ -223,8 +244,16 @@ def add_meshes_to_world():
         color=[0.87, 0.72, 0.53, 1]
     )
 
+    Long_Stud_Quat = euler_to_quat(0, -23*np.pi/60, 0)
+    Long_Stud = Cuboid (
+        name="Long_Stud",
+        pose=[-1.59, 3.0, 0.775, Long_Stud_Quat[3], Long_Stud_Quat[0], Long_Stud_Quat[1], Long_Stud_Quat[2]],
+        dims=[0.0331, 6.091, 0.1347],
+        color=[0.87, 0.72, 0.53, 1.0]
+    )
+
     world_model = WorldConfig(
-        mesh=[MatTable_3Level, MatTable_6Level, MatTable_tilted, NewConvn1_V2, NewConvn2_V2, NewSheathingRack, SheathingPlate.get_mesh()],
+        mesh=[NewSheathingRack],
         cuboid=[],
         capsule=[],
         cylinder=[],
