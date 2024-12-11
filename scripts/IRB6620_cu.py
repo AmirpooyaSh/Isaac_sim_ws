@@ -253,7 +253,7 @@ def add_meshes_to_world():
     )
 
     world_model = WorldConfig(
-        mesh=[NewSheathingRack],
+        mesh=[MatTable_3Level, MatTable_6Level, MatTable_tilted, NewConvn1_V2, NewConvn2_V2, NewSheathingRack , Long_Stud.get_mesh()],
         cuboid=[],
         capsule=[],
         cylinder=[],
