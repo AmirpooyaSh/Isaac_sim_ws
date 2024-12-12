@@ -516,6 +516,12 @@ class CuRoboRobot(object):
         self._EEF_Prim = self._temp_world_manager._stage.GetPrimAtPath("/" + self._ROS_JS_robot_indicator + "/Link_7/collisions")
         self._Collider_Off = self._EEF_Prim.GetAttribute("physics:collisionEnabled").Set(False)
 
+        # Path Planning Timer
+        self._latest_time_to_solve: float = 0
+        
+        # Test Counter
+        self._ISARC_Test_Counter = 1
+
 
     def articulation_controller_init(self, step_index):
         if self._articulation_controller is None:
@@ -636,7 +642,7 @@ class CuRoboRobot(object):
         succ = None
         # Start the timer
         TimeOut_Timer = time.time()
-
+        Solved_Timer = 0
         # Giving a 5-second timer to solve IK
         while (time.time() - TimeOut_Timer <= 100):
             # Render
@@ -667,7 +673,9 @@ class CuRoboRobot(object):
 
             if succ and np.max(np.abs(sim_js.velocities)) < 0.02:
                 print("solution found")
-                
+                # Recording the Calculation Time
+                Solved_Timer = time.time()
+                self._latest_time_to_solve = Solved_Timer - TimeOut_Timer
                 # Clear the cache after each iteration to avoid memory buildupworld_reset
                 self._computed_cmd_plan = self._computed_path_result.get_interpolated_plan()
                 self._computed_cmd_plan = self._motion_gen.get_full_js(self._computed_cmd_plan)
@@ -689,7 +697,8 @@ class CuRoboRobot(object):
     def render_exec(self,
                     renderInstance: bool = True,
                     # Optional To Show Spheres For Traj (True)
-                    Show_Sphere: Optional[bool] = True):
+                    Show_Sphere: Optional[bool] = True,
+                    Calculate_Metrics: bool = False):
 
         if not self._computed_path_result.success.item():
             print("Path was not Generated")
@@ -708,6 +717,8 @@ class CuRoboRobot(object):
             cmd_plan = cmd_plan.get_ordered_joint_state(common_js_names)
             cmd_idx = 0
 
+            # Tool Cartesian Poses (For Length/Angle Calculation)
+            Tool_Coords = []
             while cmd_idx < len(cmd_plan.position):
                 if renderInstance:
                     self._temp_world_manager._my_world.step(render=True)
@@ -759,18 +770,21 @@ class CuRoboRobot(object):
                     joint_indices=idx_list,
                 )
 
-                Active_Tool_Name = self._motion_gen.kinematics.kinematics_config.ee_link
-                Tool_Prim_Path = "/"+self._ROS_JS_robot_indicator+"/"+Active_Tool_Name
-                #Tool_Prim = self._temp_world_manager._my_world.stage.GetPrimAtPath(Tool_Prim_Path)
+                if Calculate_Metrics:
+                    Active_Tool_Name = self._motion_gen.kinematics.kinematics_config.ee_link
+                    Tool_Prim_Path = "/"+self._ROS_JS_robot_indicator+"/"+Active_Tool_Name
+                    #Tool_Prim = self._temp_world_manager._my_world.stage.GetPrimAtPath(Tool_Prim_Path)
 
-                # DYNAMIC INFORMATION TO GET THE POSITION/ORIENTATION
+                    # DYNAMIC INFORMATION TO GET THE POSITION/ORIENTATION
 
-                dc=_dynamic_control.acquire_dynamic_control_interface()
-                object=dc.get_rigid_body(Tool_Prim_Path)
-                object_pose=dc.get_rigid_body_pose(object)
+                    dc=_dynamic_control.acquire_dynamic_control_interface()
+                    object=dc.get_rigid_body(Tool_Prim_Path)
+                    object_pose=dc.get_rigid_body_pose(object)
 
-                print("position:", object_pose.p)
-                print("rotation:", object_pose.r)
+                    # print("position:", object_pose.p)
+                    # print("rotation:", object_pose.r)
+
+                    Tool_Coords.append(object_pose.p)
 
 
                 # set desired joint angles obtained from IK:
@@ -779,7 +793,57 @@ class CuRoboRobot(object):
                 if renderInstance:
                     for _ in range(2):
                         self._temp_world_manager._my_world.step(render=False)
-        
+
+        # Calculating Metrics by the Tool Cartesian Poses
+        if Calculate_Metrics:
+            # Path Length
+            Traveresed_Path = 0
+            for i in range (len(Tool_Coords)-1):
+                point_a = [Tool_Coords[i][0], Tool_Coords[i][1], Tool_Coords[i][2]]
+                point_b = [Tool_Coords[i+1][0], Tool_Coords[i+1][1], Tool_Coords[i+1][2]]
+                Traveresed_Path += np.linalg.norm(np.array(point_b) - np.array(point_a))
+            
+            # Calculating the Smoothness of Movement
+            angles = []  # List to store angles  
+            for i in range(1, len(Tool_Coords) - 1):  # Start from the second waypoint to the second-to-last
+                # Extract positions from the JointTrajectoryPoint objects
+                position_a = np.array([Tool_Coords[i-1][0], Tool_Coords[i-1][1], Tool_Coords[i-1][2]])
+                position_b = np.array([Tool_Coords[i][0], Tool_Coords[i][1], Tool_Coords[i][2]])
+                position_c = np.array([Tool_Coords[i+1][0], Tool_Coords[i+1][1], Tool_Coords[i+1][2]])
+
+                # Vector from Traj[i-1] to Traj[i]
+                vector1 = position_b - position_a
+                # Vector from Traj[i] to Traj[i+1]
+                vector2 = position_c - position_b
+
+                # Normalize the vectors
+                vector1 = vector1 / np.linalg.norm(vector1)
+                vector2 = vector2 / np.linalg.norm(vector2)
+
+                # Compute the dot product
+                dot_product = np.dot(vector1, vector2)
+
+                # Clamp the dot product to avoid numerical issues
+                dot_product = np.clip(dot_product, -1.0, 1.0)
+
+                # Compute the angle in degrees
+                angle = 180 - (np.arccos(dot_product) * (180.0 / np.pi))
+                angles.append(angle)
+
+            # Compute the average angle
+            smoothness = np.mean(angles)
+
+            # Printing Data For Record
+            print("For Test Number #" + str(self._ISARC_Test_Counter)+" Metrics Are: ____________")
+            print("Angle Raw Data : ")
+            print(angles)
+            print("______________________________________________________________________________")
+            print("Calculated Time = "+str(self._latest_time_to_solve))
+            print("Length of the Movement = "+str(Traveresed_Path))
+            print("Average Angle of the Movement = "+ str(smoothness))
+            print("______________________________________________________________________________")
+            self._ISARC_Test_Counter += 1
+
         # Cleaning out !
         self._computed_path_result = None
         self._computed_cmd_plan = None
@@ -1408,14 +1472,40 @@ def main():
 # Rob 1 Place Position
 # tensor([[1.0250, 0.1864, 1.0553]], device='cuda:0')
 # (3.141592653589793, 0.0, 0.0)
-
         R1_Place_Pose_Quat = euler_to_quat(np.pi, 0, 0)
-        robots[0].plan(tcp_name="tool0",
-                                    target_pose=np.array([1.0250, 0.1864, 1.1]),
-                                    target_orientation=np.array([R1_Place_Pose_Quat[0], R1_Place_Pose_Quat[1], R1_Place_Pose_Quat[2], R1_Place_Pose_Quat[3]]),
-                                    update_world_needed=True)
-        robots[0].render_exec(renderInstance=True,
-                                Show_Sphere=False)
+        ISARC_Test_Counter = 0
+
+        while ISARC_Test_Counter < 10:
+            # Getting to Place Location + Recording Data
+            test._my_world.step(render=True)
+
+            # Recording Purpose
+            Timer = time.time()
+            while time.time() - Timer < 10:
+                test._my_world.step(render=True)
+
+            robots[0].plan(tcp_name="tool0",
+                                        target_pose=np.array([1.0250, 0.1864, 1.1]),
+                                        target_orientation=np.array([R1_Place_Pose_Quat[0], R1_Place_Pose_Quat[1], R1_Place_Pose_Quat[2], R1_Place_Pose_Quat[3]]),
+                                        update_world_needed=True)
+            robots[0].render_exec(renderInstance=True,
+                                    Show_Sphere=False,
+                                    Calculate_Metrics= True)
+        
+            
+            #Getting Back to Pick Location without Recording Data
+            robots[0].plan(tcp_name="tool0",
+                                        target_pose=np.array([-1.525, 1.05, 0.725]),
+                                        target_orientation=np.array([R1_Pick_Pose_Quat[0], R1_Pick_Pose_Quat[1], R1_Pick_Pose_Quat[2], R1_Pick_Pose_Quat[3]]),
+                                        update_world_needed=True)
+            robots[0].render_exec(renderInstance=True,
+                                    Show_Sphere=False)
+            ISARC_Test_Counter += 1
+            
+        Timer = time.time()
+        while Timer - time.time() < 200:
+            test._my_world.step(render=True)
+            
 
 if __name__ == "__main__":
     main()
