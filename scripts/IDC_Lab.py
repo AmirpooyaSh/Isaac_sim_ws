@@ -61,6 +61,10 @@ from omni.isaac.core.prims.xform_prim import XFormPrim
 from omni.isaac.core.robots import Robot
 from omni.isaac.core.scenes.scene import Scene
 
+# Joint Creation
+from omni.physx.scripts import utils
+# prim = utils.createJoint()
+
 #Dynamic Control API
 #Tutorial: https://forums.developer.nvidia.com/t/get-position-of-primitive/146702
 # Use Case:
