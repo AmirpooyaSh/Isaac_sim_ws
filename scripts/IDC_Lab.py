@@ -248,9 +248,18 @@ class WorldManager(object):
         # Smart Material Table
         Smart_Mat_Table_Quat = self.quat_transfer_world_generator(90, 0, 180)
 
-        Smart_Mat_Table = Mesh(
-            name="Smart_Mat_Table",
+        R1_Smart_Mat_Table = Mesh(
+            name="R1_Smart_Mat_Table",
             pose=[-3.0, -0.1, -0.039, Smart_Mat_Table_Quat[0], 
+                                      Smart_Mat_Table_Quat[1],
+                                      Smart_Mat_Table_Quat[2],
+                                      Smart_Mat_Table_Quat[3]],
+            file_path= cur_dir + "smart_table/Smart_Mat_Supply.stl",
+            scale=[0.001, 0.001, 0.001],
+        )
+        R2_Smart_Mat_Table = Mesh(
+            name="R1_Smart_Mat_Table",
+            pose=[5.5, -2.4, -0.039, Smart_Mat_Table_Quat[0], 
                                       Smart_Mat_Table_Quat[1],
                                       Smart_Mat_Table_Quat[2],
                                       Smart_Mat_Table_Quat[3]],
@@ -262,7 +271,7 @@ class WorldManager(object):
         
         # Excluded models : Conveyors : NewConvn1_V2, NewConvn2_V2, MatTable_3Level, MatTable_6Level, MatTable_tilted, NewSheathingRack
         world_model = WorldConfig(
-            mesh=[],
+            mesh=[R1_Smart_Mat_Table, R2_Smart_Mat_Table],
             cuboid=[],
             capsule=[],
             cylinder=[],
@@ -624,6 +633,16 @@ class CuRoboRobot(object):
         self._temp_world_manager._my_world.step(render=True)
 
         print(" Collision World Updated for " + self._ROS_JS_robot_indicator)
+
+    # Free Movement of Robotic Arm with a Cube to Determine Pick and Place Locations (In Progress !!!###)
+    def free_TCP_movement(self, 
+                          moving_tcp: str = None):
+        # Re-warming up the MotionGen Object with the New Tool to move !
+        if moving_tcp != self._robot_cfg["kinematics"]["ee_link"]:
+            self.motion_gen_warmup(TCP_Name=moving_tcp)
+        
+
+        
 
     def plan(self,
                         tcp_name: str = "tool1",
@@ -1090,21 +1109,21 @@ test = WorldManager()
 
 robots = [
     # IRB6620_R1
-    # CuRoboRobot(working_world=test, 
-    #             R_Name="IRB6620_R1",
-    #             pose=[0,0,0.025],
-    #             input_tool="tool0", 
-    #             w_dir="home/apshirazi/Isaac_sim_ws/robot", 
-    #             r_conf_name="IRB6620_Config.yaml",
-    #             Gripper_List=[RobotGripper(RobName= "IRB6620_R1",
-    #                                        ParentLink= "Link_6",
-    #                                        TCP_Name= "T0",
-    #                                        C_Pose= [0.09 , 0, -0.29]),
-    #                             RobotGripper(RobName= "IRB6620_R1",
-    #                                          ParentLink= "Link_6",
-    #                                          TCP_Name= "T1",
-    #                                          C_Pose= [0.55, 0.435, -0.175])
-    #                                        ]),
+    CuRoboRobot(working_world=test, 
+                R_Name="IRB6620_R1",
+                pose=[0,0,0.025],
+                input_tool="tool0", 
+                w_dir="home/apshirazi/Isaac_sim_ws/robot", 
+                r_conf_name="IRB6620_Config.yaml",
+                Gripper_List=[RobotGripper(RobName= "IRB6620_R1",
+                                           ParentLink= "Link_6",
+                                           TCP_Name= "T0",
+                                           C_Pose= [0.09 , 0, -0.29]),
+                                RobotGripper(RobName= "IRB6620_R1",
+                                             ParentLink= "Link_6",
+                                             TCP_Name= "T1",
+                                             C_Pose= [0.55, 0.435, -0.175])
+                                           ]),
     # IRB6620_R2 (Commented)
     CuRoboRobot(working_world=test,
                 R_Name="IRB6620_R2",
@@ -1319,21 +1338,21 @@ def main():
     # )
     # Add_Rigid_Object_To_Scene(test, "Cuboid", Sheathing_Plate)
 
-    # Adding Test Stud
-    Stud = Cuboid(
-        name= "stud_test",
-        pose= [1.46, 0.14, 1.59, 1, 0, 0, 0],
-        dims= [0.03, 1.5, 0.1]
-    )
-    Add_Rigid_Object_To_Scene(test, "Cuboid", Stud)
+    # # Adding Test Stud
+    # Stud = Cuboid(
+    #     name= "stud_test",
+    #     pose= [1.46, 0.14, 1.59, 1, 0, 0, 0],
+    #     dims= [0.03, 1.5, 0.1]
+    # )
+    # Add_Rigid_Object_To_Scene(test, "Cuboid", Stud)
 
-    #Adding Rob2 Test Stud
-    L_Stud = Cuboid(
-        name="L_Stud",
-        pose=[2.6, 0.97, 1.77, 1, 0, 0, 0],
-        dims= [0.1, 3.0, 0.05]
-    )
-    Add_Rigid_Object_To_Scene(test, "Cuboid", L_Stud)
+    # #Adding Rob2 Test Stud
+    # L_Stud = Cuboid(
+    #     name="L_Stud",
+    #     pose=[2.6, 0.97, 1.77, 1, 0, 0, 0],
+    #     dims= [0.1, 3.0, 0.05]
+    # )
+    # Add_Rigid_Object_To_Scene(test, "Cuboid", L_Stud)
 
     while simulation_app.is_running():
         # Rendering The World
