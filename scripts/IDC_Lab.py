@@ -158,6 +158,14 @@ class WorldManager(object):
         # Creating USD Helper (CuRobo Object) to handle objects
         self._usd_help = UsdHelper()
         
+        self._target_cube = cuboid.VisualCuboid(
+            "/World/target",
+            position=np.array([0.5, 0, 3]),
+            orientation=np.array([1, 0, 0, 0]),
+            color=np.array([1.0, 0, 0]),
+            size=0.05,
+        )
+
         # ?????
         self._usd_help.load_stage(self._my_world.stage)
 
@@ -245,7 +253,7 @@ class WorldManager(object):
         #     color=[0.87, 0.72, 0.53, 1]
         # )
 
-        # Smart Material Table
+        # Smart Material Table #1
         Smart_Mat_Table_Quat = self.quat_transfer_world_generator(90, 0, 180)
 
         R1_Smart_Mat_Table = Mesh(
@@ -257,8 +265,10 @@ class WorldManager(object):
             file_path= cur_dir + "smart_table/Smart_Mat_Supply.stl",
             scale=[0.001, 0.001, 0.001],
         )
+
+        # Smart Material Table #2
         R2_Smart_Mat_Table = Mesh(
-            name="R1_Smart_Mat_Table",
+            name="R2_Smart_Mat_Table",
             pose=[5.5, -2.4, -0.039, Smart_Mat_Table_Quat[0], 
                                       Smart_Mat_Table_Quat[1],
                                       Smart_Mat_Table_Quat[2],
@@ -266,12 +276,19 @@ class WorldManager(object):
             file_path= cur_dir + "smart_table/Smart_Mat_Supply.stl",
             scale=[0.001, 0.001, 0.001],
         )
-
-
         
         # Excluded models : Conveyors : NewConvn1_V2, NewConvn2_V2, MatTable_3Level, MatTable_6Level, MatTable_tilted, NewSheathingRack
+        # R1_Smart_Mat_Table, R2_Smart_Mat_Table
+
+        # Target Cubid
+        world_cfg_table = WorldConfig.from_dict(
+            load_yaml(join_path(get_world_configs_path(), "collision_table.yml"))
+        )
+        world_cfg_table.cuboid[0].pose[2] -= 0.02
+
         world_model = WorldConfig(
-            mesh=[R1_Smart_Mat_Table, R2_Smart_Mat_Table],
+            mesh=[],
+            # Target Cube for Free Movement
             cuboid=[],
             capsule=[],
             cylinder=[],
@@ -623,7 +640,9 @@ class CuRoboRobot(object):
                 "/"+Rob_name+"/Link_7/visuals",
                 "/"+Rob_name+"/Link_8/visuals",
                 # Attached Object's Prim (If Any)
-                self._attached_obj_prim,                           
+                self._attached_obj_prim,
+                # Moving Cube Should also be ignored
+                "/World/target",                       
                 # Other Robot's Prim Path Should also be Ignored !
                 # This feature is to be developed (MPC)
             ],
@@ -636,10 +655,132 @@ class CuRoboRobot(object):
 
     # Free Movement of Robotic Arm with a Cube to Determine Pick and Place Locations (In Progress !!!###)
     def free_TCP_movement(self, 
-                          moving_tcp: str = None):
+                          moving_tcp: str = "tool0"):
         # Re-warming up the MotionGen Object with the New Tool to move !
         if moving_tcp != self._robot_cfg["kinematics"]["ee_link"]:
             self.motion_gen_warmup(TCP_Name=moving_tcp)
+        
+        # Creating Target Pose and Orientation
+        target_pose = None
+        target_orientation = None
+
+        past_pose = None
+        past_orientation = None
+
+        # Updating the Collision World before running the Free Movement
+        # self.motion_gen_update_world()
+
+        cmd_plan = None
+        # Creating the Loop
+        while simulation_app.is_running():
+
+            self._temp_world_manager._my_world.step(render=True)
+            
+            cube_position, cube_orientation = self._temp_world_manager._target_cube.get_world_pose()
+            if(self._ROS_JS_robot_indicator == "IRB6620_R2"):
+                cube_position[0] -= 4.6
+
+            if past_pose is None:
+                past_pose = cube_position
+            if target_pose is None:
+                target_pose = cube_position
+            if target_orientation is None:
+                target_orientation = cube_orientation
+            if past_orientation is None:
+                past_orientation = cube_orientation
+
+            # Running a Plan and Execution Instance Togather
+            sim_js = self._robot.get_joints_state()
+            sim_js_names = self._robot.dof_names
+            if np.any(np.isnan(sim_js.positions)):
+                log_error("isaac sim has returned NAN joint position values.")
+            cu_js = JointState(
+                position=self._tensor_args.to_device(sim_js.positions),
+                velocity=self._tensor_args.to_device(sim_js.velocities) * 0.0,
+                acceleration=self._tensor_args.to_device(sim_js.velocities) * 0.0,
+                jerk=self._tensor_args.to_device(sim_js.velocities) * 0.0,
+                joint_names=sim_js_names,
+            )
+            cu_js = cu_js.get_ordered_joint_state(self._motion_gen.kinematics.joint_names)
+
+            # Checking Rule for New Target Locations
+            robot_static = False
+
+            if (np.max(np.abs(sim_js.velocities)) < 0.2):
+                robot_static = True
+            if (
+                (
+                    np.linalg.norm(cube_position - target_pose) > 1e-3
+                    or np.linalg.norm(cube_orientation - target_orientation) > 1e-3
+                )
+                and np.linalg.norm(past_pose - cube_position) == 0.0
+                and np.linalg.norm(past_orientation - cube_orientation) == 0.0
+                and robot_static
+            ):
+                # (If we set the Z value = 1000, the loop will break and code continues)
+                if cube_position[2] == 1000:
+                    break
+                # Set EE teleop goals, use cube for simple non-vr init:
+                ee_translation_goal = cube_position
+                ee_orientation_teleop_goal = cube_orientation
+
+                # compute curobo solution:
+                ik_goal = Pose(
+                    position=self._tensor_args.to_device(ee_translation_goal),
+                    quaternion=self._tensor_args.to_device(ee_orientation_teleop_goal),
+                )
+
+                result = self._motion_gen.plan_single(cu_js.unsqueeze(0), ik_goal, self._plan_config)
+                succ = result.success.item()
+
+                if succ:
+                    cmd_plan = result.get_interpolated_plan()
+                    cmd_plan = self._motion_gen.get_full_js(cmd_plan)
+                    # get only joint names that are in both:
+                    idx_list = []
+                    common_js_names = []
+                    for x in sim_js_names:
+                        if x in cmd_plan.joint_names:
+                            idx_list.append(self._robot.get_dof_index(x))
+                            common_js_names.append(x)
+
+                    cmd_plan = cmd_plan.get_ordered_joint_state(common_js_names)
+
+                    cmd_idx = 0
+
+                    # Printing EEF Loc + Orientation
+                    # print(ik_goal.position)
+
+                    # quat = ik_goal.quaternion.squeeze().cpu().numpy()
+                    # if quat.shape[-1] == 4:
+                    #     eu = quaternion_to_euler(quat[0], quat[1], quat[2], quat[3])
+                    #     print(eu)
+
+                else:
+                    carb.log_warn("Plan did not converge to a solution: " + str(result.status))
+                target_pose = cube_position
+                target_orientation = cube_orientation
+
+            past_pose = cube_position
+            past_orientation = cube_orientation
+            if cmd_plan is not None:
+                cmd_state = cmd_plan[cmd_idx]
+                # get full dof state
+                art_action = ArticulationAction(
+                    cmd_state.position.cpu().numpy(),
+                    cmd_state.velocity.cpu().numpy(),
+                    joint_indices=idx_list,
+                )
+
+                # set desired joint angles obtained from IK:
+                self._articulation_controller.apply_action(art_action)
+
+                cmd_idx += 1
+                for _ in range(2):
+                    self._temp_world_manager._my_world.step(render=False)
+                if cmd_idx >= len(cmd_plan.position):
+                    cmd_idx = 0
+                    cmd_plan = None
         
 
         
@@ -709,7 +850,7 @@ class CuRoboRobot(object):
                 return True
             
         carb.log_warn("Plan did not converge to a solution: " + str(result.status))
-        # No IK could solve this movement within 5 sec
+        # No IK could solve this movement within 10 sec
         return False
 
     def render_exec(self,
@@ -1109,25 +1250,25 @@ test = WorldManager()
 
 robots = [
     # IRB6620_R1
-    CuRoboRobot(working_world=test, 
-                R_Name="IRB6620_R1",
-                pose=[0,0,0.025],
-                input_tool="tool0", 
-                w_dir="home/apshirazi/Isaac_sim_ws/robot", 
-                r_conf_name="IRB6620_Config.yaml",
-                Gripper_List=[RobotGripper(RobName= "IRB6620_R1",
-                                           ParentLink= "Link_6",
-                                           TCP_Name= "T0",
-                                           C_Pose= [0.09 , 0, -0.29]),
-                                RobotGripper(RobName= "IRB6620_R1",
-                                             ParentLink= "Link_6",
-                                             TCP_Name= "T1",
-                                             C_Pose= [0.55, 0.435, -0.175])
-                                           ]),
+    # CuRoboRobot(working_world=test, 
+    #             R_Name="IRB6620_R1",
+    #             pose=[0,0,0],
+    #             input_tool="tool0", 
+    #             w_dir="home/apshirazi/Isaac_sim_ws/robot", 
+    #             r_conf_name="IRB6620_Config.yaml",
+    #             Gripper_List=[RobotGripper(RobName= "IRB6620_R1",
+    #                                        ParentLink= "Link_6",
+    #                                        TCP_Name= "T0",
+    #                                        C_Pose= [0.09 , 0, -0.29]),
+    #                             RobotGripper(RobName= "IRB6620_R1",
+    #                                          ParentLink= "Link_6",
+    #                                          TCP_Name= "T1",
+    #                                          C_Pose= [0.55, 0.435, -0.175])
+    #                                        ]),
     # IRB6620_R2 (Commented)
     CuRoboRobot(working_world=test,
                 R_Name="IRB6620_R2",
-                pose=[4.6, 0, 0.025],
+                pose=[4.6, 0, 0],
                 input_tool="tool0",
                 w_dir="home/apshirazi/Isaac_sim_ws/robot_2",
                 r_conf_name="IRB6620_Config.yaml",
@@ -1347,12 +1488,12 @@ def main():
     # Add_Rigid_Object_To_Scene(test, "Cuboid", Stud)
 
     # #Adding Rob2 Test Stud
-    # L_Stud = Cuboid(
-    #     name="L_Stud",
-    #     pose=[2.6, 0.97, 1.77, 1, 0, 0, 0],
-    #     dims= [0.1, 3.0, 0.05]
-    # )
-    # Add_Rigid_Object_To_Scene(test, "Cuboid", L_Stud)
+    L_Stud = Cuboid(
+        name="L_Stud",
+        pose=[2.6, 0.97, 1.77, 1, 0, 0, 0],
+        dims= [0.1, 3.0, 0.05]
+    )
+    Add_Rigid_Object_To_Scene(test, "Cuboid", L_Stud)
 
     while simulation_app.is_running():
         # Rendering The World
@@ -1384,27 +1525,27 @@ def main():
         quat_2= euler_to_quat(np.pi/2, 0, np.pi)
 
 # # R1 Gripper Attach (Stud)
-#         robots[0].eef_attach(r_name= "IRB6620_R1",
-#                              tool_name="tool0",
-#                              attaching_object_name=Stud.name)
+        # robots[0].eef_attach(r_name= "IRB6620_R1",
+        #                      tool_name="tool0",
+        #                      attaching_object_name=Stud.name)
 
 # # R1 Gripper Pose 1
-#         Q_Gripper_Pick = euler_to_quat(-np.pi/2, 0, 0)
-#         robots[0].plan(tcp_name="tool0",
-#                        target_pose=np.array([-0.59, -0.74, 0.39]),
-#                        target_orientation=np.array([Q_Gripper_Pick[0], Q_Gripper_Pick[1], Q_Gripper_Pick[2], Q_Gripper_Pick[3]]),
-#                        update_world_needed=True)
-#         robots[0].render_exec(renderInstance=True,
-#                               Show_Sphere = True)
-
+        # Q_Gripper_Pick = euler_to_quat(-np.pi/2, 0, 0)
+        # robots[0].plan(tcp_name="tool0",
+        #                target_pose=np.array([-0.59, -0.74, 0.39]),
+        #                target_orientation=np.array([Q_Gripper_Pick[0], Q_Gripper_Pick[1], Q_Gripper_Pick[2], Q_Gripper_Pick[3]]),
+        #                update_world_needed=True)
+        # robots[0].render_exec(renderInstance=True,
+        #                       Show_Sphere = False)
+        
 # # R1 Gripper Pose 2
-#         Q_Gripper_Place = euler_to_quat(np.pi/3, 0, 0)
-#         robots[0].plan(tcp_name="tool0",
-#                 target_pose=np.array([-0.59, 1.98, 0.39]),
-#                 target_orientation=np.array([Q_Gripper_Place[0], Q_Gripper_Place[1], Q_Gripper_Place[2], Q_Gripper_Place[3]]),
-#                 update_world_needed=True)
-#         robots[0].render_exec(renderInstance=True,
-#                               Show_Sphere = True)
+        # Q_Gripper_Place = euler_to_quat(np.pi/3, 0, 0)
+        # robots[0].plan(tcp_name="tool0",
+        #         target_pose=np.array([-0.59, 1.98, 0.39]),
+        #         target_orientation=np.array([Q_Gripper_Place[0], Q_Gripper_Place[1], Q_Gripper_Place[2], Q_Gripper_Place[3]]),
+        #         update_world_needed=True)
+        # robots[0].render_exec(renderInstance=True,
+        #                       Show_Sphere = False)
         
 # # R1 Gripper Detach (Stud)
 #         robots[0].eef_detach(r_name="IRB6620_R1",
@@ -1412,13 +1553,13 @@ def main():
 #                              detaching_object_name=Stud.name)
 
 # # R1 Gripper Home Pose
-#         Q_Gripper_Home = euler_to_quat(np.pi, 0, 0)
-#         robots[0].plan(tcp_name="tool0",
-#                 target_pose=np.array([1.5, 0, 1.5]),
-#                 target_orientation=np.array([Q_Gripper_Home[0], Q_Gripper_Home[1], Q_Gripper_Home[2], Q_Gripper_Home[3]]),
-#                 update_world_needed=True)
-#         robots[0].render_exec(renderInstance=True,
-#                               Show_Sphere = True)                 
+        # Q_Gripper_Home = euler_to_quat(np.pi, 0, 0)
+        # robots[0].plan(tcp_name="tool0",
+        #         target_pose=np.array([1.5, 0, 1.5]),
+        #         target_orientation=np.array([Q_Gripper_Home[0], Q_Gripper_Home[1], Q_Gripper_Home[2], Q_Gripper_Home[3]]),
+        #         update_world_needed=True)
+        # robots[0].render_exec(renderInstance=True,
+        #                       Show_Sphere = False)                 
 
 #         T_Now = time.time()
 #         while time.time() - T_Now < 200:
@@ -1482,13 +1623,13 @@ def main():
 
 # R2 Attach/Detach Test (Tool0)
 
-# R2 Attach
+# # R2 Attach
         robots[0].eef_attach(r_name= "IRB6620_R2",
                              tool_name="tool0",
                              attaching_object_name=L_Stud.name,
                              gen_sphere_radius=0.005,
                              voxelization_method= SphereFitType.SAMPLE_SURFACE)
-# R2 Pose 1
+# # R2 Pose 1
         R2_Pose_1_Quat = euler_to_quat(np.pi, 0, 0)
         robots[0].plan(tcp_name="tool0",
                                     target_pose=np.array([0.735, -0.947, 0.271]),
@@ -1497,7 +1638,7 @@ def main():
         robots[0].render_exec(renderInstance=True,
                                 Show_Sphere=False)
 
-# R2 Pose 2 (Detech)
+# # R2 Pose 2 (Detech)
         R2_Pose_2_Quat = euler_to_quat(-np.pi/2, 0, 0)
         robots[0].plan(tcp_name="tool0",
                                     target_pose=np.array([-0.7933, -0.984, 0.981]),
@@ -1505,12 +1646,12 @@ def main():
                                     update_world_needed=True)
         robots[0].render_exec(renderInstance=True,
                                 Show_Sphere=False)
-# R2 Detach
-        robots[0].eef_detach(r_name="IRB6620_R2",
-                             tool_name="tool0",
-                             detaching_object_name=L_Stud.name)   
+# # R2 Detach
+#         robots[0].eef_detach(r_name="IRB6620_R2",
+#                              tool_name="tool0",
+#                              detaching_object_name=L_Stud.name)   
 
-#R2 Home Pose
+# #R2 Home Pose
         R2_Pose_Home_Quat = euler_to_quat(np.pi, np.pi/2, np.pi)
         robots[0].plan(tcp_name="tool0",
                                     target_pose=np.array([-1.578, -0.431, 1.825]),
@@ -1518,6 +1659,8 @@ def main():
                                     update_world_needed=True)
         robots[0].render_exec(renderInstance=True,
                                 Show_Sphere=False)
+
+        robots[0].free_TCP_movement()
 
         # T_Now = time.time()
         # while time.time() - T_Now < 200:
