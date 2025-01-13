@@ -608,7 +608,14 @@ class CuRoboRobot(object):
                                                 enable_finetune_trajopt=enable_finetune_trajopt,
                                                 time_dilation_factor=0.5)
 
-    def motion_gen_update_world(self):
+    def motion_gen_update_world(self, 
+                                empty_coll_world: bool = False):
+
+        # 0. If empty_coll_world is set to True, it will remove any obstacle in the collision world
+        # It's meant to do movement's in close proximity to the Conveyor Belt !
+        Coll_World_Ignore_Sub_String = "/world/obstacles/Dummy"
+        if empty_coll_world == True:
+            Coll_World_Ignore_Sub_String = "/Smart_Conveyor"
 
         # 1. Get an Update of the Collision World for the Robot:
         # Ignoring Other Robot's Visual Representation
@@ -619,39 +626,54 @@ class CuRoboRobot(object):
         if self._ros_js_publsiher == "IRB6620_R2":
             Rob_name = "IRB6620_R1"
         
+        ignoring_prim_paths = [
+            self._robot_prim_path,
+            "/World/defaultGroundPlane",
+            # smart Conveyor's Visual Prims
+            "/Smart_Conveyor/base_link/visuals",
+            "/Smart_Conveyor/track_link/visuals",
+            "/Smart_Conveyor/Link_1/visuals",
+            "/Smart_Conveyor/Link_2/visuals",
+            # Other Robot's Visual Prims
+            "/"+Rob_name+"/base_link/visuals",
+            "/"+Rob_name+"/Link_1/visuals",
+            "/"+Rob_name+"/Link_2/visuals",
+            "/"+Rob_name+"/Link_3/visuals",
+            "/"+Rob_name+"/Link_4/visuals",
+            "/"+Rob_name+"/Link_5/visuals",
+            "/"+Rob_name+"/Link_6/visuals",
+            "/"+Rob_name+"/Link_7/visuals",
+            "/"+Rob_name+"/Link_8/visuals",
+            # Attached Object's Prim (If Any)
+            self._attached_obj_prim,
+            # Moving Cube Should also be ignored
+            "/World/target",
+            # Collision World Ignorance (Debug Cases)
+            Coll_World_Ignore_Sub_String,                       
+            # Other Robot's Prim Path Should also be Ignored !
+            # This feature is to be developed (MPC)
+        ]
+        # Add collision paths if empty_coll_world is True
+        if empty_coll_world:
+            ignoring_prim_paths.extend([
+                "/Smart_Conveyor/base_link/collisions",
+                "/Smart_Conveyor/track_link/collisions",
+                "/Smart_Conveyor/Link_1/collisions",
+                "/Smart_Conveyor/Link_2/collisions",
+            ])    
+
         obstacles = self._temp_world_manager._usd_help.get_obstacles_from_stage(
             reference_prim_path=self._robot_prim_path,
-            ignore_substring=[
-                self._robot_prim_path,
-                "/World/defaultGroundPlane",
-                # smart Conveyor's Visual Prims
-                "/Smart_Conveyor/base_link/visuals",
-                "/Smart_Conveyor/track_link/visuals",
-                "/Smart_Conveyor/Link_1/visuals",
-                "/Smart_Conveyor/Link_2/visuals",
-                # Other Robot's Visual Prims
-                "/"+Rob_name+"/base_link/visuals",
-                "/"+Rob_name+"/Link_1/visuals",
-                "/"+Rob_name+"/Link_2/visuals",
-                "/"+Rob_name+"/Link_3/visuals",
-                "/"+Rob_name+"/Link_4/visuals",
-                "/"+Rob_name+"/Link_5/visuals",
-                "/"+Rob_name+"/Link_6/visuals",
-                "/"+Rob_name+"/Link_7/visuals",
-                "/"+Rob_name+"/Link_8/visuals",
-                # Attached Object's Prim (If Any)
-                self._attached_obj_prim,
-                # Moving Cube Should also be ignored
-                "/World/target",                       
-                # Other Robot's Prim Path Should also be Ignored !
-                # This feature is to be developed (MPC)
-            ],
+            ignore_substring=ignoring_prim_paths,
         ).get_collision_check_world()
 
         self._motion_gen.update_world(obstacles)
         self._temp_world_manager._my_world.step(render=True)
 
-        print(" Collision World Updated for " + self._ROS_JS_robot_indicator)
+        if empty_coll_world == False :
+            print(" Collision World Updated for " + self._ROS_JS_robot_indicator)
+        else:
+            print(" Robot "+self._ROS_JS_robot_indicator+" Has No Collision World as of Now")
 
     # Free Movement of Robotic Arm with a Cube to Determine Pick and Place Locations (In Progress !!!###)
     def free_TCP_movement(self, 
@@ -667,6 +689,9 @@ class CuRoboRobot(object):
         past_pose = None
         past_orientation = None
 
+        set_back_pose = None
+        set_back_orientation = None
+
         # Updating the Collision World before running the Free Movement
         # self.motion_gen_update_world()
 
@@ -677,17 +702,20 @@ class CuRoboRobot(object):
             self._temp_world_manager._my_world.step(render=True)
             
             cube_position, cube_orientation = self._temp_world_manager._target_cube.get_world_pose()
+
             if(self._ROS_JS_robot_indicator == "IRB6620_R2"):
                 cube_position[0] -= 4.6
 
             if past_pose is None:
                 past_pose = cube_position
+                set_back_pose = cube_position
             if target_pose is None:
                 target_pose = cube_position
             if target_orientation is None:
                 target_orientation = cube_orientation
             if past_orientation is None:
                 past_orientation = cube_orientation
+                set_back_orientation = cube_orientation
 
             # Running a Plan and Execution Instance Togather
             sim_js = self._robot.get_joints_state()
@@ -717,9 +745,22 @@ class CuRoboRobot(object):
                 and np.linalg.norm(past_orientation - cube_orientation) == 0.0
                 and robot_static
             ):
-                # (If we set the Z value = 1000, the loop will break and code continues)
+                # Hard Coded Prompts
+                # Z = 1000 : It means that we're done with free movement and we know the coordinations
+                # It will break the loop and let the program continue !
                 if cube_position[2] == 1000:
+                    print("Free Movement of Robot "+self._ROS_JS_robot_indicator+" is Done !")
+                    self._temp_world_manager._target_cube.set_world_pose(position=[2.3, 0, 2],
+                                                                         orientation=[1, 0, 0, 0])
                     break
+                # Z = 500 : It means that the Attached Object is too Close to Obstacles and we need Accurate Movements
+                # To do so, we empty out the robot's Collision world representation
+                # It will let CuRobo Plan freely and in a linear way (Conduct Linear Movements)
+                if cube_position[2] == 500:
+                    self.motion_gen_update_world(empty_coll_world= True)
+                    self._temp_world_manager._target_cube.set_world_pose(position=[2.3, 0, 2],
+                                                                         orientation=[1, 0, 0, 0])
+                    continue
                 # Set EE teleop goals, use cube for simple non-vr init:
                 ee_translation_goal = cube_position
                 ee_orientation_teleop_goal = cube_orientation
@@ -734,6 +775,14 @@ class CuRoboRobot(object):
                 succ = result.success.item()
 
                 if succ:
+                    ## Announcing the Target Location:
+                    # print(self._ROS_JS_robot_indicator+" | "+self._robot_cfg["kinematics"]["ee_link"])
+                    # if self._ROS_JS_robot_indicator == "IRB6620_R2":
+                    #     modified_pose = cube_position
+                    #     modified_pose[0] += 4.6
+                    # print(f"Reached Pose: {modified_pose}, Reached Orientation: {cube_orientation}")
+
+                    ##
                     cmd_plan = result.get_interpolated_plan()
                     cmd_plan = self._motion_gen.get_full_js(cmd_plan)
                     # get only joint names that are in both:
@@ -747,14 +796,6 @@ class CuRoboRobot(object):
                     cmd_plan = cmd_plan.get_ordered_joint_state(common_js_names)
 
                     cmd_idx = 0
-
-                    # Printing EEF Loc + Orientation
-                    # print(ik_goal.position)
-
-                    # quat = ik_goal.quaternion.squeeze().cpu().numpy()
-                    # if quat.shape[-1] == 4:
-                    #     eu = quaternion_to_euler(quat[0], quat[1], quat[2], quat[3])
-                    #     print(eu)
 
                 else:
                     carb.log_warn("Plan did not converge to a solution: " + str(result.status))
