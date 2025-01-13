@@ -327,6 +327,13 @@ class CuRoboConv(object):
         # Articulation Controller
         self._articulation_controller: ArticulationController = None
 
+        # Disabling Colliders
+        self._L1_Prim = self._temp_world_manager._stage.GetPrimAtPath("/" + Conv_Name + "/Link_1/collisions")
+        self._Collider_Off = self._L1_Prim.GetAttribute("physics:collisionEnabled").Set(False)
+
+        self._L2_Prim = self._temp_world_manager._stage.GetPrimAtPath("/" + Conv_Name + "/Link_2/collisions")
+        self._Collider_Off = self._L2_Prim.GetAttribute("physics:collisionEnabled").Set(False)
+
         #Test
         self._world_updater_counter = 0
 
@@ -613,9 +620,6 @@ class CuRoboRobot(object):
 
         # 0. If empty_coll_world is set to True, it will remove any obstacle in the collision world
         # It's meant to do movement's in close proximity to the Conveyor Belt !
-        Coll_World_Ignore_Sub_String = "/world/obstacles/Dummy"
-        if empty_coll_world == True:
-            Coll_World_Ignore_Sub_String = "/Smart_Conveyor"
 
         # 1. Get an Update of the Collision World for the Robot:
         # Ignoring Other Robot's Visual Representation
@@ -623,9 +627,11 @@ class CuRoboRobot(object):
         Rob_name: str= ""
         if self._ROS_JS_robot_indicator == "IRB6620_R1":
             Rob_name = "IRB6620_R2"
-        if self._ros_js_publsiher == "IRB6620_R2":
+        if self._ROS_JS_robot_indicator == "IRB6620_R2":
             Rob_name = "IRB6620_R1"
         
+        print(self._robot_prim_path)
+
         ignoring_prim_paths = [
             self._robot_prim_path,
             "/World/defaultGroundPlane",
@@ -647,20 +653,17 @@ class CuRoboRobot(object):
             # Attached Object's Prim (If Any)
             self._attached_obj_prim,
             # Moving Cube Should also be ignored
-            "/World/target",
-            # Collision World Ignorance (Debug Cases)
-            Coll_World_Ignore_Sub_String,                       
+            "/World/target",          
             # Other Robot's Prim Path Should also be Ignored !
             # This feature is to be developed (MPC)
         ]
         # Add collision paths if empty_coll_world is True
         if empty_coll_world:
             ignoring_prim_paths.extend([
-                "/Smart_Conveyor/base_link/collisions",
-                "/Smart_Conveyor/track_link/collisions",
-                "/Smart_Conveyor/Link_1/collisions",
-                "/Smart_Conveyor/Link_2/collisions",
-            ])    
+                "/Smart_Conveyor",
+            ])
+
+        print(ignoring_prim_paths)   
 
         obstacles = self._temp_world_manager._usd_help.get_obstacles_from_stage(
             reference_prim_path=self._robot_prim_path,
@@ -671,8 +674,13 @@ class CuRoboRobot(object):
         self._temp_world_manager._my_world.step(render=True)
 
         if empty_coll_world == False :
+
             print(" Collision World Updated for " + self._ROS_JS_robot_indicator)
         else:
+            # So It's Empty. Then Why ??????????
+            self._motion_gen.world_model.remove_obstacle("/Smart_Conveyor/Link_1/collisions")
+            self._motion_gen.world_model.remove_obstacle("/Smart_Conveyor/Link_2/collisions")
+            self._motion_gen.world_model.save_world_as_mesh("Deepened.obj")
             print(" Robot "+self._ROS_JS_robot_indicator+" Has No Collision World as of Now")
 
     # Free Movement of Robotic Arm with a Cube to Determine Pick and Place Locations (In Progress !!!###)
@@ -688,9 +696,6 @@ class CuRoboRobot(object):
 
         past_pose = None
         past_orientation = None
-
-        set_back_pose = None
-        set_back_orientation = None
 
         # Updating the Collision World before running the Free Movement
         # self.motion_gen_update_world()
@@ -708,14 +713,12 @@ class CuRoboRobot(object):
 
             if past_pose is None:
                 past_pose = cube_position
-                set_back_pose = cube_position
             if target_pose is None:
                 target_pose = cube_position
             if target_orientation is None:
                 target_orientation = cube_orientation
             if past_orientation is None:
                 past_orientation = cube_orientation
-                set_back_orientation = cube_orientation
 
             # Running a Plan and Execution Instance Togather
             sim_js = self._robot.get_joints_state()
@@ -760,6 +763,7 @@ class CuRoboRobot(object):
                     self.motion_gen_update_world(empty_coll_world= True)
                     self._temp_world_manager._target_cube.set_world_pose(position=[2.3, 0, 2],
                                                                          orientation=[1, 0, 0, 0])
+                    # self._motion_gen.detach_object_from_robot("tool0")
                     continue
                 # Set EE teleop goals, use cube for simple non-vr init:
                 ee_translation_goal = cube_position
@@ -1702,6 +1706,17 @@ def main():
                                 Show_Sphere=False)
 
         robots[0].free_TCP_movement()
+
+        # robots[0].motion_gen_warmup(TCP_Name="tool0")
+
+        R2_Pose_Test_Quat = euler_to_quat(0, 0, 0)
+        robots[0].plan(tcp_name="tool0",
+                                    target_pose=np.array([3.31777, -0.17141, 0.9688]),
+                                    target_orientation=np.array([R2_Pose_Test_Quat[0], R2_Pose_Test_Quat[1], R2_Pose_Test_Quat[2], R2_Pose_Test_Quat[3]]),
+                                    update_world_needed=False)
+        robots[0].render_exec(renderInstance=True,
+                                Show_Sphere=False)
+
 
         # T_Now = time.time()
         # while time.time() - T_Now < 200:
