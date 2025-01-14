@@ -1,0 +1,43 @@
+        # MatTable_3Level = Mesh(
+        #     name="MatTable_3Level",
+        #     pose=[0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0],
+        #     file_path= cur_dir + "meshes/MatTable_3Level.stl",
+        #     scale=[0.001, 0.001, 0.001],
+        # )
+        # MatTable_6Level = Mesh(
+        #     name="MatTable_6Level",
+        #     pose=[0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0],
+        #     file_path= cur_dir + "meshes/MatTable_6Level.stl",
+        #     scale=[0.001, 0.001, 0.001],
+        # )
+        # MatTable_tilted = Mesh(
+        #     name="MatTable_tilted",
+        #     pose=[0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0],
+        #     file_path= cur_dir + "meshes/MatTable_tilted.stl",
+        #     scale=[0.001, 0.001, 0.001],
+        # )
+        # NewConvn1_V2 = Mesh(
+        #     name="NewConvn1_V2",
+        #     pose=[0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0],
+        #     file_path= cur_dir + "meshes/NewConvn1_V2.stl",
+        #     scale=[0.001, 0.001, 0.001],
+        # )
+        # NewConvn2_V2 = Mesh(
+        #     name="NewConvn2_V2",
+        #     pose=[0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0],
+        #     file_path= cur_dir + "meshes/NewConvn2_V2.stl",
+        #     scale=[0.001, 0.001, 0.001],
+        # )
+        # NewSheathingRack = Mesh(
+        #     name="NewSheathingRack",
+        #     pose=[0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0],
+        #     file_path= cur_dir + "meshes/NewSheathingRack.stl",
+        #     scale=[0.001, 0.001, 0.001],
+        # )
+
+        # SheathingPlate = Cuboid(
+        #     name="SheathingPlate",
+        #     pose=[-1.8, -2.1, 0.37, 0, 0, 0, 1],
+        #     dims=[3, 1.5, 0.015],
+        #     color=[0.87, 0.72, 0.53, 1]
+        # )

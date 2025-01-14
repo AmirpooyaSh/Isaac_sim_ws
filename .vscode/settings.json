@@ -21,6 +21,8 @@
 
     // Those paths are automatically filled by build system, see `repo.toml` for configuration:
     "python.analysis.extraPaths": [
+        "~/Isaac_sim_ws/IDC_Lab_Project",
+        "~/Isaac_sim_ws/IDC_Lab_Project/ap_import_isaac/helper.py",
         "/opt/ros/noetic/lib/python3/dist-packages",
         "~/Isaac_sim_ws/curobo/src/",
         "~/Isaac_sim_ws/scripts/helper.py",

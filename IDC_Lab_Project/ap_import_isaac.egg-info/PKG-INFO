@@ -1,0 +1,6 @@
+Metadata-Version: 2.1
+Name: ap-import-isaac
+Version: 0.1.0
+Summary: A Built-in Library to integrated Isaac Sim and CuRobo for any Robotic Arm Instances
+Author: Amirpooya Shirazi
+Author-email: a.shirazi@ufl.edu

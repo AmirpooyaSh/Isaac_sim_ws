@@ -1,8 +1,7 @@
+
 from curobo.wrap.reacher import motion_gen
 from isaacsim import SimulationApp
 # import sensor_msgs.msg
-
-simulation_app = SimulationApp({"headless": False}) # we can also run as headless.
 
 from omni.isaac.core import World
 from omni.isaac.core.objects import cuboid, sphere
@@ -84,10 +83,6 @@ from omni.isaac.core.utils.extensions import enable_extension
 # enable ROS bridge extension
 # enable_extension("omni.isaac.ros_bridge")
 
-# enable SurfaceGripper extention
-enable_extension("omni.isaac.surface_gripper")
-simulation_app.update()
-
 # check if rosmaster node is running
 # this is to prevent this sample from waiting indefinetly if roscore is not running
 # can be removed in regular usage
@@ -122,8 +117,7 @@ import time
 import torch
 import threading
 
-# Rate for Publishing ROS Topics from this project !
-publish_rate = 10.0  # Frequency in Hz
+
 
 # Class Robot Gripper
 class RobotGripper(object):
@@ -139,7 +133,8 @@ class RobotGripper(object):
 
 # Class (World Manager)
 class WorldManager(object):
-    def __init__(self):
+    def __init__(self,
+                 simulation_app: SimulationApp = None):
         super(WorldManager, self).__init__()
         # Giving the World (Meter Scale)
         self._my_world = World(stage_units_in_meters=1.0)
@@ -331,10 +326,13 @@ class CuRoboRobot(object):
                  w_dir: str = "/home/apshirazi/Isaac_sim_ws/robot", 
                  r_conf_name: str = "IRB6620_Config.yaml",
                  Gripper_List: Optional[List[RobotGripper]] = None,
-                 Cuda_Device: int = 0):
+                 Cuda_Device: int = 0,
+                 simulation_app: SimulationApp = SimulationApp({"headless": False})):
         
         super(CuRoboRobot, self).__init__()
 
+        # Simulation App
+        self._simulation_app = simulation_app
         # Saving Robot's Pose
         self._r_pose = pose
 
@@ -633,7 +631,7 @@ class CuRoboRobot(object):
 
         cmd_plan = None
         # Creating the Loop
-        while simulation_app.is_running():
+        while self._simulation_app.is_running():
 
             self._temp_world_manager._my_world.step(render=True)
             
@@ -1236,52 +1234,6 @@ class CuRoboRobot(object):
         """
 
 
-
-test = WorldManager()
-
-robots = [
-    # IRB6620_R1
-    CuRoboRobot(working_world=test, 
-                R_Name="IRB6620_R1",
-                pose=[0,0,0],
-                input_tool="tool0", 
-                w_dir="home/apshirazi/Isaac_sim_ws/robot", 
-                r_conf_name="IRB6620_Config.yaml",
-                Gripper_List=[RobotGripper(RobName= "IRB6620_R1",
-                                           ParentLink= "Link_6",
-                                           TCP_Name= "T0",
-                                           C_Pose= [0.09 , 0, -0.29]),
-                                RobotGripper(RobName= "IRB6620_R1",
-                                             ParentLink= "Link_6",
-                                             TCP_Name= "T1",
-                                             C_Pose= [0.55, 0.435, -0.175])
-                                           ],
-                Cuda_Device= 0),
-    # IRB6620_R2 (Commented)
-    CuRoboRobot(working_world=test,
-                R_Name="IRB6620_R2",
-                pose=[4.6, 0, 0],
-                input_tool="tool0",
-                w_dir="home/apshirazi/Isaac_sim_ws/robot_2",
-                r_conf_name="IRB6620_Config.yaml",
-                Gripper_List=[RobotGripper(RobName= "IRB6620_R2",
-                                           ParentLink= "Link_6",
-                                           TCP_Name="T0",
-                                           C_Pose=[0.62, 0.15, -0.11]),
-                                           ],
-                Cuda_Device= 0)
-    # Add more robots as needed
-]
-
-conveyors = [
-    # Smart Conveyor
-    CuRoboConv(working_world=test,
-               Conv_Name="Smart_Conveyor",
-               pose=[2.3, -3.25, 0],
-               w_dir="/home/apshirazi/Isaac_sim_ws/smart_conveyor",
-               c_conf_name="Smart_Conveyor.yaml")
-]
-
 def euler_to_quat(roll, pitch, yaw):
     cy = np.cos(yaw * 0.5)
     sy = np.sin(yaw * 0.5)
@@ -1351,13 +1303,15 @@ def Add_Rigid_Object_To_Scene(World_Manager: WorldManager,
     print("Object " + obj.name + " Added to the Simulation | PRIM: " + Added_Obj_Prim_Root)
 
     # Updating the Collision World for Each Robot After Adding an Object to the Scene
-    for robot in robots:
-        robot.motion_gen_update_world()
+    # for robot in robots:
+    #     robot.motion_gen_update_world()
 
 def parallel_movement(
     Rob_idx_list: List[int] = [0, 1],
     Goal_List_Pose: List[np.ndarray] = [np.array([-0.49, -1.54, 0.44], dtype=float), np.array([-0.022, -1.85, 0.57], dtype=float)],
-    Goal_List_Orientation: List[np.ndarray] = [np.array([1, 0, 0, 0], dtype=float), np.array([1, 0, 0, 0], dtype=float)]
+    Goal_List_Orientation: List[np.ndarray] = [np.array([1, 0, 0, 0], dtype=float), np.array([1, 0, 0, 0], dtype=float)],
+    World_Manager: WorldManager = None, 
+    Robot_List: List[CuRoboRobot] = None
 ):
     for idx in Rob_idx_list:
         # Ensure each pose and orientation is in the correct format
@@ -1365,33 +1319,35 @@ def parallel_movement(
         target_orientation = np.array(Goal_List_Orientation[idx][:4], dtype=float).reshape(4)
 
         # Call plan with the correctly shaped pose and orientation
-        robots[idx].plan(tcp_name="tool1",
+        Robot_List[idx].plan(tcp_name="tool1",
                          target_pose=target_pose,
                          target_orientation= target_orientation)
 
     cmd_idx = 0
-    while cmd_idx < len(robots[Rob_idx_list[0]]._computed_cmd_plan.position):
-        test._my_world.step(render=True)
+    while cmd_idx < len(Robot_List[Rob_idx_list[0]]._computed_cmd_plan.position):
+        World_Manager._my_world.step(render=True)
         
         for idx in Rob_idx_list:
-            cmd_state = robots[idx]._computed_cmd_plan[cmd_idx]
+            cmd_state = Robot_List[idx]._computed_cmd_plan[cmd_idx]
 
             # Apply articulation action
             art_action = ArticulationAction(
                 cmd_state.position.cpu().numpy(),
                 cmd_state.velocity.cpu().numpy(),
-                joint_indices=robots[idx]._computed_idx_list,
+                joint_indices=Robot_List[idx]._computed_idx_list,
             )
-            robots[idx]._articulation_controller.apply_action(art_action)
+            Robot_List[idx]._articulation_controller.apply_action(art_action)
             for _ in range(2):
-                test._my_world.step(render=False)
+                World_Manager._my_world.step(render=False)
         
         cmd_idx += 1
 
 def mpc_movement(
     Rob_idx_list: List[int] = [0, 1],
     Goal_List_Pose: List[np.ndarray] = [np.array([-0.49, -1.54, 0.44], dtype=float), np.array([-0.022, -1.85, 0.57], dtype=float)],
-    Goal_List_Orientation: List[np.ndarray] = [np.array([1, 0, 0, 0], dtype=float), np.array([1, 0, 0, 0], dtype=float)]
+    Goal_List_Orientation: List[np.ndarray] = [np.array([1, 0, 0, 0], dtype=float), np.array([1, 0, 0, 0], dtype=float)],
+    World_Manager: WorldManager = None, 
+    Robot_List: List[CuRoboRobot] = None
 ):
     # Timer to check for updating the 
     cc_world_step_updater = 200
@@ -1403,82 +1359,35 @@ def mpc_movement(
             target_orientation = np.array(Goal_List_Orientation[idx][:4], dtype=float).reshape(4)
 
             # Call plan with the correctly shaped pose and orientation
-            robots[idx].plan(tcp_name="tool1",
+            Robot_List[idx].plan(tcp_name="tool1",
                             target_pose=target_pose,
                             target_orientation= target_orientation)
 
         Traj_Ending_Flag = False
         cmd_idx = 0
-        Starting_Step = test._my_world.current_time_step_index
-        while cmd_idx < len(robots[Rob_idx_list[0]]._computed_cmd_plan.position):
-            test._my_world.step(render=True)
-            if(test._my_world.current_time_step_index - Starting_Step >= cc_world_step_updater):
+        Starting_Step = World_Manager._my_world.current_time_step_index
+        while cmd_idx < len(Robot_List[Rob_idx_list[0]]._computed_cmd_plan.position):
+            World_Manager._my_world.step(render=True)
+            if(World_Manager._my_world.current_time_step_index - Starting_Step >= cc_world_step_updater):
                 break
             
             for idx in Rob_idx_list:
-                cmd_state = robots[idx]._computed_cmd_plan[cmd_idx]
+                cmd_state = Robot_List[idx]._computed_cmd_plan[cmd_idx]
 
                 # Apply articulation action
                 art_action = ArticulationAction(
                     cmd_state.position.cpu().numpy(),
                     cmd_state.velocity.cpu().numpy(),
-                    joint_indices=robots[idx]._computed_idx_list,
+                    joint_indices=Robot_List[idx]._computed_idx_list,
                 )
-                robots[idx]._articulation_controller.apply_action(art_action)
+                Robot_List[idx]._articulation_controller.apply_action(art_action)
                 for _ in range(2):
-                    test._my_world.step(render=False)
+                    World_Manager._my_world.step(render=False)
             
             cmd_idx += 1
-            if cmd_idx == len(robots[Rob_idx_list[0]]._computed_cmd_plan.position):
+            if cmd_idx == len(Robot_List[Rob_idx_list[0]]._computed_cmd_plan.position):
                 Traj_Ending_Flag = True
         if Traj_Ending_Flag == True:
             print("Trajectory Done")
             break
-        
-# Testing MPC Movement (Out Dated as of 12/04/2024)
-        # mpc_movement(Goal_List_Orientation=[np.array([quat[0], quat[1], quat[2], quat[3]]),
-        #                                          np.array([quat_test[0], quat_test[1], quat_test[2], quat_test[3]])])
-
-def main():
-
-    # rospy.init_node("tutorial_subscriber", anonymous=True)
-
-    i=0
-
-    # for robot in robots:
-        # robot._js_pub_interval = rospy.Timer(rospy.Duration(10.0 / publish_rate), robot.ros_js_publisher)
-
-    while simulation_app.is_running():
-        # Rendering The World
-        test._my_world.step(render=True)
-        if not test._my_world.is_playing():
-                if i % 100 == 0:
-                    print("**** Click Play to start simulation *****")
-                i += 1
-                continue
-
-        step_index = test._my_world.current_time_step_index
-        # Re initializing robots defined in the list
-        for robot in robots:
-            robot.articulation_controller_init(step_index)
-        
-        # Re initializing conveyors defined in the list
-        for conv in conveyors:
-            conv.articulation_controller_init(step_index)
-
-        if step_index < 20:
-            continue
-
-# Publishing ROS JointState on Movement
-        # for robot in robots:
-        #         robot.ros_js_publisher()
-
-#         T_Now = time.time()
-#         while time.time() - T_Now < 200:
-#             test._my_world.step(render=True) 
-
-        robots[0].free_TCP_movement()
-
-if __name__ == "__main__":
-    main()
-
+    
