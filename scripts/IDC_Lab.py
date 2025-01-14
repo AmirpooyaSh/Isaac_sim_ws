@@ -280,12 +280,6 @@ class WorldManager(object):
         # Excluded models : Conveyors : NewConvn1_V2, NewConvn2_V2, MatTable_3Level, MatTable_6Level, MatTable_tilted, NewSheathingRack
         # R1_Smart_Mat_Table, R2_Smart_Mat_Table
 
-        # Target Cubid
-        world_cfg_table = WorldConfig.from_dict(
-            load_yaml(join_path(get_world_configs_path(), "collision_table.yml"))
-        )
-        world_cfg_table.cuboid[0].pose[2] -= 0.02
-
         world_model = WorldConfig(
             mesh=[],
             # Target Cube for Free Movement
@@ -658,12 +652,16 @@ class CuRoboRobot(object):
             # This feature is to be developed (MPC)
         ]
         # Add collision paths if empty_coll_world is True
-        if empty_coll_world:
+        if empty_coll_world == True:
             ignoring_prim_paths.extend([
                 "/Smart_Conveyor",
             ])
+            # Alternative Method
+            # self._motion_gen.world_model.remove_obstacle("/Smart_Conveyor/Link_1/collisions")
+            # self._motion_gen.world_model.remove_obstacle("/Smart_Conveyor/Link_2/collisions")
 
-        print(ignoring_prim_paths)   
+            # We Do this Whenever we want to remove anything from the scene!
+            self._motion_gen.clear_world_cache()
 
         obstacles = self._temp_world_manager._usd_help.get_obstacles_from_stage(
             reference_prim_path=self._robot_prim_path,
@@ -677,10 +675,6 @@ class CuRoboRobot(object):
 
             print(" Collision World Updated for " + self._ROS_JS_robot_indicator)
         else:
-            # So It's Empty. Then Why ??????????
-            self._motion_gen.world_model.remove_obstacle("/Smart_Conveyor/Link_1/collisions")
-            self._motion_gen.world_model.remove_obstacle("/Smart_Conveyor/Link_2/collisions")
-            self._motion_gen.world_model.save_world_as_mesh("Deepened.obj")
             print(" Robot "+self._ROS_JS_robot_indicator+" Has No Collision World as of Now")
 
     # Free Movement of Robotic Arm with a Cube to Determine Pick and Place Locations (In Progress !!!###)
@@ -696,9 +690,6 @@ class CuRoboRobot(object):
 
         past_pose = None
         past_orientation = None
-
-        # Updating the Collision World before running the Free Movement
-        # self.motion_gen_update_world()
 
         cmd_plan = None
         # Creating the Loop
@@ -763,6 +754,11 @@ class CuRoboRobot(object):
                     self.motion_gen_update_world(empty_coll_world= True)
                     self._temp_world_manager._target_cube.set_world_pose(position=[2.3, 0, 2],
                                                                          orientation=[1, 0, 0, 0])
+                    target_pose = None
+                    target_orientation = None
+                    past_pose = None
+                    past_orientation = None
+                    cmd_plan = None
                     # self._motion_gen.detach_object_from_robot("tool0")
                     continue
                 # Set EE teleop goals, use cube for simple non-vr init:
@@ -780,13 +776,13 @@ class CuRoboRobot(object):
 
                 if succ:
                     ## Announcing the Target Location:
-                    # print(self._ROS_JS_robot_indicator+" | "+self._robot_cfg["kinematics"]["ee_link"])
-                    # if self._ROS_JS_robot_indicator == "IRB6620_R2":
-                    #     modified_pose = cube_position
-                    #     modified_pose[0] += 4.6
-                    # print(f"Reached Pose: {modified_pose}, Reached Orientation: {cube_orientation}")
-
+                    print(self._ROS_JS_robot_indicator+" | "+self._robot_cfg["kinematics"]["ee_link"])
+                    Modified_Pose = [cube_position[0]+self._r_pose[0],
+                                     cube_position[1]+self._r_pose[1],
+                                     cube_position[2]+self._r_pose[2]]
+                    print(f"Reached Pose: {Modified_Pose}, Reached Orientation: {cube_orientation}")
                     ##
+
                     cmd_plan = result.get_interpolated_plan()
                     cmd_plan = self._motion_gen.get_full_js(cmd_plan)
                     # get only joint names that are in both:
@@ -826,9 +822,6 @@ class CuRoboRobot(object):
                 if cmd_idx >= len(cmd_plan.position):
                     cmd_idx = 0
                     cmd_plan = None
-        
-
-        
 
     def plan(self,
                         tcp_name: str = "tool1",
@@ -849,7 +842,7 @@ class CuRoboRobot(object):
         # Start the timer
         TimeOut_Timer = time.time()
 
-        # Giving a 5-second timer to solve IK
+        # Giving a 10-second timer to solve IK
         while (time.time() - TimeOut_Timer <= 10):
             # Render
             self._temp_world_manager._my_world.step(render=True)
@@ -1099,7 +1092,7 @@ class CuRoboRobot(object):
     
     # Used for Simulation Attach
     def isaac_tcp_attach(self,
-                   robot_name: str = "IRB6620_R1",
+                   robot_name: str = None,
                    tcp_name: str = "T1",
                    obj_name: str = "SP"):
         
@@ -1115,11 +1108,11 @@ class CuRoboRobot(object):
         Mass_Succ = Obj_Prim.GetAttribute("physics:mass").Set(0.0001)
 
         # Close
-        og.Controller.set(og.Controller.attribute("/action_graph_"+robot_name+"_"+tcp_name+"/close_tick.state:enableImpulse"), True)
+        og.Controller.set(og.Controller.attribute("/action_graph_"+self._ROS_JS_robot_indicator+"_"+tcp_name+"/close_tick.state:enableImpulse"), True)
     
     # Used for Simulation Detach
     def isaac_tcp_detach(self,
-                   robot_name: str = "IRB6620_R1",
+                   robot_name: str = None,
                    tcp_name: str = "T1",
                    obj_name: str = None):
         if obj_name == None:
@@ -1133,7 +1126,7 @@ class CuRoboRobot(object):
         Dis_Grav = Obj_Prim.GetAttribute("physxRigidBody:disableGravity").Set(False)
 
         # Open
-        og.Controller.set(og.Controller.attribute("/action_graph_"+robot_name+"_"+tcp_name+"/open_tick.state:enableImpulse"), True)
+        og.Controller.set(og.Controller.attribute("/action_graph_"+self._ROS_JS_robot_indicator+"_"+tcp_name+"/open_tick.state:enableImpulse"), True)
 
         self._temp_world_manager._my_world.step(render= True)       
         # Re-Disabling Gravity For the Object    
@@ -1175,8 +1168,7 @@ class CuRoboRobot(object):
 
         # Attaching the object withing the simulation to the virtual link (SurfaceGripper Attach)
         CV_Tool_name = f"T{tool_name[-1]}"
-        self.isaac_tcp_attach(robot_name= r_name,
-                              tcp_name= CV_Tool_name,
+        self.isaac_tcp_attach(tcp_name= CV_Tool_name,
                               obj_name=attaching_object_name)
         
         # Attaching the object as spheres to the robot in MotionGen
@@ -1233,6 +1225,9 @@ class CuRoboRobot(object):
             print("Object " + attaching_object_name + " Attached to " + self._ROS_JS_robot_indicator)
             self._is_obj_attached = True
             self._attached_obj_prim = Updated_Obj_Name
+        else:
+            print("Failed to Attach Object" + attaching_object_name + " To Robot " + self._ROS_JS_robot_indicator)
+            print("Proceeding to the Next Step")
     
     def eef_detach(self,
                    r_name: str = "IRB6620_R1",
@@ -1242,8 +1237,7 @@ class CuRoboRobot(object):
         # Detaching the item from the robot in simulation (SurfaceGripper Action Graph)
         # Checking for tool prefix for calling the corresponding action graph e.g. => "tool0" => "T0"
         CV_Tool_name = f"T{tool_name[-1]}"
-        self.isaac_tcp_detach(robot_name= r_name,
-                              tcp_name= CV_Tool_name,
+        self.isaac_tcp_detach(tcp_name= CV_Tool_name,
                               obj_name=detaching_object_name)
         
 
