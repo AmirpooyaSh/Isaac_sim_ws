@@ -1,0 +1,46 @@
+# Testing Robot 2 To Pick and Place a Long Stud
+
+    # #Adding Rob2 Test Stud
+    # L_Stud = Cuboid(
+    #     name="L_Stud",
+    #     pose=[2.6, 0.97, 1.77, 1, 0, 0, 0],
+    #     dims= [0.1, 3.0, 0.05]
+    # )
+    # Add_Rigid_Object_To_Scene(test, "Cuboid", L_Stud)
+
+# # R2 Attach
+#         robots[0].eef_attach(r_name= "IRB6620_R2",
+#                              tool_name="tool0",
+#                              attaching_object_name=L_Stud.name,
+#                              gen_sphere_radius=0.005,
+#                              voxelization_method= SphereFitType.SAMPLE_SURFACE)
+# # R2 Pose 1
+#         R2_Pose_1_Quat = euler_to_quat(np.pi, 0, 0)
+#         robots[0].plan(tcp_name="tool0",
+#                                     target_pose=np.array([0.735, -0.947, 0.271]),
+#                                     target_orientation=np.array([R2_Pose_1_Quat[0], R2_Pose_1_Quat[1], R2_Pose_1_Quat[2], R2_Pose_1_Quat[3]]),
+#                                     update_world_needed=True)
+#         robots[0].render_exec(renderInstance=True,
+#                                 Show_Sphere=False)
+
+# # R2 Pose 2 (Detech)
+#         R2_Pose_2_Quat = euler_to_quat(-np.pi/2, 0, 0)
+#         robots[0].plan(tcp_name="tool0",
+#                                     target_pose=np.array([-0.7933, -0.984, 0.981]),
+#                                     target_orientation=np.array([R2_Pose_2_Quat[0], R2_Pose_2_Quat[1], R2_Pose_2_Quat[2], R2_Pose_2_Quat[3]]),
+#                                     update_world_needed=True)
+#         robots[0].render_exec(renderInstance=True,
+#                                 Show_Sphere=False)
+# # R2 Detach
+#         robots[0].eef_detach(r_name="IRB6620_R2",
+#                              tool_name="tool0",
+#                              detaching_object_name=L_Stud.name)   
+
+# #R2 Home Pose
+#         R2_Pose_Home_Quat = euler_to_quat(np.pi, np.pi/2, np.pi)
+#         robots[0].plan(tcp_name="tool0",
+#                                     target_pose=np.array([-1.578, -0.431, 1.825]),
+#                                     target_orientation=np.array([R2_Pose_Home_Quat[0], R2_Pose_Home_Quat[1], R2_Pose_Home_Quat[2], R2_Pose_Home_Quat[3]]),
+#                                     update_world_needed=True)
+#         robots[0].render_exec(renderInstance=True,
+#                                 Show_Sphere=False)

@@ -1,0 +1,38 @@
+# Testing Robot 1 To Pick and Place a Sheathing Plate
+
+    # SheathingPlate = Cuboid(
+    #     name="SheathingPlate",
+    #     pose=[-1.8, -2.1, 0.37, 1, 0, 0, 0],
+    #     dims=[3, 1.5, 0.015],
+    #     color=[0.87, 0.72, 0.53, 1]
+    # )
+
+    # Add_Rigid_Object_To_Scene(test, "Cuboid", SheathingPlate)
+
+# R1 Suction Pick Position
+        # robots[0].plan(tcp_name="tool1",
+        #                         target_pose=np.array([-0.49, -1.54, 0.44]),
+        #                         target_orientation=np.array([quat[0], quat[1], quat[2], quat[3]]),
+        #                         update_world_needed=True)
+        # robots[0].render_exec(renderInstance=True,
+        #                         Show_Sphere = False)
+
+
+
+# Attach Testing (SP)
+        # robots[0].eef_attach(r_name= "IRB6620_R1",
+        #                      tool_name="tool1",
+        #                      attaching_object_name=Sheathing_Plate.name)
+
+# R1 Suction Place Position
+        # robots[0].plan(tcp_name="tool1",
+        #                         target_pose=np.array([0, 1.5, 0.08]),
+        #                         target_orientation=np.array([quat_2[0], quat_2[1], quat_2[2], quat_2[3]]),
+        #                         update_world_needed=True)
+        # robots[0].render_exec(renderInstance=True,
+        #                       Show_Sphere = False)
+
+# Detach Testing
+        # robots[0].eef_detach(r_name="IRB6620_R1",
+        #                      tool_name="tool1",
+        #                      detaching_object_name=Sheathing_Plate.name)  

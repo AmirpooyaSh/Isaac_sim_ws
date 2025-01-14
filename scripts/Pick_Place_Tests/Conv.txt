@@ -1,0 +1,8 @@
+# Testing Smart Conveyor Belt To Move
+
+
+# Smart Conveyor Movement Test
+        # conveyors[0].render_exec('Joint_1', 3.0)
+        # conveyors[0].render_exec('Joint_2', 0.2)
+        # conveyors[0].render_exec('Joint_2', 0.0)
+        # conveyors[0].render_exec('Joint_1', 0.0)

@@ -1,0 +1,46 @@
+# Testing Robot 1 To Pick and Place a Stud
+
+    # # Adding Test Stud
+    # Stud = Cuboid(
+    #     name= "stud_test",
+    #     pose= [1.46, 0.14, 1.59, 1, 0, 0, 0],
+    #     dims= [0.03, 1.5, 0.1]
+    # )
+    # Add_Rigid_Object_To_Scene(test, "Cuboid", Stud)
+
+# # R1 Gripper Attach (Stud)
+        # robots[0].eef_attach(r_name= "IRB6620_R1",
+        #                      tool_name="tool0",
+        #                      attaching_object_name=Stud.name)
+
+# # R1 Gripper Pose 1
+        # Q_Gripper_Pick = euler_to_quat(-np.pi/2, 0, 0)
+        # robots[0].plan(tcp_name="tool0",
+        #                target_pose=np.array([-0.59, -0.74, 0.39]),
+        #                target_orientation=np.array([Q_Gripper_Pick[0], Q_Gripper_Pick[1], Q_Gripper_Pick[2], Q_Gripper_Pick[3]]),
+        #                update_world_needed=True)
+        # robots[0].render_exec(renderInstance=True,
+        #                       Show_Sphere = False)
+        
+# # R1 Gripper Pose 2
+        # Q_Gripper_Place = euler_to_quat(np.pi/3, 0, 0)
+        # robots[0].plan(tcp_name="tool0",
+        #         target_pose=np.array([-0.59, 1.98, 0.39]),
+        #         target_orientation=np.array([Q_Gripper_Place[0], Q_Gripper_Place[1], Q_Gripper_Place[2], Q_Gripper_Place[3]]),
+        #         update_world_needed=True)
+        # robots[0].render_exec(renderInstance=True,
+        #                       Show_Sphere = False)
+        
+# # R1 Gripper Detach (Stud)
+#         robots[0].eef_detach(r_name="IRB6620_R1",
+#                              tool_name="tool0",
+#                              detaching_object_name=Stud.name)
+
+# # R1 Gripper Home Pose
+        # Q_Gripper_Home = euler_to_quat(np.pi, 0, 0)
+        # robots[0].plan(tcp_name="tool0",
+        #         target_pose=np.array([1.5, 0, 1.5]),
+        #         target_orientation=np.array([Q_Gripper_Home[0], Q_Gripper_Home[1], Q_Gripper_Home[2], Q_Gripper_Home[3]]),
+        #         update_world_needed=True)
+        # robots[0].render_exec(renderInstance=True,
+        #                       Show_Sphere = False) 
