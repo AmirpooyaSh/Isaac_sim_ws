@@ -208,11 +208,11 @@ class WorldManager(object):
         cur_dir = "/home/apshirazi/Isaac_sim_ws/"
 
         # Smart Material Table #1
-        Smart_Mat_Table_Quat = self.quat_transfer_world_generator(90, 0, 180)
+        Smart_Mat_Table_Quat = self.quat_transfer_world_generator(90, 0, 0)
 
         Smart_Mat_Table = Mesh(
             name="R2_Smart_Mat_Table",
-            pose=[5.5, -2.4, -0.039, Smart_Mat_Table_Quat[0], 
+            pose=[7.2, 2.5, 0, Smart_Mat_Table_Quat[0], 
                                       Smart_Mat_Table_Quat[1],
                                       Smart_Mat_Table_Quat[2],
                                       Smart_Mat_Table_Quat[3]],
@@ -461,7 +461,8 @@ class CuRoboRobot(object):
         self._r_conf_name = r_conf_name
 
         # 01/14/2025 Commented for Test (Shouldn't Be)
-        self.motion_gen_warmup()
+        if self._ROS_JS_robot_indicator == "IRB6620_R2":
+            self.motion_gen_warmup()
         # This will indicate if any object is attached to the robot or not
         self._is_obj_attached: bool = False
         # This will be used to prevent the world updater from grasping the attached object's mesh representation as world
@@ -511,12 +512,12 @@ class CuRoboRobot(object):
                           TCP_Name: str = None):
         # Default Parameters
         trajopt_dt = None
-        optimize_dt = False
+        optimize_dt = True
         trajopt_tsteps = 32
         trim_steps = [1, None]
-        max_attempts = 2
-        interpolation_dt = 0.05
-        enable_finetune_trajopt = False
+        max_attempts = 10
+        interpolation_dt = 0.01
+        enable_finetune_trajopt = True
         # MotionGen StartUp
 
         # This means that there is no need to change the current TCP Config
@@ -546,11 +547,10 @@ class CuRoboRobot(object):
         self._motion_gen.warmup(enable_graph=False, warmup_js_trajopt=False)
         print("Curobo for robot ( " + self._r_conf_name + " ) is ready ... | TCP = " + self._current_tool)
 
-        self._plan_config = MotionGenPlanConfig(enable_graph=False,
-                                                enable_graph_attempt=2,
+        self._plan_config = MotionGenPlanConfig(enable_graph=True,
+                                                enable_graph_attempt=10,
                                                 max_attempts=max_attempts,
-                                                enable_finetune_trajopt=enable_finetune_trajopt,
-                                                time_dilation_factor=0.5,)
+                                                enable_finetune_trajopt=enable_finetune_trajopt,)
 
     def motion_gen_update_world(self, 
                                 Removing_Prim_Paths: List[str] = None):
@@ -691,7 +691,7 @@ class CuRoboRobot(object):
                 # To do so, we empty out the robot's Collision world representation
                 # It will let CuRobo Plan freely and in a linear way (Conduct Linear Movements)
                 if cube_position[2] == 500:
-                    self.motion_gen_update_world(Removing_Prim_Paths=["Smart_Conveyor"])
+                    self.motion_gen_update_world(Removing_Prim_Paths=["Smart_Conveyor", "obstacles"])
                     self._temp_world_manager._target_cube.set_world_pose(position=[2.3, 0, 2],
                                                                          orientation=[1, 0, 0, 0])
                     target_pose = None
@@ -700,6 +700,17 @@ class CuRoboRobot(object):
                     past_orientation = None
                     cmd_plan = None
                     # self._motion_gen.detach_object_from_robot("tool0")
+                    continue
+                # Z = 500 : Bring Back The Whole Collision World
+                if cube_position[2] == 200:
+                    self.motion_gen_update_world()
+                    self._temp_world_manager._target_cube.set_world_pose(position=[2.3, 0, 2],
+                                                                         orientation=[1, 0, 0, 0])
+                    target_pose = None
+                    target_orientation = None
+                    past_pose = None
+                    past_orientation = None
+                    cmd_plan = None
                     continue
                 # Set EE teleop goals, use cube for simple non-vr init:
                 ee_translation_goal = cube_position
@@ -720,7 +731,10 @@ class CuRoboRobot(object):
                     Modified_Pose = [cube_position[0]+self._r_pose[0],
                                      cube_position[1]+self._r_pose[1],
                                      cube_position[2]]
-                    print(f"Reached Pose: {Modified_Pose}, Reached Orientation: {cube_orientation}")
+                    # print(f"Reached Pose: {Modified_Pose}, Reached Orientation: {cube_orientation}")
+                    # Print with 3 decimals
+                    print(f"Reached Pose: {[f'{elem:.3f}' for elem in Modified_Pose]}, Reached Orientation: {[f'{elem:.3f}' for elem in cube_orientation]}")
+
                     ##
 
                     cmd_plan = result.get_interpolated_plan()
@@ -1241,26 +1255,26 @@ test = WorldManager()
 
 robots = [
     # IRB6620_R1
-    CuRoboRobot(working_world=test, 
-                R_Name="IRB6620_R1",
-                pose=[0,0,0],
-                input_tool="tool0", 
-                w_dir="home/apshirazi/Isaac_sim_ws/robot", 
-                r_conf_name="IRB6620_Config.yaml",
-                Gripper_List=[RobotGripper(RobName= "IRB6620_R1",
-                                           ParentLink= "Link_6",
-                                           TCP_Name= "T0",
-                                           C_Pose= [0.09 , 0, -0.29]),
-                                RobotGripper(RobName= "IRB6620_R1",
-                                             ParentLink= "Link_6",
-                                             TCP_Name= "T1",
-                                             C_Pose= [0.55, 0.435, -0.175])
-                                           ],
-                Cuda_Device= 0),
+    # CuRoboRobot(working_world=test, 
+    #             R_Name="IRB6620_R1",
+    #             pose=[0,0,0.025],
+    #             input_tool="tool0", 
+    #             w_dir="home/apshirazi/Isaac_sim_ws/robot", 
+    #             r_conf_name="IRB6620_Config.yaml",
+    #             Gripper_List=[RobotGripper(RobName= "IRB6620_R1",
+    #                                        ParentLink= "Link_6",
+    #                                        TCP_Name= "T0",
+    #                                        C_Pose= [0.09 , 0, -0.29]),
+    #                             RobotGripper(RobName= "IRB6620_R1",
+    #                                          ParentLink= "Link_6",
+    #                                          TCP_Name= "T1",
+    #                                          C_Pose= [0.55, 0.435, -0.175])
+    #                                        ],
+    #             Cuda_Device= 0),
     # IRB6620_R2 (Commented)
     CuRoboRobot(working_world=test,
                 R_Name="IRB6620_R2",
-                pose=[4.6, 0, 0],
+                pose=[4.6, 0, 0.025],
                 input_tool="tool0",
                 w_dir="home/apshirazi/Isaac_sim_ws/robot_2",
                 r_conf_name="IRB6620_Config.yaml",
@@ -1477,6 +1491,45 @@ def main():
 #         while time.time() - T_Now < 200:
 #             test._my_world.step(render=True) 
 
+        conveyors[0].render_exec('Joint_1', 2.275)
+
+        # robots[0].plan(tcp_name= "tool0",
+        #                target_pose= [5.312, -0.098, 0.89],
+        #                target_orientation= [0, 0, 0, 1],
+        #                update_world_needed= True)
+        # robots[0].render_exec(renderInstance= True,
+        #                       Show_Sphere= False)
+
+        # robots[0].plan(tcp_name= "tool0",
+        #                target_pose= [5.645, -0.098, 1.046],
+        #                target_orientation= [0, 0, 0, 1],
+        #                update_world_needed= True,
+        #                removing_primitives=["obstacles"])
+        # robots[0].render_exec(renderInstance= True,
+        #                       Show_Sphere= False)
+     
+        # robots[0].plan(tcp_name= "tool0",
+        #                target_pose= [5.539, 0, 1.168],
+        #                target_orientation= [0, 0, 0, 1],
+        #                update_world_needed= True)
+        # robots[0].render_exec(renderInstance= True,
+        #                       Show_Sphere= False)   
+
+        # robots[0].plan(tcp_name= "tool0",
+        #                target_pose= [5.645, -0.098, 1.0],
+        #                target_orientation= [0, 0, 0, 1],
+        #                update_world_needed= True,
+        #                removing_primitives=["obstacles"])
+        # robots[0].render_exec(renderInstance= True,
+        #                       Show_Sphere= False)
+        
+        # robots[0].plan(tcp_name= "tool0",
+        #                target_pose= [5.645, -0.098, 0.85],
+        #                target_orientation= [0, 0, 0, 1],
+        #                update_world_needed= False)
+        # robots[0].render_exec(renderInstance= True,
+        #                       Show_Sphere= False)
+        
         robots[0].free_TCP_movement()
 
 if __name__ == "__main__":

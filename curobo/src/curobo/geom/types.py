@@ -212,9 +212,16 @@ class Obstacle:
             spheres
         """
         mesh = self.get_trimesh_mesh()
+        # This is Where it Fits Spheres to the Raw Mesh
+        ###
+        ###
+        ###
         pts, n_radius = fit_spheres_to_mesh(
             mesh, n_spheres, surface_sphere_radius, fit_type, voxelize_method=voxelize_method
         )
+        ###
+        ###
+        ###
 
         obj_pose = Pose.from_list(self.pose, tensor_args)
         # transform object:
