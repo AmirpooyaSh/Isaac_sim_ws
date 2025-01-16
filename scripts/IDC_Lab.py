@@ -219,10 +219,22 @@ class WorldManager(object):
             file_path= cur_dir + "smart_table/Smart_Mat_Supply.stl",
             scale=[0.001, 0.001, 0.001],
         )
+         
+        # Ground !
+        Cube = Cuboid (
+            name="Ground",
+            dims=[50, 50, 0.2],
+            pose=[0.0, 0.0, -0.1, 1, 0, 0, 0.0],
+            color= [0, 0, 0, 0]
+        )
+        # world_cfg_table = WorldConfig.from_dict(
+        #     load_yaml(join_path(get_world_configs_path(), "collision_table.yml"))
+        # )
+        # world_cfg_table.cuboid[0].pose[2] -= 0.02
 
         world_model = WorldConfig(
             mesh=[Smart_Mat_Table],
-            cuboid=[],
+            cuboid=[Cube],
             capsule=[],
             cylinder=[],
             sphere=[],
@@ -512,7 +524,7 @@ class CuRoboRobot(object):
                           TCP_Name: str = None):
         # Default Parameters
         trajopt_dt = None
-        optimize_dt = True
+        optimize_dt = False
         trajopt_tsteps = 32
         trim_steps = [1, None]
         max_attempts = 60
@@ -599,7 +611,8 @@ class CuRoboRobot(object):
 
         ignoring_prim_paths = [
             self._robot_prim_path,
-            "/World/defaultGroundPlane",
+            # "/World/defaultGroundPlane",
+            "/World/obstacles/R2_Smart_Mat_Table",
             # smart Conveyor's Visual Prims
             "/Smart_Conveyor/base_link/visuals",
             "/Smart_Conveyor/track_link/visuals",
@@ -661,6 +674,9 @@ class CuRoboRobot(object):
 
         past_pose = None
         past_orientation = None
+
+        # Let the Robot Move Freely
+        self.release_path_plan_restriction()
 
         cmd_plan = None
         # Creating the Loop
@@ -829,6 +845,9 @@ class CuRoboRobot(object):
         if (linear_restriction != None) or (orientational_restriction != None) :
             self.restrict_path_plan(Position_Restriction= linear_restriction,
                                     Orientation_Restriction= orientational_restriction)
+            
+        if (linear_restriction == None) and (orientational_restriction == None):
+            self.release_path_plan_restriction()
 
         result: MotionGenResult = None
         succ = None
@@ -840,7 +859,7 @@ class CuRoboRobot(object):
         print(f"Pose (X,Y,Z): {target_pose}, Orientation (W,X,Y,Z): {target_orientation}")
 
         # Giving a 10-second timer to solve IK
-        while (time.time() - TimeOut_Timer <= 10):
+        while (time.time() - TimeOut_Timer <= 60):
             # Render
             self._temp_world_manager._my_world.step(render=True)
             # 2. Getting Current JS
@@ -1356,7 +1375,8 @@ def euler_to_quat(roll, pitch, yaw):
 # Default Assumption (Cuboid), but it can be changed to Capsule and Mesh
 def Add_Rigid_Object_To_Scene(World_Manager: WorldManager,
                               ObjectType: str = "Cuboid",
-                              obj: Any = Cuboid
+                              obj: Any = Cuboid,
+                              rigid_body_disabler: bool = False
                               ):
     Added_Obj_Prim_Root: str = None
     # It's better not to use CuRobo's enable_physics Attribute !
@@ -1378,37 +1398,57 @@ def Add_Rigid_Object_To_Scene(World_Manager: WorldManager,
     # All the added object are in the prim path of : "/world/obstacles/<OBJ Name>"
     Obj_Prim = stage.GetPrimAtPath(Added_Obj_Prim_Root)
 
-    # Adding RigidBody
-    execute("AddPhysicsComponentCommand",
-                          usd_prim=Obj_Prim,
-                          component="PhysicsRigidBodyAPI")
-    # Adding Colliders
-    execute("AddPhysicsComponentCommand",
-                          usd_prim=Obj_Prim,
-                          component="PhysicsCollisionAPI")
-    
-    # Here is an Alternative Method to add Collision Attribute (Using UsdPhysics)
-    # UsdPhysics.CollisionAPI.Apply(Obj_Prim)
+    if rigid_body_disabler == False:
 
-    # Adding ConvexHull for meshes (Not Working as of 12/06/2024)
-    # Obj_Prim.CreateAttribute("physics:approximation").Set(UsdPhysics.Tokens.boundingCube)
-    # print(dir(UsdPhysics.Tokens))
+        # Adding RigidBody
+        execute("AddPhysicsComponentCommand",
+                            usd_prim=Obj_Prim,
+                            component="PhysicsRigidBodyAPI")
+        # Adding Colliders
+        execute("AddPhysicsComponentCommand",
+                            usd_prim=Obj_Prim,
+                            component="PhysicsCollisionAPI")
+        
+        # Here is an Alternative Method to add Collision Attribute (Using UsdPhysics)
+        # UsdPhysics.CollisionAPI.Apply(Obj_Prim)
 
-    # Adding Colliders
-    execute("AddPhysicsComponentCommand",
-                          usd_prim=Obj_Prim,
-                          component="PhysicsMassAPI")
+        # Adding ConvexHull for meshes (Not Working as of 12/06/2024)
+        # Obj_Prim.CreateAttribute("physics:approximation").Set(UsdPhysics.Tokens.boundingCube)
+        # print(dir(UsdPhysics.Tokens))
 
-    # Adding a Small Positive Mass to Avoid Robot's Effort Calculation using CuRobo
-    Mass_Succ = Obj_Prim.GetAttribute("physics:mass").Set(0.0001)
-    # Disabling Gravity
-    Dis_Grav = Obj_Prim.GetAttribute("physxRigidBody:disableGravity").Set(True)
+        # Adding Colliders
+        execute("AddPhysicsComponentCommand",
+                            usd_prim=Obj_Prim,
+                            component="PhysicsMassAPI")
+
+        # Adding a Small Positive Mass to Avoid Robot's Effort Calculation using CuRobo
+        Mass_Succ = Obj_Prim.GetAttribute("physics:mass").Set(0.0001)
+        # Disabling Gravity
+        Dis_Grav = Obj_Prim.GetAttribute("physxRigidBody:disableGravity").Set(True)
 
     print("Object " + obj.name + " Added to the Simulation | PRIM: " + Added_Obj_Prim_Root)
 
     # Updating the Collision World for Each Robot After Adding an Object to the Scene
     for robot in robots:
         robot.motion_gen_update_world()
+
+# Smart Material Table's Collision
+# 1
+R2_Smart_Mat_Table_Box1 = Cuboid(
+    name= "R2_Smart_Mat_Table_Box1",
+    pose= [6, 0, 0.45, 1, 0, 0, 0],
+    dims= [1, 4, 0.8],
+    color= [0.87, 0.72, 0.53, 0.1]
+)
+Add_Rigid_Object_To_Scene(test, "Cuboid", R2_Smart_Mat_Table_Box1, True)
+
+R2_Smart_Mat_Table_Box2 = Cuboid(
+    name= "R2_Smart_Mat_Table_Box2",
+    pose= [6, -0.33, 1.57, 1, 0, 0, 0],
+    dims= [0.4, 4.6, 1.5],
+    color= [0.87, 0.72, 0.53, 0.1]
+)
+Add_Rigid_Object_To_Scene(test, "Cuboid", R2_Smart_Mat_Table_Box2, True)
 
 def parallel_movement(
     Rob_idx_list: List[int] = [0, 1],
@@ -1535,7 +1575,7 @@ def main():
         robots[0].plan(tcp_name= "tool0",
                        target_pose= [5.45, 0.2, 1.0],
                        target_orientation= [0, 1, 0, 0],
-                       update_world_needed= True)
+                       update_world_needed= False)
         robots[0].render_exec(renderInstance= True,
                               Show_Sphere= False)   
 # (Helping Point 2 To Pick) Removing Smart Material Supply
@@ -1543,25 +1583,67 @@ def main():
                        target_pose= [5.7, 0.2, 1.2],
                        target_orientation= [0, 1, 0, 0],
                        update_world_needed= True,
-                       removing_primitives=["obstacles"],
+                       removing_primitives=["world/obstacles"],
                        linear_restriction= torch.tensor([0, 1, 0], dtype=torch.float32),
                        orientational_restriction= torch.tensor([1, 1, 1], dtype=torch.float32))
         robots[0].render_exec(renderInstance= True,
                               Show_Sphere= False)
 # To the Pick Location
         robots[0].plan(tcp_name= "tool0",
-                       target_pose= [5.7, 0.2, 0.84],
+                       target_pose= [5.7, 0.2, 0.9],
                        target_orientation= [0, 1, 0, 0],
                        update_world_needed= False,
                        linear_restriction= torch.tensor([1, 1, 0], dtype=torch.float32),
                        orientational_restriction= torch.tensor([1, 1, 1], dtype=torch.float32))
         robots[0].render_exec(renderInstance= True,
                               Show_Sphere= False)
-        
-        T_Now = time.time()
-        while time.time() - T_Now < 20000:
-            test._my_world.step(render=True) 
 
+        # Adding Test Stud
+        Stud_1 = Cuboid(
+            name= "Stud_1",
+            pose= [5.695, -0.93, 0.9, 1, 0, 0, 0],
+            dims= [0.05, 6.0, 0.1],
+            color= [0.87, 0.72, 0.53, 1]
+        )
+        Add_Rigid_Object_To_Scene(test, "Cuboid", Stud_1)
+
+        # R1 Gripper Attach (Stud)
+        robots[0].eef_attach(r_name= "IRB6620_R1",
+                             tool_name="tool0",
+                             attaching_object_name=Stud_1.name)
+
+        robots[0].plan(tcp_name= "tool0",
+                       target_pose= [5.7, 0.2, 1.2],
+                       target_orientation= [0, 1, 0, 0],
+                       update_world_needed= True,
+                       removing_primitives=["world/obstacles"],
+                       linear_restriction= torch.tensor([1, 1, 0], dtype=torch.float32),
+                       orientational_restriction= torch.tensor([1, 1, 1], dtype=torch.float32))
+        robots[0].render_exec(renderInstance= True,
+                              Show_Sphere= False)
+
+        robots[0].plan(tcp_name= "tool0",
+                       target_pose= [5.45, 0.2, 1.0],
+                       target_orientation= [0, 1, 0, 0],
+                       update_world_needed= True,
+                       removing_primitives=["world/obstacles"],
+                       linear_restriction= torch.tensor([0, 1, 0], dtype=torch.float32),
+                       orientational_restriction= torch.tensor([1, 1, 1], dtype=torch.float32))
+        robots[0].render_exec(renderInstance= True,
+                              Show_Sphere= False) 
+
+# Reached Pose: ['3.568', '-0.000', '1.657'], Reached Orientation: ['-0.000', '-0.707', '-0.000', '0.707']
+
+        robots[0].plan(tcp_name= "tool0",
+                       target_pose= [3.568, 0, 1.657],
+                       target_orientation= [0, -0.707, 0, 0.707],
+                       update_world_needed= True)
+        robots[0].render_exec(renderInstance= True,
+                              Show_Sphere= False) 
+
+        # T_Now = time.time()
+        # while time.time() - T_Now < 20000:
+        #     test._my_world.step(render=True) 
 
         robots[0].free_TCP_movement()
 
