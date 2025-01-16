@@ -512,10 +512,10 @@ class CuRoboRobot(object):
                           TCP_Name: str = None):
         # Default Parameters
         trajopt_dt = None
-        optimize_dt = True
+        optimize_dt = False
         trajopt_tsteps = 32
         trim_steps = [1, None]
-        max_attempts = 10
+        max_attempts = 60
         interpolation_dt = 0.01
         enable_finetune_trajopt = True
         # MotionGen StartUp
@@ -548,7 +548,7 @@ class CuRoboRobot(object):
         print("Curobo for robot ( " + self._r_conf_name + " ) is ready ... | TCP = " + self._current_tool)
 
         self._plan_config = MotionGenPlanConfig(enable_graph=True,
-                                                enable_graph_attempt=10,
+                                                enable_graph_attempt=3,
                                                 max_attempts=max_attempts,
                                                 enable_finetune_trajopt=enable_finetune_trajopt,)
 
@@ -802,7 +802,7 @@ class CuRoboRobot(object):
         print(f"Pose (X,Y,Z): {target_pose}, Orientation (W,X,Y,Z): {target_orientation}")
 
         # Giving a 10-second timer to solve IK
-        while (time.time() - TimeOut_Timer <= 2):
+        while (time.time() - TimeOut_Timer <= 10):
             # Render
             self._temp_world_manager._my_world.step(render=True)
             # 2. Getting Current JS
@@ -1257,7 +1257,7 @@ robots = [
     # IRB6620_R1
     # CuRoboRobot(working_world=test, 
     #             R_Name="IRB6620_R1",
-    #             pose=[0,0,0.025],
+    #             pose=[0,0,0.0],
     #             input_tool="tool0", 
     #             w_dir="home/apshirazi/Isaac_sim_ws/robot", 
     #             r_conf_name="IRB6620_Config.yaml",
@@ -1493,42 +1493,28 @@ def main():
 
         conveyors[0].render_exec('Joint_1', 2.275)
 
-        # robots[0].plan(tcp_name= "tool0",
-        #                target_pose= [5.312, -0.098, 0.89],
-        #                target_orientation= [0, 0, 0, 1],
-        #                update_world_needed= True)
-        # robots[0].render_exec(renderInstance= True,
-        #                       Show_Sphere= False)
-
-        # robots[0].plan(tcp_name= "tool0",
-        #                target_pose= [5.645, -0.098, 1.046],
-        #                target_orientation= [0, 0, 0, 1],
-        #                update_world_needed= True,
-        #                removing_primitives=["obstacles"])
-        # robots[0].render_exec(renderInstance= True,
-        #                       Show_Sphere= False)
-     
-        # robots[0].plan(tcp_name= "tool0",
-        #                target_pose= [5.539, 0, 1.168],
-        #                target_orientation= [0, 0, 0, 1],
-        #                update_world_needed= True)
-        # robots[0].render_exec(renderInstance= True,
-        #                       Show_Sphere= False)   
-
-        # robots[0].plan(tcp_name= "tool0",
-        #                target_pose= [5.645, -0.098, 1.0],
-        #                target_orientation= [0, 0, 0, 1],
-        #                update_world_needed= True,
-        #                removing_primitives=["obstacles"])
-        # robots[0].render_exec(renderInstance= True,
-        #                       Show_Sphere= False)
-        
-        # robots[0].plan(tcp_name= "tool0",
-        #                target_pose= [5.645, -0.098, 0.85],
-        #                target_orientation= [0, 0, 0, 1],
-        #                update_world_needed= False)
-        # robots[0].render_exec(renderInstance= True,
-        #                       Show_Sphere= False)
+# Helping Point 1 To Pick
+        robots[0].plan(tcp_name= "tool0",
+                       target_pose= [5.45, 0.2, 1.0],
+                       target_orientation= [0, 1, 0, 0],
+                       update_world_needed= True)
+        robots[0].render_exec(renderInstance= True,
+                              Show_Sphere= False)   
+# (Helping Point 2 To Pick) Removing Smart Material Supply
+        robots[0].plan(tcp_name= "tool0",
+                       target_pose= [5.7, 0.2, 1.2],
+                       target_orientation= [0, 1, 0, 0],
+                       update_world_needed= True,
+                       removing_primitives=["obstacles"])
+        robots[0].render_exec(renderInstance= True,
+                              Show_Sphere= False)
+# To the Pick Location
+        robots[0].plan(tcp_name= "tool0",
+                       target_pose= [5.7, 0.2, 0.84],
+                       target_orientation= [0, 1, 0, 0],
+                       update_world_needed= False)
+        robots[0].render_exec(renderInstance= True,
+                              Show_Sphere= False)
         
         robots[0].free_TCP_movement()
 
