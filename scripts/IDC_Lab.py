@@ -512,7 +512,7 @@ class CuRoboRobot(object):
                           TCP_Name: str = None):
         # Default Parameters
         trajopt_dt = None
-        optimize_dt = False
+        optimize_dt = True
         trajopt_tsteps = 32
         trim_steps = [1, None]
         max_attempts = 60
@@ -887,6 +887,10 @@ class CuRoboRobot(object):
                         self._computed_idx_list.append(self._robot.get_dof_index(x))
                         common_js_names.append(x)
                 self._computed_cmd_plan = self._computed_cmd_plan.get_ordered_joint_state(common_js_names)
+
+                print(result.position_error)
+                print(result.rotation_error)
+
                 return True
             
         carb.log_warn("Plan did not converge to a solution: " + str(result.status))
@@ -1525,10 +1529,6 @@ def main():
         # for robot in robots:
         #         robot.ros_js_publisher()
 
-#         T_Now = time.time()
-#         while time.time() - T_Now < 200:
-#             test._my_world.step(render=True) 
-
         conveyors[0].render_exec('Joint_1', 2.275)
 
 # Helping Point 1 To Pick
@@ -1558,6 +1558,11 @@ def main():
         robots[0].render_exec(renderInstance= True,
                               Show_Sphere= False)
         
+        T_Now = time.time()
+        while time.time() - T_Now < 20000:
+            test._my_world.step(render=True) 
+
+
         robots[0].free_TCP_movement()
 
 if __name__ == "__main__":
