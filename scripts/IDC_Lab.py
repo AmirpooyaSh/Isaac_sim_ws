@@ -520,6 +520,8 @@ class CuRoboRobot(object):
         enable_finetune_trajopt = True
         # MotionGen StartUp
 
+        self.clean_occupied_vram()
+
         # This means that there is no need to change the current TCP Config
         if TCP_Name != None:
             self._robot_cfg["kinematics"]["ee_link"] = TCP_Name
@@ -550,7 +552,36 @@ class CuRoboRobot(object):
         self._plan_config = MotionGenPlanConfig(enable_graph=True,
                                                 enable_graph_attempt=3,
                                                 max_attempts=max_attempts,
-                                                enable_finetune_trajopt=enable_finetune_trajopt,)
+                                                enable_finetune_trajopt=enable_finetune_trajopt)
+
+    def restrict_path_plan(self,
+                        Position_Restriction: Optional[torch.Tensor] = None,
+                        Orientation_Restriction: Optional[torch.Tensor] = None):
+        
+        # Set default tensors of zeros if inputs are None
+        if Orientation_Restriction is None:
+            Orientation_Restriction = torch.zeros(3, dtype=torch.float32)
+        if Position_Restriction is None:
+            Position_Restriction = torch.zeros(3, dtype=torch.float32)
+        
+        # Combine the two tensors into one
+        combined_restriction = torch.cat([Orientation_Restriction, Position_Restriction])
+
+        metrics = PoseCostMetric(hold_partial_pose= True,
+                                hold_vec_weight= combined_restriction)
+
+        self._plan_config = MotionGenPlanConfig(enable_graph=True,
+                                                enable_graph_attempt=3,
+                                                max_attempts=60,
+                                                enable_finetune_trajopt=True,
+                                                pose_cost_metric= metrics)
+    
+    def release_path_plan_restriction(self):
+        # Removing Configs resulting into restrictions
+        self._plan_config = MotionGenPlanConfig(enable_graph=True,
+                                                enable_graph_attempt=3,
+                                                max_attempts=60,
+                                                enable_finetune_trajopt=True)
 
     def motion_gen_update_world(self, 
                                 Removing_Prim_Paths: List[str] = None):
@@ -782,8 +813,10 @@ class CuRoboRobot(object):
                         target_pose: np.array = [0, 0, 0],
                         target_orientation: np.array = [1, 0, 0, 0],
                         update_world_needed: bool = True,
-                        removing_primitives: List[str] = None):
-        
+                        removing_primitives: List[str] = None,
+                        linear_restriction: torch.tensor = None,
+                        orientational_restriction: torch.tensor = None):
+
         # Updating MotionGenConfig if there is any new TCP Being Used
         if tcp_name != self._robot_cfg["kinematics"]["ee_link"]:
             self.motion_gen_warmup(TCP_Name=tcp_name)
@@ -791,6 +824,11 @@ class CuRoboRobot(object):
         # A New Approach to Avoid CUDA Memory Occupation:
         if(update_world_needed):
             self.motion_gen_update_world(Removing_Prim_Paths=removing_primitives)
+
+        # Adding Path Planning Restrictions if provided
+        if (linear_restriction != None) or (orientational_restriction != None) :
+            self.restrict_path_plan(Position_Restriction= linear_restriction,
+                                    Orientation_Restriction= orientational_restriction)
 
         result: MotionGenResult = None
         succ = None
@@ -1505,14 +1543,18 @@ def main():
                        target_pose= [5.7, 0.2, 1.2],
                        target_orientation= [0, 1, 0, 0],
                        update_world_needed= True,
-                       removing_primitives=["obstacles"])
+                       removing_primitives=["obstacles"],
+                       linear_restriction= torch.tensor([0, 1, 0], dtype=torch.float32),
+                       orientational_restriction= torch.tensor([1, 1, 1], dtype=torch.float32))
         robots[0].render_exec(renderInstance= True,
                               Show_Sphere= False)
 # To the Pick Location
         robots[0].plan(tcp_name= "tool0",
                        target_pose= [5.7, 0.2, 0.84],
                        target_orientation= [0, 1, 0, 0],
-                       update_world_needed= False)
+                       update_world_needed= False,
+                       linear_restriction= torch.tensor([1, 1, 0], dtype=torch.float32),
+                       orientational_restriction= torch.tensor([1, 1, 1], dtype=torch.float32))
         robots[0].render_exec(renderInstance= True,
                               Show_Sphere= False)
         
