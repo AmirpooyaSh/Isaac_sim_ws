@@ -217,7 +217,7 @@ class WorldManager(object):
 
         Smart_Mat_Table = Mesh(
             name="R2_Smart_Mat_Table",
-            pose=[7.7, 5.0, 0, Smart_Mat_Table_Quat[0], 
+            pose=[7.7, 6.2, 0, Smart_Mat_Table_Quat[0], 
                                       Smart_Mat_Table_Quat[1],
                                       Smart_Mat_Table_Quat[2],
                                       Smart_Mat_Table_Quat[3]],
@@ -229,7 +229,7 @@ class WorldManager(object):
         Cube = Cuboid (
             name="Ground",
             dims=[50, 50, 0.2],
-            pose=[0.0, 0.0, -0.1, 1, 0, 0, 0.0],
+            pose=[0.0, 0.0, -0.2, 1, 0, 0, 0.0],
             color= [0, 0, 0, 0]
         )
         # world_cfg_table = WorldConfig.from_dict(
@@ -239,7 +239,7 @@ class WorldManager(object):
 
         world_model = WorldConfig(
             mesh=[Smart_Mat_Table],
-            cuboid=[],
+            cuboid=[Cube],
             capsule=[],
             cylinder=[],
             sphere=[],
@@ -591,18 +591,19 @@ class CuRoboRobot(object):
         metrics = PoseCostMetric(hold_partial_pose= True,
                                 hold_vec_weight= combined_restriction)
 
-        self._plan_config = MotionGenPlanConfig(enable_graph=True,
-                                                enable_graph_attempt=3,
+        self._plan_config = MotionGenPlanConfig(enable_graph=False,
                                                 max_attempts=60,
                                                 enable_finetune_trajopt=True,
-                                                pose_cost_metric= metrics)
+                                                pose_cost_metric= metrics,
+                                                timeout= 60)
     
     def release_path_plan_restriction(self):
         # Removing Configs resulting into restrictions
-        self._plan_config = MotionGenPlanConfig(enable_graph=True,
+        self._plan_config = MotionGenPlanConfig(enable_graph=False,
                                                 enable_graph_attempt=3,
                                                 max_attempts=60,
-                                                enable_finetune_trajopt=True)
+                                                enable_finetune_trajopt=True,
+                                                timeout= 60)
 
     def motion_gen_update_world(self, 
                                 Removing_Prim_Paths: List[str] = None):
@@ -1348,7 +1349,7 @@ Robot_1 = None
 Robot_2 = None
 Robot_2 = CuRoboRobot(working_world=test,
                 R_Name="IRB6620_R2",
-                pose=[4.6, 0, 0.0],
+                pose=[4.6, 0, 0.025],
                 input_tool="tool0",
                 w_dir="home/apshirazi/Isaac_sim_ws/robot_2",
                 r_conf_name="IRB6620_Config.yaml",
@@ -1432,22 +1433,21 @@ def Add_Rigid_Object_To_Scene(World_Manager: WorldManager,
         Robot_2.motion_gen_update_world()
 
 # Smart Material Table's Collision
-# 1
 R2_Smart_Mat_Table_Box1 = Cuboid(
     name= "R2_Smart_Mat_Table_Box1",
-    pose= [6, 0, 0.45, 1, 0, 0, 0],
+    pose= [6.5, 3.7, 0.45, 1, 0, 0, 0],
     dims= [1, 4, 0.8],
-    color= [0.87, 0.72, 0.53, 0.1]
+    color= [1, 1, 1, 0]
 )
-# Add_Rigid_Object_To_Scene(test, "Cuboid", R2_Smart_Mat_Table_Box1, True)
+Add_Rigid_Object_To_Scene(test, "Cuboid", R2_Smart_Mat_Table_Box1, True)
 
 R2_Smart_Mat_Table_Box2 = Cuboid(
     name= "R2_Smart_Mat_Table_Box2",
-    pose= [6, -0.33, 1.57, 1, 0, 0, 0],
+    pose= [6.45, 3.3, 1.57, 1, 0, 0, 0],
     dims= [0.4, 4.6, 1.5],
-    color= [0.87, 0.72, 0.53, 0.1]
+    color= [1, 1, 1, 0]
 )
-# Add_Rigid_Object_To_Scene(test, "Cuboid", R2_Smart_Mat_Table_Box2, True)
+Add_Rigid_Object_To_Scene(test, "Cuboid", R2_Smart_Mat_Table_Box2, True)
 
 
 
@@ -1458,21 +1458,23 @@ R2_Smart_Mat_Table_Box2 = Cuboid(
 ev = np.sqrt(2) / 2
 
 # Robot_2_To Pick Position
-def Go_To_Pick(Stud_Dims: List[float] = None):
+def Do_Pick(Stud_Name: str = None,
+            Stud_Dims: List[float] = None,
+            Stud_Pose: List[float] = None):
         # Starting Point
-        Robot_2.plan(tcp_name= "tool0",
-                       target_pose= [3.3, 0, 1.7],
-                       target_orientation= [0, -ev, 0, ev],
-                       update_world_needed= True)
-        Robot_2.render_exec(renderInstance= True,
-                              Show_Sphere= False)
+        # Robot_2.plan(tcp_name= "tool0",
+        #                target_pose= [3.3, 0, 1.7],
+        #                target_orientation= [0, -ev, 0, ev],
+        #                update_world_needed= True)
+        # Robot_2.render_exec(renderInstance= True,
+        #                       Show_Sphere= False)
 
-        Robot_2.plan(tcp_name= "tool0",
-                       target_pose= [4.82, 1.44, 0.66],
-                       target_orientation= [0, 1, 0, 0],
-                       update_world_needed= True)
-        Robot_2.render_exec(renderInstance= True,
-                              Show_Sphere= False)
+        # Robot_2.plan(tcp_name= "tool0",
+        #                target_pose= [4.82, 1.44, 0.66],
+        #                target_orientation= [0, 1, 0, 0],
+        #                update_world_needed= True)
+        # Robot_2.render_exec(renderInstance= True,
+        #                       Show_Sphere= False)
 
         # Helping Pick
         Robot_2.plan(tcp_name= "tool0",
@@ -1487,18 +1489,32 @@ def Go_To_Pick(Stud_Dims: List[float] = None):
                        target_pose= [6.17, 1.44, 0.82],
                        target_orientation= [ev, 0, ev, 0],
                        update_world_needed= True,
-                       removing_primitives=["obstacle"],
+                       removing_primitives=["world/obstacles"],
                        orientational_restriction= torch.tensor([1, 1, 1], dtype=torch.float32))
         Robot_2.render_exec(renderInstance= True,
                               Show_Sphere= False)
 
-        ## Attach
+        # Attach
+
+        # Create Element
+        Attaching_Element = Cuboid(
+            name= Stud_Name,
+            pose= [Stud_Pose[0], Stud_Pose[1], Stud_Pose[2], 1, 0, 0, 0],
+            dims= [Stud_Dims[0], Stud_Dims[1], Stud_Dims[2]],
+            color= [0.87, 0.72, 0.53, 1]
+        )
+        Add_Rigid_Object_To_Scene(test, "Cuboid", Attaching_Element)
+
+        Robot_2.eef_attach(r_name= "IRB6620_R2",
+                           tool_name="tool0",
+                           attaching_object_name=Attaching_Element.name)
 
         # Helping Pick      
         Robot_2.plan(tcp_name= "tool0",
                        target_pose= [5.35, 1.44, 0.82],
                        target_orientation= [ev, 0, ev, 0],
-                       update_world_needed= False)
+                       update_world_needed= True,
+                       removing_primitives=["world/obstacles"])
         Robot_2.render_exec(renderInstance= True,
                               Show_Sphere= False)
         
@@ -1511,6 +1527,61 @@ def Go_To_Pick(Stud_Dims: List[float] = None):
                        update_world_needed= True)
         Robot_2.render_exec(renderInstance= True,
                               Show_Sphere= False)
+        
+        # Place Location (Helping)
+        Robot_2.plan(tcp_name= "tool0",
+                       target_pose= [3.08, 0.00, 1.02],
+                       target_orientation= [0, ev, ev, 0],
+                       update_world_needed= True)
+        Robot_2.render_exec(renderInstance= True,
+                              Show_Sphere= False)
+        
+        # Place Location
+        Robot_2.plan(tcp_name= "tool0",
+                       target_pose= [3.08, 0.00, 0.98],
+                       target_orientation= [0, ev, ev, 0],
+                       update_world_needed= True,
+                       removing_primitives=["Smart_Conveyor"],
+                       orientational_restriction= torch.tensor([1,1,1], dtype=torch.float32))
+        Robot_2.render_exec(renderInstance= True,
+                              Show_Sphere= False)
+        
+        Robot_2.eef_detach(tool_name="tool0",
+                           detaching_object_name= Attaching_Element.name)
+        
+        # Place Location (Helping)
+        Robot_2.plan(tcp_name= "tool0",
+                       target_pose= [3.08, 0.00, 1.02],
+                       target_orientation= [0, ev, ev, 0],
+                       update_world_needed= True)
+        Robot_2.render_exec(renderInstance= True,
+                              Show_Sphere= False)
+        
+        # Home Position
+        Robot_2.plan(tcp_name= "tool0",
+                       target_pose= [3.3, 0, 1.7],
+                       target_orientation= [0, -ev, 0, ev],
+                       update_world_needed= True)
+        Robot_2.render_exec(renderInstance= True,
+                              Show_Sphere= False)
+        
+        ## Attaching The Placed Stud To Conveyor
+        
+        
+def Vertical(el_name: str = None,
+             el_dims: List[float] = None,
+             el_pose: List[float] = None,
+             conveyor_pose: float = 0):
+
+    if(el_name == None):
+        return False
+    
+    # Moving Conveyor To Target Location
+    Smart_Conv.render_exec('Joint_1', conveyor_pose)
+
+    Do_Pick(Stud_Name= el_name,
+            Stud_Dims= el_dims,
+            Stud_Pose= el_pose)
 
 
 ###########
@@ -1553,101 +1624,15 @@ def main():
         # for robot in robots:
         #         robot.ros_js_publisher()
 
-        Smart_Conv.render_exec('Joint_1', 2.275)
-
-# # Helping Point 1 To Pick
-#         robots[0].plan(tcp_name= "tool0",
-#                        target_pose= [5.45, 0.2, 1.0],
-#                        target_orientation= [0, 1, 0, 0],
-#                        update_world_needed= False)
-#         robots[0].render_exec(renderInstance= True,
-#                               Show_Sphere= False)   
-# # (Helping Point 2 To Pick) Removing Smart Material Supply
-#         robots[0].plan(tcp_name= "tool0",
-#                        target_pose= [5.7, 0.2, 1.2],
-#                        target_orientation= [0, 1, 0, 0],
-#                        update_world_needed= True,
-#                        removing_primitives=["world/obstacles"],
-#                        linear_restriction= torch.tensor([0, 1, 0], dtype=torch.float32),
-#                        orientational_restriction= torch.tensor([1, 1, 1], dtype=torch.float32))
-#         robots[0].render_exec(renderInstance= True,
-#                               Show_Sphere= False)
-# # To the Pick Location
-#         robots[0].plan(tcp_name= "tool0",
-#                        target_pose= [5.7, 0.2, 0.9],
-#                        target_orientation= [0, 1, 0, 0],
-#                        update_world_needed= False,
-#                        linear_restriction= torch.tensor([1, 1, 0], dtype=torch.float32),
-#                        orientational_restriction= torch.tensor([1, 1, 1], dtype=torch.float32))
-#         robots[0].render_exec(renderInstance= True,
-#                               Show_Sphere= False)
-
-#         # Adding Test Stud
-#         Stud_1 = Cuboid(
-#             name= "Stud_1",
-#             pose= [5.695, -0.93, 0.9, 1, 0, 0, 0],
-#             dims= [0.05, 6.0, 0.1],
-#             color= [0.87, 0.72, 0.53, 1]
-#         )
-#         Add_Rigid_Object_To_Scene(test, "Cuboid", Stud_1)
-
-#         # R1 Gripper Attach (Stud)
-#         robots[0].eef_attach(r_name= "IRB6620_R1",
-#                              tool_name="tool0",
-#                              attaching_object_name=Stud_1.name)
-
-#         robots[0].plan(tcp_name= "tool0",
-#                        target_pose= [5.7, 0.2, 1.2],
-#                        target_orientation= [0, 1, 0, 0],
-#                        update_world_needed= True,
-#                        removing_primitives=["world/obstacles"],
-#                        linear_restriction= torch.tensor([1, 1, 0], dtype=torch.float32),
-#                        orientational_restriction= torch.tensor([1, 1, 1], dtype=torch.float32))
-#         robots[0].render_exec(renderInstance= True,
-#                               Show_Sphere= False)
-
-#         robots[0].plan(tcp_name= "tool0",
-#                        target_pose= [5.45, 0.2, 1.0],
-#                        target_orientation= [0, 1, 0, 0],
-#                        update_world_needed= True,
-#                        removing_primitives=["world/obstacles"],
-#                        linear_restriction= torch.tensor([0, 1, 0], dtype=torch.float32),
-#                        orientational_restriction= torch.tensor([1, 1, 1], dtype=torch.float32))
-#         robots[0].render_exec(renderInstance= True,
-#                               Show_Sphere= False) 
-
-# # Reached Pose: ['3.568', '-0.000', '1.657'], Reached Orientation: ['-0.000', '-0.707', '-0.000', '0.707']
-
-#         robots[0].plan(tcp_name= "tool0",
-#                        target_pose= [3.568, 0, 1.657],
-#                        target_orientation= [0, -0.707, 0, 0.707],
-#                        update_world_needed= True)
-#         robots[0].render_exec(renderInstance= True,
-#                               Show_Sphere= False) 
-
-        # T_Now = time.time()
-        # while time.time() - T_Now < 20000:
-        #     test._my_world.step(render=True) 
-
-        # Eu_Q = euler_to_quat(0, np.pi/2, 0)
-        # Robot_2.plan(tcp_name= "tool0",
-        #                target_pose= [6.2, 0.22, 0.82],
-        #                target_orientation= Eu_Q,
-        #                update_world_needed= False)
-        # Robot_2.render_exec(renderInstance= True,
-        #                       Show_Sphere= False)
-
-        # Robot_2.plan(tcp_name= "tool0",
-        #                target_pose= [6.2, 1, 0.82],
-        #                target_orientation= Eu_Q,
-        #                update_world_needed= False,
-        #                linear_restriction= torch.tensor([1, 0, 1], dtype= torch.float32),
-        #                orientational_restriction= torch.tensor([1, 1, 1], dtype= torch.float32))
-        # Robot_2.render_exec(renderInstance= True,
-        #                       Show_Sphere= False)
-
-        Go_To_Pick()
-        Robot_2.free_TCP_movement()
+        Vertical(el_name="V1",
+                 el_dims=[0.12, 2.0, 0.04],
+                 el_pose=[6.19, 0.86, 0.82],
+                 conveyor_pose = 0.5)
+        
+        T_Now = time.time()
+        while time.time() - T_Now < 20000:
+            test._my_world.step(render=True) 
+        # Robot_2.free_TCP_movement()
 
 if __name__ == "__main__":
     main()

@@ -1,0 +1,90 @@
+# # Helping Point 1 To Pick
+#         robots[0].plan(tcp_name= "tool0",
+#                        target_pose= [5.45, 0.2, 1.0],
+#                        target_orientation= [0, 1, 0, 0],
+#                        update_world_needed= False)
+#         robots[0].render_exec(renderInstance= True,
+#                               Show_Sphere= False)   
+# # (Helping Point 2 To Pick) Removing Smart Material Supply
+#         robots[0].plan(tcp_name= "tool0",
+#                        target_pose= [5.7, 0.2, 1.2],
+#                        target_orientation= [0, 1, 0, 0],
+#                        update_world_needed= True,
+#                        removing_primitives=["world/obstacles"],
+#                        linear_restriction= torch.tensor([0, 1, 0], dtype=torch.float32),
+#                        orientational_restriction= torch.tensor([1, 1, 1], dtype=torch.float32))
+#         robots[0].render_exec(renderInstance= True,
+#                               Show_Sphere= False)
+# # To the Pick Location
+#         robots[0].plan(tcp_name= "tool0",
+#                        target_pose= [5.7, 0.2, 0.9],
+#                        target_orientation= [0, 1, 0, 0],
+#                        update_world_needed= False,
+#                        linear_restriction= torch.tensor([1, 1, 0], dtype=torch.float32),
+#                        orientational_restriction= torch.tensor([1, 1, 1], dtype=torch.float32))
+#         robots[0].render_exec(renderInstance= True,
+#                               Show_Sphere= False)
+
+#         # Adding Test Stud
+#         Stud_1 = Cuboid(
+#             name= "Stud_1",
+#             pose= [5.695, -0.93, 0.9, 1, 0, 0, 0],
+#             dims= [0.05, 6.0, 0.1],
+#             color= [0.87, 0.72, 0.53, 1]
+#         )
+#         Add_Rigid_Object_To_Scene(test, "Cuboid", Stud_1)
+
+#         # R1 Gripper Attach (Stud)
+#         robots[0].eef_attach(r_name= "IRB6620_R1",
+#                              tool_name="tool0",
+#                              attaching_object_name=Stud_1.name)
+
+#         robots[0].plan(tcp_name= "tool0",
+#                        target_pose= [5.7, 0.2, 1.2],
+#                        target_orientation= [0, 1, 0, 0],
+#                        update_world_needed= True,
+#                        removing_primitives=["world/obstacles"],
+#                        linear_restriction= torch.tensor([1, 1, 0], dtype=torch.float32),
+#                        orientational_restriction= torch.tensor([1, 1, 1], dtype=torch.float32))
+#         robots[0].render_exec(renderInstance= True,
+#                               Show_Sphere= False)
+
+#         robots[0].plan(tcp_name= "tool0",
+#                        target_pose= [5.45, 0.2, 1.0],
+#                        target_orientation= [0, 1, 0, 0],
+#                        update_world_needed= True,
+#                        removing_primitives=["world/obstacles"],
+#                        linear_restriction= torch.tensor([0, 1, 0], dtype=torch.float32),
+#                        orientational_restriction= torch.tensor([1, 1, 1], dtype=torch.float32))
+#         robots[0].render_exec(renderInstance= True,
+#                               Show_Sphere= False) 
+
+# # Reached Pose: ['3.568', '-0.000', '1.657'], Reached Orientation: ['-0.000', '-0.707', '-0.000', '0.707']
+
+#         robots[0].plan(tcp_name= "tool0",
+#                        target_pose= [3.568, 0, 1.657],
+#                        target_orientation= [0, -0.707, 0, 0.707],
+#                        update_world_needed= True)
+#         robots[0].render_exec(renderInstance= True,
+#                               Show_Sphere= False) 
+
+        # T_Now = time.time()
+        # while time.time() - T_Now < 20000:
+        #     test._my_world.step(render=True) 
+
+        # Eu_Q = euler_to_quat(0, np.pi/2, 0)
+        # Robot_2.plan(tcp_name= "tool0",
+        #                target_pose= [6.2, 0.22, 0.82],
+        #                target_orientation= Eu_Q,
+        #                update_world_needed= False)
+        # Robot_2.render_exec(renderInstance= True,
+        #                       Show_Sphere= False)
+
+        # Robot_2.plan(tcp_name= "tool0",
+        #                target_pose= [6.2, 1, 0.82],
+        #                target_orientation= Eu_Q,
+        #                update_world_needed= False,
+        #                linear_restriction= torch.tensor([1, 0, 1], dtype= torch.float32),
+        #                orientational_restriction= torch.tensor([1, 1, 1], dtype= torch.float32))
+        # Robot_2.render_exec(renderInstance= True,
+        #                       Show_Sphere= False)
