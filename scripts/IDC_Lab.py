@@ -117,10 +117,15 @@ from omni.kit.commands import execute
 
 
 
+
 import re
 import time
 import torch
 import threading
+
+# Quat Transform
+from scipy.spatial.transform import Rotation as R
+
 
 # Rate for Publishing ROS Topics from this project !
 publish_rate = 10.0  # Frequency in Hz
@@ -212,7 +217,7 @@ class WorldManager(object):
 
         Smart_Mat_Table = Mesh(
             name="R2_Smart_Mat_Table",
-            pose=[7.2, 2.5, 0, Smart_Mat_Table_Quat[0], 
+            pose=[7.7, 5.0, 0, Smart_Mat_Table_Quat[0], 
                                       Smart_Mat_Table_Quat[1],
                                       Smart_Mat_Table_Quat[2],
                                       Smart_Mat_Table_Quat[3]],
@@ -234,7 +239,7 @@ class WorldManager(object):
 
         world_model = WorldConfig(
             mesh=[Smart_Mat_Table],
-            cuboid=[Cube],
+            cuboid=[],
             capsule=[],
             cylinder=[],
             sphere=[],
@@ -546,6 +551,9 @@ class CuRoboRobot(object):
             collision_checker_type=CollisionCheckerType.MESH,
             num_trajopt_seeds=12,
             num_graph_seeds=12,
+            # Error Thresholds !!
+            position_threshold= 0.005,
+            rotation_threshold= 0.005,
             interpolation_dt=interpolation_dt,
             optimize_dt=optimize_dt,
             trajopt_dt=trajopt_dt,
@@ -558,13 +566,14 @@ class CuRoboRobot(object):
         self._motion_gen = MotionGen(self._motion_gen_config)
         
         print("warming up...")
-        self._motion_gen.warmup(enable_graph=False, warmup_js_trajopt=False)
+        #enable_graph=False, warmup_js_trajopt=False
+        self._motion_gen.warmup()
         print("Curobo for robot ( " + self._r_conf_name + " ) is ready ... | TCP = " + self._current_tool)
 
-        self._plan_config = MotionGenPlanConfig(enable_graph=True,
-                                                enable_graph_attempt=3,
+        self._plan_config = MotionGenPlanConfig(enable_graph=False,
                                                 max_attempts=max_attempts,
-                                                enable_finetune_trajopt=enable_finetune_trajopt)
+                                                enable_finetune_trajopt=enable_finetune_trajopt,
+                                                timeout= 60)
 
     def restrict_path_plan(self,
                         Position_Restriction: Optional[torch.Tensor] = None,
@@ -688,6 +697,9 @@ class CuRoboRobot(object):
 
             if(self._ROS_JS_robot_indicator == "IRB6620_R2"):
                 cube_position[0] -= 4.6
+            
+            # Since Each Robot is in +0.025 Height !
+            # cube_position[2] -= 0.025
 
             if past_pose is None:
                 past_pose = cube_position
@@ -780,7 +792,7 @@ class CuRoboRobot(object):
                                      cube_position[2]]
                     # print(f"Reached Pose: {Modified_Pose}, Reached Orientation: {cube_orientation}")
                     # Print with 3 decimals
-                    print(f"Reached Pose: {[f'{elem:.3f}' for elem in Modified_Pose]}, Reached Orientation: {[f'{elem:.3f}' for elem in cube_orientation]}")
+                    print(f"Reached Pose: {[f'{elem:.2f}' for elem in Modified_Pose]}, Reached Orientation: {[cube_orientation]}")
 
                     ##
 
@@ -879,6 +891,8 @@ class CuRoboRobot(object):
             # Updating Target Pose with Respect To the Robot's Location
             target_pose[0] -= self._r_pose[0]
             target_pose[1] -= self._r_pose[1]
+            ### Testing ????? Tired_Bear_Test
+            target_pose[2] -= self._r_pose[2]
             # Z Does not need to be updated
             ik_goal = Pose(
                 position=self._tensor_args.to_device(target_pose),
@@ -1313,29 +1327,28 @@ class CuRoboRobot(object):
 
 
 test = WorldManager()
+Robot_1 = None
+# Robot_1 = CuRoboRobot(working_world=test, 
+#                 R_Name="IRB6620_R1",
+#                 pose=[0,0,0.025],
+#                 input_tool="tool0", 
+#                 w_dir="home/apshirazi/Isaac_sim_ws/robot", 
+#                 r_conf_name="IRB6620_Config.yaml",
+#                 Gripper_List=[RobotGripper(RobName= "IRB6620_R1",
+#                                            ParentLink= "Link_6",
+#                                            TCP_Name= "T0",
+#                                            C_Pose= [0.09 , 0, -0.29]),
+#                                 RobotGripper(RobName= "IRB6620_R1",
+#                                              ParentLink= "Link_6",
+#                                              TCP_Name= "T1",
+#                                              C_Pose= [0.55, 0.435, -0.175])
+#                                            ],
+#                 Cuda_Device= 0)
 
-robots = [
-    # IRB6620_R1
-    # CuRoboRobot(working_world=test, 
-    #             R_Name="IRB6620_R1",
-    #             pose=[0,0,0.0],
-    #             input_tool="tool0", 
-    #             w_dir="home/apshirazi/Isaac_sim_ws/robot", 
-    #             r_conf_name="IRB6620_Config.yaml",
-    #             Gripper_List=[RobotGripper(RobName= "IRB6620_R1",
-    #                                        ParentLink= "Link_6",
-    #                                        TCP_Name= "T0",
-    #                                        C_Pose= [0.09 , 0, -0.29]),
-    #                             RobotGripper(RobName= "IRB6620_R1",
-    #                                          ParentLink= "Link_6",
-    #                                          TCP_Name= "T1",
-    #                                          C_Pose= [0.55, 0.435, -0.175])
-    #                                        ],
-    #             Cuda_Device= 0),
-    # IRB6620_R2 (Commented)
-    CuRoboRobot(working_world=test,
+Robot_2 = None
+Robot_2 = CuRoboRobot(working_world=test,
                 R_Name="IRB6620_R2",
-                pose=[4.6, 0, 0.025],
+                pose=[4.6, 0, 0.0],
                 input_tool="tool0",
                 w_dir="home/apshirazi/Isaac_sim_ws/robot_2",
                 r_conf_name="IRB6620_Config.yaml",
@@ -1345,32 +1358,16 @@ robots = [
                                            C_Pose=[0.62, 0.15, -0.11]),
                                            ],
                 Cuda_Device= 0)
-    # Add more robots as needed
-]
 
-conveyors = [
-    # Smart Conveyor
-    CuRoboConv(working_world=test,
+Smart_Conv = CuRoboConv(working_world=test,
                Conv_Name="Smart_Conveyor",
                pose=[2.3, -3.25, 0],
                w_dir="/home/apshirazi/Isaac_sim_ws/smart_conveyor",
                c_conf_name="Smart_Conveyor.yaml")
-]
 
 def euler_to_quat(roll, pitch, yaw):
-    cy = np.cos(yaw * 0.5)
-    sy = np.sin(yaw * 0.5)
-    cp = np.cos(pitch * 0.5)
-    sp = np.sin(pitch * 0.5)
-    cr = np.cos(roll * 0.5)
-    sr = np.sin(roll * 0.5)
-
-    q_w = cr * cp * cy + sr * sp * sy
-    q_x = sr * cp * cy - cr * sp * sy
-    q_y = cr * sp * cy + sr * cp * sy
-    q_z = cr * cp * sy - sr * sp * cy
-
-    return q_x, q_y, q_z, q_w
+    quat = R.from_euler('xyz', [roll, pitch, yaw]).as_quat()
+    return quat
 
 # Default Assumption (Cuboid), but it can be changed to Capsule and Mesh
 def Add_Rigid_Object_To_Scene(World_Manager: WorldManager,
@@ -1429,8 +1426,10 @@ def Add_Rigid_Object_To_Scene(World_Manager: WorldManager,
     print("Object " + obj.name + " Added to the Simulation | PRIM: " + Added_Obj_Prim_Root)
 
     # Updating the Collision World for Each Robot After Adding an Object to the Scene
-    for robot in robots:
-        robot.motion_gen_update_world()
+    if(Robot_1 != None):
+        Robot_1.motion_gen_update_world()
+    if(Robot_2 != None):
+        Robot_2.motion_gen_update_world()
 
 # Smart Material Table's Collision
 # 1
@@ -1440,7 +1439,7 @@ R2_Smart_Mat_Table_Box1 = Cuboid(
     dims= [1, 4, 0.8],
     color= [0.87, 0.72, 0.53, 0.1]
 )
-Add_Rigid_Object_To_Scene(test, "Cuboid", R2_Smart_Mat_Table_Box1, True)
+# Add_Rigid_Object_To_Scene(test, "Cuboid", R2_Smart_Mat_Table_Box1, True)
 
 R2_Smart_Mat_Table_Box2 = Cuboid(
     name= "R2_Smart_Mat_Table_Box2",
@@ -1448,92 +1447,76 @@ R2_Smart_Mat_Table_Box2 = Cuboid(
     dims= [0.4, 4.6, 1.5],
     color= [0.87, 0.72, 0.53, 0.1]
 )
-Add_Rigid_Object_To_Scene(test, "Cuboid", R2_Smart_Mat_Table_Box2, True)
+# Add_Rigid_Object_To_Scene(test, "Cuboid", R2_Smart_Mat_Table_Box2, True)
 
-def parallel_movement(
-    Rob_idx_list: List[int] = [0, 1],
-    Goal_List_Pose: List[np.ndarray] = [np.array([-0.49, -1.54, 0.44], dtype=float), np.array([-0.022, -1.85, 0.57], dtype=float)],
-    Goal_List_Orientation: List[np.ndarray] = [np.array([1, 0, 0, 0], dtype=float), np.array([1, 0, 0, 0], dtype=float)]
-):
-    for idx in Rob_idx_list:
-        # Ensure each pose and orientation is in the correct format
-        target_pose = np.array(Goal_List_Pose[idx][:3], dtype=float).reshape(3)
-        target_orientation = np.array(Goal_List_Orientation[idx][:4], dtype=float).reshape(4)
 
-        # Call plan with the correctly shaped pose and orientation
-        robots[idx].plan(tcp_name="tool1",
-                         target_pose=target_pose,
-                         target_orientation= target_orientation)
 
-    cmd_idx = 0
-    while cmd_idx < len(robots[Rob_idx_list[0]]._computed_cmd_plan.position):
-        test._my_world.step(render=True)
+#############
+####Start#### Manufacturing Strategies !!!
+#############
+
+ev = np.sqrt(2) / 2
+
+# Robot_2_To Pick Position
+def Go_To_Pick(Stud_Dims: List[float] = None):
+        # Starting Point
+        Robot_2.plan(tcp_name= "tool0",
+                       target_pose= [3.3, 0, 1.7],
+                       target_orientation= [0, -ev, 0, ev],
+                       update_world_needed= True)
+        Robot_2.render_exec(renderInstance= True,
+                              Show_Sphere= False)
+
+        Robot_2.plan(tcp_name= "tool0",
+                       target_pose= [4.82, 1.44, 0.66],
+                       target_orientation= [0, 1, 0, 0],
+                       update_world_needed= True)
+        Robot_2.render_exec(renderInstance= True,
+                              Show_Sphere= False)
+
+        # Helping Pick
+        Robot_2.plan(tcp_name= "tool0",
+                       target_pose= [5.35, 1.44, 0.82],
+                       target_orientation= [ev, 0, ev, 0],
+                       update_world_needed= True)
+        Robot_2.render_exec(renderInstance= True,
+                              Show_Sphere= False)
+
+        # Pick
+        Robot_2.plan(tcp_name= "tool0",
+                       target_pose= [6.17, 1.44, 0.82],
+                       target_orientation= [ev, 0, ev, 0],
+                       update_world_needed= True,
+                       removing_primitives=["obstacle"],
+                       orientational_restriction= torch.tensor([1, 1, 1], dtype=torch.float32))
+        Robot_2.render_exec(renderInstance= True,
+                              Show_Sphere= False)
+
+        ## Attach
+
+        # Helping Pick      
+        Robot_2.plan(tcp_name= "tool0",
+                       target_pose= [5.35, 1.44, 0.82],
+                       target_orientation= [ev, 0, ev, 0],
+                       update_world_needed= False)
+        Robot_2.render_exec(renderInstance= True,
+                              Show_Sphere= False)
         
-        for idx in Rob_idx_list:
-            cmd_state = robots[idx]._computed_cmd_plan[cmd_idx]
+        # Release Restrictions
+        Robot_2.release_path_plan_restriction()
 
-            # Apply articulation action
-            art_action = ArticulationAction(
-                cmd_state.position.cpu().numpy(),
-                cmd_state.velocity.cpu().numpy(),
-                joint_indices=robots[idx]._computed_idx_list,
-            )
-            robots[idx]._articulation_controller.apply_action(art_action)
-            for _ in range(2):
-                test._my_world.step(render=False)
-        
-        cmd_idx += 1
+        Robot_2.plan(tcp_name= "tool0",
+                       target_pose= [3.3, 0, 1.7],
+                       target_orientation= [0, -ev, 0, ev],
+                       update_world_needed= True)
+        Robot_2.render_exec(renderInstance= True,
+                              Show_Sphere= False)
 
-def mpc_movement(
-    Rob_idx_list: List[int] = [0, 1],
-    Goal_List_Pose: List[np.ndarray] = [np.array([-0.49, -1.54, 0.44], dtype=float), np.array([-0.022, -1.85, 0.57], dtype=float)],
-    Goal_List_Orientation: List[np.ndarray] = [np.array([1, 0, 0, 0], dtype=float), np.array([1, 0, 0, 0], dtype=float)]
-):
-    # Timer to check for updating the 
-    cc_world_step_updater = 200
-    
-    while 1>0:
-        for idx in Rob_idx_list:
-            # Ensure each pose and orientation is in the correct format
-            target_pose = np.array(Goal_List_Pose[idx][:3], dtype=float).reshape(3)
-            target_orientation = np.array(Goal_List_Orientation[idx][:4], dtype=float).reshape(4)
 
-            # Call plan with the correctly shaped pose and orientation
-            robots[idx].plan(tcp_name="tool1",
-                            target_pose=target_pose,
-                            target_orientation= target_orientation)
+###########
+####END####
+###########
 
-        Traj_Ending_Flag = False
-        cmd_idx = 0
-        Starting_Step = test._my_world.current_time_step_index
-        while cmd_idx < len(robots[Rob_idx_list[0]]._computed_cmd_plan.position):
-            test._my_world.step(render=True)
-            if(test._my_world.current_time_step_index - Starting_Step >= cc_world_step_updater):
-                break
-            
-            for idx in Rob_idx_list:
-                cmd_state = robots[idx]._computed_cmd_plan[cmd_idx]
-
-                # Apply articulation action
-                art_action = ArticulationAction(
-                    cmd_state.position.cpu().numpy(),
-                    cmd_state.velocity.cpu().numpy(),
-                    joint_indices=robots[idx]._computed_idx_list,
-                )
-                robots[idx]._articulation_controller.apply_action(art_action)
-                for _ in range(2):
-                    test._my_world.step(render=False)
-            
-            cmd_idx += 1
-            if cmd_idx == len(robots[Rob_idx_list[0]]._computed_cmd_plan.position):
-                Traj_Ending_Flag = True
-        if Traj_Ending_Flag == True:
-            print("Trajectory Done")
-            break
-        
-# Testing MPC Movement (Out Dated as of 12/04/2024)
-        # mpc_movement(Goal_List_Orientation=[np.array([quat[0], quat[1], quat[2], quat[3]]),
-        #                                          np.array([quat_test[0], quat_test[1], quat_test[2], quat_test[3]])])
 
 def main():
 
@@ -1555,12 +1538,13 @@ def main():
 
         step_index = test._my_world.current_time_step_index
         # Re initializing robots defined in the list
-        for robot in robots:
-            robot.articulation_controller_init(step_index)
+        if(Robot_1 != None):
+            Robot_1.articulation_controller_init(step_index)
+        if(Robot_2 != None):
+            Robot_2.articulation_controller_init(step_index)
         
         # Re initializing conveyors defined in the list
-        for conv in conveyors:
-            conv.articulation_controller_init(step_index)
+        Smart_Conv.articulation_controller_init(step_index)
 
         if step_index < 20:
             continue
@@ -1569,83 +1553,101 @@ def main():
         # for robot in robots:
         #         robot.ros_js_publisher()
 
-        conveyors[0].render_exec('Joint_1', 2.275)
+        Smart_Conv.render_exec('Joint_1', 2.275)
 
-# Helping Point 1 To Pick
-        robots[0].plan(tcp_name= "tool0",
-                       target_pose= [5.45, 0.2, 1.0],
-                       target_orientation= [0, 1, 0, 0],
-                       update_world_needed= False)
-        robots[0].render_exec(renderInstance= True,
-                              Show_Sphere= False)   
-# (Helping Point 2 To Pick) Removing Smart Material Supply
-        robots[0].plan(tcp_name= "tool0",
-                       target_pose= [5.7, 0.2, 1.2],
-                       target_orientation= [0, 1, 0, 0],
-                       update_world_needed= True,
-                       removing_primitives=["world/obstacles"],
-                       linear_restriction= torch.tensor([0, 1, 0], dtype=torch.float32),
-                       orientational_restriction= torch.tensor([1, 1, 1], dtype=torch.float32))
-        robots[0].render_exec(renderInstance= True,
-                              Show_Sphere= False)
-# To the Pick Location
-        robots[0].plan(tcp_name= "tool0",
-                       target_pose= [5.7, 0.2, 0.9],
-                       target_orientation= [0, 1, 0, 0],
-                       update_world_needed= False,
-                       linear_restriction= torch.tensor([1, 1, 0], dtype=torch.float32),
-                       orientational_restriction= torch.tensor([1, 1, 1], dtype=torch.float32))
-        robots[0].render_exec(renderInstance= True,
-                              Show_Sphere= False)
+# # Helping Point 1 To Pick
+#         robots[0].plan(tcp_name= "tool0",
+#                        target_pose= [5.45, 0.2, 1.0],
+#                        target_orientation= [0, 1, 0, 0],
+#                        update_world_needed= False)
+#         robots[0].render_exec(renderInstance= True,
+#                               Show_Sphere= False)   
+# # (Helping Point 2 To Pick) Removing Smart Material Supply
+#         robots[0].plan(tcp_name= "tool0",
+#                        target_pose= [5.7, 0.2, 1.2],
+#                        target_orientation= [0, 1, 0, 0],
+#                        update_world_needed= True,
+#                        removing_primitives=["world/obstacles"],
+#                        linear_restriction= torch.tensor([0, 1, 0], dtype=torch.float32),
+#                        orientational_restriction= torch.tensor([1, 1, 1], dtype=torch.float32))
+#         robots[0].render_exec(renderInstance= True,
+#                               Show_Sphere= False)
+# # To the Pick Location
+#         robots[0].plan(tcp_name= "tool0",
+#                        target_pose= [5.7, 0.2, 0.9],
+#                        target_orientation= [0, 1, 0, 0],
+#                        update_world_needed= False,
+#                        linear_restriction= torch.tensor([1, 1, 0], dtype=torch.float32),
+#                        orientational_restriction= torch.tensor([1, 1, 1], dtype=torch.float32))
+#         robots[0].render_exec(renderInstance= True,
+#                               Show_Sphere= False)
 
-        # Adding Test Stud
-        Stud_1 = Cuboid(
-            name= "Stud_1",
-            pose= [5.695, -0.93, 0.9, 1, 0, 0, 0],
-            dims= [0.05, 6.0, 0.1],
-            color= [0.87, 0.72, 0.53, 1]
-        )
-        Add_Rigid_Object_To_Scene(test, "Cuboid", Stud_1)
+#         # Adding Test Stud
+#         Stud_1 = Cuboid(
+#             name= "Stud_1",
+#             pose= [5.695, -0.93, 0.9, 1, 0, 0, 0],
+#             dims= [0.05, 6.0, 0.1],
+#             color= [0.87, 0.72, 0.53, 1]
+#         )
+#         Add_Rigid_Object_To_Scene(test, "Cuboid", Stud_1)
 
-        # R1 Gripper Attach (Stud)
-        robots[0].eef_attach(r_name= "IRB6620_R1",
-                             tool_name="tool0",
-                             attaching_object_name=Stud_1.name)
+#         # R1 Gripper Attach (Stud)
+#         robots[0].eef_attach(r_name= "IRB6620_R1",
+#                              tool_name="tool0",
+#                              attaching_object_name=Stud_1.name)
 
-        robots[0].plan(tcp_name= "tool0",
-                       target_pose= [5.7, 0.2, 1.2],
-                       target_orientation= [0, 1, 0, 0],
-                       update_world_needed= True,
-                       removing_primitives=["world/obstacles"],
-                       linear_restriction= torch.tensor([1, 1, 0], dtype=torch.float32),
-                       orientational_restriction= torch.tensor([1, 1, 1], dtype=torch.float32))
-        robots[0].render_exec(renderInstance= True,
-                              Show_Sphere= False)
+#         robots[0].plan(tcp_name= "tool0",
+#                        target_pose= [5.7, 0.2, 1.2],
+#                        target_orientation= [0, 1, 0, 0],
+#                        update_world_needed= True,
+#                        removing_primitives=["world/obstacles"],
+#                        linear_restriction= torch.tensor([1, 1, 0], dtype=torch.float32),
+#                        orientational_restriction= torch.tensor([1, 1, 1], dtype=torch.float32))
+#         robots[0].render_exec(renderInstance= True,
+#                               Show_Sphere= False)
 
-        robots[0].plan(tcp_name= "tool0",
-                       target_pose= [5.45, 0.2, 1.0],
-                       target_orientation= [0, 1, 0, 0],
-                       update_world_needed= True,
-                       removing_primitives=["world/obstacles"],
-                       linear_restriction= torch.tensor([0, 1, 0], dtype=torch.float32),
-                       orientational_restriction= torch.tensor([1, 1, 1], dtype=torch.float32))
-        robots[0].render_exec(renderInstance= True,
-                              Show_Sphere= False) 
+#         robots[0].plan(tcp_name= "tool0",
+#                        target_pose= [5.45, 0.2, 1.0],
+#                        target_orientation= [0, 1, 0, 0],
+#                        update_world_needed= True,
+#                        removing_primitives=["world/obstacles"],
+#                        linear_restriction= torch.tensor([0, 1, 0], dtype=torch.float32),
+#                        orientational_restriction= torch.tensor([1, 1, 1], dtype=torch.float32))
+#         robots[0].render_exec(renderInstance= True,
+#                               Show_Sphere= False) 
 
-# Reached Pose: ['3.568', '-0.000', '1.657'], Reached Orientation: ['-0.000', '-0.707', '-0.000', '0.707']
+# # Reached Pose: ['3.568', '-0.000', '1.657'], Reached Orientation: ['-0.000', '-0.707', '-0.000', '0.707']
 
-        robots[0].plan(tcp_name= "tool0",
-                       target_pose= [3.568, 0, 1.657],
-                       target_orientation= [0, -0.707, 0, 0.707],
-                       update_world_needed= True)
-        robots[0].render_exec(renderInstance= True,
-                              Show_Sphere= False) 
+#         robots[0].plan(tcp_name= "tool0",
+#                        target_pose= [3.568, 0, 1.657],
+#                        target_orientation= [0, -0.707, 0, 0.707],
+#                        update_world_needed= True)
+#         robots[0].render_exec(renderInstance= True,
+#                               Show_Sphere= False) 
 
         # T_Now = time.time()
         # while time.time() - T_Now < 20000:
         #     test._my_world.step(render=True) 
 
-        robots[0].free_TCP_movement()
+        # Eu_Q = euler_to_quat(0, np.pi/2, 0)
+        # Robot_2.plan(tcp_name= "tool0",
+        #                target_pose= [6.2, 0.22, 0.82],
+        #                target_orientation= Eu_Q,
+        #                update_world_needed= False)
+        # Robot_2.render_exec(renderInstance= True,
+        #                       Show_Sphere= False)
+
+        # Robot_2.plan(tcp_name= "tool0",
+        #                target_pose= [6.2, 1, 0.82],
+        #                target_orientation= Eu_Q,
+        #                update_world_needed= False,
+        #                linear_restriction= torch.tensor([1, 0, 1], dtype= torch.float32),
+        #                orientational_restriction= torch.tensor([1, 1, 1], dtype= torch.float32))
+        # Robot_2.render_exec(renderInstance= True,
+        #                       Show_Sphere= False)
+
+        Go_To_Pick()
+        Robot_2.free_TCP_movement()
 
 if __name__ == "__main__":
     main()
