@@ -127,8 +127,26 @@ import threading
 from scipy.spatial.transform import Rotation as R
 
 
-# Rate for Publishing ROS Topics from this project !
+####################
+#### PARAMETERS ####
+####################
+
+# RATE of PUBLISHING JOINTSTATES
 publish_rate = 10.0  # Frequency in Hz
+
+# EV NUMBER FOR QUATERNION ORIENTATION
+ev = np.sqrt(2) / 2
+
+# DIRECTORY OF INSTALLATION
+INSTALLATION_DIRECTORY: str = "/home/apshirazi"
+
+ROBOT_1_GRIPPER_LENGTH: float = 60
+ROBOT_2_GRIPPER_LENGTH: float = 59
+
+
+####################
+#### END PARAMS ####
+####################
 
 # Class Robot Gripper
 class RobotGripper(object):
@@ -210,7 +228,7 @@ class WorldManager(object):
         return q_w, q_x, q_y, q_z
     
     def init_world_model(self):
-        cur_dir = "/home/apshirazi/Isaac_sim_ws/"
+        cur_dir = INSTALLATION_DIRECTORY + "/Isaac_sim_ws/"
 
         # Smart Material Table #1
         Smart_Mat_Table_Quat = self.quat_transfer_world_generator(90, 0, 0)
@@ -253,7 +271,7 @@ class CuRoboConv(object):
                  Conv_Name: str = "Smart_Conveyor",
                  pose: np.array = np.array([0, 0, 0]),
                  input_tool: str = "tool0",
-                 w_dir: str = "/home/apshirazi/Isaac_sim_ws/smart_conveyor",
+                 w_dir: str = INSTALLATION_DIRECTORY + "/Isaac_sim_ws/smart_conveyor",
                  c_conf_name: str = "Smart_Conveyor.yaml",
                  Gripper_List: Optional[List[RobotGripper]] = None):
         super(CuRoboConv, self).__init__()
@@ -379,7 +397,7 @@ class CuRoboRobot(object):
                  #This Feature has not been added to CuRobo
                  orientation: np.array = np.array([1, 0, 0, 0]),
                  input_tool: str = "tool0",
-                 w_dir: str = "/home/apshirazi/Isaac_sim_ws/robot", 
+                 w_dir: str = INSTALLATION_DIRECTORY + "/Isaac_sim_ws/robot", 
                  r_conf_name: str = "IRB6620_Config.yaml",
                  Gripper_List: Optional[List[RobotGripper]] = None,
                  Cuda_Device: int = 0):
@@ -541,7 +559,6 @@ class CuRoboRobot(object):
         # Everything Will Workd ^-^ !!!
         self._EEF_Prim = self._temp_world_manager._stage.GetPrimAtPath("/" + self._ROS_JS_robot_indicator + "/Link_7/collisions")
         self._Collider_Off = self._EEF_Prim.GetAttribute("physics:collisionEnabled").Set(False)
-
 
     def articulation_controller_init(self, step_index):
         if self._articulation_controller is None:
@@ -729,11 +746,10 @@ class CuRoboRobot(object):
             self._temp_world_manager._my_world.step(render=True)
             
             cube_position, cube_orientation = self._temp_world_manager._target_cube.get_world_pose()
-
-            if(self._ROS_JS_robot_indicator == "IRB6620_R2"):
-                cube_position[0] -= 4.6
             
-            # Since Each Robot is in +0.025 Height !
+            # CUBE POSE - ROBOT POSE
+            cube_position[0] -= self._r_pose[0]
+            cube_position[1] -= self._r_pose[1]
             cube_position[2] -= self._r_pose[2]
 
             if past_pose is None:
@@ -901,6 +917,13 @@ class CuRoboRobot(object):
         # Start the timer
         TimeOut_Timer = time.time()
 
+        # dc=_dynamic_control.acquire_dynamic_control_interface()
+        # object=dc.get_rigid_body("/"+self._ROS_JS_robot_indicator+"/tool0")
+        # object_pose=dc.get_rigid_body_pose(object)
+        # print(object_pose.p)
+        # print(object_pose.r)
+        # print("__________________________________________________")
+
         # Planning Announcement
         print("Robot "+self._ROS_JS_robot_indicator+" started to find a path for "+tcp_name+" to coords: ")
         print(f"Pose (X,Y,Z): {target_pose}, Orientation (W,X,Y,Z): {target_orientation}")
@@ -1050,6 +1073,80 @@ class CuRoboRobot(object):
         self._computed_path_result = None
         self._computed_cmd_plan = None
         self._computed_idx_list = []
+
+    def move_to_home(self):
+
+        self.motion_gen_update_world()
+
+        self.release_path_plan_restriction()
+
+        result: MotionGenResult = None
+        succ = None
+        # Start the timer
+        TimeOut_Timer = time.time()
+
+        # Giving a 10-second timer to solve IK
+        while (time.time() - TimeOut_Timer <= 10):
+            # Render
+            self._temp_world_manager._my_world.step(render=True)
+            # 2. Getting Current JS
+            sim_js = self._robot.get_joints_state()
+            sim_js_names = self._robot.dof_names
+
+            cu_js = JointState(
+                position=self._tensor_args.to_device(sim_js.positions),
+                velocity=self._tensor_args.to_device(sim_js.velocities) * 0.0,
+                acceleration=self._tensor_args.to_device(sim_js.velocities) * 0.0,
+                jerk=self._tensor_args.to_device(sim_js.velocities) * 0.0,
+                joint_names=sim_js_names,
+            )
+            cu_js = cu_js.get_ordered_joint_state(self._motion_gen.kinematics.joint_names)
+
+            # Home Position is Defined as all 0
+            Home_Loc = torch.zeros(1,6).cuda()
+            home_state = JointState.from_position(
+                    Home_Loc,
+                    joint_names=[
+                        "Joint_1",
+                        "Joint_2",
+                        "Joint_3",
+                        "Joint_4",
+                        "Joint_5",
+                        "Joint_6",
+                        ],
+                )
+            result = self._motion_gen.plan_single_js(cu_js.unsqueeze(0), home_state, self._plan_config)
+            succ = result.success.item()
+
+
+            # Adding the solution to Robot Object
+            self._computed_path_result = result
+
+            if succ and np.max(np.abs(sim_js.velocities)) < 0.2:
+                print("Robot Movement To Home Position")
+                print("_____________________________________")
+                # Clear the cache after each iteration to avoid memory buildupworld_reset
+                self._computed_cmd_plan = self._computed_path_result.get_interpolated_plan()
+                self._computed_cmd_plan = self._motion_gen.get_full_js(self._computed_cmd_plan)
+                self._computed_idx_list = []
+                common_js_names = []
+                sim_js_names = self._robot.dof_names
+
+                for x in sim_js_names:
+                    if x in self._computed_cmd_plan.joint_names:
+                        self._computed_idx_list.append(self._robot.get_dof_index(x))
+                        common_js_names.append(x)
+                self._computed_cmd_plan = self._computed_cmd_plan.get_ordered_joint_state(common_js_names)
+
+                # Execution
+                self.render_exec(renderInstance= True, Show_Sphere= False)
+
+                return True
+            print(result.status)
+            
+        carb.log_warn("Plan did not converge to a solution: " + str(result.status))
+        # No IK could solve this movement within 10 sec
+        return False
 
     # Attaching Object (CuRobo Logic) => Debug Purposes (No Need To be Implemented)
     def IDC_Attach_Object_To_Robot(self,
@@ -1369,7 +1466,7 @@ Robot_1 = None
 #                 R_Name="IRB6620_R1",
 #                 pose=[0,0,0.025],
 #                 input_tool="tool0", 
-#                 w_dir="home/apshirazi/Isaac_sim_ws/robot", 
+#                 w_dir=INSTALLATION_DIRECTORY+"/Isaac_sim_ws/robot", 
 #                 r_conf_name="IRB6620_Config.yaml",
 #                 Gripper_List=[RobotGripper(RobName= "IRB6620_R1",
 #                                            ParentLink= "Link_6",
@@ -1387,7 +1484,7 @@ Robot_2 = CuRoboRobot(working_world=test,
                 R_Name="IRB6620_R2",
                 pose=[4.6, 0, 0.025],
                 input_tool="tool0",
-                w_dir="home/apshirazi/Isaac_sim_ws/robot_2",
+                w_dir=INSTALLATION_DIRECTORY+"/Isaac_sim_ws/robot_2",
                 r_conf_name="IRB6620_Config.yaml",
                 Gripper_List=[RobotGripper(RobName= "IRB6620_R2",
                                            ParentLink= "Link_6",
@@ -1399,7 +1496,7 @@ Robot_2 = CuRoboRobot(working_world=test,
 Smart_Conv = CuRoboConv(working_world=test,
                Conv_Name="Smart_Conveyor",
                pose=[2.3, -3.25, 0],
-               w_dir="/home/apshirazi/Isaac_sim_ws/smart_conveyor",
+               w_dir=INSTALLATION_DIRECTORY+"/Isaac_sim_ws/smart_conveyor",
                c_conf_name="Smart_Conveyor.yaml")
 
 def euler_to_quat(roll, pitch, yaw):
@@ -1500,13 +1597,12 @@ Add_Rigid_Object_To_Scene(test, "Cuboid", R2_Smart_Mat_Table_Box2, True, True)
 ####Start#### Manufacturing Strategies !!!
 #############
 
-ev = np.sqrt(2) / 2
-
 # Robot_2_To Pick Position
 def Do_Pick(Stud_Name: str = None,
             Stud_Dims: List[float] = None,
             Stud_Pose: List[float] = None):
 
+        Robot_2.move_to_home()
         # Helping Pick
         Robot_2.plan(tcp_name= "tool0",
                        target_pose= [5.5, 1.44, 0.82],
@@ -1663,12 +1759,13 @@ def Horizontal(el_name: str = None,
     Robot_2.release_path_plan_restriction()
 
     # Home Position
-    Robot_2.plan(tcp_name= "tool0",
-                    target_pose= [3.3, 0, 1.7],
-                    target_orientation= [0, -ev, 0, ev],
-                    update_world_needed= True)
-    Robot_2.render_exec(renderInstance= True,
-                            Show_Sphere= False)
+    # Robot_2.plan(tcp_name= "tool0",
+    #                 target_pose= [3.3, 0, 1.7],
+    #                 target_orientation= [0, -ev, 0, ev],
+    #                 update_world_needed= True)
+    # Robot_2.render_exec(renderInstance= True,
+    #                         Show_Sphere= False)
+    Robot_2.move_to_home()
 
     ## Attaching The Placed Stud To Conveyor
     print(Smart_Conv.attach_object_to_conv(obj_name= el_name))
@@ -1715,9 +1812,9 @@ def main():
         # for robot in robots:
         #         robot.ros_js_publisher()
 
-        Time = time.time()
-        while time.time() - Time <= 15:
-            test._my_world.step(render= True)
+        # Time = time.time()
+        # while time.time() - Time <= 15:
+        #     test._my_world.step(render= True)
 
         Horizontal(el_name="H1",
                 el_dims= [0.12, 3.5, 0.04],
