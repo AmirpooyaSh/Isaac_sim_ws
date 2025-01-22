@@ -10,7 +10,7 @@ import numpy as np
 import math
 
 # Adding mesh to the world (Standalone Format)
-from omni.physx.scripts import utils
+from omni.physx.scripts import utils #It can be used to create Fixed Joints
 from omni.isaac.core.utils.stage import add_reference_to_stage
 from omni.isaac.core.robots import Robot
 
@@ -337,6 +337,31 @@ class CuRoboConv(object):
         # file_path = "Full_Conv_World.obj"
         # obstacles.save_world_as_mesh(file_path)
 
+    def attach_object_to_conv(self,
+                              obj_name: str = None):
+        
+        # Disabling Gravity Right After Detaching
+        Obj_Prim = self._temp_world_manager._stage.GetPrimAtPath("/world/obstacles/" + obj_name)
+
+        self._temp_world_manager._my_world.step(render= True)       
+        # Re-Disabling Gravity For the Object    
+        Dis_Grav = Obj_Prim.GetAttribute("physxRigidBody:disableGravity").Set(True)
+
+        self._temp_world_manager._my_world.step(render= True)
+        Dis_Collider = Obj_Prim.GetAttribute("physics:collisionEnabled").Set(True)
+
+        self._temp_world_manager._my_world.step(render= True)
+        # Disabling Colliders !! (To Avoid Collision Problems After Detaching)
+        Dis_RigidBody = Obj_Prim.GetAttribute("physics:rigidBodyEnabled").Set(True)
+
+        # Fix Jointing Stud To Conveyor
+        Conv_Prim = self._temp_world_manager._stage.GetPrimAtPath("/Smart_Conveyor/Link_2")
+        prim = utils.createJoint(self._temp_world_manager._stage, "Fixed", Obj_Prim, Conv_Prim)
+        self._temp_world_manager._my_world.step(render= True)
+
+        return prim
+
+
 class CuRoboRobot(object):
     def __init__(self,
                  working_world: WorldManager,
@@ -527,14 +552,15 @@ class CuRoboRobot(object):
 
     def motion_gen_warmup(self,
                           TCP_Name: str = None):
+        
         # Default Parameters
         trajopt_dt = None
         optimize_dt = False
         trajopt_tsteps = 32
-        trim_steps = [1, None]
-        max_attempts = 60
-        interpolation_dt = 0.01
-        enable_finetune_trajopt = True
+        trim_steps = None
+        max_attempts = 10
+        interpolation_dt = 0.05
+        enable_finetune_trajopt = False
         # MotionGen StartUp
 
         self.clean_occupied_vram()
@@ -570,10 +596,11 @@ class CuRoboRobot(object):
         self._motion_gen.warmup()
         print("Curobo for robot ( " + self._r_conf_name + " ) is ready ... | TCP = " + self._current_tool)
 
-        self._plan_config = MotionGenPlanConfig(enable_graph=False,
+        self._plan_config = MotionGenPlanConfig(enable_graph=True,
+                                                enable_graph_attempt=2,
                                                 max_attempts=max_attempts,
-                                                enable_finetune_trajopt=enable_finetune_trajopt,
-                                                timeout= 60)
+                                                enable_finetune_trajopt=enable_finetune_trajopt)
+
 
     def restrict_path_plan(self,
                         Position_Restriction: Optional[torch.Tensor] = None,
@@ -591,19 +618,18 @@ class CuRoboRobot(object):
         metrics = PoseCostMetric(hold_partial_pose= True,
                                 hold_vec_weight= combined_restriction)
 
-        self._plan_config = MotionGenPlanConfig(enable_graph=False,
-                                                max_attempts=60,
-                                                enable_finetune_trajopt=True,
-                                                pose_cost_metric= metrics,
-                                                timeout= 60)
+        self._plan_config = MotionGenPlanConfig(enable_graph=True,
+                                                enable_graph_attempt=2,
+                                                max_attempts=10,
+                                                enable_finetune_trajopt=False,
+                                                pose_cost_metric= metrics)
     
     def release_path_plan_restriction(self):
         # Removing Configs resulting into restrictions
-        self._plan_config = MotionGenPlanConfig(enable_graph=False,
-                                                enable_graph_attempt=3,
-                                                max_attempts=60,
-                                                enable_finetune_trajopt=True,
-                                                timeout= 60)
+        self._plan_config = MotionGenPlanConfig(enable_graph=True,
+                                                enable_graph_attempt=2,
+                                                max_attempts=10,
+                                                enable_finetune_trajopt=False)
 
     def motion_gen_update_world(self, 
                                 Removing_Prim_Paths: List[str] = None):
@@ -650,21 +676,22 @@ class CuRoboRobot(object):
             for prim in Removing_Prim_Paths:
                 ignoring_prim_paths.extend(["/"+prim])
             # We Do this Whenever we want to remove anything from the scene!
-            self._motion_gen.clear_world_cache()
 
             # Alternative Method
             # self._motion_gen.world_model.remove_obstacle("/Smart_Conveyor/Link_1/collisions")
             # self._motion_gen.world_model.remove_obstacle("/Smart_Conveyor/Link_2/collisions")
 
-
+        self._temp_world_manager._my_world.step(render=True)
+        self._motion_gen.clear_world_cache()
 
         obstacles = self._temp_world_manager._usd_help.get_obstacles_from_stage(
             reference_prim_path=self._robot_prim_path,
             ignore_substring=ignoring_prim_paths,
         ).get_collision_check_world()
 
+        obstacles.save_world_as_mesh("Testing.obj")
+
         self._motion_gen.update_world(obstacles)
-        self._temp_world_manager._my_world.step(render=True)
 
         print("Collision World Updated For Robot "+self._ROS_JS_robot_indicator)
         print("Removed Meshes From the Collision World: ")
@@ -926,6 +953,7 @@ class CuRoboRobot(object):
                 print(result.rotation_error)
 
                 return True
+            print(result.status)
             
         carb.log_warn("Plan did not converge to a solution: " + str(result.status))
         # No IK could solve this movement within 10 sec
@@ -1183,7 +1211,7 @@ class CuRoboRobot(object):
                    r_name: str = "IRB6620_R1",
                    tool_name: str = "tool1",
                    attaching_object_name: str = None,
-                   gen_sphere_radius: float = 0.005,
+                   gen_sphere_radius: float = 0.001,
                    voxelization_method: SphereFitType = SphereFitType.VOXEL_VOLUME_SAMPLE_SURFACE):
         
         if(attaching_object_name == None):
@@ -1432,7 +1460,7 @@ def Add_Rigid_Object_To_Scene(World_Manager: WorldManager,
     if(Robot_2 != None):
         Robot_2.motion_gen_update_world()
 
-# Smart Material Table's Collision
+# Smart Material Table's Collision        # obstacles.save_world_as_mesh("Testing.obj")
 R2_Smart_Mat_Table_Box1 = Cuboid(
     name= "R2_Smart_Mat_Table_Box1",
     pose= [6.5, 3.7, 0.45, 1, 0, 0, 0],
@@ -1461,6 +1489,7 @@ ev = np.sqrt(2) / 2
 def Do_Pick(Stud_Name: str = None,
             Stud_Dims: List[float] = None,
             Stud_Pose: List[float] = None):
+                # obstacles.save_world_as_mesh("Testing.obj")
         # Starting Point
         # Robot_2.plan(tcp_name= "tool0",
         #                target_pose= [3.3, 0, 1.7],
@@ -1478,7 +1507,7 @@ def Do_Pick(Stud_Name: str = None,
 
         # Helping Pick
         Robot_2.plan(tcp_name= "tool0",
-                       target_pose= [5.35, 1.44, 0.82],
+                       target_pose= [5.5, 1.44, 0.82],
                        target_orientation= [ev, 0, ev, 0],
                        update_world_needed= True)
         Robot_2.render_exec(renderInstance= True,
@@ -1489,8 +1518,7 @@ def Do_Pick(Stud_Name: str = None,
                        target_pose= [6.17, 1.44, 0.82],
                        target_orientation= [ev, 0, ev, 0],
                        update_world_needed= True,
-                       removing_primitives=["world/obstacles"],
-                       orientational_restriction= torch.tensor([1, 1, 1], dtype=torch.float32))
+                       removing_primitives=["world/obstacles"])
         Robot_2.render_exec(renderInstance= True,
                               Show_Sphere= False)
 
@@ -1511,15 +1539,23 @@ def Do_Pick(Stud_Name: str = None,
 
         # Helping Pick      
         Robot_2.plan(tcp_name= "tool0",
-                       target_pose= [5.35, 1.44, 0.82],
+                       target_pose= [5.5, 1.44, 0.82],
                        target_orientation= [ev, 0, ev, 0],
                        update_world_needed= True,
                        removing_primitives=["world/obstacles"])
         Robot_2.render_exec(renderInstance= True,
                               Show_Sphere= False)
-        
+
         # Release Restrictions
-        Robot_2.release_path_plan_restriction()
+        # Robot_2.release_path_plan_restriction()
+
+        # # Helping Pick (2)    
+        # Robot_2.plan(tcp_name= "tool0",
+        #                target_pose= [5.5, 1.44, 1.2],
+        #                target_orientation= [ev, 0, ev, 0],
+        #                update_world_needed= True)
+        # Robot_2.render_exec(renderInstance= True,
+        #                       Show_Sphere= False)
 
         Robot_2.plan(tcp_name= "tool0",
                        target_pose= [3.3, 0, 1.7],
@@ -1529,43 +1565,48 @@ def Do_Pick(Stud_Name: str = None,
                               Show_Sphere= False)
         
         # Place Location (Helping)
-        Robot_2.plan(tcp_name= "tool0",
-                       target_pose= [3.08, 0.00, 1.02],
-                       target_orientation= [0, ev, ev, 0],
-                       update_world_needed= True)
-        Robot_2.render_exec(renderInstance= True,
-                              Show_Sphere= False)
+        # Robot_2.plan(tcp_name= "tool0",
+        #                target_pose= [3.08, 0.0, 1.05],
+        #                target_orientation= [0, ev, ev, 0],
+        #                update_world_needed= True,
+        #                removing_primitives=["Smart_Conveyor/Link_2"])
+        # Robot_2.render_exec(renderInstance= True,
+        #                       Show_Sphere= False)
         
         # Place Location
         Robot_2.plan(tcp_name= "tool0",
-                       target_pose= [3.08, 0.00, 0.98],
+                       target_pose= [3.1, 0.00, 0.98],
                        target_orientation= [0, ev, ev, 0],
                        update_world_needed= True,
-                       removing_primitives=["Smart_Conveyor"],
-                       orientational_restriction= torch.tensor([1,1,1], dtype=torch.float32))
+                       removing_primitives=["Smart_Conveyor/Link_2", "world/obstacles"])
         Robot_2.render_exec(renderInstance= True,
                               Show_Sphere= False)
         
         Robot_2.eef_detach(tool_name="tool0",
                            detaching_object_name= Attaching_Element.name)
         
+        # Robot_2.release_path_plan_restriction()
+
         # Place Location (Helping)
-        Robot_2.plan(tcp_name= "tool0",
-                       target_pose= [3.08, 0.00, 1.02],
-                       target_orientation= [0, ev, ev, 0],
-                       update_world_needed= True)
-        Robot_2.render_exec(renderInstance= True,
-                              Show_Sphere= False)
+        # Robot_2.plan(tcp_name= "tool0",
+        #                target_pose= [3.08, 0.00, 1.02],
+        #                target_orientation= [0, ev, ev, 0],
+        #                update_world_needed= True)
+        # Robot_2.render_exec(renderInstance= True,
+        #                       Show_Sphere= False)
         
         # Home Position
         Robot_2.plan(tcp_name= "tool0",
                        target_pose= [3.3, 0, 1.7],
                        target_orientation= [0, -ev, 0, ev],
-                       update_world_needed= True)
+                       update_world_needed= True,
+                       removing_primitives=["Smart_Conveyor"])
         Robot_2.render_exec(renderInstance= True,
                               Show_Sphere= False)
         
         ## Attaching The Placed Stud To Conveyor
+        print(Smart_Conv.attach_object_to_conv(obj_name= Attaching_Element.name))
+        test._my_world.step(render= True)
         
         
 def Vertical(el_name: str = None,
@@ -1624,15 +1665,44 @@ def main():
         # for robot in robots:
         #         robot.ros_js_publisher()
 
+        T_Now = time.time()
+        while time.time() - T_Now < 15:
+            test._my_world.step(render=False) 
+
         Vertical(el_name="V1",
                  el_dims=[0.12, 2.0, 0.04],
                  el_pose=[6.19, 0.86, 0.82],
-                 conveyor_pose = 0.5)
+                 conveyor_pose = 4)
         
-        T_Now = time.time()
-        while time.time() - T_Now < 20000:
-            test._my_world.step(render=True) 
-        # Robot_2.free_TCP_movement()
+        Vertical(el_name="V2",
+                 el_dims=[0.12, 2.0, 0.04],
+                 el_pose=[6.19, 0.86, 0.82],
+                 conveyor_pose = 3.5)
+        
+        Vertical(el_name="V3",
+                 el_dims=[0.12, 2.0, 0.04],
+                 el_pose=[6.19, 0.86, 0.82],
+                 conveyor_pose = 3)
+        
+        Vertical(el_name="V4",
+                 el_dims=[0.12, 2.0, 0.04],
+                 el_pose=[6.19, 0.86, 0.82],
+                 conveyor_pose = 2)
+        
+        Vertical(el_name="V5",
+                 el_dims=[0.12, 2.0, 0.04],
+                 el_pose=[6.19, 0.86, 0.82],
+                 conveyor_pose = 1.5)
+        
+        Vertical(el_name="V6",
+                 el_dims=[0.12, 2.0, 0.04],
+                 el_pose=[6.19, 0.86, 0.82],
+                 conveyor_pose = 1)
+        
+        # T_Now = time.time()
+        # while time.time() - T_Now < 20000:
+        #     test._my_world.step(render=False) 
+        Robot_2.free_TCP_movement()
 
 if __name__ == "__main__":
     main()
