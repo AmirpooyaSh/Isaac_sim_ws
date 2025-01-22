@@ -282,8 +282,13 @@ class CuRoboConv(object):
         # self._L1_Prim = self._temp_world_manager._stage.GetPrimAtPath("/" + Conv_Name + "/Link_1/collisions")
         # self._Collider_Off = self._L1_Prim.GetAttribute("physics:collisionEnabled").Set(False)
 
+        self._L1_Prim = self._temp_world_manager._stage.GetPrimAtPath("/" + Conv_Name + "/Link_1/collisions")
+        self._Collider_Off = self._L1_Prim.GetAttribute("physics:collisionEnabled").Set(False)
+
         self._L2_Prim = self._temp_world_manager._stage.GetPrimAtPath("/" + Conv_Name + "/Link_2/collisions")
         self._Collider_Off = self._L2_Prim.GetAttribute("physics:collisionEnabled").Set(False)
+
+        self._temp_world_manager._my_world.step(render=True)
 
         #Test
         self._world_updater_counter = 0
@@ -583,7 +588,7 @@ class CuRoboRobot(object):
             num_graph_seeds=12,
             # Error Thresholds !!
             position_threshold= 0.005,
-            rotation_threshold= 0.02,
+            rotation_threshold= 0.01,
             interpolation_dt=interpolation_dt,
             optimize_dt=optimize_dt,
             trajopt_dt=trajopt_dt,
@@ -729,7 +734,7 @@ class CuRoboRobot(object):
                 cube_position[0] -= 4.6
             
             # Since Each Robot is in +0.025 Height !
-            # cube_position[2] -= 0.025
+            cube_position[2] -= self._r_pose[2]
 
             if past_pose is None:
                 past_pose = cube_position
@@ -771,7 +776,7 @@ class CuRoboRobot(object):
                 # Hard Coded Prompts
                 # Z = 1000 : It means that we're done with free movement and we know the coordinations
                 # It will break the loop and let the program continue !
-                if cube_position[2] == 1000:
+                if np.round(cube_position[2]+self._r_pose[2],0) == 1000:
                     print("Free Movement of Robot "+self._ROS_JS_robot_indicator+" is Done !")
                     self._temp_world_manager._target_cube.set_world_pose(position=[2.3, 0, 2],
                                                                          orientation=[1, 0, 0, 0])
@@ -779,7 +784,7 @@ class CuRoboRobot(object):
                 # Z = 500 : It means that the Attached Object is too Close to Obstacles and we need Accurate Movements
                 # To do so, we empty out the robot's Collision world representation
                 # It will let CuRobo Plan freely and in a linear way (Conduct Linear Movements)
-                if cube_position[2] == 500:
+                if np.round(cube_position[2]+self._r_pose[2],0) == 500:
                     self.motion_gen_update_world(Removing_Prim_Paths=["Smart_Conveyor", "obstacles"])
                     self._temp_world_manager._target_cube.set_world_pose(position=[2.3, 0, 2],
                                                                          orientation=[1, 0, 0, 0])
@@ -790,8 +795,8 @@ class CuRoboRobot(object):
                     cmd_plan = None
                     # self._motion_gen.detach_object_from_robot("tool0")
                     continue
-                # Z = 500 : Bring Back The Whole Collision World
-                if cube_position[2] == 200:
+                # Z = 200 : Bring Back The Whole Collision World
+                if np.round(cube_position[2]+self._r_pose[2],0) == 200:
                     self.motion_gen_update_world()
                     self._temp_world_manager._target_cube.set_world_pose(position=[2.3, 0, 2],
                                                                          orientation=[1, 0, 0, 0])
@@ -819,7 +824,7 @@ class CuRoboRobot(object):
                     print(self._ROS_JS_robot_indicator+" | "+self._robot_cfg["kinematics"]["ee_link"])
                     Modified_Pose = [cube_position[0]+self._r_pose[0],
                                      cube_position[1]+self._r_pose[1],
-                                     cube_position[2]]
+                                     cube_position[2]+self._r_pose[2]]
                     # print(f"Reached Pose: {Modified_Pose}, Reached Orientation: {cube_orientation}")
                     # Print with 3 decimals
                     print(f"Reached Pose: {[f'{elem:.2f}' for elem in Modified_Pose]}, Reached Orientation: {[cube_orientation]}")
@@ -1405,7 +1410,8 @@ def euler_to_quat(roll, pitch, yaw):
 def Add_Rigid_Object_To_Scene(World_Manager: WorldManager,
                               ObjectType: str = "Cuboid",
                               obj: Any = Cuboid,
-                              rigid_body_disabler: bool = False
+                              rigid_body_disabler: bool = False,
+                              make_invisible: bool = False
                               ):
     Added_Obj_Prim_Root: str = None
     # It's better not to use CuRobo's enable_physics Attribute !
@@ -1455,6 +1461,10 @@ def Add_Rigid_Object_To_Scene(World_Manager: WorldManager,
         # Disabling Gravity
         Dis_Grav = Obj_Prim.GetAttribute("physxRigidBody:disableGravity").Set(True)
 
+    # Making them Invisible
+    if make_invisible == True:
+        visibility_attribute = Obj_Prim.GetAttribute("visibility").Set("invisible")
+
     print("Object " + obj.name + " Added to the Simulation | PRIM: " + Added_Obj_Prim_Root)
 
     # Updating the Collision World for Each Robot After Adding an Object to the Scene
@@ -1470,7 +1480,7 @@ R2_Smart_Mat_Table_Box1 = Cuboid(
     dims= [1, 4, 0.8],
     color= [1, 1, 1, 0]
 )
-Add_Rigid_Object_To_Scene(test, "Cuboid", R2_Smart_Mat_Table_Box1, True)
+Add_Rigid_Object_To_Scene(test, "Cuboid", R2_Smart_Mat_Table_Box1, True, True)
 
 R2_Smart_Mat_Table_Box2 = Cuboid(
     name= "R2_Smart_Mat_Table_Box2",
@@ -1478,7 +1488,7 @@ R2_Smart_Mat_Table_Box2 = Cuboid(
     dims= [0.4, 4.6, 1.5],
     color= [1, 1, 1, 0]
 )
-Add_Rigid_Object_To_Scene(test, "Cuboid", R2_Smart_Mat_Table_Box2, True)
+Add_Rigid_Object_To_Scene(test, "Cuboid", R2_Smart_Mat_Table_Box2, True, True)
 
 
 
@@ -1614,6 +1624,8 @@ def Horizontal(el_name: str = None,
             Stud_Dims= el_dims,
             Stud_Pose= el_pose)
 
+    Robot_2.free_TCP_movement()
+
     # Place Location (Helping)
     Robot_2.plan(tcp_name= "tool0",
                     target_pose= [3.542, -0.21, 1.12],
@@ -1622,6 +1634,8 @@ def Horizontal(el_name: str = None,
     Robot_2.render_exec(renderInstance= True,
                             Show_Sphere= False)
     
+
+
     # Place
     Robot_2.plan(tcp_name= "tool0",
                     target_pose= [3.542, -0.21, 0.98],
