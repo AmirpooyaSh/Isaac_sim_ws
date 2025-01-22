@@ -588,7 +588,7 @@ class CuRoboRobot(object):
             num_graph_seeds=12,
             # Error Thresholds !!
             position_threshold= 0.005,
-            rotation_threshold= 0.01,
+            rotation_threshold= 0.005,
             interpolation_dt=interpolation_dt,
             optimize_dt=optimize_dt,
             trajopt_dt=trajopt_dt,
@@ -1474,7 +1474,7 @@ def Add_Rigid_Object_To_Scene(World_Manager: WorldManager,
         Robot_2.motion_gen_update_world()
 
 # Making the Ground Invisible
-GR_Primitive = test._stage.GetPrimAtPath("/World/Ground")
+GR_Primitive = test._stage.GetPrimAtPath("/World/obstacles/Ground")
 GR_Primitive.GetAttribute("visibility").Set("invisible")
 
 # Smart Material Table's Collision        # obstacles.save_world_as_mesh("Testing.obj")
