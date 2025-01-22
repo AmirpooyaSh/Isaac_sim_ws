@@ -229,7 +229,7 @@ class WorldManager(object):
         Cube = Cuboid (
             name="Ground",
             dims=[50, 50, 0.2],
-            pose=[0.0, 0.0, -0.2, 1, 0, 0, 0.0],
+            pose=[0.0, 0.0, -0.1, 1, 0, 0, 0.0],
             color= [0, 0, 0, 0]
         )
         # world_cfg_table = WorldConfig.from_dict(
@@ -1473,6 +1473,10 @@ def Add_Rigid_Object_To_Scene(World_Manager: WorldManager,
     if(Robot_2 != None):
         Robot_2.motion_gen_update_world()
 
+# Making the Ground Invisible
+GR_Primitive = test._stage.GetPrimAtPath("/World/Ground")
+GR_Primitive.GetAttribute("visibility").Set("invisible")
+
 # Smart Material Table's Collision        # obstacles.save_world_as_mesh("Testing.obj")
 R2_Smart_Mat_Table_Box1 = Cuboid(
     name= "R2_Smart_Mat_Table_Box1",
@@ -1623,8 +1627,6 @@ def Horizontal(el_name: str = None,
     Do_Pick(Stud_Name= el_name,
             Stud_Dims= el_dims,
             Stud_Pose= el_pose)
-
-    Robot_2.free_TCP_movement()
 
     # Place Location (Helping)
     Robot_2.plan(tcp_name= "tool0",
