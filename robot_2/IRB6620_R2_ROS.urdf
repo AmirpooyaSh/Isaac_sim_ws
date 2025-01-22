@@ -256,12 +256,12 @@
         </collision> 
     </link>
     <!-- ROBOT 2 NAILER TO ENDEFFECTOR -->
-    <joint name="Joint_8" type="revolute">
+    <!--         <axis xyz="1 0 0" />
+        <limit effort="0" lower="0" upper="1.57" velocity="10.0" /> -->
+    <joint name="Joint_8" type="fixed">
         <origin xyz="0.071626 0.47938 -0.063969" rpy="3.14 0 0" />
         <parent link="Link_7" />
         <child link="Link_8" />
-        <axis xyz="1 0 0" />
-        <limit effort="0" lower="0" upper="1.57" velocity="10.0" />
     </joint>
 
     <!-- flange frame -->

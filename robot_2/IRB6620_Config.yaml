@@ -75,4 +75,4 @@ robot_cfg:
             null_space_weight: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
             cspace_distance_weight: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
             max_jerk: 100.0
-            max_acceleration: 10.0
+            max_acceleration: 5.0
