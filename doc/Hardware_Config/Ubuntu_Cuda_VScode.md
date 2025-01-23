@@ -39,6 +39,8 @@
 
         ```shell
         wget https://developer.download.nvidia.com/compute/cuda/11.8.0/local_installers/cuda_11.8.0_520.61.05_linux.run
+        sudo apt update
+        sudo apt-get install gcc g++
         sudo sh cuda_11.8.0_520.61.05_linux.run
         ```
         - Through the installation process, make sure to hit **Continue** instead of Abort and uncheck the installation of NVIDIA Driver **520.61.05**

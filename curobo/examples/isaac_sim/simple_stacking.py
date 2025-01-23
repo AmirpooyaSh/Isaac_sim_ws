@@ -126,8 +126,6 @@ class CuroboController(BaseController):
             "panda_joint7",
         ]
         self.tensor_args = TensorDeviceType()
-        print(get_robot_configs_path())
-        print("______________________________________________________")
         self.robot_cfg = load_yaml(join_path(get_robot_configs_path(), "franka.yml"))["robot_cfg"]
         self.robot_cfg["kinematics"][
             "base_link"
@@ -205,16 +203,12 @@ class CuroboController(BaseController):
             joint_names=js_names,
         )
 
-        print("This is Before Attaching :" + str(self.motion_gen.kinematics.kinematics_config.get_number_of_spheres('attached_object')))
-        print("__________")
         self.motion_gen.attach_objects_to_robot(
             cu_js,
             [cube_name],
             sphere_fit_type=SphereFitType.VOXEL_VOLUME_SAMPLE_SURFACE,
             world_objects_pose_offset=Pose.from_list([0, 0, 0.01, 1, 0, 0, 0], self.tensor_args),
         )
-        print("This is After Attaching :" + str(self.motion_gen.kinematics.kinematics_config.get_number_of_spheres('attached_object')))
-        print("__________")
 
     def detach_obj(self) -> None:
         self.motion_gen.detach_object_from_robot()
