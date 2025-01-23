@@ -1,4 +1,4 @@
-# Ubuntu 20.04 (OS) Installation
+# Ubuntu 22.04 (OS) Installation
 1. Download [Ubuntu 22.04.5 LTS (Jammy Jellyfish)](https://releases.ubuntu.com/jammy/) Image (64bit PC AMD64)
 2. Create a bootable image of the downloaded file using [BalenaEtcher](https://etcher.balena.io/#download-etcher)
     - Make sure to turn off **Secure Boot** on your device using **BIOS Setting** before proceeding to the installation
