@@ -23,10 +23,10 @@ echo "alias omni_python='~/.local/share/ov/pkg/isaac-sim-4.2.0/python.sh'" >> ~/
     sudo apt install git-lfs
     source ~/.bashrc
     omni_python -m pip install tomli wheel ninja
-    omni_python -m pip install --upgrade pip
+    <!-- omni_python -m pip install --upgrade pip
     omni_python -m pip install scipy==1.11.4
     omni_python -m pip install lxml==4.9.2
-    omni_python -m pip install usd-core==23.11
+    omni_python -m pip install usd-core==23.11 -->
     ```
 - Clone and Install CuRobo:
 
