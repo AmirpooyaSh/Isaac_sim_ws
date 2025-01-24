@@ -1,6 +1,5 @@
 from curobo.wrap.reacher import motion_gen
 from isaacsim import SimulationApp
-# import sensor_msgs.msg
 
 simulation_app = SimulationApp({"headless": False}) # we can also run as headless.
 
@@ -82,7 +81,7 @@ from typing import cast, List, Optional, Any
 
 from omni.isaac.core.utils.extensions import enable_extension
 # enable ROS bridge extension
-# enable_extension("omni.isaac.ros_bridge")
+enable_extension("omni.isaac.ros_bridge")
 
 # enable SurfaceGripper extention
 enable_extension("omni.isaac.surface_gripper")
@@ -91,16 +90,18 @@ simulation_app.update()
 # check if rosmaster node is running
 # this is to prevent this sample from waiting indefinetly if roscore is not running
 # can be removed in regular usage
-# import rosgraph
+import rosgraph
 
-# if not rosgraph.is_master_online():
-#     carb.log_error("Please run roscore before executing this script")
-#     simulation_app.close()
-#     exit()
+if not rosgraph.is_master_online():
+    carb.log_error("Please run roscore before executing this script")
+    simulation_app.close()
+    exit()
 
-# import rospy
-# import sensor_msgs
-# import omni.graph.core as og
+import rospy
+import sensor_msgs
+import sensor_msgs.msg
+
+import omni.graph.core as og
 
 # Xform Creation and Transform
 import omni.kit.commands as cmd
@@ -140,8 +141,10 @@ ev = np.sqrt(2) / 2
 # DIRECTORY OF INSTALLATION
 INSTALLATION_DIRECTORY: str = "/home/apshirazi"
 
+# Robot Gripper Lengths (In CM)
 ROBOT_1_GRIPPER_LENGTH: float = 60
 ROBOT_2_GRIPPER_LENGTH: float = 59
+
 
 
 ####################
@@ -179,11 +182,21 @@ class WorldManager(object):
         # Creating USD Helper (CuRobo Object) to handle objects
         self._usd_help = UsdHelper()
         
+        # Target Cube For Robotic Movement
         self._target_cube = cuboid.VisualCuboid(
             "/World/target",
             position=np.array([0.5, 0, 3]),
             orientation=np.array([1, 0, 0, 0]),
             color=np.array([1.0, 0, 0]),
+            size=0.05,
+        )
+
+        # Measurer Cube For Coordination Calculation
+        self._measurer_cube = cuboid.VisualCuboid(
+            "/World/measurer",
+            position=np.array([0.5, 0, 3]),
+            orientation=np.array([1, 0, 0, 0]),
+            color=np.array([0, 1.0, 0]),
             size=0.05,
         )
 
@@ -197,6 +210,51 @@ class WorldManager(object):
         self._curobo_world_cfg = self.init_world_model()
         self._usd_help.add_world_to_stage(self._curobo_world_cfg, base_frame="/World")
     
+    def measurement_calculator(self):
+
+        # Creating Target Pose and Orientation
+        target_pose = None
+        target_orientation = None
+
+        past_pose = None
+        past_orientation = None
+
+        while simulation_app.is_running():
+
+            self._my_world.step(render=True)
+            
+            cube_position, cube_orientation = self._measurer_cube.get_world_pose()   
+
+            if past_pose is None:
+                past_pose = cube_position
+            if target_pose is None:
+                target_pose = cube_position
+            if target_orientation is None:
+                target_orientation = cube_orientation
+            if past_orientation is None:
+                past_orientation = cube_orientation
+
+            if (
+                (
+                    np.linalg.norm(cube_position - target_pose) > 1e-3
+                    or np.linalg.norm(cube_orientation - target_orientation) > 1e-3
+                )
+                and np.linalg.norm(past_pose - cube_position) == 0.0
+                and np.linalg.norm(past_orientation - cube_orientation) == 0.0
+            ):
+
+                if np.round(cube_position[2], 0) == 500:
+                    print("Coordination Calculation Done !")
+                    return True
+                    
+                print(f"Position: {[f'{elem:.3f}' for elem in cube_position]}, Orientation: {[f'{elem:.3f}' for elem in cube_orientation]}")
+                target_pose = cube_position
+                target_orientation = cube_orientation
+
+            past_pose = cube_position
+            past_orientation = cube_orientation
+
+
     def world_reset(self):
         self._my_world.reset()
     
@@ -264,6 +322,7 @@ class WorldManager(object):
         )
 
         return world_model
+
 
 class CuRoboConv(object):
     def __init__(self,
@@ -544,7 +603,7 @@ class CuRoboRobot(object):
         # Creating JointState Publishing Topic:
         self._js_working_name = re.match(r"^(.*_Config)", r_conf_name).group(1)
         self._ros_js_publsiher = self._ROS_JS_robot_indicator + "_joint_state"
-        # self._js_publisher = rospy.Publisher(self._ros_js_publsiher, sensor_msgs.msg.JointState, queue_size=10)
+        self._js_publisher = rospy.Publisher(self._ros_js_publsiher, sensor_msgs.msg.JointState, queue_size=10)
         self._js_pub_interval: None
 
         self._computed_path_result: MotionGenResult = None
@@ -693,8 +752,9 @@ class CuRoboRobot(object):
             "/"+Rob_name+"/Link_8/visuals",
             # Attached Object's Prim (If Any)
             self._attached_obj_prim,
-            # Moving Cube Should also be ignored
-            "/World/target",          
+            # Moving Cubes Should also be ignored
+            "/World/target",
+            "/World/measurer",          
             # Other Robot's Prim Path Should also be Ignored !
             # This feature is to be developed (MPC)
         ]
@@ -880,6 +940,9 @@ class CuRoboRobot(object):
 
                 # set desired joint angles obtained from IK:
                 self._articulation_controller.apply_action(art_action)
+
+                # Publishing To ROS
+                self.ros_js_publisher()
 
                 cmd_idx += 1
                 for _ in range(2):
@@ -1069,6 +1132,10 @@ class CuRoboRobot(object):
 
                 # set desired joint angles obtained from IK:
                 self._articulation_controller.apply_action(art_action)
+
+                # Publishing To ROS
+                self.ros_js_publisher()
+
                 cmd_idx += 1
                 if renderInstance:
                     for _ in range(2):
@@ -1445,12 +1512,10 @@ class CuRoboRobot(object):
         self._temp_world_manager._my_world.step(render=True)
         Dis_Co = Obj_Prim.GetAttribute("physics:collisionEnabled").Set(False)
 
-    def ros_js_publisher(self, event):
-        r=1
-        """
+    def ros_js_publisher(self):
         try:
             # Check if the simulation is running and playing
-            if self._temp_world_manager._my_world.is_playing() and (self._temp_world_manager._my_world.current_time_step_index > 20):
+            if self._temp_world_manager._my_world.is_playing():
                 # self._temp_world_manager._my_world.step(render=False)
                 sim_js = self._robot.get_joints_state()
                 sim_js_names = self._robot.dof_names
@@ -1472,9 +1537,6 @@ class CuRoboRobot(object):
 
         except Exception as e:
             rospy.logwarn(f"Error publishing joint state: {e}")
-        """
-
-
 
 test = WorldManager()
 Robot_1 = None
@@ -1790,7 +1852,6 @@ def Horizontal(el_name: str = None,
     print(Smart_Conv.attach_object_to_conv(obj_name= el_name))
     test._my_world.step(render= True)
 
-
 ###########
 ####END####
 ###########
@@ -1798,7 +1859,7 @@ def Horizontal(el_name: str = None,
 
 def main():
 
-    # rospy.init_node("tutorial_subscriber", anonymous=True)
+    rospy.init_node("tutorial_subscriber", anonymous=True)
 
     i=0
 
@@ -1835,52 +1896,52 @@ def main():
         # while time.time() - Time <= 15:
         #     test._my_world.step(render= True)
 
-        Horizontal(el_name="H1",
-                el_dims= [0.12, 3.5, 0.04],
-                el_pose= [6.19, 0.13, 0.82],
-                conveyor_pose = 0.75)
+        # Horizontal(el_name="H1",
+        #         el_dims= [0.12, 3.5, 0.04],
+        #         el_pose= [6.19, 0.13, 0.82],
+        #         conveyor_pose = 0.75)
 
-        Vertical(el_name="V1",
-                 el_dims=[0.12, 2.0, 0.04],
-                 el_pose=[6.19, 0.86, 0.82],
-                 conveyor_pose = 4)
+        # Vertical(el_name="V1",
+        #          el_dims=[0.12, 2.0, 0.04],
+        #          el_pose=[6.19, 0.86, 0.82],
+        #          conveyor_pose = 4)
         
-        Vertical(el_name="V2",
-                 el_dims=[0.12, 2.0, 0.04],
-                 el_pose=[6.19, 0.86, 0.82],
-                 conveyor_pose = 3.8)
+        # Vertical(el_name="V2",
+        #          el_dims=[0.12, 2.0, 0.04],
+        #          el_pose=[6.19, 0.86, 0.82],
+        #          conveyor_pose = 3.8)
         
-        Vertical(el_name="V3",
-                 el_dims=[0.12, 2.0, 0.04],
-                 el_pose=[6.19, 0.86, 0.82],
-                 conveyor_pose = 3.6)
+        # Vertical(el_name="V3",
+        #          el_dims=[0.12, 2.0, 0.04],
+        #          el_pose=[6.19, 0.86, 0.82],
+        #          conveyor_pose = 3.6)
         
-        Vertical(el_name="V4",
-                 el_dims=[0.12, 2.0, 0.04],
-                 el_pose=[6.19, 0.86, 0.82],
-                 conveyor_pose = 2.717)
+        # Vertical(el_name="V4",
+        #          el_dims=[0.12, 2.0, 0.04],
+        #          el_pose=[6.19, 0.86, 0.82],
+        #          conveyor_pose = 2.717)
 
-        Vertical(el_name="V5",
-                 el_dims=[0.12, 2.0, 0.04],
-                 el_pose=[6.19, 0.86, 0.82],
-                 conveyor_pose = 1.834)
+        # Vertical(el_name="V5",
+        #          el_dims=[0.12, 2.0, 0.04],
+        #          el_pose=[6.19, 0.86, 0.82],
+        #          conveyor_pose = 1.834)
 
-        Vertical(el_name="V6",
-                 el_dims=[0.12, 2.0, 0.04],
-                 el_pose=[6.19, 0.86, 0.82],
-                 conveyor_pose = 0.95)
+        # Vertical(el_name="V6",
+        #          el_dims=[0.12, 2.0, 0.04],
+        #          el_pose=[6.19, 0.86, 0.82],
+        #          conveyor_pose = 0.95)
         
-        Vertical(el_name="V7",
-                 el_dims=[0.12, 2.0, 0.04],
-                 el_pose=[6.19, 0.86, 0.82],
-                 conveyor_pose = 0.75)
+        # Vertical(el_name="V7",
+        #          el_dims=[0.12, 2.0, 0.04],
+        #          el_pose=[6.19, 0.86, 0.82],
+        #          conveyor_pose = 0.75)
         
-        Vertical(el_name="V8",
-                 el_dims=[0.12, 2.0, 0.04],
-                 el_pose=[6.19, 0.86, 0.82],
-                 conveyor_pose = 0.55)
+        # Vertical(el_name="V8",
+        #          el_dims=[0.12, 2.0, 0.04],
+        #          el_pose=[6.19, 0.86, 0.82],
+        #          conveyor_pose = 0.55)
 
-        Smart_Conv.render_exec('Joint_1', 2.55)
+        # Smart_Conv.render_exec('Joint_1', 2.55)
 
         Robot_2.free_TCP_movement()
 
