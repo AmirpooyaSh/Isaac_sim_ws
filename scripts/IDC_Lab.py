@@ -529,9 +529,8 @@ class CuRoboRobot(object):
         # Creating and Warming Up the MotionGen
         self._r_conf_name = r_conf_name
 
-        # 01/14/2025 Commented for Test (Shouldn't Be)
-        if self._ROS_JS_robot_indicator == "IRB6620_R2":
-            self.motion_gen_warmup()
+        # Back To Normal On 4090
+        self.motion_gen_warmup()
         # This will indicate if any object is attached to the robot or not
         self._is_obj_attached: bool = False
         # This will be used to prevent the world updater from grasping the attached object's mesh representation as world
@@ -553,6 +552,9 @@ class CuRoboRobot(object):
         self._computed_idx_list = []
 
         self._world_updater_counter = 0
+
+        # An Argument to Check if a Robot is At Home Position or Not !
+        self._is_at_home: bool = False
 
         # Deactivating EndEffector's Collision Representation in the Simulation
         # Attaching Surface Grippers to Link 6 rather than Link 7
@@ -626,7 +628,6 @@ class CuRoboRobot(object):
                                                 enable_graph_attempt=2,
                                                 max_attempts=max_attempts,
                                                 enable_finetune_trajopt=enable_finetune_trajopt)
-
 
     def restrict_path_plan(self,
                         Position_Restriction: Optional[torch.Tensor] = None,
@@ -966,6 +967,10 @@ class CuRoboRobot(object):
                 print("Solution Found")
                 print("Execution in Progress")
                 print("_____________________________________")
+
+                # If the Plan is Successful, Update the Robot's Pose (It's not at home anymore)
+                self._is_at_home = False
+
                 # Clear the cache after each iteration to avoid memory buildupworld_reset
                 self._computed_cmd_plan = self._computed_path_result.get_interpolated_plan()
                 self._computed_cmd_plan = self._motion_gen.get_full_js(self._computed_cmd_plan)
@@ -1076,6 +1081,11 @@ class CuRoboRobot(object):
 
     def move_to_home(self):
 
+        # If Robot is Already at Home Position
+        if self._is_at_home == True:
+            print("Robot " + self._ROS_JS_robot_indicator + " is Already at Home Position")
+            return True
+
         self.motion_gen_update_world()
 
         self.release_path_plan_restriction()
@@ -1104,6 +1114,12 @@ class CuRoboRobot(object):
 
             # Home Position is Defined as all 0
             Home_Loc = torch.zeros(1,6).cuda()
+
+            # Sleep Point For Robots To Reduce Collision !
+            Home_Loc[0, 1] = -0.5
+            Home_Loc[0, 2] = 0.5
+            Home_Loc[0, 4] = 1.57
+
             home_state = JointState.from_position(
                     Home_Loc,
                     joint_names=[
@@ -1140,7 +1156,7 @@ class CuRoboRobot(object):
 
                 # Execution
                 self.render_exec(renderInstance= True, Show_Sphere= False)
-
+                self._is_at_home = True
                 return True
             print(result.status)
             
@@ -1462,22 +1478,22 @@ class CuRoboRobot(object):
 
 test = WorldManager()
 Robot_1 = None
-# Robot_1 = CuRoboRobot(working_world=test, 
-#                 R_Name="IRB6620_R1",
-#                 pose=[0,0,0.025],
-#                 input_tool="tool0", 
-#                 w_dir=INSTALLATION_DIRECTORY+"/Isaac_sim_ws/robot", 
-#                 r_conf_name="IRB6620_Config.yaml",
-#                 Gripper_List=[RobotGripper(RobName= "IRB6620_R1",
-#                                            ParentLink= "Link_6",
-#                                            TCP_Name= "T0",
-#                                            C_Pose= [0.09 , 0, -0.29]),
-#                                 RobotGripper(RobName= "IRB6620_R1",
-#                                              ParentLink= "Link_6",
-#                                              TCP_Name= "T1",
-#                                              C_Pose= [0.55, 0.435, -0.175])
-#                                            ],
-#                 Cuda_Device= 0)
+Robot_1 = CuRoboRobot(working_world=test, 
+                R_Name="IRB6620_R1",
+                pose=[0,0,0.025],
+                input_tool="tool0", 
+                w_dir=INSTALLATION_DIRECTORY+"/Isaac_sim_ws/robot", 
+                r_conf_name="IRB6620_Config.yaml",
+                Gripper_List=[RobotGripper(RobName= "IRB6620_R1",
+                                           ParentLink= "Link_6",
+                                           TCP_Name= "T0",
+                                           C_Pose= [0.09 , 0, -0.29]),
+                                RobotGripper(RobName= "IRB6620_R1",
+                                             ParentLink= "Link_6",
+                                             TCP_Name= "T1",
+                                             C_Pose= [0.55, 0.435, -0.175])
+                                           ],
+                Cuda_Device= 0)
 
 Robot_2 = None
 Robot_2 = CuRoboRobot(working_world=test,
@@ -1651,6 +1667,8 @@ def Do_Pick(Stud_Name: str = None,
         Robot_2.render_exec(renderInstance= True,
                               Show_Sphere= False)
         
+        Robot_1.move_to_home()
+        
         
 def Vertical(el_name: str = None,
              el_dims: List[float] = None,
@@ -1700,13 +1718,14 @@ def Vertical(el_name: str = None,
     Robot_2.release_path_plan_restriction()
 
     # Home Position
-    Robot_2.plan(tcp_name= "tool0",
-                    target_pose= [3.3, 0, 1.7],
-                    target_orientation= [0, -ev, 0, ev],
-                    update_world_needed= True,
-                    removing_primitives=["Smart_Conveyor", "world/obstacles"])
-    Robot_2.render_exec(renderInstance= True,
-                            Show_Sphere= False)
+    # Robot_2.plan(tcp_name= "tool0",
+    #                 target_pose= [3.3, 0, 1.7],
+    #                 target_orientation= [0, -ev, 0, ev],
+    #                 update_world_needed= True,
+    #                 removing_primitives=["Smart_Conveyor", "world/obstacles"])
+    # Robot_2.render_exec(renderInstance= True,
+    #                         Show_Sphere= False)
+    Robot_2.move_to_home()
     
     ## Attaching The Placed Stud To Conveyor
     print(Smart_Conv.attach_object_to_conv(obj_name= el_name))

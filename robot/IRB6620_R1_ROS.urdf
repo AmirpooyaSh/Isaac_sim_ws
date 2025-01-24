@@ -256,13 +256,13 @@
             </geometry>
         </collision>
     </link>
+        <!-- <axis xyz="1 0 0" />
+    <limit effort="10000" lower="0" upper="1.57" velocity="10.0" /> -->
     <!-- ROBOT 1 NAILER TO ENDEFFECTOR -->
-    <joint name="Joint_8" type="revolute">
+    <joint name="Joint_8" type="fixed">
         <origin xyz="0.0710604735167422 -0.4640008 0.0758673046361571" rpy="0 0 0" />
         <parent link="Link_7" />
         <child link="Link_8" />
-        <axis xyz="1 0 0" />
-        <limit effort="10000" lower="0" upper="1.57" velocity="10.0" />
     </joint>
 
     <!-- base_link -->
