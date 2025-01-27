@@ -145,7 +145,8 @@ INSTALLATION_DIRECTORY: str = "/home/apshirazi"
 ROBOT_1_GRIPPER_LENGTH: float = 60
 ROBOT_2_GRIPPER_LENGTH: float = 59
 
-
+SMART_CONV_RANGE_OF_MOTION_J1: float = 4.55
+SMART_CONV_RANGE_OF_MOTION_J2: float = 0.5
 
 ####################
 #### END PARAMS ####
@@ -197,6 +198,15 @@ class WorldManager(object):
             position=np.array([0.5, 0, 3]),
             orientation=np.array([1, 0, 0, 0]),
             color=np.array([0, 1.0, 0]),
+            size=0.05,
+        )
+
+        # Smart Conveyor Mover !
+        self._conv_cube = cuboid.VisualCuboid(
+            "/World/conv_cube",
+            position=np.array([0.5, 0, 3]),
+            orientation=np.array([1, 0, 0, 0]),
+            color=np.array([0, 0, 1.0]),
             size=0.05,
         )
 
@@ -383,6 +393,38 @@ class CuRoboConv(object):
                 values=np.array([5000 for i in range(len(idx_list))]), joint_indices=idx_list
             )
 
+    def free_conv_movement(self):
+
+        print(self._robot.get_joint_positions())
+
+        current_state = self._robot.get_joint_positions()
+
+        self._temp_world_manager._conv_cube.set_world_pose(position=[2.3, current_state[0]-SMART_CONV_RANGE_OF_MOTION_J1/2, current_state[1]],
+                                                           orientation=[1, 0, 0, 0])
+
+        while simulation_app.is_running():
+
+            self._temp_world_manager._my_world.step(render=True)
+
+            current_state = self._robot.get_joint_positions()
+
+            cube_position, cube_orientation = self._temp_world_manager._conv_cube.get_world_pose()
+
+            if cube_position[2] > SMART_CONV_RANGE_OF_MOTION_J2 or cube_position[2] < 0.0:
+                current_state = self._robot.get_joint_positions()
+                self._temp_world_manager._conv_cube.set_world_pose(position=[2.3, current_state[0]-SMART_CONV_RANGE_OF_MOTION_J1/2, current_state[1]],
+                                                        orientation=[1, 0, 0, 0])
+                continue
+            if np.round(cube_position[2],0) == 500:
+                break
+            if cube_position[1]+SMART_CONV_RANGE_OF_MOTION_J1/2 > SMART_CONV_RANGE_OF_MOTION_J1 or cube_position[1]+SMART_CONV_RANGE_OF_MOTION_J1/2 < 0:
+                self._temp_world_manager._conv_cube.set_world_pose(position=[2.3, current_state[0]-SMART_CONV_RANGE_OF_MOTION_J1/2, current_state[1]],
+                                                        orientation=[1, 0, 0, 0])
+                continue
+
+            self.render_exec('Joint_1', cube_position[1]+SMART_CONV_RANGE_OF_MOTION_J1/2)
+            self.render_exec('Joint_2', cube_position[2])     
+
     def render_exec(self,
                     joint_name: str = 'Joint_1',
                     joint_goal: float = 1.5):
@@ -405,9 +447,9 @@ class CuRoboConv(object):
             self._articulation_controller.apply_action(art_action)
             time.sleep(0.02)
         
-        TT = time.time()
-        while time.time() - TT <= 2:
-            self._temp_world_manager._my_world.step(render= True)
+        # TT = time.time()
+        # while time.time() - TT <= 2:
+        #     self._temp_world_manager._my_world.step(render= True)
         
         # print("Updating world, reading w.r.t.", self._robot_prim_path)
         # obstacles = self._temp_world_manager._usd_help.get_obstacles_from_stage(
@@ -1729,8 +1771,7 @@ def Do_Pick(Stud_Name: str = None,
         Robot_2.render_exec(renderInstance= True,
                               Show_Sphere= False)
         
-        Robot_1.move_to_home()
-        
+        Robot_1.move_to_home()      
         
 def Vertical(el_name: str = None,
              el_dims: List[float] = None,
@@ -1892,58 +1933,11 @@ def main():
         # for robot in robots:
         #         robot.ros_js_publisher()
 
-        # Time = time.time()
-        # while time.time() - Time <= 15:
-        #     test._my_world.step(render= True)
-
-        # Horizontal(el_name="H1",
-        #         el_dims= [0.12, 3.5, 0.04],
-        #         el_pose= [6.19, 0.13, 0.82],
-        #         conveyor_pose = 0.75)
-
-        # Vertical(el_name="V1",
-        #          el_dims=[0.12, 2.0, 0.04],
-        #          el_pose=[6.19, 0.86, 0.82],
-        #          conveyor_pose = 4)
-        
-        # Vertical(el_name="V2",
-        #          el_dims=[0.12, 2.0, 0.04],
-        #          el_pose=[6.19, 0.86, 0.82],
-        #          conveyor_pose = 3.8)
-        
-        # Vertical(el_name="V3",
-        #          el_dims=[0.12, 2.0, 0.04],
-        #          el_pose=[6.19, 0.86, 0.82],
-        #          conveyor_pose = 3.6)
-        
-        # Vertical(el_name="V4",
-        #          el_dims=[0.12, 2.0, 0.04],
-        #          el_pose=[6.19, 0.86, 0.82],
-        #          conveyor_pose = 2.717)
-
-        # Vertical(el_name="V5",
-        #          el_dims=[0.12, 2.0, 0.04],
-        #          el_pose=[6.19, 0.86, 0.82],
-        #          conveyor_pose = 1.834)
-
-        # Vertical(el_name="V6",
-        #          el_dims=[0.12, 2.0, 0.04],
-        #          el_pose=[6.19, 0.86, 0.82],
-        #          conveyor_pose = 0.95)
-        
-        # Vertical(el_name="V7",
-        #          el_dims=[0.12, 2.0, 0.04],
-        #          el_pose=[6.19, 0.86, 0.82],
-        #          conveyor_pose = 0.75)
-        
-        # Vertical(el_name="V8",
-        #          el_dims=[0.12, 2.0, 0.04],
-        #          el_pose=[6.19, 0.86, 0.82],
-        #          conveyor_pose = 0.55)
-
         # Smart_Conv.render_exec('Joint_1', 2.55)
 
-        Robot_2.free_TCP_movement()
+        # Robot_2.free_TCP_movement()
+
+        Smart_Conv.free_conv_movement()
 
 if __name__ == "__main__":
     main()

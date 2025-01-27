@@ -1,0 +1,48 @@
+        # Time = time.time()
+        # while time.time() - Time <= 15:
+        #     test._my_world.step(render= True)
+
+        # Horizontal(el_name="H1",
+        #         el_dims= [0.12, 3.5, 0.04],
+        #         el_pose= [6.19, 0.13, 0.82],
+        #         conveyor_pose = 0.75)
+
+        # Vertical(el_name="V1",
+        #          el_dims=[0.12, 2.0, 0.04],
+        #          el_pose=[6.19, 0.86, 0.82],
+        #          conveyor_pose = 4)
+        
+        # Vertical(el_name="V2",
+        #          el_dims=[0.12, 2.0, 0.04],
+        #          el_pose=[6.19, 0.86, 0.82],
+        #          conveyor_pose = 3.8)
+        
+        # Vertical(el_name="V3",
+        #          el_dims=[0.12, 2.0, 0.04],
+        #          el_pose=[6.19, 0.86, 0.82],
+        #          conveyor_pose = 3.6)
+        
+        # Vertical(el_name="V4",
+        #          el_dims=[0.12, 2.0, 0.04],
+        #          el_pose=[6.19, 0.86, 0.82],
+        #          conveyor_pose = 2.717)
+
+        # Vertical(el_name="V5",
+        #          el_dims=[0.12, 2.0, 0.04],
+        #          el_pose=[6.19, 0.86, 0.82],
+        #          conveyor_pose = 1.834)
+
+        # Vertical(el_name="V6",
+        #          el_dims=[0.12, 2.0, 0.04],
+        #          el_pose=[6.19, 0.86, 0.82],
+        #          conveyor_pose = 0.95)
+        
+        # Vertical(el_name="V7",
+        #          el_dims=[0.12, 2.0, 0.04],
+        #          el_pose=[6.19, 0.86, 0.82],
+        #          conveyor_pose = 0.75)
+        
+        # Vertical(el_name="V8",
+        #          el_dims=[0.12, 2.0, 0.04],
+        #          el_pose=[6.19, 0.86, 0.82],
+        #          conveyor_pose = 0.55)
