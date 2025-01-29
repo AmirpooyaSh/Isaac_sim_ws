@@ -1990,11 +1990,11 @@ def TPL(el_name: str = None,
     Robot_2.render_exec(renderInstance= True,
                             Show_Sphere= False)
     
-    # # Releasing Robot_2 Restrictions
-    # Robot_2.release_path_plan_restriction()
+    # Releasing Robot_2 Restrictions
+    Robot_2.release_path_plan_restriction()
 
-    # # Move To Home
-    # Robot_2.move_to_home()
+    # Move To Home
+    Robot_2.move_to_home()
 
 ###########
 ####END####
