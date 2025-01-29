@@ -1235,7 +1235,7 @@ class CuRoboRobot(object):
             # Sleep Point For Robots To Reduce Collision !
             Home_Loc[0, 1] = -0.5
             Home_Loc[0, 2] = 0.5
-            Home_Loc[0, 4] = 1.57
+            Home_Loc[0, 4] = 0
 
             home_state = JointState.from_position(
                     Home_Loc,
@@ -1954,9 +1954,9 @@ def TPL(el_name: str = None,
     Robot_2.eef_attach(tool_name="tool0",
                        attaching_object_name=el_name)
     print("Wooden Element Attached to Robot_2")
-    # Post Pick 1 (X += 0.12)
+    # Post Pick 1 (X += 0.2)
     Robot_2.plan(tcp_name= "tool0",
-                    target_pose= [SMART_MAT_TABLE[0]+PICK_OFFSET_FROM_W_CORNER+0.12,
+                    target_pose= [SMART_MAT_TABLE[0]+PICK_OFFSET_FROM_W_CORNER+0.1,
                                   SMART_MAT_TABLE[1]-L+PICK_OFFSET_FROM_L_CORNER+(ROBOT_2_GRIPPER_LENGTH/2),
                                   SMART_MAT_TABLE[2]+(W/2)],
                     target_orientation= [ev, 0, ev, 0],
@@ -1966,11 +1966,11 @@ def TPL(el_name: str = None,
     Robot_2.render_exec(renderInstance= True,
                             Show_Sphere= False)
     
-    # Post Pick 2(X += 0.12, Z+= 0.01)
+    # Post Pick 2(X += 0.2, Z+= 0.04)
     Robot_2.plan(tcp_name= "tool0",
-                    target_pose= [SMART_MAT_TABLE[0]+PICK_OFFSET_FROM_W_CORNER+0.12,
+                    target_pose= [SMART_MAT_TABLE[0]+PICK_OFFSET_FROM_W_CORNER+0.1,
                                   SMART_MAT_TABLE[1]-L+PICK_OFFSET_FROM_L_CORNER+(ROBOT_2_GRIPPER_LENGTH/2),
-                                  SMART_MAT_TABLE[2]+(W/2)+0.01],
+                                  SMART_MAT_TABLE[2]+(W/2)+0.2],
                     target_orientation= [ev, 0, ev, 0],
                     update_world_needed= True,
                     removing_primitives=["world/obstacles"],
@@ -1982,7 +1982,7 @@ def TPL(el_name: str = None,
     Robot_2.plan(tcp_name= "tool0",
                     target_pose= [SMART_MAT_TABLE[0]+PICK_OFFSET_FROM_W_CORNER-0.3,
                                   SMART_MAT_TABLE[1]-L+PICK_OFFSET_FROM_L_CORNER+(ROBOT_2_GRIPPER_LENGTH/2),
-                                  SMART_MAT_TABLE[2]+(W/2)+0.01],
+                                  SMART_MAT_TABLE[2]+(W/2)+0.2],
                     target_orientation= [ev, 0, ev, 0],
                     update_world_needed= True,
                     removing_primitives=["world/obstacles"],
@@ -1993,8 +1993,54 @@ def TPL(el_name: str = None,
     # Releasing Robot_2 Restrictions
     Robot_2.release_path_plan_restriction()
 
-    # Move To Home
+    # Home Position
     Robot_2.move_to_home()
+
+    ####
+    ####
+    # IF Place (BPL)
+
+    ####
+    # IF Pass To Robot 1
+    PASSING_ELEVATION: float = 1.1
+    # Passing To Rob 1
+    Robot_2.plan(tcp_name= "tool0",
+                    target_pose= [2.3+(L/2)-PICK_OFFSET_FROM_L_CORNER-(ROBOT_2_GRIPPER_LENGTH/2),
+                                  -1,
+                                  PASSING_ELEVATION],
+                    target_orientation= [0, ev, -ev, 0],
+                    update_world_needed= True)
+    Robot_2.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+    
+    # ROBOT 1 MOVEMENT
+    Robot_1.plan(tcp_name= "tool0",
+                    target_pose= [2.3-(L/2)+PICK_OFFSET_FROM_L_CORNER+(ROBOT_1_GRIPPER_LENGTH/2),
+                                  -1,
+                                  PASSING_ELEVATION+0.2],
+                    target_orientation= [0, ev, -ev, 0],
+                    update_world_needed= True)
+    Robot_1.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+    
+    Robot_1.plan(tcp_name= "tool0",
+                    target_pose= [2.3-(L/2)+PICK_OFFSET_FROM_L_CORNER+(ROBOT_1_GRIPPER_LENGTH/2),
+                                  -1,
+                                  PASSING_ELEVATION],
+                    target_orientation= [0, ev, -ev, 0],
+                    update_world_needed= True)
+    Robot_1.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+    
+    # Attach
+    Robot_2.eef_detach(tool_name="tool0",
+                        detaching_object_name= el_name)
+    Robot_1.eef_attach(tool_name="tool0",
+                       attaching_object_name=el_name)
+
+    Robot_2.move_to_home()
+    Robot_1.move_to_home()
+    
 
 ###########
 ####END####
@@ -2044,9 +2090,9 @@ def main():
 
         TPL("Wooden_Element_1", 0.1, 0.1, 0.1, 3.6576, 0.04, 0.12)
 
-        # Robot_2.free_TCP_movement()
+        Robot_1.free_TCP_movement()
 
-        test.measurement_calculator()
+        # test.measurement_calculator()
 
 if __name__ == "__main__":
     main()
