@@ -142,12 +142,18 @@ ev = np.sqrt(2) / 2
 INSTALLATION_DIRECTORY: str = "/home/apshirazi"
 
 # Robot Gripper Lengths (In CM)
-ROBOT_1_GRIPPER_LENGTH: float = 60
-ROBOT_2_GRIPPER_LENGTH: float = 59
+ROBOT_1_GRIPPER_LENGTH: float = 0.60
+ROBOT_2_GRIPPER_LENGTH: float = 0.60
 
 SMART_CONV_RANGE_OF_MOTION_J1: float = 4.55
 SMART_CONV_RANGE_OF_MOTION_J2: float = 0.5
 
+# Smart Material Table ZEORO
+SMART_MAT_TABLE: list[float] = [6.444, 4.111, 0.803]
+
+# Offset Required to Pick Woods From the Table
+PICK_OFFSET_FROM_L_CORNER: float = 0.02
+PICK_OFFSET_FROM_W_CORNER: float = 0.0061
 ####################
 #### END PARAMS ####
 ####################
@@ -303,11 +309,12 @@ class WorldManager(object):
 
         Smart_Mat_Table = Mesh(
             name="R2_Smart_Mat_Table",
-            pose=[7.7, 6.2, 0, Smart_Mat_Table_Quat[0], 
+            pose=[8.0, 4.7, 0, Smart_Mat_Table_Quat[0], 
                                       Smart_Mat_Table_Quat[1],
                                       Smart_Mat_Table_Quat[2],
                                       Smart_Mat_Table_Quat[3]],
-            file_path= cur_dir + "smart_table/Smart_Mat_Supply.stl",
+            file_path= cur_dir + "smart_table/SM.stl",
+            # Smart_Mat_Supply
             scale=[0.001, 0.001, 0.001],
         )
          
@@ -796,7 +803,8 @@ class CuRoboRobot(object):
             self._attached_obj_prim,
             # Moving Cubes Should also be ignored
             "/World/target",
-            "/World/measurer",          
+            "/World/measurer",
+            "/World/conv_cube",         
             # Other Robot's Prim Path Should also be Ignored !
             # This feature is to be developed (MPC)
         ]
@@ -1697,7 +1705,7 @@ GR_Primitive.GetAttribute("visibility").Set("invisible")
 # Smart Material Table's Collision        # obstacles.save_world_as_mesh("Testing.obj")
 R2_Smart_Mat_Table_Box1 = Cuboid(
     name= "R2_Smart_Mat_Table_Box1",
-    pose= [6.5, 3.7, 0.45, 1, 0, 0, 0],
+    pose= [6.8, 2.2, 0.45, 1, 0, 0, 0],
     dims= [1, 4, 0.8],
     color= [1, 1, 1, 0]
 )
@@ -1705,7 +1713,7 @@ Add_Rigid_Object_To_Scene(test, "Cuboid", R2_Smart_Mat_Table_Box1, True, True)
 
 R2_Smart_Mat_Table_Box2 = Cuboid(
     name= "R2_Smart_Mat_Table_Box2",
-    pose= [6.45, 3.3, 1.57, 1, 0, 0, 0],
+    pose= [6.75, 1.8, 1.57, 1, 0, 0, 0],
     dims= [0.4, 4.6, 1.5],
     color= [1, 1, 1, 0]
 )
@@ -1893,6 +1901,101 @@ def Horizontal(el_name: str = None,
     print(Smart_Conv.attach_object_to_conv(obj_name= el_name))
     test._my_world.step(render= True)
 
+def Create_Wooden_Element(el_name: str = None,
+                                L: float = None,
+                                W: float = None,
+                                H: float = None):
+
+    # Creating the 12ft Wooden Elements in Material Supply Table
+    Element = Cuboid(
+        name= el_name,
+        pose= [SMART_MAT_TABLE[0]+(H/2), SMART_MAT_TABLE[1]-(L/2), SMART_MAT_TABLE[2]+(W/2), 1, 0, 0, 0],
+        dims= [H, L, W],
+        color= [0.87, 0.72, 0.53, 1]
+    )
+    Add_Rigid_Object_To_Scene(test, "Cuboid", Element)
+
+def TPL(el_name: str = None,
+        X: float = None,
+        Y: float = None,
+        Z: float = None,
+        L: float = None,
+        W: float = None,
+        H: float = None):
+
+    # Move Robot Close To Pick Position
+
+    # Helping Pick (X -= -0.3)
+    Robot_2.plan(tcp_name= "tool0",
+                    target_pose= [SMART_MAT_TABLE[0]+PICK_OFFSET_FROM_W_CORNER-0.3,
+                                  SMART_MAT_TABLE[1]-L+PICK_OFFSET_FROM_L_CORNER+(ROBOT_2_GRIPPER_LENGTH/2),
+                                  SMART_MAT_TABLE[2]+(W/2)],
+                    target_orientation= [ev, 0, ev, 0],
+                    update_world_needed= True)
+    Robot_2.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+    
+    # Pick
+    Robot_2.plan(tcp_name= "tool0",
+                    target_pose= [SMART_MAT_TABLE[0]+PICK_OFFSET_FROM_W_CORNER,
+                                  SMART_MAT_TABLE[1]-L+PICK_OFFSET_FROM_L_CORNER+(ROBOT_2_GRIPPER_LENGTH/2),
+                                  SMART_MAT_TABLE[2]+(W/2)],
+                    target_orientation= [ev, 0, ev, 0],
+                    update_world_needed= True,
+                    removing_primitives=["world/obstacles"],
+                    orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
+    Robot_2.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+    
+    # Creating the Wooden Element Within the Smart Material Supply
+    Create_Wooden_Element(el_name= "Wooden_Element_1", L= L, W= W, H= H)
+
+    # Attach
+    Robot_2.eef_attach(tool_name="tool0",
+                       attaching_object_name=el_name)
+    print("Wooden Element Attached to Robot_2")
+    # Post Pick 1 (X += 0.12)
+    Robot_2.plan(tcp_name= "tool0",
+                    target_pose= [SMART_MAT_TABLE[0]+PICK_OFFSET_FROM_W_CORNER+0.12,
+                                  SMART_MAT_TABLE[1]-L+PICK_OFFSET_FROM_L_CORNER+(ROBOT_2_GRIPPER_LENGTH/2),
+                                  SMART_MAT_TABLE[2]+(W/2)],
+                    target_orientation= [ev, 0, ev, 0],
+                    update_world_needed= True,
+                    removing_primitives=["world/obstacles"],
+                    orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
+    Robot_2.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+    
+    # Post Pick 2(X += 0.12, Z+= 0.01)
+    Robot_2.plan(tcp_name= "tool0",
+                    target_pose= [SMART_MAT_TABLE[0]+PICK_OFFSET_FROM_W_CORNER+0.12,
+                                  SMART_MAT_TABLE[1]-L+PICK_OFFSET_FROM_L_CORNER+(ROBOT_2_GRIPPER_LENGTH/2),
+                                  SMART_MAT_TABLE[2]+(W/2)+0.01],
+                    target_orientation= [ev, 0, ev, 0],
+                    update_world_needed= True,
+                    removing_primitives=["world/obstacles"],
+                    orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
+    Robot_2.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+    
+    # Post Pick Last
+    Robot_2.plan(tcp_name= "tool0",
+                    target_pose= [SMART_MAT_TABLE[0]+PICK_OFFSET_FROM_W_CORNER-0.3,
+                                  SMART_MAT_TABLE[1]-L+PICK_OFFSET_FROM_L_CORNER+(ROBOT_2_GRIPPER_LENGTH/2),
+                                  SMART_MAT_TABLE[2]+(W/2)+0.01],
+                    target_orientation= [ev, 0, ev, 0],
+                    update_world_needed= True,
+                    removing_primitives=["world/obstacles"],
+                    orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
+    Robot_2.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+    
+    # # Releasing Robot_2 Restrictions
+    # Robot_2.release_path_plan_restriction()
+
+    # # Move To Home
+    # Robot_2.move_to_home()
+
 ###########
 ####END####
 ###########
@@ -1937,7 +2040,13 @@ def main():
 
         # Robot_2.free_TCP_movement()
 
-        Smart_Conv.free_conv_movement()
+        Smart_Conv.render_exec('Joint_1', SMART_CONV_RANGE_OF_MOTION_J1/2)
+
+        TPL("Wooden_Element_1", 0.1, 0.1, 0.1, 3.6576, 0.04, 0.12)
+
+        # Robot_2.free_TCP_movement()
+
+        test.measurement_calculator()
 
 if __name__ == "__main__":
     main()
