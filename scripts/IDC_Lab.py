@@ -85,6 +85,8 @@ enable_extension("omni.isaac.ros_bridge")
 
 # enable SurfaceGripper extention
 enable_extension("omni.isaac.surface_gripper")
+# enable measurement extenstion
+enable_extension("omni.kit.tool.measure")
 simulation_app.update()
 
 # check if rosmaster node is running
@@ -141,9 +143,9 @@ ev = np.sqrt(2) / 2
 # DIRECTORY OF INSTALLATION
 INSTALLATION_DIRECTORY: str = "/home/apshirazi"
 
-# Robot Gripper Lengths (In CM)
-ROBOT_1_GRIPPER_LENGTH: float = 0.60
-ROBOT_2_GRIPPER_LENGTH: float = 0.60
+# Robot Gripper Lengths (In CM) The Most Accuracte Numbers Captured From the CAD Model
+ROBOT_1_GRIPPER_LENGTH: float = 0.600202
+ROBOT_2_GRIPPER_LENGTH: float = 0.590042
 
 SMART_CONV_RANGE_OF_MOTION_J1: float = 4.55
 SMART_CONV_RANGE_OF_MOTION_J2: float = 0.5
@@ -152,7 +154,7 @@ SMART_CONV_RANGE_OF_MOTION_J2: float = 0.5
 SMART_MAT_TABLE: list[float] = [6.444, 4.111, 0.803]
 
 # Offset Required to Pick Woods From the Table
-PICK_OFFSET_FROM_L_CORNER: float = 0.02
+PICK_OFFSET_FROM_L_CORNER: float = 0.05
 PICK_OFFSET_FROM_W_CORNER: float = 0.0061
 ####################
 #### END PARAMS ####
@@ -530,7 +532,7 @@ class CuRoboRobot(object):
 
         # Setting up Extra Tool Spheres
         if self._ROS_JS_robot_indicator == "IRB6620_R1":
-            self._robot_cfg["kinematics"]["extra_collision_spheres"] = {"tool0": 50, "tool1": 100,}
+            self._robot_cfg["kinematics"]["extra_collision_spheres"] = {"tool0": 150, "tool1": 100,}
         if self._ROS_JS_robot_indicator == "IRB6620_R2":
             self._robot_cfg["kinematics"]["extra_collision_spheres"] = {"tool0": 100,}
 
@@ -1196,7 +1198,8 @@ class CuRoboRobot(object):
         self._computed_cmd_plan = None
         self._computed_idx_list = []
 
-    def move_to_home(self):
+    def move_to_home(self,
+                     if_show_spheres: bool = False):
 
         # If Robot is Already at Home Position
         if self._is_at_home == True:
@@ -1272,7 +1275,7 @@ class CuRoboRobot(object):
                 self._computed_cmd_plan = self._computed_cmd_plan.get_ordered_joint_state(common_js_names)
 
                 # Execution
-                self.render_exec(renderInstance= True, Show_Sphere= False)
+                self.render_exec(renderInstance= True, Show_Sphere= if_show_spheres)
                 self._is_at_home = True
                 return True
             print(result.status)
@@ -1449,7 +1452,7 @@ class CuRoboRobot(object):
                    r_name: str = "IRB6620_R1",
                    tool_name: str = "tool1",
                    attaching_object_name: str = None,
-                   gen_sphere_radius: float = 0.001,
+                   gen_sphere_radius: float = 0.01,
                    voxelization_method: SphereFitType = SphereFitType.VOXEL_VOLUME_SAMPLE_SURFACE):
         
         if(attaching_object_name == None):
@@ -2090,7 +2093,7 @@ def main():
 
         TPL("Wooden_Element_1", 0.1, 0.1, 0.1, 3.6576, 0.04, 0.12)
 
-        Robot_1.free_TCP_movement()
+        Robot_1.free_TCP_movement(moving_tcp="tool1")
 
         # test.measurement_calculator()
 

@@ -273,6 +273,9 @@
         <child link="Link_7"/>
 	</joint>
 
+
+    <!-- Reducing X value by 0.07499 (Previous X: 0.618323344138)-->
+    <!-- Backed To The Original Number (Modofied and Not Working Value X: 0.543333344) -->
 	<!-- EF2_GR tool frame -->
 	<link name="tool0"/>
         <joint name="Link_6-tool0" type="fixed">
