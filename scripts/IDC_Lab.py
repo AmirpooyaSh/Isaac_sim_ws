@@ -543,7 +543,7 @@ class CuRoboRobot(object):
         if self._ROS_JS_robot_indicator == "IRB6620_R1":
             self._robot_cfg["kinematics"]["extra_collision_spheres"] = {"tool0": 150, "tool1": 100,}
         if self._ROS_JS_robot_indicator == "IRB6620_R2":
-            self._robot_cfg["kinematics"]["extra_collision_spheres"] = {"tool0": 100,}
+            self._robot_cfg["kinematics"]["extra_collision_spheres"] = {"tool0": 150,}
 
         # Adding Robot to the Scene (Identifying robot type as Robot (omni.isaac.core.robots Robot))
         self._temp_world_manager = working_world
@@ -686,6 +686,17 @@ class CuRoboRobot(object):
         self._EEF_Prim = self._temp_world_manager._stage.GetPrimAtPath("/" + self._ROS_JS_robot_indicator + "/Link_7/collisions")
         self._Collider_Off = self._EEF_Prim.GetAttribute("physics:collisionEnabled").Set(False)
 
+        # Neeed To Increase Joint Damping To Avoid Shaking within Robot Joints
+        for i in range (1, 6):
+            Joint_Prim = self._temp_world_manager._stage.GetPrimAtPath("/" + self._ROS_JS_robot_indicator + "/Link_" + str(i) + "/Joint_" + str(i+1))
+            drive = UsdPhysics.DriveAPI.Get(Joint_Prim, "angular")
+            drive.GetDampingAttr().Set(1e10)
+            drive.GetStiffnessAttr().Set(1e10)
+            self._temp_world_manager._my_world.step(render=True)
+
+    def damp_joints(self):
+        r=1
+
     def articulation_controller_init(self, step_index):
         if self._articulation_controller is None:
             self._articulation_controller = cast(ArticulationController, self._robot.get_articulation_controller())
@@ -751,7 +762,8 @@ class CuRoboRobot(object):
         self._plan_config = MotionGenPlanConfig(enable_graph=True,
                                                 enable_graph_attempt=2,
                                                 max_attempts=max_attempts,
-                                                enable_finetune_trajopt=enable_finetune_trajopt)
+                                                enable_finetune_trajopt=enable_finetune_trajopt,
+                                                time_dilation_factor= 0.4)
 
     def restrict_path_plan(self,
                         Position_Restriction: Optional[torch.Tensor] = None,
@@ -773,14 +785,16 @@ class CuRoboRobot(object):
                                                 enable_graph_attempt=2,
                                                 max_attempts=10,
                                                 enable_finetune_trajopt=False,
-                                                pose_cost_metric= metrics)
+                                                pose_cost_metric= metrics,
+                                                time_dilation_factor= 0.6)
     
     def release_path_plan_restriction(self):
         # Removing Configs resulting into restrictions
         self._plan_config = MotionGenPlanConfig(enable_graph=True,
                                                 enable_graph_attempt=2,
                                                 max_attempts=10,
-                                                enable_finetune_trajopt=False)
+                                                enable_finetune_trajopt=False,
+                                                time_dilation_factor= 0.6)
 
     def motion_gen_update_world(self, 
                                 Removing_Prim_Paths: List[str] = None):
@@ -1131,6 +1145,7 @@ class CuRoboRobot(object):
         if not self._computed_path_result.success.item():
             print("Path was not Generated")
         else:
+            self.damp_joints()
             cmd_plan = self._computed_path_result.get_interpolated_plan()
             cmd_plan = self._motion_gen.get_full_js(cmd_plan)
             # get only joint names that are in both:
@@ -1427,10 +1442,17 @@ class CuRoboRobot(object):
         self._temp_world_manager._my_world.step(render= True)
         Dis_Collider = Obj_Prim.GetAttribute("physics:collisionEnabled").Set(True)
         self._temp_world_manager._my_world.step(render= True)
-        Mass_Succ = Obj_Prim.GetAttribute("physics:mass").Set(0.0001)
+        Mass_Succ = Obj_Prim.GetAttribute("physics:mass").Set(0.000000001)
 
         # Close
         og.Controller.set(og.Controller.attribute("/action_graph_"+self._ROS_JS_robot_indicator+"_"+tcp_name+"/close_tick.state:enableImpulse"), True)
+
+        self._temp_world_manager._my_world.step(render= True)
+        Gravity_Disabler = Obj_Prim.GetAttribute("physxRigidBody:disableGravity").Set(True)
+
+        #Damper !
+        Obj_Prim.GetAttribute("physxRigidBody:linearDamping").Set(10000000)
+        Obj_Prim.GetAttribute("physxRigidBody:angularDamping").Set(10000000)
     
     # Used for Simulation Detach
     def isaac_tcp_detach(self,
@@ -2007,9 +2029,6 @@ def TPL(el_name: str = None,
                     orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
     Robot_2.render_exec(renderInstance= True,
                             Show_Sphere= False)
-    
-    # Releasing Robot_2 Restrictions
-    Robot_2.release_path_plan_restriction()
 
     # Home Position
     Robot_2.move_to_home()
@@ -2019,10 +2038,13 @@ def TPL(el_name: str = None,
 
     ####
     # IF Pass To Robot 1
+
     # Move Conveyor Away !!!
     Smart_Conv.render_exec('Joint_1', SMART_CONV_RANGE_OF_MOTION_J1)
+
     PASSING_ELEVATION: float = 0.85
     # Passing To Rob 1
+    
     Robot_2.plan(tcp_name= "tool0",
                     target_pose= [2.3+(L/2)-PICK_OFFSET_FROM_L_CORNER-(ROBOT_2_GRIPPER_LENGTH/2),
                                   -1,
@@ -2057,9 +2079,22 @@ def TPL(el_name: str = None,
     Robot_1.eef_attach(tool_name="tool0",
                        attaching_object_name=el_name)
 
+    # Rob2 Post Detach before Reaching Home Pose
+    Robot_2.plan(tcp_name= "tool0",
+                    target_pose= [2.3+(L/2)-PICK_OFFSET_FROM_L_CORNER-(ROBOT_2_GRIPPER_LENGTH/2),
+                                  -1,
+                                  PASSING_ELEVATION+0.1],
+                    target_orientation= [0, ev, ev, 0],
+                    update_world_needed= True,
+                    orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
+    Robot_2.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+
     Robot_2.move_to_home()
     Robot_1.move_to_home()
     
+    # Move Conveyor Away !!!
+    Smart_Conv.render_exec('Joint_1', 0)
 
 ###########
 ####END####
@@ -2101,7 +2136,7 @@ def main():
         # for robot in robots:
         #         robot.ros_js_publisher()
 
-        TPL("Wooden_Element_1", 0.1, 0.1, 0.1, 2.5, 0.04, 0.12)
+        TPL("Wooden_Element_1", 0.1, 0.1, 0.1, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
         Robot_2.free_TCP_movement()
         # test.measurement_calculator()
 
