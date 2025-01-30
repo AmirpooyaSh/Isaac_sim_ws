@@ -156,6 +156,9 @@ SMART_MAT_TABLE: list[float] = [6.444, 4.111, 0.803]
 # Offset Required to Pick Woods From the Table
 PICK_OFFSET_FROM_L_CORNER: float = 0.05
 PICK_OFFSET_FROM_W_CORNER: float = 0.0061
+
+# Smart Material Table's Maximum Length Capability
+SMART_MAT_TABLE_MAX_LENGTH: float = 3.6576
 ####################
 #### END PARAMS ####
 ####################
@@ -496,6 +499,12 @@ class CuRoboConv(object):
         prim = utils.createJoint(self._temp_world_manager._stage, "Fixed", Obj_Prim, Conv_Prim)
         self._temp_world_manager._my_world.step(render= True)
 
+        # Excluding From Articulation
+        Joint_Primitive = self._temp_world_manager._stage.GetPrimAtPath(prim)
+        # prim.GetAttribute("physics:rigidBodyEnabled").Set(True)
+        Joint_Primitive.GetAttribute("physxJoint:excludeFromArticulation").Set(True)
+        self._temp_world_manager._my_world.step(render= True)
+
         return prim
 
 
@@ -633,6 +642,11 @@ class CuRoboRobot(object):
                     ],
                 },
             )
+
+            # Increasing Damping for the Grippers to avoid vibration upon relocating studs
+            og.Controller.set(og.Controller.attribute("/action_graph_"+self._ROS_JS_robot_indicator+"_"+Gripper.TCP_Name+"/surfX.inputs:Damping"), 1000000)
+            og.Controller.set(og.Controller.attribute("/action_graph_"+self._ROS_JS_robot_indicator+"_"+Gripper.TCP_Name+"/surfY.inputs:Damping"), 1000000)
+            og.Controller.set(og.Controller.attribute("/action_graph_"+self._ROS_JS_robot_indicator+"_"+Gripper.TCP_Name+"/surfZ.inputs:Damping"), 1000000)
 
         self._articulation_controller: ArticulationController = None
 
@@ -1912,7 +1926,8 @@ def Create_Wooden_Element(el_name: str = None,
     # Creating the 12ft Wooden Elements in Material Supply Table
     Element = Cuboid(
         name= el_name,
-        pose= [SMART_MAT_TABLE[0]+(H/2), SMART_MAT_TABLE[1]-(L/2), SMART_MAT_TABLE[2]+(W/2), 1, 0, 0, 0],
+        # 12ft is equal to 3.6576 meters (which is the maximum length of the Smart Material Table !)
+        pose= [SMART_MAT_TABLE[0]+(H/2), SMART_MAT_TABLE[1]-SMART_MAT_TABLE_MAX_LENGTH+(L/2), SMART_MAT_TABLE[2]+(W/2), 1, 0, 0, 0],
         dims= [H, L, W],
         color= [0.87, 0.72, 0.53, 1]
     )
@@ -1931,9 +1946,9 @@ def TPL(el_name: str = None,
     # Helping Pick (X -= -0.3)
     Robot_2.plan(tcp_name= "tool0",
                     target_pose= [SMART_MAT_TABLE[0]+PICK_OFFSET_FROM_W_CORNER-0.3,
-                                  SMART_MAT_TABLE[1]-L+PICK_OFFSET_FROM_L_CORNER+(ROBOT_2_GRIPPER_LENGTH/2),
+                                  SMART_MAT_TABLE[1]-SMART_MAT_TABLE_MAX_LENGTH+PICK_OFFSET_FROM_L_CORNER+(ROBOT_2_GRIPPER_LENGTH/2),
                                   SMART_MAT_TABLE[2]+(W/2)],
-                    target_orientation= [ev, 0, ev, 0],
+                    target_orientation= [0, ev, 0, ev],
                     update_world_needed= True)
     Robot_2.render_exec(renderInstance= True,
                             Show_Sphere= False)
@@ -1941,9 +1956,9 @@ def TPL(el_name: str = None,
     # Pick
     Robot_2.plan(tcp_name= "tool0",
                     target_pose= [SMART_MAT_TABLE[0]+PICK_OFFSET_FROM_W_CORNER,
-                                  SMART_MAT_TABLE[1]-L+PICK_OFFSET_FROM_L_CORNER+(ROBOT_2_GRIPPER_LENGTH/2),
+                                  SMART_MAT_TABLE[1]-SMART_MAT_TABLE_MAX_LENGTH+PICK_OFFSET_FROM_L_CORNER+(ROBOT_2_GRIPPER_LENGTH/2),
                                   SMART_MAT_TABLE[2]+(W/2)],
-                    target_orientation= [ev, 0, ev, 0],
+                    target_orientation= [0, ev, 0, ev],
                     update_world_needed= True,
                     removing_primitives=["world/obstacles"],
                     orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
@@ -1960,9 +1975,9 @@ def TPL(el_name: str = None,
     # Post Pick 1 (X += 0.2)
     Robot_2.plan(tcp_name= "tool0",
                     target_pose= [SMART_MAT_TABLE[0]+PICK_OFFSET_FROM_W_CORNER+0.1,
-                                  SMART_MAT_TABLE[1]-L+PICK_OFFSET_FROM_L_CORNER+(ROBOT_2_GRIPPER_LENGTH/2),
+                                  SMART_MAT_TABLE[1]-SMART_MAT_TABLE_MAX_LENGTH+PICK_OFFSET_FROM_L_CORNER+(ROBOT_2_GRIPPER_LENGTH/2),
                                   SMART_MAT_TABLE[2]+(W/2)],
-                    target_orientation= [ev, 0, ev, 0],
+                    target_orientation= [0, ev, 0, ev],
                     update_world_needed= True,
                     removing_primitives=["world/obstacles"],
                     orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
@@ -1972,9 +1987,9 @@ def TPL(el_name: str = None,
     # Post Pick 2(X += 0.2, Z+= 0.04)
     Robot_2.plan(tcp_name= "tool0",
                     target_pose= [SMART_MAT_TABLE[0]+PICK_OFFSET_FROM_W_CORNER+0.1,
-                                  SMART_MAT_TABLE[1]-L+PICK_OFFSET_FROM_L_CORNER+(ROBOT_2_GRIPPER_LENGTH/2),
+                                  SMART_MAT_TABLE[1]-SMART_MAT_TABLE_MAX_LENGTH+PICK_OFFSET_FROM_L_CORNER+(ROBOT_2_GRIPPER_LENGTH/2),
                                   SMART_MAT_TABLE[2]+(W/2)+0.2],
-                    target_orientation= [ev, 0, ev, 0],
+                    target_orientation= [0, ev, 0, ev],
                     update_world_needed= True,
                     removing_primitives=["world/obstacles"],
                     orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
@@ -1984,9 +1999,9 @@ def TPL(el_name: str = None,
     # Post Pick Last
     Robot_2.plan(tcp_name= "tool0",
                     target_pose= [SMART_MAT_TABLE[0]+PICK_OFFSET_FROM_W_CORNER-0.3,
-                                  SMART_MAT_TABLE[1]-L+PICK_OFFSET_FROM_L_CORNER+(ROBOT_2_GRIPPER_LENGTH/2),
+                                  SMART_MAT_TABLE[1]-SMART_MAT_TABLE_MAX_LENGTH+PICK_OFFSET_FROM_L_CORNER+(ROBOT_2_GRIPPER_LENGTH/2),
                                   SMART_MAT_TABLE[2]+(W/2)+0.2],
-                    target_orientation= [ev, 0, ev, 0],
+                    target_orientation= [0, ev, 0, ev],
                     update_world_needed= True,
                     removing_primitives=["world/obstacles"],
                     orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
@@ -1998,20 +2013,21 @@ def TPL(el_name: str = None,
 
     # Home Position
     Robot_2.move_to_home()
-
     ####
     ####
     # IF Place (BPL)
 
     ####
     # IF Pass To Robot 1
-    PASSING_ELEVATION: float = 1.1
+    # Move Conveyor Away !!!
+    Smart_Conv.render_exec('Joint_1', SMART_CONV_RANGE_OF_MOTION_J1)
+    PASSING_ELEVATION: float = 0.85
     # Passing To Rob 1
     Robot_2.plan(tcp_name= "tool0",
                     target_pose= [2.3+(L/2)-PICK_OFFSET_FROM_L_CORNER-(ROBOT_2_GRIPPER_LENGTH/2),
                                   -1,
                                   PASSING_ELEVATION],
-                    target_orientation= [0, ev, -ev, 0],
+                    target_orientation= [0, ev, ev, 0],
                     update_world_needed= True)
     Robot_2.render_exec(renderInstance= True,
                             Show_Sphere= False)
@@ -2020,7 +2036,7 @@ def TPL(el_name: str = None,
     Robot_1.plan(tcp_name= "tool0",
                     target_pose= [2.3-(L/2)+PICK_OFFSET_FROM_L_CORNER+(ROBOT_1_GRIPPER_LENGTH/2),
                                   -1,
-                                  PASSING_ELEVATION+0.2],
+                                  PASSING_ELEVATION+0.1],
                     target_orientation= [0, ev, -ev, 0],
                     update_world_needed= True)
     Robot_1.render_exec(renderInstance= True,
@@ -2085,16 +2101,8 @@ def main():
         # for robot in robots:
         #         robot.ros_js_publisher()
 
-        # Smart_Conv.render_exec('Joint_1', 2.55)
-
-        # Robot_2.free_TCP_movement()
-
-        Smart_Conv.render_exec('Joint_1', SMART_CONV_RANGE_OF_MOTION_J1/2)
-
-        TPL("Wooden_Element_1", 0.1, 0.1, 0.1, 3.6576, 0.04, 0.12)
-
-        Robot_1.free_TCP_movement(moving_tcp="tool1")
-
+        TPL("Wooden_Element_1", 0.1, 0.1, 0.1, 2.5, 0.04, 0.12)
+        Robot_2.free_TCP_movement()
         # test.measurement_calculator()
 
 if __name__ == "__main__":

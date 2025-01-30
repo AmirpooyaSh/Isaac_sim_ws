@@ -282,10 +282,11 @@
         <child link="Link_7"/>
     </joint>
 
+    <!-- Increasing y value by 0.0053 due to not being symmetric -->
     <!-- EF1_GR tool frame -->
     <link name="tool0" />
     <joint name="Link_6-tool0" type="fixed">
-        <origin xyz="0.087264505 0.0 -0.24" rpy="-3.1415927 0 0" />
+        <origin xyz="0.087264505 0.0053 -0.24" rpy="-3.1415927 0 0" />
         <parent link="flange" />
         <child link="tool0" />
     </joint>
