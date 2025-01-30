@@ -146,6 +146,8 @@ INSTALLATION_DIRECTORY: str = "/home/apshirazi"
 # Robot Gripper Lengths (In CM) The Most Accuracte Numbers Captured From the CAD Model
 ROBOT_1_GRIPPER_LENGTH: float = 0.600202
 ROBOT_2_GRIPPER_LENGTH: float = 0.590042
+# Robotic Movement Accelaration
+MOTION_ACCELERAION_VALUE: float = None
 
 SMART_CONV_RANGE_OF_MOTION_J1: float = 4.55
 SMART_CONV_RANGE_OF_MOTION_J2: float = 0.5
@@ -499,12 +501,10 @@ class CuRoboConv(object):
         prim = utils.createJoint(self._temp_world_manager._stage, "Fixed", Obj_Prim, Conv_Prim)
         self._temp_world_manager._my_world.step(render= True)
 
-        # Excluding From Articulation
-        Joint_Primitive = self._temp_world_manager._stage.GetPrimAtPath(prim)
-        # prim.GetAttribute("physics:rigidBodyEnabled").Set(True)
-        Joint_Primitive.GetAttribute("physxJoint:excludeFromArticulation").Set(True)
-        self._temp_world_manager._my_world.step(render= True)
-
+        #Damper ! (20 is Good !!!)
+        Obj_Prim.GetAttribute("physxRigidBody:linearDamping").Set(20)
+        Obj_Prim.GetAttribute("physxRigidBody:angularDamping").Set(20)
+        
         return prim
 
 
@@ -686,16 +686,13 @@ class CuRoboRobot(object):
         self._EEF_Prim = self._temp_world_manager._stage.GetPrimAtPath("/" + self._ROS_JS_robot_indicator + "/Link_7/collisions")
         self._Collider_Off = self._EEF_Prim.GetAttribute("physics:collisionEnabled").Set(False)
 
-        # Neeed To Increase Joint Damping To Avoid Shaking within Robot Joints
-        for i in range (1, 6):
-            Joint_Prim = self._temp_world_manager._stage.GetPrimAtPath("/" + self._ROS_JS_robot_indicator + "/Link_" + str(i) + "/Joint_" + str(i+1))
-            drive = UsdPhysics.DriveAPI.Get(Joint_Prim, "angular")
-            drive.GetDampingAttr().Set(1e10)
-            drive.GetStiffnessAttr().Set(1e10)
-            self._temp_world_manager._my_world.step(render=True)
-
-    def damp_joints(self):
-        r=1
+        # Neeed To Increase Joint Damping To Avoid Shaking within Robot Joints (FIXED IN URDF)
+        # for i in range (1, 6):
+        #     Joint_Prim = self._temp_world_manager._stage.GetPrimAtPath("/" + self._ROS_JS_robot_indicator + "/Link_" + str(i) + "/Joint_" + str(i+1))
+        #     drive = UsdPhysics.DriveAPI.Get(Joint_Prim, "angular")
+        #     drive.GetDampingAttr().Set(1e2)
+        #     drive.GetStiffnessAttr().Set(1e2)
+        #     self._temp_world_manager._my_world.step(render=True)
 
     def articulation_controller_init(self, step_index):
         if self._articulation_controller is None:
@@ -763,7 +760,7 @@ class CuRoboRobot(object):
                                                 enable_graph_attempt=2,
                                                 max_attempts=max_attempts,
                                                 enable_finetune_trajopt=enable_finetune_trajopt,
-                                                time_dilation_factor= 0.4)
+                                                time_dilation_factor= MOTION_ACCELERAION_VALUE)
 
     def restrict_path_plan(self,
                         Position_Restriction: Optional[torch.Tensor] = None,
@@ -786,7 +783,7 @@ class CuRoboRobot(object):
                                                 max_attempts=10,
                                                 enable_finetune_trajopt=False,
                                                 pose_cost_metric= metrics,
-                                                time_dilation_factor= 0.6)
+                                                time_dilation_factor= MOTION_ACCELERAION_VALUE)
     
     def release_path_plan_restriction(self):
         # Removing Configs resulting into restrictions
@@ -794,7 +791,7 @@ class CuRoboRobot(object):
                                                 enable_graph_attempt=2,
                                                 max_attempts=10,
                                                 enable_finetune_trajopt=False,
-                                                time_dilation_factor= 0.6)
+                                                time_dilation_factor= MOTION_ACCELERAION_VALUE)
 
     def motion_gen_update_world(self, 
                                 Removing_Prim_Paths: List[str] = None):
@@ -1145,7 +1142,6 @@ class CuRoboRobot(object):
         if not self._computed_path_result.success.item():
             print("Path was not Generated")
         else:
-            self.damp_joints()
             cmd_plan = self._computed_path_result.get_interpolated_plan()
             cmd_plan = self._motion_gen.get_full_js(cmd_plan)
             # get only joint names that are in both:
@@ -1442,17 +1438,13 @@ class CuRoboRobot(object):
         self._temp_world_manager._my_world.step(render= True)
         Dis_Collider = Obj_Prim.GetAttribute("physics:collisionEnabled").Set(True)
         self._temp_world_manager._my_world.step(render= True)
-        Mass_Succ = Obj_Prim.GetAttribute("physics:mass").Set(0.000000001)
+        Mass_Succ = Obj_Prim.GetAttribute("physics:mass").Set(1e-20)
 
         # Close
         og.Controller.set(og.Controller.attribute("/action_graph_"+self._ROS_JS_robot_indicator+"_"+tcp_name+"/close_tick.state:enableImpulse"), True)
 
         self._temp_world_manager._my_world.step(render= True)
         Gravity_Disabler = Obj_Prim.GetAttribute("physxRigidBody:disableGravity").Set(True)
-
-        #Damper !
-        Obj_Prim.GetAttribute("physxRigidBody:linearDamping").Set(10000000)
-        Obj_Prim.GetAttribute("physxRigidBody:angularDamping").Set(10000000)
     
     # Used for Simulation Detach
     def isaac_tcp_detach(self,
@@ -1748,7 +1740,7 @@ R2_Smart_Mat_Table_Box1 = Cuboid(
     dims= [1, 4, 0.8],
     color= [1, 1, 1, 0]
 )
-Add_Rigid_Object_To_Scene(test, "Cuboid", R2_Smart_Mat_Table_Box1, True, True)
+# Add_Rigid_Object_To_Scene(test, "Cuboid", R2_Smart_Mat_Table_Box1, True, True)
 
 R2_Smart_Mat_Table_Box2 = Cuboid(
     name= "R2_Smart_Mat_Table_Box2",
@@ -1756,7 +1748,7 @@ R2_Smart_Mat_Table_Box2 = Cuboid(
     dims= [0.4, 4.6, 1.5],
     color= [1, 1, 1, 0]
 )
-Add_Rigid_Object_To_Scene(test, "Cuboid", R2_Smart_Mat_Table_Box2, True, True)
+# Add_Rigid_Object_To_Scene(test, "Cuboid", R2_Smart_Mat_Table_Box2, True, True)
 
 
 
@@ -2136,9 +2128,33 @@ def main():
         # for robot in robots:
         #         robot.ros_js_publisher()
 
-        TPL("Wooden_Element_1", 0.1, 0.1, 0.1, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
-        Robot_2.free_TCP_movement()
+        # TPL DONE !
+        # TPL("Wooden_Element_1", 0.1, 0.1, 0.1, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
+        # Robot_2.free_TCP_movement()
+
         # test.measurement_calculator()
+
+        Vertical(el_name="V1",
+                 el_dims=[0.12, 2.0, 0.04],
+                 el_pose=[6.19, 0.86, 0.82],
+                 conveyor_pose = 4)
+        
+        Vertical(el_name="V4",
+                 el_dims=[0.12, 2.0, 0.04],
+                 el_pose=[6.19, 0.86, 0.82],
+                 conveyor_pose = 2.717)
+
+        Vertical(el_name="V5",
+                 el_dims=[0.12, 2.0, 0.04],
+                 el_pose=[6.19, 0.86, 0.82],
+                 conveyor_pose = 1.834)
+        
+        Vertical(el_name="V8",
+                 el_dims=[0.12, 2.0, 0.04],
+                 el_pose=[6.19, 0.86, 0.82],
+                 conveyor_pose = 0.55)
+        Smart_Conv.render_exec('Joint_1', SMART_CONV_RANGE_OF_MOTION_J1)
+        Smart_Conv.free_conv_movement()
 
 if __name__ == "__main__":
     main()

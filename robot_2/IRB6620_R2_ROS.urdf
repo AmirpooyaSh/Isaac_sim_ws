@@ -75,6 +75,7 @@
         <child link="Link_1" />
         <axis xyz="0 0 1" />
         <limit effort="10000" lower="-2.967" upper="2.967" velocity="1.745" />
+        <dynamics damping="1.0" friction="0.5"/>
     </joint>
 
 <!-- ROBOT 2 LINK 2 -->
@@ -102,6 +103,7 @@
         <child link="Link_2" />
         <axis xyz="0 1 0" />
         <limit effort="10000" lower="-1.134" upper="1.134" velocity="1.57" />
+        <dynamics damping="1.0" friction="0.5"/>
     </joint>
 
 <!-- ROBOT 2 LINK 3 -->
@@ -129,6 +131,7 @@
         <child link="Link_3" />
         <axis xyz="0 1 0" />
         <limit effort="10000" lower="-3.141" upper="1.221" velocity="1.57" />
+        <dynamics damping="1.0" friction="0.5"/>
     </joint>
 
 <!-- ROBOT 2 LINK 4 -->
@@ -156,6 +159,7 @@
         <child link="Link_4" />
         <axis xyz="1 0 0" />
         <limit effort="10000" lower="-5.235" upper="5.235" velocity="2.617" />
+        <dynamics damping="1.0" friction="0.5"/>
     </joint>
 
 <!-- ROBOT 2 LINK 5 -->
@@ -183,6 +187,7 @@
         <child link="Link_5" />
         <axis xyz="0 1 0" />
         <limit effort="10000" lower="-2.268" upper="2.268" velocity="2.095" />
+        <dynamics damping="1.0" friction="0.5"/>
     </joint>
 
 <!-- ROBOT 2 LINK 6 -->
@@ -210,6 +215,7 @@
         <child link="Link_6" />
         <axis xyz="1 0 0" />
         <limit effort="10000" lower="-5.235" upper="5.235" velocity="3.316" />
+        <dynamics damping="1.0" friction="0.5"/>
     </joint>
 
 <!-- ROBOT 2 ENDEFFECTOR -->
