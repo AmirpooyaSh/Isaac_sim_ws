@@ -1974,7 +1974,16 @@ def BPL(el_name: str = None,
         L: float = None,
         W: float = None,
         H: float = None):
+    
     # Move Robot Close To Pick Position
+
+    # Correcting Movement Before Reaching the Smart Material Table
+    Robot_2.plan(tcp_name= "tool0",
+                    target_pose= [4.70, 1.08, 0.87],
+                    target_orientation= [0, 1, 0, 0],
+                    update_world_needed= True)
+    Robot_2.render_exec(renderInstance= True,
+                            Show_Sphere= False)
 
     # Helping Pick (X -= -0.3)
     Robot_2.plan(tcp_name= "tool0",
@@ -2100,6 +2109,14 @@ def TPL(el_name: str = None,
         H: float = None):
 
     # Move Robot Close To Pick Position
+
+    # Correcting Movement Before Reaching the Smart Material Table
+    Robot_2.plan(tcp_name= "tool0",
+                    target_pose= [4.70, 1.08, 0.87],
+                    target_orientation= [0, 1, 0, 0],
+                    update_world_needed= True)
+    Robot_2.render_exec(renderInstance= True,
+                            Show_Sphere= False)
 
     # Helping Pick (X -= -0.3)
     Robot_2.plan(tcp_name= "tool0",
@@ -2316,6 +2333,7 @@ def main():
 
         # TPL DONE !
         TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
+        # BPL DONE !
         BPL("Wooden_Element_2", OVERALL_PANEL_HEIGHT-0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
 
         Robot_2.free_TCP_movement()
