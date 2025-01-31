@@ -33,7 +33,7 @@
                 <mesh filename="/home/apshirazi/Isaac_sim_ws/smart_conveyor/Conv_Base.stl" scale="0.001 0.001 0.001"/>
             </geometry>
             <material name="">
-                <color rgba="1 1 1 1" />
+                <color rgba="1 0.4 0.4 1" />
             </material>
         </visual>
         <collision>
@@ -87,7 +87,7 @@
                 <mesh filename="/home/apshirazi/Isaac_sim_ws/smart_conveyor/Belt_Base.stl" scale="0.001 0.001 0.001"/>
             </geometry>
             <material name="">
-                <color rgba="1 1 1 1" />
+                <color rgba="0.8 1 1 1" />
             </material>
         </visual>
         <collision>
@@ -115,7 +115,7 @@
                 <mesh filename="/home/apshirazi/Isaac_sim_ws/smart_conveyor/Belt_Surface.stl" scale="0.001 0.001 0.001"/>
             </geometry>
             <material name="">
-                <color rgba="1 1 1 1" />
+                <color rgba="0.5 0.5 0.5 1" />
             </material>
         </visual>
         <collision>

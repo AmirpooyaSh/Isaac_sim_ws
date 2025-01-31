@@ -329,10 +329,20 @@ class WorldManager(object):
                                       Smart_Mat_Table_Quat[2],
                                       Smart_Mat_Table_Quat[3]],
             file_path= cur_dir + "smart_table/SM.stl",
+            color= [0.2, 0.2, 0.2, 1],
             # Smart_Mat_Supply
             scale=[0.001, 0.001, 0.001],
         )
-         
+
+        # Sloped Table
+        Sloped_Table = Mesh(
+            name="Sloped_Table",
+            pose=[4.0 , -4.0, 0.0, 0, 0, -ev, -ev],
+            file_path= cur_dir + "sloped_table/Table.stl",
+            color= [0.1, 0.05, 0, 1],
+            scale=[0.001, 0.001, 0.001]
+        )
+
         # Ground !
         Cube = Cuboid (
             name="Ground",
@@ -346,7 +356,7 @@ class WorldManager(object):
         # world_cfg_table.cuboid[0].pose[2] -= 0.02
 
         world_model = WorldConfig(
-            mesh=[Smart_Mat_Table],
+            mesh=[Smart_Mat_Table, Sloped_Table],
             cuboid=[Cube],
             capsule=[],
             cylinder=[],
@@ -1962,7 +1972,7 @@ def Create_Wooden_Element(el_name: str = None,
         # 12ft is equal to 3.6576 meters (which is the maximum length of the Smart Material Table !)
         pose= [SMART_MAT_TABLE[0]+(H/2), SMART_MAT_TABLE[1]-SMART_MAT_TABLE_MAX_LENGTH+(L/2), SMART_MAT_TABLE[2]+(W/2), 1, 0, 0, 0],
         dims= [H, L, W],
-        color= [0.87, 0.72, 0.53, 1]
+        color= [0.4, 0.2, 0, 1]
     )
     Add_Rigid_Object_To_Scene(test, "Cuboid", Element)
 
@@ -2331,10 +2341,10 @@ def main():
         # for robot in robots:
         #         robot.ros_js_publisher()
 
-        # # TPL DONE !
-        # TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
-        # # BPL DONE !
-        # BPL("Wooden_Element_2", OVERALL_PANEL_HEIGHT-0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
+        # TPL DONE !
+        TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
+        # BPL DONE !
+        BPL("Wooden_Element_2", OVERALL_PANEL_HEIGHT-0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
 
         # Nailing Orientation [ev, 0, ev, 0]
         
