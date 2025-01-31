@@ -2331,15 +2331,19 @@ def main():
         # for robot in robots:
         #         robot.ros_js_publisher()
 
-        # TPL DONE !
-        TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
-        # BPL DONE !
-        BPL("Wooden_Element_2", OVERALL_PANEL_HEIGHT-0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
+        # # TPL DONE !
+        # TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
+        # # BPL DONE !
+        # BPL("Wooden_Element_2", OVERALL_PANEL_HEIGHT-0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
 
         # Nailing Orientation [ev, 0, ev, 0]
+        
+        # King + IST Helping Point:
+        # Reached Pose: ['4.89', '-1.48', '0.82'], Reached Orientation: [array([-6.1232343e-17,  7.0710677e-01,  -7.0710677e-01,  4.3297803e-17], dtype=float32)]
+        # King + IST Pick Orientation:
+        # Reached Pose: ['4.89', '-2.33', '0.91'], Reached Orientation: [array([ 0.61237246,  0.35355338, -0.35355338,  0.61237246], dtype=float32)]
 
-
-        Robot_1.free_TCP_movement(moving_tcp="tool2")
+        Robot_2.free_TCP_movement()
 
 if __name__ == "__main__":
     main()
