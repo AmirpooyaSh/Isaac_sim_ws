@@ -147,10 +147,13 @@ INSTALLATION_DIRECTORY: str = "/home/apshirazi"
 ROBOT_1_GRIPPER_LENGTH: float = 0.600202
 ROBOT_2_GRIPPER_LENGTH: float = 0.590042
 # Robotic Movement Accelaration
-MOTION_ACCELERAION_VALUE: float = None
+MOTION_ACCELERAION_VALUE: float = 0.6
 
 SMART_CONV_RANGE_OF_MOTION_J1: float = 4.55
 SMART_CONV_RANGE_OF_MOTION_J2: float = 0.5
+SMART_CONV_REST_ELEVATION: float = 0.89546
+# This shift is required to satisfy the symmetry of the smart conveyor platform
+SMART_CONV_X_SHIFT: float = 0.1
 
 # Smart Material Table ZEORO
 SMART_MAT_TABLE: list[float] = [6.444, 4.111, 0.803]
@@ -161,9 +164,14 @@ PICK_OFFSET_FROM_W_CORNER: float = 0.0061
 
 # Smart Material Table's Maximum Length Capability
 SMART_MAT_TABLE_MAX_LENGTH: float = 3.6576
+
 ####################
 #### END PARAMS ####
 ####################
+
+# Variables That Should be Changed For Each Design (For Now)
+OVERALL_PANEL_LENGTH: float = SMART_MAT_TABLE_MAX_LENGTH
+OVERALL_PANEL_HEIGHT: float = 2.18
 
 # Class Robot Gripper
 class RobotGripper(object):
@@ -484,26 +492,37 @@ class CuRoboConv(object):
         
         # Disabling Gravity Right After Detaching
         Obj_Prim = self._temp_world_manager._stage.GetPrimAtPath("/world/obstacles/" + obj_name)
-
-        self._temp_world_manager._my_world.step(render= True)       
-        # Re-Disabling Gravity For the Object    
-        Dis_Grav = Obj_Prim.GetAttribute("physxRigidBody:disableGravity").Set(True)
-
-        # self._temp_world_manager._my_world.step(render= True)
-        # Dis_Collider = Obj_Prim.GetAttribute("physics:collisionEnabled").Set(True)
-
-        self._temp_world_manager._my_world.step(render= True)
-        # Disabling Colliders !! (To Avoid Collision Problems After Detaching)
-        Dis_RigidBody = Obj_Prim.GetAttribute("physics:rigidBodyEnabled").Set(True)
-
-        # Fix Jointing Stud To Conveyor
         Conv_Prim = self._temp_world_manager._stage.GetPrimAtPath("/Smart_Conveyor/Link_2")
-        prim = utils.createJoint(self._temp_world_manager._stage, "Fixed", Obj_Prim, Conv_Prim)
+
+        Conv_Collision_Prim = self._temp_world_manager._stage.GetPrimAtPath("/Smart_Conveyor/Link_2/collisions")   
+
+        Conv_Collision_Prim.GetAttribute("physics:collisionEnabled").Set(True)
         self._temp_world_manager._my_world.step(render= True)
+
+        Obj_Prim.GetAttribute("physics:rigidBodyEnabled").Set(True)
+        Obj_Prim.GetAttribute("physics:collisionEnabled").Set(True)
+        Obj_Prim.GetAttribute("physxRigidBody:disableGravity").Set(False)
+        self._temp_world_manager._my_world.step(render= True)    
+
+        Time = time.time()
+        while time.time() - Time <= 2:
+            self._temp_world_manager._my_world.step(render= True)
+        
+        # Fix Jointing Stud To Conveyor
+        prim = utils.createJoint(self._temp_world_manager._stage, "Fixed", Obj_Prim, Conv_Prim)
+        self._temp_world_manager._my_world.step(render= True) 
 
         #Damper ! (20 is Good !!!)
         Obj_Prim.GetAttribute("physxRigidBody:linearDamping").Set(20)
         Obj_Prim.GetAttribute("physxRigidBody:angularDamping").Set(20)
+
+
+        Obj_Prim.GetAttribute("physxRigidBody:disableGravity").Set(True)
+        Obj_Prim.GetAttribute("physics:collisionEnabled").Set(False)
+        Conv_Collision_Prim.GetAttribute("physics:collisionEnabled").Set(False)
+        self._temp_world_manager._my_world.step(render= True)
+
+
         
         return prim
 
@@ -1947,14 +1966,14 @@ def Create_Wooden_Element(el_name: str = None,
     )
     Add_Rigid_Object_To_Scene(test, "Cuboid", Element)
 
-def TPL(el_name: str = None,
+# Pick and Placing the Bottom Plate
+def BPL(el_name: str = None,
         X: float = None,
         Y: float = None,
         Z: float = None,
         L: float = None,
         W: float = None,
         H: float = None):
-
     # Move Robot Close To Pick Position
 
     # Helping Pick (X -= -0.3)
@@ -1980,7 +1999,7 @@ def TPL(el_name: str = None,
                             Show_Sphere= False)
     
     # Creating the Wooden Element Within the Smart Material Supply
-    Create_Wooden_Element(el_name= "Wooden_Element_1", L= L, W= W, H= H)
+    Create_Wooden_Element(el_name= el_name, L= L, W= W, H= H)
 
     # Attach
     Robot_2.eef_attach(tool_name="tool0",
@@ -2024,9 +2043,131 @@ def TPL(el_name: str = None,
 
     # Home Position
     Robot_2.move_to_home()
-    ####
-    ####
-    # IF Place (BPL)
+
+    # Move Conveyor To TCP's 0 Position For Placement
+    Smart_Conv.render_exec('Joint_1', Y - (OVERALL_PANEL_LENGTH/2) + ((L/2)-PICK_OFFSET_FROM_L_CORNER-(ROBOT_1_GRIPPER_LENGTH/2)+(SMART_CONV_RANGE_OF_MOTION_J1/2)))
+
+    # Robot 2 Pre Place Movement
+    Robot_2.plan(tcp_name= "tool0",
+                    target_pose= [2.3+(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT,
+                                  0,
+                                  SMART_CONV_REST_ELEVATION+H-PICK_OFFSET_FROM_W_CORNER+0.2],
+                    target_orientation= [0, 1, 0, 0],
+                    update_world_needed= True)
+    Robot_2.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+    
+    # Robot 1 Place Movement
+    Robot_2.plan(tcp_name= "tool0",
+                    target_pose= [2.3+(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT,
+                                  0,
+                                  SMART_CONV_REST_ELEVATION+H-PICK_OFFSET_FROM_W_CORNER],
+                    target_orientation= [0, 1, 0, 0],
+                    update_world_needed= True,
+                    removing_primitives=["Smart_Conveyor" ,"world/obstacles"],
+                    orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
+    Robot_2.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+
+    # Detach
+    Robot_2.eef_detach(tool_name="tool0",
+                        detaching_object_name= el_name)
+    Smart_Conv.attach_object_to_conv(obj_name= el_name)
+
+    # Robot 1 Post Place Movement
+    Robot_2.plan(tcp_name= "tool0",
+                    target_pose= [2.3+(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT,
+                                  0,
+                                  SMART_CONV_REST_ELEVATION+H-PICK_OFFSET_FROM_W_CORNER+0.2],
+                    target_orientation= [0, 1, 0, 0],
+                    update_world_needed= True,
+                    removing_primitives=["Smart_Conveyor", "world/obstacles"],
+                    orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
+    Robot_2.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+
+    # Back To Home
+    Robot_2.move_to_home()
+
+
+# Pick and Placing the Top Plate
+def TPL(el_name: str = None,
+        X: float = None,
+        Y: float = None,
+        Z: float = None,
+        L: float = None,
+        W: float = None,
+        H: float = None):
+
+    # Move Robot Close To Pick Position
+
+    # Helping Pick (X -= -0.3)
+    Robot_2.plan(tcp_name= "tool0",
+                    target_pose= [SMART_MAT_TABLE[0]+PICK_OFFSET_FROM_W_CORNER-0.3,
+                                  SMART_MAT_TABLE[1]-SMART_MAT_TABLE_MAX_LENGTH+PICK_OFFSET_FROM_L_CORNER+(ROBOT_2_GRIPPER_LENGTH/2),
+                                  SMART_MAT_TABLE[2]+(W/2)],
+                    target_orientation= [0, ev, 0, ev],
+                    update_world_needed= True)
+    Robot_2.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+    
+    # Pick
+    Robot_2.plan(tcp_name= "tool0",
+                    target_pose= [SMART_MAT_TABLE[0]+PICK_OFFSET_FROM_W_CORNER,
+                                  SMART_MAT_TABLE[1]-SMART_MAT_TABLE_MAX_LENGTH+PICK_OFFSET_FROM_L_CORNER+(ROBOT_2_GRIPPER_LENGTH/2),
+                                  SMART_MAT_TABLE[2]+(W/2)],
+                    target_orientation= [0, ev, 0, ev],
+                    update_world_needed= True,
+                    removing_primitives=["world/obstacles"],
+                    orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
+    Robot_2.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+    
+    # Creating the Wooden Element Within the Smart Material Supply
+    Create_Wooden_Element(el_name= el_name, L= L, W= W, H= H)
+
+    # Attach
+    Robot_2.eef_attach(tool_name="tool0",
+                       attaching_object_name=el_name)
+    print("Wooden Element Attached to Robot_2")
+    # Post Pick 1 (X += 0.2)
+    Robot_2.plan(tcp_name= "tool0",
+                    target_pose= [SMART_MAT_TABLE[0]+PICK_OFFSET_FROM_W_CORNER+0.1,
+                                  SMART_MAT_TABLE[1]-SMART_MAT_TABLE_MAX_LENGTH+PICK_OFFSET_FROM_L_CORNER+(ROBOT_2_GRIPPER_LENGTH/2),
+                                  SMART_MAT_TABLE[2]+(W/2)],
+                    target_orientation= [0, ev, 0, ev],
+                    update_world_needed= True,
+                    removing_primitives=["world/obstacles"],
+                    orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
+    Robot_2.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+    
+    # Post Pick 2(X += 0.2, Z+= 0.04)
+    Robot_2.plan(tcp_name= "tool0",
+                    target_pose= [SMART_MAT_TABLE[0]+PICK_OFFSET_FROM_W_CORNER+0.1,
+                                  SMART_MAT_TABLE[1]-SMART_MAT_TABLE_MAX_LENGTH+PICK_OFFSET_FROM_L_CORNER+(ROBOT_2_GRIPPER_LENGTH/2),
+                                  SMART_MAT_TABLE[2]+(W/2)+0.2],
+                    target_orientation= [0, ev, 0, ev],
+                    update_world_needed= True,
+                    removing_primitives=["world/obstacles"],
+                    orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
+    Robot_2.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+    
+    # Post Pick Last
+    Robot_2.plan(tcp_name= "tool0",
+                    target_pose= [SMART_MAT_TABLE[0]+PICK_OFFSET_FROM_W_CORNER-0.3,
+                                  SMART_MAT_TABLE[1]-SMART_MAT_TABLE_MAX_LENGTH+PICK_OFFSET_FROM_L_CORNER+(ROBOT_2_GRIPPER_LENGTH/2),
+                                  SMART_MAT_TABLE[2]+(W/2)+0.2],
+                    target_orientation= [0, ev, 0, ev],
+                    update_world_needed= True,
+                    removing_primitives=["world/obstacles"],
+                    orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
+    Robot_2.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+
+    # Home Position
+    Robot_2.move_to_home()
 
     ####
     # IF Pass To Robot 1
@@ -2084,9 +2225,54 @@ def TPL(el_name: str = None,
 
     Robot_2.move_to_home()
     Robot_1.move_to_home()
+
+    # Move Conveyor To TCP's 0 Position For Placement
+    Smart_Conv.render_exec('Joint_1', Y - (OVERALL_PANEL_LENGTH/2) + ((L/2)-PICK_OFFSET_FROM_L_CORNER-(ROBOT_1_GRIPPER_LENGTH/2)+(SMART_CONV_RANGE_OF_MOTION_J1/2)))
+
+# 2.3+(X-(OVERALL_PANEL_HEIGHT/2))
+
+    # Robot 1 Pre Place Movement
+    Robot_1.plan(tcp_name= "tool0",
+                    target_pose= [2.3+(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT,
+                                  0,
+                                  SMART_CONV_REST_ELEVATION+H-PICK_OFFSET_FROM_W_CORNER+0.2],
+                    target_orientation= [0, 1, 0, 0],
+                    update_world_needed= True)
+    Robot_1.render_exec(renderInstance= True,
+                            Show_Sphere= False)
     
-    # Move Conveyor Away !!!
-    Smart_Conv.render_exec('Joint_1', 0)
+    # Robot 1 Place Movement
+    Robot_1.plan(tcp_name= "tool0",
+                    target_pose= [2.3+(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT,
+                                  0,
+                                  SMART_CONV_REST_ELEVATION+H-PICK_OFFSET_FROM_W_CORNER],
+                    target_orientation= [0, 1, 0, 0],
+                    update_world_needed= True,
+                    removing_primitives=["Smart_Conveyor" ,"world/obstacles"],
+                    orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
+    Robot_1.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+
+    # Detach
+    Robot_1.eef_detach(tool_name="tool0",
+                        detaching_object_name= el_name)
+    Smart_Conv.attach_object_to_conv(obj_name= el_name)
+
+    # Robot 1 Post Place Movement
+    # Robot 1 Pre Place Movement
+    Robot_1.plan(tcp_name= "tool0",
+                    target_pose= [2.3+(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT,
+                                  0,
+                                  SMART_CONV_REST_ELEVATION+H-PICK_OFFSET_FROM_W_CORNER+0.2],
+                    target_orientation= [0, 1, 0, 0],
+                    update_world_needed= True,
+                    removing_primitives=["Smart_Conveyor", "world/obstacles"],
+                    orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
+    Robot_1.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+
+    # Back To Home
+    Robot_1.move_to_home()
 
 ###########
 ####END####
@@ -2129,32 +2315,10 @@ def main():
         #         robot.ros_js_publisher()
 
         # TPL DONE !
-        # TPL("Wooden_Element_1", 0.1, 0.1, 0.1, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
-        # Robot_2.free_TCP_movement()
+        TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
+        BPL("Wooden_Element_2", OVERALL_PANEL_HEIGHT-0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
 
-        # test.measurement_calculator()
-
-        Vertical(el_name="V1",
-                 el_dims=[0.12, 2.0, 0.04],
-                 el_pose=[6.19, 0.86, 0.82],
-                 conveyor_pose = 4)
-        
-        Vertical(el_name="V4",
-                 el_dims=[0.12, 2.0, 0.04],
-                 el_pose=[6.19, 0.86, 0.82],
-                 conveyor_pose = 2.717)
-
-        Vertical(el_name="V5",
-                 el_dims=[0.12, 2.0, 0.04],
-                 el_pose=[6.19, 0.86, 0.82],
-                 conveyor_pose = 1.834)
-        
-        Vertical(el_name="V8",
-                 el_dims=[0.12, 2.0, 0.04],
-                 el_pose=[6.19, 0.86, 0.82],
-                 conveyor_pose = 0.55)
-        Smart_Conv.render_exec('Joint_1', SMART_CONV_RANGE_OF_MOTION_J1)
-        Smart_Conv.free_conv_movement()
+        Robot_2.free_TCP_movement()
 
 if __name__ == "__main__":
     main()
