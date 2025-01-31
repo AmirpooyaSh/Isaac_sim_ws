@@ -773,7 +773,7 @@ class CuRoboRobot(object):
         print("warming up...")
         #enable_graph=False, warmup_js_trajopt=False
         self._motion_gen.warmup()
-        print("Curobo for robot ( " + self._r_conf_name + " ) is ready ... | TCP = " + self._current_tool)
+        print("Curobo for robot ( " + self._r_conf_name + " ) is ready ... | TCP = " + self._robot_cfg["kinematics"]["ee_link"])
 
         self._plan_config = MotionGenPlanConfig(enable_graph=True,
                                                 enable_graph_attempt=2,
@@ -2336,7 +2336,10 @@ def main():
         # BPL DONE !
         BPL("Wooden_Element_2", OVERALL_PANEL_HEIGHT-0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
 
-        Robot_2.free_TCP_movement()
+        # Nailing Orientation [ev, 0, ev, 0]
+
+
+        Robot_1.free_TCP_movement(moving_tcp="tool2")
 
 if __name__ == "__main__":
     main()
