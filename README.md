@@ -47,11 +47,12 @@ After testing the provided example, the following tutorials will let you underst
 # How to Setup IDC Lab IRC5 Controller (02/04/2025)
 
 In General, there are 3 types of IRC5 Communication Methods:
-    - [**ABB_DRIVER**](https://github.com/ros-industrial/abb_driver) : Utilizing ROS to command the IRC5 (Outdated)
-    - [**ABB_RWS**](https://github.com/ros-industrial/abb_robot_driver) : Utilizing RobotWebService to command the IRC5 (Mostly Used)
-    - [**EGM**](https://github.com/ros-industrial/abb_robot_driver) : Externally Guided Motion Interface (Needs License)
 
-In the provided document, we'll use RWS to send motion commands and ABB_DRIVER to get the robot's JointStates through ROS topics
+- [**ABB_DRIVER**](https://github.com/ros-industrial/abb_driver) : Utilizing ROS to command the IRC5 (Outdated)
+- [**ABB_RWS**](https://github.com/ros-industrial/abb_robot_driver) : Utilizing RobotWebService to command the IRC5 (Mostly Used)
+- [**EGM**](https://github.com/ros-industrial/abb_robot_driver) : Externally Guided Motion Interface (Needs License)
+
+In the provided document, we'll use RWS to send motion commands and ABB_DRIVER to get the robot's JointStates through ROS topics.
 
 1. [**Controller Module Setup**](https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/IRC5/Controller_Module_Setup.md)
 2. [**Python Environment Setup**](https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/IRC5/Python_Environment_Setup.md)
