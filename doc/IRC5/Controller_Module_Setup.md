@@ -5,9 +5,9 @@ be able to send motion/io commands to it using python.
 
 # Detailed Instructions
 
-A. Get trusted and connect to the local network the IRC5 controller is connected to.
+**A.** Get trusted and connected to the local network the IRC5 controller is connected to.
 
-- To be able to get trusted on the network **(SIDCf)**, you should contact **Dr. Aladdin Alwisy" to give access to your device.
+- To be able to get trusted on the network **(SIDCf)**, you should contact **Dr. Aladdin Alwisy** to give access to your device.
 - Once your device got trusted in the network, check if you can see the IRC5 controller:
 
     ```shell
@@ -15,4 +15,4 @@ A. Get trusted and connect to the local network the IRC5 controller is connected
     ```
 - If there were no timeouts, it means that your device can communicate to the IRC5.
 
-B. 
+**B.**  
