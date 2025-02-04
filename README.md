@@ -54,7 +54,7 @@ In General, there are 3 types of IRC5 Communication Methods:
 
 In the provided document, we'll use RWS to send motion commands and ABB_DRIVER to get the robot's JointStates through ROS topics.
 
-1. [**Controller Module Setup**](https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/IRC5/Controller_Module_Setup.md)
+1. [**IRC5 Module Setup**](https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/IRC5/Controller_Module_Setup.md)
 2. [**Python Environment Setup**](https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/IRC5/Python_Environment_Setup.md)
 3. [**ROS Environment Setup**](https://github.com/AmirpooyaSh/Isaac_CuRobo/blob/main/doc/IRC5/ROS_Environment_Setup.md)
 
