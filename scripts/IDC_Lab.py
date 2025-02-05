@@ -355,8 +355,16 @@ class WorldManager(object):
         # )
         # world_cfg_table.cuboid[0].pose[2] -= 0.02
 
+        IDC_Lab = Mesh(
+            name="idc_lab_model",
+            pose=[0, 0, 0, 1, 0, 0, 0],
+            file_path= cur_dir + "lab_model/idc_lab_visualization.stl",
+            color= [0.1, 0.05, 0, 1],
+            scale=[0.001, 0.001, 0.001]
+        )
+                                                                                                                                                                                                                                                                                            
         world_model = WorldConfig(
-            mesh=[Smart_Mat_Table, Sloped_Table],
+            mesh=[Smart_Mat_Table, Sloped_Table, IDC_Lab],
             cuboid=[Cube],
             capsule=[],
             cylinder=[],
@@ -2341,10 +2349,10 @@ def main():
         # for robot in robots:
         #         robot.ros_js_publisher()
 
-        # TPL DONE !
-        TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
-        # BPL DONE !
-        BPL("Wooden_Element_2", OVERALL_PANEL_HEIGHT-0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
+        # # TPL DONE !
+        # TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
+        # # BPL DONE !
+        # BPL("Wooden_Element_2", OVERALL_PANEL_HEIGHT-0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
 
         # Nailing Orientation [ev, 0, ev, 0]
         
