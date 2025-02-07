@@ -15,4 +15,4 @@ be able to send motion/io commands to it using python.
     ```
 - If there were no timeouts, it means that your device can communicate to the IRC5.
 
-**B.**  
+**B.** Connect your RobotStudio to the IRC5 Controller.

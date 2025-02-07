@@ -165,6 +165,15 @@ PICK_OFFSET_FROM_W_CORNER: float = 0.0061
 # Smart Material Table's Maximum Length Capability
 SMART_MAT_TABLE_MAX_LENGTH: float = 3.6576
 
+
+#### SLOPED MATERIAL TABLE
+SLOPED_MAT_TABLE: list[float] = [4.009, -2.417, 1.045]
+SLOPED_MAT_TABLE_ANGLE: float = 30
+
+SLOPED_TABLE_PICK_OFFSET_FROM_L_CORNER: float = 0.17
+SLOPED_TABLE_PICK_OFFSET_FROM_W_CORNER: float = 0.0061
+# Position: ['3.999', '-2.417', '1.045'], Orientation: ['0.966', '-0.259', '0.000', '0.000']
+
 ####################
 #### END PARAMS ####
 ####################
@@ -337,7 +346,7 @@ class WorldManager(object):
         # Sloped Table
         Sloped_Table = Mesh(
             name="Sloped_Table",
-            pose=[4.0 , -4.0, 0.0, 0, 0, -ev, -ev],
+            pose=[4.0 , -4.0, 0.4, 0, 0, -ev, -ev],
             file_path= cur_dir + "sloped_table/Table.stl",
             color= [0.1, 0.05, 0, 1],
             scale=[0.001, 0.001, 0.001]
@@ -355,16 +364,16 @@ class WorldManager(object):
         # )
         # world_cfg_table.cuboid[0].pose[2] -= 0.02
 
-        IDC_Lab = Mesh(
-            name="idc_lab_model",
-            pose=[0, 0, 0, 1, 0, 0, 0],
-            file_path= cur_dir + "lab_model/idc_lab_visualization.stl",
-            color= [0.1, 0.05, 0, 1],
-            scale=[0.001, 0.001, 0.001]
-        )
+        # IDC_Lab = Mesh(
+        #     name="idc_lab_model",
+        #     pose=[0, 0, 0, 1, 0, 0, 0],
+        #     file_path= cur_dir + "lab_model/idc_lab_visualization.stl",
+        #     color= [0.1, 0.05, 0, 1],
+        #     scale=[0.001, 0.001, 0.001]
+        # )
                                                                                                                                                                                                                                                                                             
         world_model = WorldConfig(
-            mesh=[Smart_Mat_Table, Sloped_Table, IDC_Lab],
+            mesh=[Smart_Mat_Table, Sloped_Table],
             cuboid=[Cube],
             capsule=[],
             cylinder=[],
@@ -578,9 +587,9 @@ class CuRoboRobot(object):
 
         # Setting up Extra Tool Spheres
         if self._ROS_JS_robot_indicator == "IRB6620_R1":
-            self._robot_cfg["kinematics"]["extra_collision_spheres"] = {"tool0": 150, "tool1": 100,}
+            self._robot_cfg["kinematics"]["extra_collision_spheres"] = {"tool0": 50, "tool1": 100,}
         if self._ROS_JS_robot_indicator == "IRB6620_R2":
-            self._robot_cfg["kinematics"]["extra_collision_spheres"] = {"tool0": 150,}
+            self._robot_cfg["kinematics"]["extra_collision_spheres"] = {"tool0": 50,}
 
         # Adding Robot to the Scene (Identifying robot type as Robot (omni.isaac.core.robots Robot))
         self._temp_world_manager = working_world
@@ -722,6 +731,10 @@ class CuRoboRobot(object):
         # Everything Will Workd ^-^ !!!
         self._EEF_Prim = self._temp_world_manager._stage.GetPrimAtPath("/" + self._ROS_JS_robot_indicator + "/Link_7/collisions")
         self._Collider_Off = self._EEF_Prim.GetAttribute("physics:collisionEnabled").Set(False)
+
+        ## Removing EndEffector's Mass
+        self._temp_world_manager._stage.GetPrimAtPath("/" + self._ROS_JS_robot_indicator + "/Link_7").GetAttribute("physics:mass").Set(1e-20)
+        self._temp_world_manager._stage.GetPrimAtPath("/" + self._ROS_JS_robot_indicator + "/Link_8").GetAttribute("physics:mass").Set(1e-20)
 
         # Neeed To Increase Joint Damping To Avoid Shaking within Robot Joints (FIXED IN URDF)
         # for i in range (1, 6):
@@ -903,7 +916,17 @@ class CuRoboRobot(object):
         # Re-warming up the MotionGen Object with the New Tool to move !
         if moving_tcp != self._robot_cfg["kinematics"]["ee_link"]:
             self.motion_gen_warmup(TCP_Name=moving_tcp)
-        
+
+
+        # Setting the Initial Pose/Orientation of the Target Cube to the Targetting TCP !!
+        dc=_dynamic_control.acquire_dynamic_control_interface()
+
+        object=dc.get_rigid_body("/"+self._ROS_JS_robot_indicator+"/"+moving_tcp)
+        object_pose=dc.get_rigid_body_pose(object)
+
+        self._temp_world_manager._target_cube.set_world_pose(position=object_pose.p,
+                                                                orientation=[object_pose.r[3], object_pose.r[0], object_pose.r[1], object_pose.r[2]])
+
         # Creating Target Pose and Orientation
         target_pose = None
         target_orientation = None
@@ -1777,7 +1800,7 @@ R2_Smart_Mat_Table_Box1 = Cuboid(
     dims= [1, 4, 0.8],
     color= [1, 1, 1, 0]
 )
-# Add_Rigid_Object_To_Scene(test, "Cuboid", R2_Smart_Mat_Table_Box1, True, True)
+Add_Rigid_Object_To_Scene(test, "Cuboid", R2_Smart_Mat_Table_Box1, True, True)
 
 R2_Smart_Mat_Table_Box2 = Cuboid(
     name= "R2_Smart_Mat_Table_Box2",
@@ -1785,7 +1808,7 @@ R2_Smart_Mat_Table_Box2 = Cuboid(
     dims= [0.4, 4.6, 1.5],
     color= [1, 1, 1, 0]
 )
-# Add_Rigid_Object_To_Scene(test, "Cuboid", R2_Smart_Mat_Table_Box2, True, True)
+Add_Rigid_Object_To_Scene(test, "Cuboid", R2_Smart_Mat_Table_Box2, True, True)
 
 
 
@@ -1969,7 +1992,7 @@ def Horizontal(el_name: str = None,
     print(Smart_Conv.attach_object_to_conv(obj_name= el_name))
     test._my_world.step(render= True)
 
-def Create_Wooden_Element(el_name: str = None,
+def Create_Wooden_Element_For_Smart_Mat_Table(el_name: str = None,
                                 L: float = None,
                                 W: float = None,
                                 H: float = None):
@@ -2026,7 +2049,7 @@ def BPL(el_name: str = None,
                             Show_Sphere= False)
     
     # Creating the Wooden Element Within the Smart Material Supply
-    Create_Wooden_Element(el_name= el_name, L= L, W= W, H= H)
+    Create_Wooden_Element_For_Smart_Mat_Table(el_name= el_name, L= L, W= W, H= H)
 
     # Attach
     Robot_2.eef_attach(tool_name="tool0",
@@ -2116,7 +2139,6 @@ def BPL(el_name: str = None,
     # Back To Home
     Robot_2.move_to_home()
 
-
 # Pick and Placing the Top Plate
 def TPL(el_name: str = None,
         X: float = None,
@@ -2159,7 +2181,7 @@ def TPL(el_name: str = None,
                             Show_Sphere= False)
     
     # Creating the Wooden Element Within the Smart Material Supply
-    Create_Wooden_Element(el_name= el_name, L= L, W= W, H= H)
+    Create_Wooden_Element_For_Smart_Mat_Table(el_name= el_name, L= L, W= W, H= H)
 
     # Attach
     Robot_2.eef_attach(tool_name="tool0",
@@ -2309,6 +2331,120 @@ def TPL(el_name: str = None,
     # Back To Home
     Robot_1.move_to_home()
 
+def Create_Wooden_Element_For_Sloped_Table(el_name: str = None,
+                                # L is constant since this table is only for 8ft studs
+                                L: float = 2.4384,
+                                W: float = None,
+                                H: float = None):
+    # Creating the 8ft Wooden Elements in Sloped Supply Table
+    diagonal_stud_l = np.sqrt(W**2+H**2)
+    z_increase = (diagonal_stud_l/2)*np.sin(np.radians(SLOPED_MAT_TABLE_ANGLE)+np.arcsin((W/2)/(diagonal_stud_l/2)))
+    y_increase = (diagonal_stud_l/2)*np.cos(np.radians(SLOPED_MAT_TABLE_ANGLE)+np.arcsin((W/2)/(diagonal_stud_l/2)))
+
+
+    # Convert Euler (-theta, 0, 0) to quaternion (xyzw)
+    quat = R.from_euler('xyz', [-np.radians(SLOPED_MAT_TABLE_ANGLE), 0, 0]).as_quat()
+
+    Element = Cuboid(
+        name=el_name,
+        # 8ft element placement on the Sloped Table
+        pose=[SLOPED_MAT_TABLE[0] + (L / 2), 
+            SLOPED_MAT_TABLE[1] - y_increase, 
+            SLOPED_MAT_TABLE[2] + z_increase, 
+            quat[3], quat[0], quat[1], quat[2]],  # Quaternion (wxyz)
+        dims=[L, H, W],
+        color=[0.4, 0.2, 0, 1]
+    )
+
+    Add_Rigid_Object_To_Scene(test, "Cuboid", Element)
+
+# Pick and Placing the 8ft Studs (1st and King)
+def KING(el_name: str = None,
+        X: float = None,
+        Y: float = None,
+        Z: float = None,
+        L: float = 2.4384,
+        W: float = None,
+        H: float = None):
+
+    # 8ft Stud Pose:
+    diagonal_stud_l = np.sqrt(W**2+H**2)
+    z_increase = (diagonal_stud_l/2)*np.sin(np.radians(SLOPED_MAT_TABLE_ANGLE)+np.arcsin((W/2)/(diagonal_stud_l/2)))
+    y_increase = (diagonal_stud_l/2)*np.cos(np.radians(SLOPED_MAT_TABLE_ANGLE)+np.arcsin((W/2)/(diagonal_stud_l/2)))
+    Stud_Pose = [SLOPED_MAT_TABLE[0] + (L / 2), 
+                 SLOPED_MAT_TABLE[1] - y_increase, 
+                 SLOPED_MAT_TABLE[2] + z_increase]
+    
+    PRE_PICK_OFFSET: float = 0.2
+    quat = R.from_euler('xyz', [(np.pi/2)-np.radians(SLOPED_MAT_TABLE_ANGLE), 0, np.pi/2]).as_quat()
+    # Because of Euler Lack of Singularity !!!!
+    quat[1] *= -1  # Negate the Y component
+
+    # Helping Pick
+    Robot_2.plan(tcp_name= "tool0",
+                    target_pose= [SLOPED_MAT_TABLE[0]+SLOPED_TABLE_PICK_OFFSET_FROM_L_CORNER+(ROBOT_2_GRIPPER_LENGTH/2),
+                                  Stud_Pose[1]+PRE_PICK_OFFSET,
+                                  Stud_Pose[2]-(PRE_PICK_OFFSET*np.tan(np.radians(SLOPED_MAT_TABLE_ANGLE)))],
+                    target_orientation= [quat[3], quat[0], quat[1], quat[2]],
+                    update_world_needed= True)
+    Robot_2.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+
+    # Pick
+    Val = (H/2) - PICK_OFFSET_FROM_W_CORNER
+    Robot_2.plan(tcp_name= "tool0",
+                    target_pose= [SLOPED_MAT_TABLE[0]+SLOPED_TABLE_PICK_OFFSET_FROM_L_CORNER+(ROBOT_2_GRIPPER_LENGTH/2),
+                                  Stud_Pose[1]+(Val*np.cos(np.radians(SLOPED_MAT_TABLE_ANGLE))),
+                                  Stud_Pose[2]-(Val*np.sin(np.radians(SLOPED_MAT_TABLE_ANGLE)))],
+                    target_orientation= [quat[3], quat[0], quat[1], quat[2]],
+                    update_world_needed= True,
+                    removing_primitives=["world/obstacles", "World/obstacles/Sloped_Table"],
+                    orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
+    Robot_2.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+
+    # Creating the Stud
+    Create_Wooden_Element_For_Sloped_Table(el_name= el_name, L=L, W=W, H=H)
+
+    # Attach
+    Robot_2.eef_attach(tool_name="tool0",
+                       attaching_object_name=el_name)
+
+    # Post Pick
+    Val = (H/2) - PICK_OFFSET_FROM_W_CORNER
+    Robot_2.plan(tcp_name= "tool0",
+                    target_pose= [SLOPED_MAT_TABLE[0]+SLOPED_TABLE_PICK_OFFSET_FROM_L_CORNER+(ROBOT_2_GRIPPER_LENGTH/2),
+                                  Stud_Pose[1]+(Val*np.cos(np.radians(SLOPED_MAT_TABLE_ANGLE))),
+                                  Stud_Pose[2]-(Val*np.sin(np.radians(SLOPED_MAT_TABLE_ANGLE)))+PRE_PICK_OFFSET*2],
+                    target_orientation= [quat[3], quat[0], quat[1], quat[2]],
+                    update_world_needed= True,
+                    removing_primitives=["world/obstacles", "World/obstacles/Sloped_Table"],
+                    orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
+    Robot_2.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+    
+    # Conveyor Move For Placement
+
+    # Pre Place
+
+    # Place
+
+    # Robot 1 Nail
+
+    # Detech
+
+    # Post Place
+
+    # Home
+
+    # Sheathing Nail Location Saving !
+
+    Robot_2.move_to_home()
+
+    Robot_2.free_TCP_movement()
+    # To Pick Position    
+# Angular (90-SLOPE, 0, 90)
+
 ###########
 ####END####
 ###########
@@ -2349,17 +2485,33 @@ def main():
         # for robot in robots:
         #         robot.ros_js_publisher()
 
+        TT = time.time()
+
+        while time.time() - TT <= 5:
+            test._my_world.step(render=True)
+
         # # TPL DONE !
         # TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
         # # BPL DONE !
         # BPL("Wooden_Element_2", OVERALL_PANEL_HEIGHT-0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
-
+        # KING Pick to Home Done !
+        KING("Wooden_Element_3", 0, 0, 0, 2.4384, 0.04, 0.12)
         # Nailing Orientation [ev, 0, ev, 0]
         
         # King + IST Helping Point:
         # Reached Pose: ['4.89', '-1.48', '0.82'], Reached Orientation: [array([-6.1232343e-17,  7.0710677e-01,  -7.0710677e-01,  4.3297803e-17], dtype=float32)]
         # King + IST Pick Orientation:
         # Reached Pose: ['4.89', '-2.33', '0.91'], Reached Orientation: [array([ 0.61237246,  0.35355338, -0.35355338,  0.61237246], dtype=float32)]
+    
+
+        # Robot_2.plan(tcp_name= "tool0",
+        #                 target_pose= [4.46, -2.32, 0.93],
+        #                 target_orientation= [0.6272114 ,  0.32650557, -0.32650557,  0.6272114],
+        #                 update_world_needed= True)
+        # Robot_2.render_exec(renderInstance= True,
+        #                         Show_Sphere= False)
+
+        # Create_Wooden_Element_For_Sloped_Table(el_name= "test1", W= 0.04, H= 0.12)
 
         Robot_2.free_TCP_movement()
 
