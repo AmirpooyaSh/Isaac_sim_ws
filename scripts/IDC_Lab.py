@@ -180,7 +180,7 @@ SLOPED_TABLE_PICK_OFFSET_FROM_W_CORNER: float = 0.0061
 
 # Variables That Should be Changed For Each Design (For Now)
 OVERALL_PANEL_LENGTH: float = SMART_MAT_TABLE_MAX_LENGTH
-OVERALL_PANEL_HEIGHT: float = 2.18
+OVERALL_PANEL_HEIGHT: float = 1.58
 
 # Class Robot Gripper
 class RobotGripper(object):
@@ -2424,7 +2424,8 @@ def KING(el_name: str = None,
                             Show_Sphere= False)
     
     # Conveyor Move For Placement
-
+    Smart_Conv.render_exec('Joint_1', Y - (OVERALL_PANEL_LENGTH/2)+(SMART_CONV_RANGE_OF_MOTION_J1/2))
+    
     # Pre Place
 
     # Place
@@ -2490,12 +2491,12 @@ def main():
         while time.time() - TT <= 5:
             test._my_world.step(render=True)
 
-        # # TPL DONE !
-        # TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
-        # # BPL DONE !
-        # BPL("Wooden_Element_2", OVERALL_PANEL_HEIGHT-0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
+        # TPL DONE !
+        TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
+        # BPL DONE !
+        BPL("Wooden_Element_2", OVERALL_PANEL_HEIGHT-0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
         # KING Pick to Home Done !
-        KING("Wooden_Element_3", 0, 0, 0, 2.4384, 0.04, 0.12)
+        KING("Wooden_Element_3", 0, 0, 0, 1.5, 0.04, 0.12)
         # Nailing Orientation [ev, 0, ev, 0]
         
         # King + IST Helping Point:
