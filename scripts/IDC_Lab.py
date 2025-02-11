@@ -153,7 +153,7 @@ SMART_CONV_RANGE_OF_MOTION_J1: float = 4.55
 SMART_CONV_RANGE_OF_MOTION_J2: float = 0.5
 SMART_CONV_REST_ELEVATION: float = 0.89546
 # This shift is required to satisfy the symmetry of the smart conveyor platform
-SMART_CONV_X_SHIFT: float = 0.1
+SMART_CONV_X_SHIFT: float = 0.09179
 
 # Smart Material Table ZEORO
 SMART_MAT_TABLE: list[float] = [6.444, 4.111, 0.803]
@@ -180,7 +180,7 @@ SLOPED_TABLE_PICK_OFFSET_FROM_W_CORNER: float = 0.0061
 
 # Variables That Should be Changed For Each Design (For Now)
 OVERALL_PANEL_LENGTH: float = SMART_MAT_TABLE_MAX_LENGTH
-OVERALL_PANEL_HEIGHT: float = 1.58
+OVERALL_PANEL_HEIGHT: float = 2.5184
 
 # Class Robot Gripper
 class RobotGripper(object):
@@ -413,6 +413,9 @@ class CuRoboConv(object):
         # Articulation Controller
         self._articulation_controller: ArticulationController = None
 
+        # Nailing Positions For Sheathing (Vertical Nailing)
+        self._nail_poses: List[float] = []
+
         # Disabling Colliders
         # Not Tested ! Might Cause Failures !
         # self._L1_Prim = self._temp_world_manager._stage.GetPrimAtPath("/" + Conv_Name + "/Link_1/collisions")
@@ -587,9 +590,14 @@ class CuRoboRobot(object):
 
         # Setting up Extra Tool Spheres
         if self._ROS_JS_robot_indicator == "IRB6620_R1":
-            self._robot_cfg["kinematics"]["extra_collision_spheres"] = {"tool0": 50, "tool1": 100,}
+            self._robot_cfg["kinematics"]["extra_collision_spheres"] = {"tool0": 1, "tool1": 1,}
         if self._ROS_JS_robot_indicator == "IRB6620_R2":
-            self._robot_cfg["kinematics"]["extra_collision_spheres"] = {"tool0": 50,}
+            self._robot_cfg["kinematics"]["extra_collision_spheres"] = {"tool0": 1,}
+
+        # if self._ROS_JS_robot_indicator == "IRB6620_R1":
+        #     self._robot_cfg["kinematics"]["extra_collision_spheres"] = {"tool0": 50, "tool1": 100,}
+        # if self._ROS_JS_robot_indicator == "IRB6620_R2":
+        #     self._robot_cfg["kinematics"]["extra_collision_spheres"] = {"tool0": 50,}
 
         # Adding Robot to the Scene (Identifying robot type as Robot (omni.isaac.core.robots Robot))
         self._temp_world_manager = working_world
@@ -1000,8 +1008,16 @@ class CuRoboRobot(object):
                 # It will let CuRobo Plan freely and in a linear way (Conduct Linear Movements)
                 if np.round(cube_position[2]+self._r_pose[2],0) == 500:
                     self.motion_gen_update_world(Removing_Prim_Paths=["Smart_Conveyor", "obstacles"])
-                    self._temp_world_manager._target_cube.set_world_pose(position=[2.3, 0, 2],
-                                                                         orientation=[1, 0, 0, 0])
+
+                    # Setting the Initial Pose/Orientation of the Target Cube to the Targetting TCP !!
+                    dc=_dynamic_control.acquire_dynamic_control_interface()
+
+                    object=dc.get_rigid_body("/"+self._ROS_JS_robot_indicator+"/"+moving_tcp)
+                    object_pose=dc.get_rigid_body_pose(object)
+
+                    self._temp_world_manager._target_cube.set_world_pose(position=object_pose.p,
+                                                                            orientation=[object_pose.r[3], object_pose.r[0], object_pose.r[1], object_pose.r[2]])
+
                     target_pose = None
                     target_orientation = None
                     past_pose = None
@@ -1012,8 +1028,16 @@ class CuRoboRobot(object):
                 # Z = 200 : Bring Back The Whole Collision World
                 if np.round(cube_position[2]+self._r_pose[2],0) == 200:
                     self.motion_gen_update_world()
-                    self._temp_world_manager._target_cube.set_world_pose(position=[2.3, 0, 2],
-                                                                         orientation=[1, 0, 0, 0])
+
+                    # Setting the Initial Pose/Orientation of the Target Cube to the Targetting TCP !!
+                    dc=_dynamic_control.acquire_dynamic_control_interface()
+
+                    object=dc.get_rigid_body("/"+self._ROS_JS_robot_indicator+"/"+moving_tcp)
+                    object_pose=dc.get_rigid_body_pose(object)
+
+                    self._temp_world_manager._target_cube.set_world_pose(position=object_pose.p,
+                                                                            orientation=[object_pose.r[3], object_pose.r[0], object_pose.r[1], object_pose.r[2]])
+
                     target_pose = None
                     target_orientation = None
                     past_pose = None
@@ -2095,7 +2119,8 @@ def BPL(el_name: str = None,
     Robot_2.move_to_home()
 
     # Move Conveyor To TCP's 0 Position For Placement
-    Smart_Conv.render_exec('Joint_1', Y - (OVERALL_PANEL_LENGTH/2) + ((L/2)-PICK_OFFSET_FROM_L_CORNER-(ROBOT_1_GRIPPER_LENGTH/2)+(SMART_CONV_RANGE_OF_MOTION_J1/2)))
+    Smart_Conv.render_exec('Joint_1', Y - (OVERALL_PANEL_LENGTH/2) + ((L/2)-PICK_OFFSET_FROM_L_CORNER-(ROBOT_2_GRIPPER_LENGTH/2)+(SMART_CONV_RANGE_OF_MOTION_J1/2)))
+
 
     # Robot 2 Pre Place Movement
     Robot_2.plan(tcp_name= "tool0",
@@ -2310,6 +2335,8 @@ def TPL(el_name: str = None,
     Robot_1.render_exec(renderInstance= True,
                             Show_Sphere= False)
 
+    Robot_1.free_TCP_movement()
+
     # Detach
     Robot_1.eef_detach(tool_name="tool0",
                         detaching_object_name= el_name)
@@ -2423,26 +2450,74 @@ def KING(el_name: str = None,
     Robot_2.render_exec(renderInstance= True,
                             Show_Sphere= False)
     
+    # Back To Home
+    Robot_2.move_to_home()
+
     # Conveyor Move For Placement
-    Smart_Conv.render_exec('Joint_1', Y - (OVERALL_PANEL_LENGTH/2)+(SMART_CONV_RANGE_OF_MOTION_J1/2))
+    Smart_Conv.render_exec('Joint_1',(OVERALL_PANEL_LENGTH/2)- Y +(SMART_CONV_RANGE_OF_MOTION_J1/2))
+    # Saving Joint Location For Nailing
+    Smart_Conv._nail_poses.append((OVERALL_PANEL_LENGTH/2)- Y +(SMART_CONV_RANGE_OF_MOTION_J1/2))
+    print("SET VERTICAL NAILING LOCATIONS: ")
+    print(Smart_Conv._nail_poses)
+    print("+++++++++++++++++++++++++++++++++++++++++++")
     
     # Pre Place
-
+    Robot_2.plan(tcp_name= "tool0",
+                    target_pose= [2.3+(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT+((L/2)-(ROBOT_2_GRIPPER_LENGTH/2)-SLOPED_TABLE_PICK_OFFSET_FROM_L_CORNER)+0.2,
+                                  0,
+                                  SMART_CONV_REST_ELEVATION+H-PICK_OFFSET_FROM_W_CORNER+0.1],
+                    target_orientation= [0, ev, ev, 0],
+                    update_world_needed= True)
+    Robot_2.render_exec(renderInstance= True,
+                            Show_Sphere= False)
     # Place
+    Robot_2.plan(tcp_name= "tool0",
+                    target_pose= [2.3+(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT+((L/2)-(ROBOT_2_GRIPPER_LENGTH/2)-SLOPED_TABLE_PICK_OFFSET_FROM_L_CORNER),
+                                  0,
+                                  SMART_CONV_REST_ELEVATION+H-PICK_OFFSET_FROM_W_CORNER],
+                    target_orientation= [0, ev, ev, 0],
+                    update_world_needed= True,
+                    removing_primitives=["Smart_Conveyor", "world/obstacles"],
+                    orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
+    Robot_2.render_exec(renderInstance= True,
+                            Show_Sphere= False)
 
     # Robot 1 Nail
+    Robot_1.plan(tcp_name= "tool2",
+                    target_pose= [1.1,
+                                  0,
+                                  SMART_CONV_REST_ELEVATION+H-PICK_OFFSET_FROM_W_CORNER],
+                    target_orientation= [ev, 0, ev, 0],
+                    update_world_needed= True)
+    Robot_1.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+    # X = 1.1m
+    # Y = 0
+    # Z = 
+    Robot_1.free_TCP_movement(moving_tcp= "tool2")
+
 
     # Detech
+    Robot_2.eef_detach(tool_name="tool0",
+                        detaching_object_name= el_name)
+    Smart_Conv.attach_object_to_conv(obj_name= el_name)
 
     # Post Place
-
+    Robot_2.plan(tcp_name= "tool0",
+                    target_pose= [2.3+(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT+((L/2)-(ROBOT_2_GRIPPER_LENGTH/2)-SLOPED_TABLE_PICK_OFFSET_FROM_L_CORNER)+0.2,
+                                  0,
+                                  SMART_CONV_REST_ELEVATION+H-PICK_OFFSET_FROM_W_CORNER+0.1],
+                    target_orientation= [0, ev, ev, 0],
+                    update_world_needed= True,
+                    removing_primitives=["Smart_Conveyor", "world/obstacles"],
+                    orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
+    Robot_2.render_exec(renderInstance= True,
+                            Show_Sphere= False)
     # Home
+    Robot_2.move_to_home()
 
     # Sheathing Nail Location Saving !
 
-    Robot_2.move_to_home()
-
-    Robot_2.free_TCP_movement()
     # To Pick Position    
 # Angular (90-SLOPE, 0, 90)
 
@@ -2493,26 +2568,17 @@ def main():
 
         # TPL DONE !
         TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
-        # BPL DONE !
-        BPL("Wooden_Element_2", OVERALL_PANEL_HEIGHT-0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
         # KING Pick to Home Done !
-        KING("Wooden_Element_3", 0, 0, 0, 1.5, 0.04, 0.12)
+        KING("Wooden_Element_3", 1.2592, 1.02, 0, 2.4384, 0.04, 0.12)
+        # # BPL DONE !
+        # BPL("Wooden_Element_2", OVERALL_PANEL_HEIGHT-0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
+
         # Nailing Orientation [ev, 0, ev, 0]
         
         # King + IST Helping Point:
         # Reached Pose: ['4.89', '-1.48', '0.82'], Reached Orientation: [array([-6.1232343e-17,  7.0710677e-01,  -7.0710677e-01,  4.3297803e-17], dtype=float32)]
         # King + IST Pick Orientation:
         # Reached Pose: ['4.89', '-2.33', '0.91'], Reached Orientation: [array([ 0.61237246,  0.35355338, -0.35355338,  0.61237246], dtype=float32)]
-    
-
-        # Robot_2.plan(tcp_name= "tool0",
-        #                 target_pose= [4.46, -2.32, 0.93],
-        #                 target_orientation= [0.6272114 ,  0.32650557, -0.32650557,  0.6272114],
-        #                 update_world_needed= True)
-        # Robot_2.render_exec(renderInstance= True,
-        #                         Show_Sphere= False)
-
-        # Create_Wooden_Element_For_Sloped_Table(el_name= "test1", W= 0.04, H= 0.12)
 
         Robot_2.free_TCP_movement()
 
