@@ -590,9 +590,9 @@ class CuRoboRobot(object):
 
         # Setting up Extra Tool Spheres
         if self._ROS_JS_robot_indicator == "IRB6620_R1":
-            self._robot_cfg["kinematics"]["extra_collision_spheres"] = {"tool0": 1, "tool1": 1,}
+            self._robot_cfg["kinematics"]["extra_collision_spheres"] = {"tool0": 100, "tool1": 1,}
         if self._ROS_JS_robot_indicator == "IRB6620_R2":
-            self._robot_cfg["kinematics"]["extra_collision_spheres"] = {"tool0": 1,}
+            self._robot_cfg["kinematics"]["extra_collision_spheres"] = {"tool0": 100,}
 
         # if self._ROS_JS_robot_indicator == "IRB6620_R1":
         #     self._robot_cfg["kinematics"]["extra_collision_spheres"] = {"tool0": 50, "tool1": 100,}
@@ -796,8 +796,9 @@ class CuRoboRobot(object):
             num_trajopt_seeds=12,
             num_graph_seeds=12,
             # Error Thresholds !!
-            position_threshold= 0.005,
-            rotation_threshold= 0.005,
+            position_threshold= 0.0001,
+            rotation_threshold= 0.0001,
+            cspace_threshold= 0.0001,
             interpolation_dt=interpolation_dt,
             optimize_dt=optimize_dt,
             trajopt_dt=trajopt_dt,
@@ -2212,6 +2213,7 @@ def TPL(el_name: str = None,
     Robot_2.eef_attach(tool_name="tool0",
                        attaching_object_name=el_name)
     print("Wooden Element Attached to Robot_2")
+
     # Post Pick 1 (X += 0.2)
     Robot_2.plan(tcp_name= "tool0",
                     target_pose= [SMART_MAT_TABLE[0]+PICK_OFFSET_FROM_W_CORNER+0.1,
@@ -2250,6 +2252,7 @@ def TPL(el_name: str = None,
 
     # Home Position
     Robot_2.move_to_home()
+    Robot_2.free_TCP_movement()
 
     ####
     # IF Pass To Robot 1
@@ -2293,6 +2296,8 @@ def TPL(el_name: str = None,
                         detaching_object_name= el_name)
     Robot_1.eef_attach(tool_name="tool0",
                        attaching_object_name=el_name)
+
+    Robot_1.free_TCP_movement()
 
     # Rob2 Post Detach before Reaching Home Pose
     Robot_2.plan(tcp_name= "tool0",
