@@ -2079,7 +2079,7 @@ def Robot_2_Do_Side_Nail(push_to_nail: float = None,
 
         # Robot 1 Nail
         Robot_2.plan(tcp_name= "tool1",
-                        target_pose= [3.75, Side_Selector, SMART_CONV_REST_ELEVATION+H-(0.7*H)],
+                        target_pose= [3.77, Side_Selector, SMART_CONV_REST_ELEVATION+H-(0.7*H)],
                         target_orientation= [0.5, 0.5, 0.5, 0.5],
                         update_world_needed= True)
         Robot_2.render_exec(renderInstance= True,
@@ -2096,7 +2096,7 @@ def Robot_2_Do_Side_Nail(push_to_nail: float = None,
                         target_orientation= [object_pose.r[3], object_pose.r[0], object_pose.r[1], object_pose.r[2]],
                         update_world_needed= True,
                         removing_primitives=["Smart_Conveyor", "world/obstacles"],
-                        direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.1, tstep_fraction=0.1,linear_axis=1))
+                        direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.1, tstep_fraction=0.1,linear_axis=2))
         Robot_2.render_exec(renderInstance= True,
                                 Show_Sphere= False)
         # Nail Done
@@ -2107,7 +2107,7 @@ def Robot_2_Do_Side_Nail(push_to_nail: float = None,
                         target_orientation= [object_pose.r[3], object_pose.r[0], object_pose.r[1], object_pose.r[2]],
                         update_world_needed= True,
                         removing_primitives=["Smart_Conveyor", "world/obstacles"],
-                        direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.1, tstep_fraction=0.1,linear_axis=1))
+                        direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.1, tstep_fraction=0.1,linear_axis=2))
         Robot_2.render_exec(renderInstance= True,
                                 Show_Sphere= False)
         
@@ -2131,7 +2131,7 @@ def Robot_2_Do_Side_Nail(push_to_nail: float = None,
                         target_orientation= [object_pose.r[3], object_pose.r[0], object_pose.r[1], object_pose.r[2]],
                         update_world_needed= True,
                         removing_primitives=["Smart_Conveyor", "world/obstacles"],
-                        direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.1, tstep_fraction=0.1,linear_axis=1))
+                        direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.1, tstep_fraction=0.1,linear_axis=2))
         Robot_2.render_exec(renderInstance= True,
                                 Show_Sphere= False)
         # Restricted Top Nail
@@ -2142,7 +2142,7 @@ def Robot_2_Do_Side_Nail(push_to_nail: float = None,
                         target_orientation= [object_pose.r[3], object_pose.r[0], object_pose.r[1], object_pose.r[2]],
                         update_world_needed= True,
                         removing_primitives=["Smart_Conveyor", "world/obstacles"],
-                        direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.1, tstep_fraction=0.1,linear_axis=1))
+                        direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.1, tstep_fraction=0.1,linear_axis=2))
         Robot_2.render_exec(renderInstance= True,
                                 Show_Sphere= False)
 
