@@ -2058,6 +2058,94 @@ def Create_Wooden_Element_For_Smart_Mat_Table(el_name: str = None,
     )
     Add_Rigid_Object_To_Scene(test, "Cuboid", Element)
 
+def Robot_2_Do_Side_Nail(push_to_nail: float = None,
+                         H: float = None):
+    # ORientation [0.5, 0.5, 0.5, 0.5]
+    # X 3.75
+    # Y 1
+    # Z TBD
+    for target in Smart_Conv._nail_poses:
+        Side_Selector: float = 0
+        if target+1 > SMART_CONV_RANGE_OF_MOTION_J1:
+            Smart_Conv.render_exec('Joint_1', target-1)
+            Side_Selector = -1
+        else:
+            Smart_Conv.render_exec('Joint_1', target+1)
+            Side_Selector = 1
+        
+        ###
+        ### Nailing For That KING/1ST
+        ###
+
+        # Robot 1 Nail
+        Robot_2.plan(tcp_name= "tool1",
+                        target_pose= [3.75, Side_Selector, SMART_CONV_REST_ELEVATION+H-(0.7*H)],
+                        target_orientation= [0.5, 0.5, 0.5, 0.5],
+                        update_world_needed= True)
+        Robot_2.render_exec(renderInstance= True,
+                                Show_Sphere= False)
+
+        dc=_dynamic_control.acquire_dynamic_control_interface()
+        object=dc.get_rigid_body("/"+Robot_2._ROS_JS_robot_indicator+"/tool1")
+
+        # Restricted Bot Nail
+        object_pose=dc.get_rigid_body_pose(object)
+        Robot_2.release_path_plan_restriction()
+        Robot_2.plan(tcp_name= "tool1",
+                        target_pose= [object_pose.p[0]-push_to_nail, object_pose.p[1], object_pose.p[2]],
+                        target_orientation= [object_pose.r[3], object_pose.r[0], object_pose.r[1], object_pose.r[2]],
+                        update_world_needed= True,
+                        removing_primitives=["Smart_Conveyor", "world/obstacles"],
+                        direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.1, tstep_fraction=0.1,linear_axis=1))
+        Robot_2.render_exec(renderInstance= True,
+                                Show_Sphere= False)
+        # Nail Done
+        object_pose=dc.get_rigid_body_pose(object)
+        Robot_2.release_path_plan_restriction()
+        Robot_2.plan(tcp_name= "tool1",
+                        target_pose= [object_pose.p[0]+push_to_nail, object_pose.p[1], object_pose.p[2]],
+                        target_orientation= [object_pose.r[3], object_pose.r[0], object_pose.r[1], object_pose.r[2]],
+                        update_world_needed= True,
+                        removing_primitives=["Smart_Conveyor", "world/obstacles"],
+                        direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.1, tstep_fraction=0.1,linear_axis=1))
+        Robot_2.render_exec(renderInstance= True,
+                                Show_Sphere= False)
+        
+        # Other Nail
+        object_pose=dc.get_rigid_body_pose(object)
+        Robot_2.release_path_plan_restriction()
+        Robot_2.plan(tcp_name= "tool1",
+                        target_pose= [object_pose.p[0], object_pose.p[1], object_pose.p[2]+(0.4*H)],
+                        target_orientation= [object_pose.r[3], object_pose.r[0], object_pose.r[1], object_pose.r[2]],
+                        update_world_needed= True,
+                        removing_primitives=["Smart_Conveyor", "world/obstacles"],
+                        direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.1, tstep_fraction=0.1,linear_axis=0))
+        Robot_2.render_exec(renderInstance= True,
+                                Show_Sphere= False)
+
+        # Restricted Top Nail
+        object_pose=dc.get_rigid_body_pose(object)
+        Robot_2.release_path_plan_restriction()
+        Robot_2.plan(tcp_name= "tool1",
+                        target_pose= [object_pose.p[0]-push_to_nail, object_pose.p[1], object_pose.p[2]],
+                        target_orientation= [object_pose.r[3], object_pose.r[0], object_pose.r[1], object_pose.r[2]],
+                        update_world_needed= True,
+                        removing_primitives=["Smart_Conveyor", "world/obstacles"],
+                        direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.1, tstep_fraction=0.1,linear_axis=1))
+        Robot_2.render_exec(renderInstance= True,
+                                Show_Sphere= False)
+        # Restricted Top Nail
+        object_pose=dc.get_rigid_body_pose(object)
+        Robot_2.release_path_plan_restriction()
+        Robot_2.plan(tcp_name= "tool1",
+                        target_pose= [object_pose.p[0]+push_to_nail, object_pose.p[1], object_pose.p[2]],
+                        target_orientation= [object_pose.r[3], object_pose.r[0], object_pose.r[1], object_pose.r[2]],
+                        update_world_needed= True,
+                        removing_primitives=["Smart_Conveyor", "world/obstacles"],
+                        direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.1, tstep_fraction=0.1,linear_axis=1))
+        Robot_2.render_exec(renderInstance= True,
+                                Show_Sphere= False)
+
 # Pick and Placing the Bottom Plate
 def BPL(el_name: str = None,
         X: float = None,
@@ -2151,7 +2239,7 @@ def BPL(el_name: str = None,
 
     # Robot 2 Pre Place Movement
     Robot_2.plan(tcp_name= "tool0",
-                    target_pose= [2.3+(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT,
+                    target_pose= [2.3+(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT+0.2,
                                   0,
                                   SMART_CONV_REST_ELEVATION+H-PICK_OFFSET_FROM_W_CORNER+0.2],
                     target_orientation= [0, 1, 0, 0],
@@ -2187,6 +2275,9 @@ def BPL(el_name: str = None,
                     orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
     Robot_2.render_exec(renderInstance= True,
                             Show_Sphere= False)
+
+    PUSH_TO_NAIL_OFFSET: float = 0.05
+    Robot_2_Do_Side_Nail(push_to_nail= PUSH_TO_NAIL_OFFSET, H= H)
 
     # Back To Home
     Robot_2.move_to_home()
@@ -2448,7 +2539,7 @@ def Robot_1_Do_Side_Nail(push_to_nail: float = None,
         Robot_1.render_exec(renderInstance= True,
                                 Show_Sphere= False)
         
-        # Bot Nail
+        # Other Nail
         object_pose=dc.get_rigid_body_pose(object)
         Robot_1.release_path_plan_restriction()
         Robot_1.plan(tcp_name= "tool2",
@@ -2463,6 +2554,7 @@ def Robot_1_Do_Side_Nail(push_to_nail: float = None,
 
         # Restricted Top Nail
         object_pose=dc.get_rigid_body_pose(object)
+        Robot_1.release_path_plan_restriction()
         Robot_1.plan(tcp_name= "tool2",
                         target_pose= [object_pose.p[0]+push_to_nail, object_pose.p[1], object_pose.p[2]],
                         target_orientation= [object_pose.r[3], object_pose.r[0], object_pose.r[1], object_pose.r[2]],
@@ -2673,7 +2765,7 @@ def main():
         # King + IST Pick Orientation:
         # Reached Pose: ['4.89', '-2.33', '0.91'], Reached Orientation: [array([ 0.61237246,  0.35355338, -0.35355338,  0.61237246], dtype=float32)]
 
-        Robot_2.free_TCP_movement()
+        Robot_2.free_TCP_movement(moving_tcp= "tool1")
 
 if __name__ == "__main__":
     main()
