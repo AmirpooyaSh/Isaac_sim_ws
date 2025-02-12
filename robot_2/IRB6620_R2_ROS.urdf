@@ -291,9 +291,12 @@
 	</joint>
 
 	<!-- EF2_NG1 tool frame -->
+    <!-- Previous Z Value:  0.0519-->
+    <!-- Previous Y Value:  -0.31656238-->
+    <!-- Previous X Value:  0.352827674-->
 	<link name="tool1" />
         <joint name="Link_6-tool1" type="fixed">
-        <origin xyz="0.352827674 -0.31656238 0.0519" rpy="0 -1.57079632679 0" />
+        <origin xyz="0.391037674 -0.34051238 0.00172" rpy="0 -1.57079632679 0" />
         <parent link="flange" />
         <child link="tool1" />
 	</joint>

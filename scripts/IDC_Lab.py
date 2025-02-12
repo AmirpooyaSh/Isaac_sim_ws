@@ -2091,7 +2091,7 @@ def Create_Wooden_Element_For_Smart_Mat_Table(el_name: str = None,
 def Robot_2_Do_Side_Nail(push_to_nail: float = None,
                          H: float = None):
     # ORientation [0.5, 0.5, 0.5, 0.5]
-    # X 3.75
+    # X 3.69
     # Y 1
     # Z TBD
     for target in Smart_Conv._nail_poses:
@@ -2109,7 +2109,7 @@ def Robot_2_Do_Side_Nail(push_to_nail: float = None,
 
         # Robot 1 Nail
         Robot_2.plan(tcp_name= "tool1",
-                        target_pose= [3.77, Side_Selector, SMART_CONV_REST_ELEVATION+H-(0.7*H)],
+                        target_pose= [3.69, Side_Selector, SMART_CONV_REST_ELEVATION+H-(0.7*H)],
                         target_orientation= [0.5, 0.5, 0.5, 0.5],
                         update_world_needed= True)
         Robot_2.render_exec(renderInstance= True,
@@ -2126,7 +2126,7 @@ def Robot_2_Do_Side_Nail(push_to_nail: float = None,
                         target_orientation= [object_pose.r[3], object_pose.r[0], object_pose.r[1], object_pose.r[2]],
                         update_world_needed= True,
                         removing_primitives=["Smart_Conveyor", "world/obstacles"],
-                        direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.1, tstep_fraction=0.1,linear_axis=2))
+                        direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.001, tstep_fraction=0.001,linear_axis=2))
         Robot_2.render_exec(renderInstance= True,
                                 Show_Sphere= False)
         # Nail Done
@@ -2137,7 +2137,7 @@ def Robot_2_Do_Side_Nail(push_to_nail: float = None,
                         target_orientation= [object_pose.r[3], object_pose.r[0], object_pose.r[1], object_pose.r[2]],
                         update_world_needed= True,
                         removing_primitives=["Smart_Conveyor", "world/obstacles"],
-                        direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.1, tstep_fraction=0.1,linear_axis=2))
+                        direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.001, tstep_fraction=0.001,linear_axis=2))
         Robot_2.render_exec(renderInstance= True,
                                 Show_Sphere= False)
         
@@ -2149,7 +2149,7 @@ def Robot_2_Do_Side_Nail(push_to_nail: float = None,
                         target_orientation= [object_pose.r[3], object_pose.r[0], object_pose.r[1], object_pose.r[2]],
                         update_world_needed= True,
                         removing_primitives=["Smart_Conveyor", "world/obstacles"],
-                        direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.1, tstep_fraction=0.1,linear_axis=0))
+                        direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.001, tstep_fraction=0.001,linear_axis=0))
         Robot_2.render_exec(renderInstance= True,
                                 Show_Sphere= False)
 
@@ -2161,7 +2161,7 @@ def Robot_2_Do_Side_Nail(push_to_nail: float = None,
                         target_orientation= [object_pose.r[3], object_pose.r[0], object_pose.r[1], object_pose.r[2]],
                         update_world_needed= True,
                         removing_primitives=["Smart_Conveyor", "world/obstacles"],
-                        direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.1, tstep_fraction=0.1,linear_axis=2))
+                        direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.001, tstep_fraction=0.001,linear_axis=2))
         Robot_2.render_exec(renderInstance= True,
                                 Show_Sphere= False)
         # Restricted Top Nail
@@ -2172,7 +2172,7 @@ def Robot_2_Do_Side_Nail(push_to_nail: float = None,
                         target_orientation= [object_pose.r[3], object_pose.r[0], object_pose.r[1], object_pose.r[2]],
                         update_world_needed= True,
                         removing_primitives=["Smart_Conveyor", "world/obstacles"],
-                        direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.1, tstep_fraction=0.1,linear_axis=2))
+                        direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.001, tstep_fraction=0.001,linear_axis=2))
         Robot_2.render_exec(renderInstance= True,
                                 Show_Sphere= False)
 
@@ -2554,7 +2554,7 @@ def Robot_1_Do_Side_Nail(push_to_nail: float = None,
                         target_orientation= [object_pose.r[3], object_pose.r[0], object_pose.r[1], object_pose.r[2]],
                         update_world_needed= True,
                         removing_primitives=["Smart_Conveyor", "world/obstacles"],
-                        direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.1, tstep_fraction=0.1,linear_axis=1))
+                        direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.001, tstep_fraction=0.001,linear_axis=1))
         Robot_1.render_exec(renderInstance= True,
                                 Show_Sphere= False)
         # Nail Done
@@ -2565,7 +2565,7 @@ def Robot_1_Do_Side_Nail(push_to_nail: float = None,
                         target_orientation= [object_pose.r[3], object_pose.r[0], object_pose.r[1], object_pose.r[2]],
                         update_world_needed= True,
                         removing_primitives=["Smart_Conveyor", "world/obstacles"],
-                        direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.1, tstep_fraction=0.1,linear_axis=1))
+                        direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.001, tstep_fraction=0.001,linear_axis=1))
         Robot_1.render_exec(renderInstance= True,
                                 Show_Sphere= False)
         
@@ -2577,7 +2577,7 @@ def Robot_1_Do_Side_Nail(push_to_nail: float = None,
                         target_orientation= [object_pose.r[3], object_pose.r[0], object_pose.r[1], object_pose.r[2]],
                         update_world_needed= True,
                         removing_primitives=["Smart_Conveyor", "world/obstacles"],
-                        direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.1, tstep_fraction=0.1,linear_axis=0))
+                        direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.001, tstep_fraction=0.001,linear_axis=1))
         Robot_1.render_exec(renderInstance= True,
                                 Show_Sphere= False)
 
@@ -2590,7 +2590,7 @@ def Robot_1_Do_Side_Nail(push_to_nail: float = None,
                         target_orientation= [object_pose.r[3], object_pose.r[0], object_pose.r[1], object_pose.r[2]],
                         update_world_needed= True,
                         removing_primitives=["Smart_Conveyor", "world/obstacles"],
-                        direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.1, tstep_fraction=0.1,linear_axis=1))
+                        direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.001, tstep_fraction=0.001,linear_axis=1))
         Robot_1.render_exec(renderInstance= True,
                                 Show_Sphere= False)
         # Restricted Top Nail
@@ -2601,7 +2601,7 @@ def Robot_1_Do_Side_Nail(push_to_nail: float = None,
                         target_orientation= [object_pose.r[3], object_pose.r[0], object_pose.r[1], object_pose.r[2]],
                         update_world_needed= True,
                         removing_primitives=["Smart_Conveyor", "world/obstacles"],
-                        direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.1, tstep_fraction=0.1,linear_axis=1))
+                        direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.001, tstep_fraction=0.001,linear_axis=1))
         Robot_1.render_exec(renderInstance= True,
                                 Show_Sphere= False)
 
@@ -2838,15 +2838,18 @@ def main():
             test._my_world.step(render= True)
 
         # TPL DONE !
-        TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
+        # TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
         # KING Pick to Home Done !
-        KING("Wooden_Element_3", 1.2592, 0.02, 0, 2.4384, 0.04, 0.12)
-
-        # RJCK()
-        KING("Wooden_Element_4", 1.2592, 1.02, 0, 2.4384, 0.04, 0.12)
-        KING("Wooden_Element_5", 1.2592, 2.02, 0, 2.4384, 0.04, 0.12)
-        KING("Wooden_Element_6", 1.2592, 3.02, 0, 2.4384, 0.04, 0.12)
+        # KING("Wooden_Element_3", 1.2592, 0.02, 0, 2.4384, 0.04, 0.12)
+        # # RJCK()
+        # KING("Wooden_Element_4", 1.2592, 1.02, 0, 2.4384, 0.04, 0.12)
+        # KING("Wooden_Element_5", 1.2592, 2.02, 0, 2.4384, 0.04, 0.12)
+        # KING("Wooden_Element_6", 1.2592, 3.02, 0, 2.4384, 0.04, 0.12)
         # BPL DONE !
+        Smart_Conv._nail_poses.append(1)
+        Smart_Conv._nail_poses.append(2)
+        Smart_Conv._nail_poses.append(3)
+        Smart_Conv._nail_poses.append(4)
         BPL("Wooden_Element_2", OVERALL_PANEL_HEIGHT-0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
 
         # Nailing Orientation [ev, 0, ev, 0]
