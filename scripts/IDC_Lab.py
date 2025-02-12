@@ -156,7 +156,7 @@ SMART_CONV_REST_ELEVATION: float = 0.89546
 SMART_CONV_X_SHIFT: float = 0.09179
 
 # Smart Material Table ZEORO
-SMART_MAT_TABLE: list[float] = [6.444, 4.111, 0.803]
+SMART_MAT_TABLE: list[float] = [6.444, 4.611, 0.803]
 
 # Offset Required to Pick Woods From the Table
 PICK_OFFSET_FROM_L_CORNER: float = 0.05
@@ -333,7 +333,7 @@ class WorldManager(object):
 
         Smart_Mat_Table = Mesh(
             name="R2_Smart_Mat_Table",
-            pose=[8.0, 4.7, 0, Smart_Mat_Table_Quat[0], 
+            pose=[8.0, 5.2, 0, Smart_Mat_Table_Quat[0], 
                                       Smart_Mat_Table_Quat[1],
                                       Smart_Mat_Table_Quat[2],
                                       Smart_Mat_Table_Quat[3]],
@@ -1013,6 +1013,36 @@ class CuRoboRobot(object):
                 and robot_static
             ):
                 # Hard Coded Prompts
+                if np.round(cube_position[2]+self._r_pose[2],0) == 2000:
+                    print("Releasing Restrictions")
+                    self.release_path_plan_restriction()
+                    # Setting the Initial Pose/Orientation of the Target Cube to the Targetting TCP !!
+                    dc=_dynamic_control.acquire_dynamic_control_interface()
+
+                    object=dc.get_rigid_body("/"+self._ROS_JS_robot_indicator+"/"+moving_tcp)
+                    object_pose=dc.get_rigid_body_pose(object)
+
+                    self._temp_world_manager._target_cube.set_world_pose(position=object_pose.p,
+                                                                            orientation=[object_pose.r[3], object_pose.r[0], object_pose.r[1], object_pose.r[2]])
+                if np.round(cube_position[2]+self._r_pose[2],0) == 3000:
+                    print("Linear Restriction Activated")
+                    # self.restrict_path_plan(Orientation_Restriction= torch.ones(3, dtype=torch.float32))
+
+                    self._plan_config = MotionGenPlanConfig(enable_graph=True,
+                                        enable_graph_attempt=2,
+                                        max_attempts=10,
+                                        enable_finetune_trajopt=False,
+                                        pose_cost_metric= PoseCostMetric.create_grasp_approach_metric(offset_position=0.01, tstep_fraction=0.001,linear_axis=1),
+                                        time_dilation_factor= MOTION_ACCELERAION_VALUE) 
+
+                    # Setting the Initial Pose/Orientation of the Target Cube to the Targetting TCP !!
+                    dc=_dynamic_control.acquire_dynamic_control_interface()
+
+                    object=dc.get_rigid_body("/"+self._ROS_JS_robot_indicator+"/"+moving_tcp)
+                    object_pose=dc.get_rigid_body_pose(object)
+
+                    self._temp_world_manager._target_cube.set_world_pose(position=object_pose.p,
+                                                                            orientation=[object_pose.r[3], object_pose.r[0], object_pose.r[1], object_pose.r[2]])
                 # Z = 1000 : It means that we're done with free movement and we know the coordinations
                 # It will break the loop and let the program continue !
                 if np.round(cube_position[2]+self._r_pose[2],0) == 1000:
@@ -1847,7 +1877,7 @@ GR_Primitive.GetAttribute("visibility").Set("invisible")
 # Smart Material Table's Collision        # obstacles.save_world_as_mesh("Testing.obj")
 R2_Smart_Mat_Table_Box1 = Cuboid(
     name= "R2_Smart_Mat_Table_Box1",
-    pose= [6.8, 2.2, 0.45, 1, 0, 0, 0],
+    pose= [6.8, 2.7, 0.45, 1, 0, 0, 0],
     dims= [1, 4, 0.8],
     color= [1, 1, 1, 0]
 )
@@ -1855,7 +1885,7 @@ Add_Rigid_Object_To_Scene(test, "Cuboid", R2_Smart_Mat_Table_Box1, True, True)
 
 R2_Smart_Mat_Table_Box2 = Cuboid(
     name= "R2_Smart_Mat_Table_Box2",
-    pose= [6.75, 1.8, 1.57, 1, 0, 0, 0],
+    pose= [6.75, 2.3, 1.57, 1, 0, 0, 0],
     dims= [0.4, 4.6, 1.5],
     color= [1, 1, 1, 0]
 )
@@ -2322,7 +2352,7 @@ def TPL(el_name: str = None,
                     orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
     Robot_2.render_exec(renderInstance= True,
                             Show_Sphere= False)
-    
+
     # Creating the Wooden Element Within the Smart Material Supply
     Create_Wooden_Element_For_Smart_Mat_Table(el_name= el_name, L= L, W= W, H= H)
 
@@ -2708,6 +2738,61 @@ def KING(el_name: str = None,
     # To Pick Position    
 # Angular (90-SLOPE, 0, 90)
 
+def RJCK(el_name: str = None,
+        X: float = None,
+        Y: float = None,
+        Z: float = None,
+        L: float = None,
+        W: float = 0.04,
+        H: float = None):
+
+    # Pick
+    Robot_2.plan(tcp_name= "tool0",
+                    target_pose= [SMART_MAT_TABLE[0]+PICK_OFFSET_FROM_W_CORNER,
+                                  SMART_MAT_TABLE[1]-SMART_MAT_TABLE_MAX_LENGTH+PICK_OFFSET_FROM_L_CORNER+(ROBOT_2_GRIPPER_LENGTH/2),
+                                  SMART_MAT_TABLE[2]+(W/2)],
+                    target_orientation= [ev, 0, ev, 0],
+                    update_world_needed= True,
+                    removing_primitives=["world/obstacles"])
+    # direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.01, tstep_fraction=0.001,linear_axis=1)
+    Robot_2.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+    
+    Robot_2.free_TCP_movement()
+
+
+    # # robot 1 move to nailing target
+    # self.move_group = self.planning_groups["EF1_NG"]
+    # self.pose_goal.orientation.x = -0.6123724
+    # self.pose_goal.orientation.y = 0.6123724
+    # self.pose_goal.orientation.z = 0.3535534
+    # self.pose_goal.orientation.w = 0.3535534
+    # self.pose_goal.position.x = final_object_pose.position.x - box_size[1]*0.5 + 0.06096
+    # self.pose_goal.position.y = final_object_pose.position.y - box_size[0]*0.5
+    # self.pose_goal.position.z = final_object_pose.position.z + box_size[2]/6
+    # self.plan_and_execute(self.pose_goal)
+    r=1
+
+def LJCK(el_name: str = None,
+        X: float = None,
+        Y: float = None,
+        Z: float = None,
+        L: float = None,
+        W: float = None,
+        H: float = None):
+    
+    # # robot 1 move to nailing target
+    # self.move_group = self.planning_groups["EF1_NG"]
+    # self.pose_goal.orientation.x = 0.6123724
+    # self.pose_goal.orientation.y = 0.6123724
+    # self.pose_goal.orientation.z = -0.3535534
+    # self.pose_goal.orientation.w = 0.3535534
+    # self.pose_goal.position.x = final_object_pose.position.x - box_size[1]*0.5 + 0.06096
+    # self.pose_goal.position.y = final_object_pose.position.y + box_size[0]*0.5
+    # self.pose_goal.position.z = final_object_pose.position.z + box_size[2]/6
+    # self.plan_and_execute(self.pose_goal)    
+    r=1
+
 ###########
 ####END####
 ###########
@@ -2748,10 +2833,16 @@ def main():
         # for robot in robots:
         #         robot.ros_js_publisher()
 
+        T = time.time()
+        while time.time() - T <= 5:
+            test._my_world.step(render= True)
+
         # TPL DONE !
         TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
         # KING Pick to Home Done !
         KING("Wooden_Element_3", 1.2592, 0.02, 0, 2.4384, 0.04, 0.12)
+
+        # RJCK()
         KING("Wooden_Element_4", 1.2592, 1.02, 0, 2.4384, 0.04, 0.12)
         KING("Wooden_Element_5", 1.2592, 2.02, 0, 2.4384, 0.04, 0.12)
         KING("Wooden_Element_6", 1.2592, 3.02, 0, 2.4384, 0.04, 0.12)
