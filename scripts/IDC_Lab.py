@@ -364,16 +364,16 @@ class WorldManager(object):
         # )
         # world_cfg_table.cuboid[0].pose[2] -= 0.02
 
-        # IDC_Lab = Mesh(
-        #     name="idc_lab_model",
-        #     pose=[0, 0, 0, 1, 0, 0, 0],
-        #     file_path= cur_dir + "lab_model/idc_lab_visualization.stl",
-        #     color= [0.1, 0.05, 0, 1],
-        #     scale=[0.001, 0.001, 0.001]
-        # )
+        IDC_Lab = Mesh(
+            name="idc_lab_model",
+            pose=[0, 0, 0, 1, 0, 0, 0],
+            file_path= cur_dir + "lab_model/idc_lab_visualization.stl",
+            color= [0.1, 0.05, 0, 1],
+            scale=[0.001, 0.001, 0.001]
+        )
                                                                                                                                                                                                                                                                                             
         world_model = WorldConfig(
-            mesh=[Smart_Mat_Table, Sloped_Table],
+            mesh=[IDC_Lab, Smart_Mat_Table, Sloped_Table],
             cuboid=[Cube],
             capsule=[],
             cylinder=[],
@@ -2838,26 +2838,15 @@ def main():
             test._my_world.step(render= True)
 
         # TPL DONE !
-        # TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
+        TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
         # KING Pick to Home Done !
-        # KING("Wooden_Element_3", 1.2592, 0.02, 0, 2.4384, 0.04, 0.12)
-        # # RJCK()
-        # KING("Wooden_Element_4", 1.2592, 1.02, 0, 2.4384, 0.04, 0.12)
-        # KING("Wooden_Element_5", 1.2592, 2.02, 0, 2.4384, 0.04, 0.12)
-        # KING("Wooden_Element_6", 1.2592, 3.02, 0, 2.4384, 0.04, 0.12)
+        KING("Wooden_Element_3", 1.2592, 0.02, 0, 2.4384, 0.04, 0.12)
+        # RJCK()
+        KING("Wooden_Element_4", 1.2592, 1.02, 0, 2.4384, 0.04, 0.12)
+        KING("Wooden_Element_5", 1.2592, 2.02, 0, 2.4384, 0.04, 0.12)
+        KING("Wooden_Element_6", 1.2592, 3.02, 0, 2.4384, 0.04, 0.12)
         # BPL DONE !
-        Smart_Conv._nail_poses.append(1)
-        Smart_Conv._nail_poses.append(2)
-        Smart_Conv._nail_poses.append(3)
-        Smart_Conv._nail_poses.append(4)
         BPL("Wooden_Element_2", OVERALL_PANEL_HEIGHT-0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
-
-        # Nailing Orientation [ev, 0, ev, 0]
-        
-        # King + IST Helping Point:
-        # Reached Pose: ['4.89', '-1.48', '0.82'], Reached Orientation: [array([-6.1232343e-17,  7.0710677e-01,  -7.0710677e-01,  4.3297803e-17], dtype=float32)]
-        # King + IST Pick Orientation:
-        # Reached Pose: ['4.89', '-2.33', '0.91'], Reached Orientation: [array([ 0.61237246,  0.35355338, -0.35355338,  0.61237246], dtype=float32)]
 
         Robot_2.free_TCP_movement(moving_tcp= "tool1")
 
