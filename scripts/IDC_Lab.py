@@ -2079,13 +2079,17 @@ def Horizontal(el_name: str = None,
 def Create_Wooden_Element_For_Smart_Mat_Table(el_name: str = None,
                                 L: float = None,
                                 W: float = None,
-                                H: float = None):
+                                H: float = None,
+                                Debug_Offset: bool = False):
 
     # Creating the 12ft Wooden Elements in Material Supply Table
+    Debugger: float = 0
+    if Debug_Offset == True:
+        Debugger += L
     Element = Cuboid(
         name= el_name,
         # 12ft is equal to 3.6576 meters (which is the maximum length of the Smart Material Table !)
-        pose= [SMART_MAT_TABLE[0]+(H/2), SMART_MAT_TABLE[1]-SMART_MAT_TABLE_MAX_LENGTH+(L/2), SMART_MAT_TABLE[2]+(W/2), 1, 0, 0, 0],
+        pose= [SMART_MAT_TABLE[0]+(H/2), SMART_MAT_TABLE[1]-SMART_MAT_TABLE_MAX_LENGTH+(L/2)-Debugger, SMART_MAT_TABLE[2]+(W/2), 1, 0, 0, 0],
         dims= [H, L, W],
         color= [0.4, 0.2, 0, 1]
     )
@@ -2786,7 +2790,6 @@ def Drag_Stud(el_name: str = None,
     dc=_dynamic_control.acquire_dynamic_control_interface()
     # Creating Element
     Create_Wooden_Element_For_Smart_Mat_Table(el_name= el_name, L= el_dims[0], W= el_dims[1], H= el_dims[2])
-
     while Drag_Counter < Drag_Counts:
         # Attach
         Robot_2.eef_attach(tool_name= "tool0",
@@ -2794,10 +2797,6 @@ def Drag_Stud(el_name: str = None,
         
         # Drag with Linear Restriction !
         # Drag Forward
-                        #         orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32),
-                        # linear_restriction=torch.tensor([1,0,1], dtype=torch.float32)
-
-        Robot_2.release_path_plan_restriction()
         object=dc.get_rigid_body("/"+Robot_2._ROS_JS_robot_indicator+"/tool0")
         object_pose=dc.get_rigid_body_pose(object)
         Robot_2.plan(tcp_name= "tool0",
@@ -2805,16 +2804,13 @@ def Drag_Stud(el_name: str = None,
                         target_orientation= [object_pose.r[3], object_pose.r[0], object_pose.r[1], object_pose.r[2]],
                         update_world_needed= True,
                         removing_primitives=["world/obstacles"],
-                        direct_pose_cost= PoseCostMetric(hold_vec_weight= Robot_2._tensor_args.to_device([1.0, 1.0, 1.0, 1.0, 0.0, 1.0]), hold_partial_pose= True,
-                                                         offset_position= Robot_2._tensor_args.to_device([0.0, ALLOWED_DRAG_STEP, 0.0]),
-                                                         offset_rotation= Robot_2._tensor_args.to_device([0.0, ALLOWED_DRAG_STEP, 0.0])))
+                        direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.0, tstep_fraction=0.001,linear_axis=1))
         Robot_2.render_exec(renderInstance= True,
-                                Show_Sphere= False)
+                                Show_Sphere= True)
 
         Robot_2.eef_detach(tool_name= "tool0",
                            detaching_object_name= el_name)
 
-        Robot_2.release_path_plan_restriction()
         object=dc.get_rigid_body("/"+Robot_2._ROS_JS_robot_indicator+"/tool0")
         object_pose=dc.get_rigid_body_pose(object)
         Robot_2.plan(tcp_name= "tool0",
@@ -2822,11 +2818,9 @@ def Drag_Stud(el_name: str = None,
                         target_orientation= [object_pose.r[3], object_pose.r[0], object_pose.r[1], object_pose.r[2]],
                         update_world_needed= True,
                         removing_primitives=["world/obstacles/R2_Smart_Mat_Table_Box2", "world/obstacles/R2_Smart_Mat_Table_Box1"],
-                        direct_pose_cost= PoseCostMetric(hold_vec_weight= Robot_2._tensor_args.to_device([1.0, 1.0, 1.0, 1.0, 0.0, 1.0]), hold_partial_pose= True,
-                                                         offset_position= Robot_2._tensor_args.to_device([0.0, -ALLOWED_DRAG_STEP, 0.0]),
-                                                         offset_rotation= Robot_2._tensor_args.to_device([0.0, -ALLOWED_DRAG_STEP, 0.0])))
+                        direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.0, tstep_fraction=0.001,linear_axis=1))
         Robot_2.render_exec(renderInstance= True,
-                                Show_Sphere= False)
+                                Show_Sphere= True)
 
         Drag_Counter += 1
     
@@ -2845,7 +2839,7 @@ def Drag_Stud(el_name: str = None,
                     target_orientation= [0, ev, 0, ev],
                     update_world_needed= True,
                     removing_primitives=["world/obstacles"],
-                    direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.01, tstep_fraction=0.001,linear_axis=1))
+                    direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.0, tstep_fraction=0.001,linear_axis=1))
     Robot_2.render_exec(renderInstance= True,
                             Show_Sphere= False)
 
@@ -2859,7 +2853,7 @@ def Drag_Stud(el_name: str = None,
                     target_orientation= [0, ev, 0, ev],
                     update_world_needed= True,
                     removing_primitives=["world/obstacles/R2_Smart_Mat_Table_Box2", "world/obstacles/R2_Smart_Mat_Table_Box1"],
-                    direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.01, tstep_fraction=0.001,linear_axis=1))
+                    direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.0, tstep_fraction=0.001,linear_axis=1))
     Robot_2.render_exec(renderInstance= True,
                             Show_Sphere= False)
     
@@ -2880,8 +2874,10 @@ def RJCK(el_name: str = None,
         L: float = None,
         W: float = 0.04,
         H: float = None):
-    
-    Drag_Stud(el_name= el_name, el_dims= [L, W, H])
+
+    Create_Wooden_Element_For_Smart_Mat_Table(el_name= el_name, L= L, W= W, H= H, Debug_Offset= True)
+
+    # Drag_Stud(el_name= el_name, el_dims= [L, W, H])
     
     Robot_2.free_TCP_movement()
 
@@ -2962,16 +2958,16 @@ def main():
         while time.time() - T <= 5:
             test._my_world.step(render= True)
 
-        # RJCK("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH/2, 0.04, 0.12)
-        # TPL DONE !
+        RJCK("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH/2, 0.04, 0.12)
+        # # TPL DONE !
         # TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
         # # KING Pick to Home Done !
-        KING("Wooden_Element_3", 1.2592, 0.02, 0, 2.4384, 0.04, 0.12)
+        # KING("Wooden_Element_3", 1.2592, 0.02, 0, 2.4384, 0.04, 0.12)
         # KING("Wooden_Element_4", 1.2592, 1.02, 0, 2.4384, 0.04, 0.12)
         # KING("Wooden_Element_5", 1.2592, 2.02, 0, 2.4384, 0.04, 0.12)
-        KING("Wooden_Element_6", 1.2592, 3.02, 0, 2.4384, 0.04, 0.12)
-        # # BPL DONE !
-        BPL("Wooden_Element_2", OVERALL_PANEL_HEIGHT-0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
+        # KING("Wooden_Element_6", 1.2592, 3.02, 0, 2.4384, 0.04, 0.12)
+        # # # BPL DONE !
+        # BPL("Wooden_Element_2", OVERALL_PANEL_HEIGHT-0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
 
         Robot_2.free_TCP_movement(moving_tcp= "tool1")
 
