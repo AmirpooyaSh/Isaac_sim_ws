@@ -157,10 +157,12 @@ SMART_CONV_X_SHIFT: float = 0.09179
 
 # Smart Material Table ZEORO
 SMART_MAT_TABLE: list[float] = [6.444, 4.611, 0.803]
+STUD_TO_SAW_OFFSET: float = 0.12093
 
 # Offset Required to Pick Woods From the Table
 PICK_OFFSET_FROM_L_CORNER: float = 0.05
 PICK_OFFSET_FROM_W_CORNER: float = 0.0061
+JACK_PLACEMENT_SIDE_DRAG: float = 0.1
 
 # Smart Material Table's Maximum Length Capability
 SMART_MAT_TABLE_MAX_LENGTH: float = 3.6576
@@ -2083,7 +2085,7 @@ def Create_Wooden_Element_For_Smart_Mat_Table(el_name: str = None,
                                 Debug_Offset: bool = False):
 
     # Creating the 12ft Wooden Elements in Material Supply Table
-    Debugger: float = 0
+    Debugger: float = STUD_TO_SAW_OFFSET
     if Debug_Offset == True:
         Debugger += L
     Element = Cuboid(
@@ -2875,13 +2877,83 @@ def RJCK(el_name: str = None,
         W: float = 0.04,
         H: float = None):
 
-    Create_Wooden_Element_For_Smart_Mat_Table(el_name= el_name, L= L, W= W, H= H, Debug_Offset= True)
-
     # Drag_Stud(el_name= el_name, el_dims= [L, W, H])
     
+    #[ev, 0, ev, 0]
+    # Pre Pick
+    Robot_2.plan(tcp_name= "tool0",
+                    target_pose= [SMART_MAT_TABLE[0]+PICK_OFFSET_FROM_W_CORNER-0.3,
+                                  SMART_MAT_TABLE[1]-SMART_MAT_TABLE_MAX_LENGTH-STUD_TO_SAW_OFFSET-PICK_OFFSET_FROM_L_CORNER-(ROBOT_2_GRIPPER_LENGTH/2),
+                                  SMART_MAT_TABLE[2]+(W/2)],
+                    target_orientation= [ev, 0, ev, 0],
+                    update_world_needed= True)
+    Robot_2.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+    # Pick
+    Robot_2.plan(tcp_name= "tool0",
+                    target_pose= [SMART_MAT_TABLE[0]+PICK_OFFSET_FROM_W_CORNER,
+                                  SMART_MAT_TABLE[1]-SMART_MAT_TABLE_MAX_LENGTH-STUD_TO_SAW_OFFSET-PICK_OFFSET_FROM_L_CORNER-(ROBOT_2_GRIPPER_LENGTH/2),
+                                  SMART_MAT_TABLE[2]+(W/2)],
+                    target_orientation= [ev, 0, ev, 0],
+                    update_world_needed= True,
+                    removing_primitives=["Smart_Conveyor", "world/obstacles"],
+                    orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
+    Robot_2.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+    # Saw Action
+    Create_Wooden_Element_For_Smart_Mat_Table(el_name= el_name, L= L, W= W, H= H, Debug_Offset= True)
+    Robot_2.eef_attach(tool_name= "tool0", attaching_object_name= el_name)
+    #.....
+
+    # Post Pick
+    Robot_2.plan(tcp_name= "tool0",
+                    target_pose= [SMART_MAT_TABLE[0]+PICK_OFFSET_FROM_W_CORNER-0.3,
+                                  SMART_MAT_TABLE[1]-SMART_MAT_TABLE_MAX_LENGTH-STUD_TO_SAW_OFFSET-PICK_OFFSET_FROM_L_CORNER-(ROBOT_2_GRIPPER_LENGTH/2),
+                                  SMART_MAT_TABLE[2]+(W/2)],
+                    target_orientation= [ev, 0, ev, 0],
+                    update_world_needed= True,
+                    removing_primitives=["Smart_Conveyor", "world/obstacles"],
+                    orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
+    Robot_2.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+    
+    Robot_2.move_to_home()
+
+    # 0, ev, ev, 0
+
+    # Conveyor Move For Placement
+    Side_Selector: float = 0
+    if (OVERALL_PANEL_LENGTH/2)- Y +(SMART_CONV_RANGE_OF_MOTION_J1/2)+NAILING_CONV_TARGET > SMART_CONV_RANGE_OF_MOTION_J1:
+        Side_Selector = -1
+    else:
+        Side_Selector = 1
+
+    Smart_Conv.render_exec('Joint_1', (OVERALL_PANEL_LENGTH/2)- Y +(SMART_CONV_RANGE_OF_MOTION_J1/2)+NAILING_CONV_TARGET*Side_Selector)
+    # Saving Joint Location For Nailing
+    Smart_Conv._nail_poses.append(((OVERALL_PANEL_LENGTH/2)- Y +(SMART_CONV_RANGE_OF_MOTION_J1/2)+NAILING_CONV_TARGET*Side_Selector, Side_Selector))
+
+    # Pre Place
+    Robot_2.plan(tcp_name= "tool0",
+                    target_pose= [2.3+(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT+((L/2)-(ROBOT_2_GRIPPER_LENGTH/2)-SLOPED_TABLE_PICK_OFFSET_FROM_L_CORNER)+0.2,
+                                  NAILING_CONV_TARGET*Side_Selector-JACK_PLACEMENT_SIDE_DRAG,
+                                  SMART_CONV_REST_ELEVATION+H-PICK_OFFSET_FROM_W_CORNER+0.1],
+                    target_orientation= [0, ev, ev, 0],
+                    update_world_needed= True)
+    Robot_2.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+    # Place
+    Robot_2.plan(tcp_name= "tool0",
+                    target_pose= [2.3+(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT+((L/2)-(ROBOT_2_GRIPPER_LENGTH/2)-SLOPED_TABLE_PICK_OFFSET_FROM_L_CORNER),
+                                  NAILING_CONV_TARGET*Side_Selector,
+                                  SMART_CONV_REST_ELEVATION+H-PICK_OFFSET_FROM_W_CORNER],
+                    target_orientation= [0, ev, ev, 0],
+                    update_world_needed= True,
+                    removing_primitives=["Smart_Conveyor", "world/obstacles"],
+                    orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
+    Robot_2.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+
     Robot_2.free_TCP_movement()
-
-
     # # robot 1 move to nailing target
     # self.move_group = self.planning_groups["EF1_NG"]
     # self.pose_goal.orientation.x = -0.6123724
@@ -2958,7 +3030,7 @@ def main():
         while time.time() - T <= 5:
             test._my_world.step(render= True)
 
-        RJCK("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH/2, 0.04, 0.12)
+        RJCK("Wooden_Element_4", 1.6, 1.02, 0, SMART_MAT_TABLE_MAX_LENGTH/3, 0.04, 0.12)
         # # TPL DONE !
         # TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
         # # KING Pick to Home Done !
