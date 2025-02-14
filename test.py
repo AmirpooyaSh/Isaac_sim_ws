@@ -1,4 +1,5 @@
 from scipy.spatial.transform import Rotation as R
+import numpy as np
 
 # def euler_to_quat(roll, pitch, yaw):
 #     quat = R.from_euler('xyz', [roll, pitch, yaw]).as_quat()
@@ -16,7 +17,4 @@ def divide_portions(x, y):
     return portions, remainder
 
 # Example usage
-x = 2
-y = 0.3
-result = divide_portions(x, y)
-print(f"{x} can be divided into {result[0]} portions of length {y}, with a remainder of {result[1]}")
+print(np.tan(0))
