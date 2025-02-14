@@ -57,6 +57,7 @@ from helper import add_extensions, add_robot_to_scene
 from omni.isaac.core.utils.types import ArticulationAction
 from omni.isaac.core.controllers.articulation_controller import ArticulationController
 from omni.isaac.core.prims.xform_prim import XFormPrim
+import omni.isaac.core.utils.prims as prims_utils
 from omni.isaac.core.robots import Robot
 from omni.isaac.core.scenes.scene import Scene
 
@@ -2085,9 +2086,9 @@ def Create_Wooden_Element_For_Smart_Mat_Table(el_name: str = None,
                                 Debug_Offset: bool = False):
 
     # Creating the 12ft Wooden Elements in Material Supply Table
-    Debugger: float = STUD_TO_SAW_OFFSET
-    if Debug_Offset == True:
-        Debugger += L
+    Debugger: float = STUD_TO_SAW_OFFSET+L
+    if Debug_Offset == False:
+        Debugger = 0
     Element = Cuboid(
         name= el_name,
         # 12ft is equal to 3.6576 meters (which is the maximum length of the Smart Material Table !)
@@ -2784,18 +2785,19 @@ def Drag_Stud(el_name: str = None,
     # Letting the Robot to Drag up to 30cm for each step !
     ALLOWED_DRAG_STEP: float = 0.5
     # Robot_2 needs to drag the stud by the Jack's length to let the saw cut it !
-    Drag_Counts: int = el_dims[0] // ALLOWED_DRAG_STEP
-    Drag_Remained: float = np.round(el_dims[0] % ALLOWED_DRAG_STEP, 4)
+    Drag_Counts: int = (el_dims[0]+STUD_TO_SAW_OFFSET) // ALLOWED_DRAG_STEP
+    Drag_Remained: float = np.round((el_dims[0]+STUD_TO_SAW_OFFSET) % ALLOWED_DRAG_STEP, 5)
 
     Drag_Counter: int = 0
 
     dc=_dynamic_control.acquire_dynamic_control_interface()
-    # Creating Element
-    Create_Wooden_Element_For_Smart_Mat_Table(el_name= el_name, L= el_dims[0], W= el_dims[1], H= el_dims[2])
+    # Creating Element (With Respect to the Smart Material Supply's Length)
+    Create_Wooden_Element_For_Smart_Mat_Table(el_name= el_name+"Temp", L= SMART_MAT_TABLE_MAX_LENGTH, W= el_dims[1], H= el_dims[2])
+
     while Drag_Counter < Drag_Counts:
         # Attach
         Robot_2.eef_attach(tool_name= "tool0",
-                           attaching_object_name= el_name)
+                           attaching_object_name= el_name+"Temp")
         
         # Drag with Linear Restriction !
         # Drag Forward
@@ -2808,10 +2810,10 @@ def Drag_Stud(el_name: str = None,
                         removing_primitives=["world/obstacles"],
                         direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.0, tstep_fraction=0.001,linear_axis=1))
         Robot_2.render_exec(renderInstance= True,
-                                Show_Sphere= True)
+                                Show_Sphere= False)
 
         Robot_2.eef_detach(tool_name= "tool0",
-                           detaching_object_name= el_name)
+                           detaching_object_name= el_name+"Temp")
 
         object=dc.get_rigid_body("/"+Robot_2._ROS_JS_robot_indicator+"/tool0")
         object_pose=dc.get_rigid_body_pose(object)
@@ -2822,7 +2824,7 @@ def Drag_Stud(el_name: str = None,
                         removing_primitives=["world/obstacles/R2_Smart_Mat_Table_Box2", "world/obstacles/R2_Smart_Mat_Table_Box1"],
                         direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.0, tstep_fraction=0.001,linear_axis=1))
         Robot_2.render_exec(renderInstance= True,
-                                Show_Sphere= True)
+                                Show_Sphere= False)
 
         Drag_Counter += 1
     
@@ -2830,7 +2832,7 @@ def Drag_Stud(el_name: str = None,
 
     # Attach
     Robot_2.eef_attach(tool_name= "tool0",
-                        attaching_object_name= el_name)
+                        attaching_object_name= el_name+"Temp")
     
     # Drag with Linear Restriction !
     # Drag Forward
@@ -2846,7 +2848,7 @@ def Drag_Stud(el_name: str = None,
                             Show_Sphere= False)
 
     Robot_2.eef_detach(tool_name= "tool0",
-                        detaching_object_name= el_name)
+                        detaching_object_name= el_name+"Temp")
     
     Robot_2.plan(tcp_name= "tool0",
                     target_pose= [SMART_MAT_TABLE[0]+PICK_OFFSET_FROM_W_CORNER,
@@ -2865,9 +2867,13 @@ def Drag_Stud(el_name: str = None,
                                   SMART_MAT_TABLE[1]-SMART_MAT_TABLE_MAX_LENGTH+PICK_OFFSET_FROM_L_CORNER+(ROBOT_2_GRIPPER_LENGTH/2),
                                   SMART_MAT_TABLE[2]+(el_dims[1]/2)],
                     target_orientation= [0, ev, 0, ev],
-                    update_world_needed= True)
+                    update_world_needed= True,
+                    removing_primitives=["world/obstacles/R2_Smart_Mat_Table_Box2", "world/obstacles/R2_Smart_Mat_Table_Box1"],
+                    orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
     Robot_2.render_exec(renderInstance= True,
                             Show_Sphere= False)
+
+    print("DRAGGING DONE ! Lenth Dragged Out To Cut: "+str(el_dims[0])+"m")
 
 def RJCK(el_name: str = None,
         X: float = None,
@@ -2875,10 +2881,11 @@ def RJCK(el_name: str = None,
         Z: float = None,
         L: float = None,
         W: float = 0.04,
-        H: float = None):
+        H: float = None,
+        Is_LJCK: bool = False):
 
-    # Drag_Stud(el_name= el_name, el_dims= [L, W, H])
-    
+    Drag_Stud(el_name= el_name, el_dims= [L, W, H])
+
     #[ev, 0, ev, 0]
     # Pre Pick
     Robot_2.plan(tcp_name= "tool0",
@@ -2901,7 +2908,10 @@ def RJCK(el_name: str = None,
     Robot_2.render_exec(renderInstance= True,
                             Show_Sphere= False)
     # Saw Action
+    # Removing 12ft Primitive and Replacing it with L !
+    prims_utils.delete_prim("/world/obstacles/"+el_name+"Temp")
     Create_Wooden_Element_For_Smart_Mat_Table(el_name= el_name, L= L, W= W, H= H, Debug_Offset= True)
+
     Robot_2.eef_attach(tool_name= "tool0", attaching_object_name= el_name)
     #.....
 
@@ -2932,10 +2942,18 @@ def RJCK(el_name: str = None,
     # Saving Joint Location For Nailing
     Smart_Conv._nail_poses.append(((OVERALL_PANEL_LENGTH/2)- Y +(SMART_CONV_RANGE_OF_MOTION_J1/2)+NAILING_CONV_TARGET*Side_Selector, Side_Selector))
 
+    Jack_Y_Placement_Offset: float = None
+    if Is_LJCK == False :
+        Jack_Y_Placement_Offset =-JACK_PLACEMENT_SIDE_DRAG
+    else:
+        Jack_Y_Placement_Offset = JACK_PLACEMENT_SIDE_DRAG
+
+    # [4.847568999999999, 0.4, 1.1093600000000001]
+    # Robot_2.free_TCP_movement()
     # Pre Place
     Robot_2.plan(tcp_name= "tool0",
-                    target_pose= [2.3+(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT+((L/2)-(ROBOT_2_GRIPPER_LENGTH/2)-SLOPED_TABLE_PICK_OFFSET_FROM_L_CORNER)+0.2,
-                                  NAILING_CONV_TARGET*Side_Selector-JACK_PLACEMENT_SIDE_DRAG,
+                    target_pose= [2.3+(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT+((L/2)-(ROBOT_2_GRIPPER_LENGTH/2)-PICK_OFFSET_FROM_L_CORNER)+0.2,
+                                  NAILING_CONV_TARGET*Side_Selector+Jack_Y_Placement_Offset,
                                   SMART_CONV_REST_ELEVATION+H-PICK_OFFSET_FROM_W_CORNER+0.1],
                     target_orientation= [0, ev, ev, 0],
                     update_world_needed= True)
@@ -2943,7 +2961,7 @@ def RJCK(el_name: str = None,
                             Show_Sphere= False)
     # Place
     Robot_2.plan(tcp_name= "tool0",
-                    target_pose= [2.3+(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT+((L/2)-(ROBOT_2_GRIPPER_LENGTH/2)-SLOPED_TABLE_PICK_OFFSET_FROM_L_CORNER),
+                    target_pose= [2.3+(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT+((L/2)-(ROBOT_2_GRIPPER_LENGTH/2)-PICK_OFFSET_FROM_L_CORNER),
                                   NAILING_CONV_TARGET*Side_Selector,
                                   SMART_CONV_REST_ELEVATION+H-PICK_OFFSET_FROM_W_CORNER],
                     target_orientation= [0, ev, ev, 0],
@@ -2953,7 +2971,25 @@ def RJCK(el_name: str = None,
     Robot_2.render_exec(renderInstance= True,
                             Show_Sphere= False)
 
-    Robot_2.free_TCP_movement()
+    # Detech
+    Robot_2.eef_detach(tool_name="tool0",
+                        detaching_object_name= el_name)
+    Smart_Conv.attach_object_to_conv(obj_name= el_name)
+
+    # Post Place
+    Robot_2.plan(tcp_name= "tool0",
+                    target_pose= [2.3+(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT+((L/2)-(ROBOT_2_GRIPPER_LENGTH/2)-PICK_OFFSET_FROM_L_CORNER)+0.2,
+                                  NAILING_CONV_TARGET*Side_Selector+Jack_Y_Placement_Offset,
+                                  SMART_CONV_REST_ELEVATION+H-PICK_OFFSET_FROM_W_CORNER+0.1],
+                    target_orientation= [0, ev, ev, 0],
+                    update_world_needed= True,
+                    removing_primitives=["Smart_Conveyor", "world/obstacles"],
+                    orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
+    Robot_2.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+
+    Robot_2.move_to_home()
+
     # # robot 1 move to nailing target
     # self.move_group = self.planning_groups["EF1_NG"]
     # self.pose_goal.orientation.x = -0.6123724
@@ -2973,18 +3009,9 @@ def LJCK(el_name: str = None,
         L: float = None,
         W: float = None,
         H: float = None):
-    
-    # # robot 1 move to nailing target
-    # self.move_group = self.planning_groups["EF1_NG"]
-    # self.pose_goal.orientation.x = 0.6123724
-    # self.pose_goal.orientation.y = 0.6123724
-    # self.pose_goal.orientation.z = -0.3535534
-    # self.pose_goal.orientation.w = 0.3535534
-    # self.pose_goal.position.x = final_object_pose.position.x - box_size[1]*0.5 + 0.06096
-    # self.pose_goal.position.y = final_object_pose.position.y + box_size[0]*0.5
-    # self.pose_goal.position.z = final_object_pose.position.z + box_size[2]/6
-    # self.plan_and_execute(self.pose_goal)    
-    r=1
+    # Same As RJCK !
+    RJCK(el_name= el_name, X= X, Y= Y, Z= Z, L= L, W= W, H= H, Is_LJCK= True)
+
 
 ###########
 ####END####
@@ -3030,16 +3057,23 @@ def main():
         while time.time() - T <= 5:
             test._my_world.step(render= True)
 
-        RJCK("Wooden_Element_4", 1.6, 1.02, 0, SMART_MAT_TABLE_MAX_LENGTH/3, 0.04, 0.12)
-        # # TPL DONE !
-        # TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
-        # # KING Pick to Home Done !
-        # KING("Wooden_Element_3", 1.2592, 0.02, 0, 2.4384, 0.04, 0.12)
-        # KING("Wooden_Element_4", 1.2592, 1.02, 0, 2.4384, 0.04, 0.12)
-        # KING("Wooden_Element_5", 1.2592, 2.02, 0, 2.4384, 0.04, 0.12)
-        # KING("Wooden_Element_6", 1.2592, 3.02, 0, 2.4384, 0.04, 0.12)
+        # TPL DONE !
+        TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
+        # KING Pick to Home Done !
+        KING("Wooden_Element_2", 1.2592, 0.02, 0, 2.4384, 0.04, 0.12)
+        KING("Wooden_Element_3", 1.2592, 0.5, 0, 2.4384, 0.04, 0.12)
+        KING("Wooden_Element_4", 1.2592, 1.0, 0, 2.4384, 0.04, 0.12)
+        KING("Wooden_Element_5", 1.2592, 1.5, 0, 2.4384, 0.04, 0.12)
+        KING("Wooden_Element_6", 1.2592, 1.62, 0, 2.4384, 0.04, 0.12)
+        KING("Wooden_Element_7", 1.2592, 2.42, 0, 2.4384, 0.04, 0.12)
+        KING("Wooden_Element_8", 1.2592, 2.92, 0, 2.4384, 0.04, 0.12)
+        KING("Wooden_Element_9", 1.2592, 3.42, 0, 2.4384, 0.04, 0.12)
+        KING("Wooden_Element_10", 1.2592, SMART_MAT_TABLE_MAX_LENGTH-0.02, 0, 2.4384, 0.04, 0.12)
+
+        RJCK("Wooden_Element_11", 1.4784, 2.38, 0, 2, 0.04, 0.12)
+        LJCK("Wooden_Element_12", 1.4784, 1.66, 0, 2, 0.04, 0.12)
         # # # BPL DONE !
-        # BPL("Wooden_Element_2", OVERALL_PANEL_HEIGHT-0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
+        BPL("Wooden_Element_13", OVERALL_PANEL_HEIGHT-0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
 
         Robot_2.free_TCP_movement(moving_tcp= "tool1")
 
