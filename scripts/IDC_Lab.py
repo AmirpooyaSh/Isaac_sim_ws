@@ -166,7 +166,7 @@ PICK_OFFSET_FROM_W_CORNER: float = 0.0061
 
 JACK_PLACEMENT_SIDE_DRAG: float = 0.1
 # This represents the angle in which Robot 1 will nail the Jacks to the Kings ! (20 To 45 is a good range)
-JACK_SIDE_NAILING_ANGLE: float = 20
+JACK_SIDE_NAILING_ANGLE: float = 30
 JACK_NAILING_OFFSET: float = 0.1
 
 # Smart Material Table's Maximum Length Capability
@@ -547,7 +547,7 @@ class CuRoboConv(object):
         self._temp_world_manager._my_world.step(render= True)    
 
         Time = time.time()
-        while time.time() - Time <= 2:
+        while time.time() - Time <= 0.1:
             self._temp_world_manager._my_world.step(render= True)
         
         # Fix Jointing Stud To Conveyor
@@ -1223,7 +1223,7 @@ class CuRoboRobot(object):
         print(f"Pose (X,Y,Z): {target_pose}, Orientation (W,X,Y,Z): {target_orientation}")
 
         # Giving a 10-second timer to solve IK
-        while (time.time() - TimeOut_Timer <= 60):
+        while (time.time() - TimeOut_Timer <= 10):
             # Render
             self._temp_world_manager._my_world.step(render=True)
             # 2. Getting Current JS
@@ -1777,7 +1777,7 @@ Robot_1 = None
 Robot_1 = CuRoboRobot(working_world=test, 
                 R_Name="IRB6620_R1",
                 pose=[0,0,0.025],
-                input_tool="tool0", 
+                input_tool="tool2", 
                 w_dir=INSTALLATION_DIRECTORY+"/Isaac_sim_ws/robot", 
                 r_conf_name="IRB6620_Config.yaml",
                 Gripper_List=[RobotGripper(RobName= "IRB6620_R1",
@@ -2111,6 +2111,10 @@ def Robot_2_Do_Side_Nail(push_to_nail: float = None,
     # Y 1
     # Z TBD
     for target in Smart_Conv._nail_poses:
+        # Check if the target is reachable or not (for the conveyor !)
+        if(target[0]+(NAILING_CONV_TARGET*target[1]) > SMART_CONV_RANGE_OF_MOTION_J1):
+            Replacing_Target: Tuple[float, float] = (target[0]-2*NAILING_CONV_TARGET, -target[1])
+            target = Replacing_Target
         Smart_Conv.render_exec('Joint_1', target[0]+(NAILING_CONV_TARGET*target[1]))
         ###
         ### Nailing For That KING/1ST
@@ -2886,19 +2890,30 @@ def Robot_1_Do_Jack_Nail(push_to_nail: float = None,
                          el_dims: List[float] = [],
                          Is_LJCK: bool = False,
                          Side_Selector: float = 1):
+    
+    Left_Jack_Checker: float = 0
+    if (Is_LJCK == False):
+        Left_Jack_Checker = 1
+    else:
+        Left_Jack_Checker = -1
+
     # [-90, 0, 90]
     # [0.5, -0.5, 0.5, 0.5]
-    quat = R.from_euler('xyz', [(-np.pi/2)-np.radians(JACK_SIDE_NAILING_ANGLE), 0, np.pi/2]).as_quat()
+    quat = R.from_euler('xyz', [((np.pi/2)+np.radians(JACK_SIDE_NAILING_ANGLE))*(-Left_Jack_Checker), 0, (np.pi/2)*(Left_Jack_Checker)]).as_quat()
     quat[1] *= -1
 
     # Pre Nail
-    Robot_1.plan(tcp_name= "tool2",
+    Nail_Doable: bool = Robot_1.plan(tcp_name= "tool2",
                     target_pose= [2.3+(el_pose[0]-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT-(el_dims[0]/2)+0.06096,
-                                  NAILING_CONV_TARGET*Side_Selector+((JACK_NAILING_OFFSET*np.cos(np.radians(JACK_SIDE_NAILING_ANGLE)))*(-Side_Selector)),
-                                  SMART_CONV_REST_ELEVATION+(el_dims[2]*0.3)+((JACK_NAILING_OFFSET)*(Side_Selector)*np.sin(np.radians(JACK_SIDE_NAILING_ANGLE)))],
+                                  NAILING_CONV_TARGET*Side_Selector+((JACK_NAILING_OFFSET*np.cos(np.radians(JACK_SIDE_NAILING_ANGLE)))*(-Left_Jack_Checker)),
+                                  SMART_CONV_REST_ELEVATION+(el_dims[2]*0.3)+((JACK_NAILING_OFFSET)*np.sin(np.radians(JACK_SIDE_NAILING_ANGLE)))],
                     target_orientation= [quat[3], quat[0], quat[1], quat[2]],
-                    update_world_needed= True,
-                    removing_primitives=["Smart_Conveyor", "world/obstacles"])
+                    update_world_needed= True)
+    
+    if(Nail_Doable == False):
+        print("Robot 1 Cannot Nail The Jack to the King (Joint Limitation !!!)")
+        return
+
     Robot_1.render_exec(renderInstance= True,
                             Show_Sphere= False)
 
@@ -2909,7 +2924,7 @@ def Robot_1_Do_Jack_Nail(push_to_nail: float = None,
     object_pose=dc.get_rigid_body_pose(object)
     Robot_1.plan(tcp_name= "tool2",
                     target_pose= [object_pose.p[0],
-                                  object_pose.p[1]+(Side_Selector*(JACK_NAILING_OFFSET-((el_dims[1]/2)/np.cos(np.radians(JACK_SIDE_NAILING_ANGLE)))+push_to_nail))*np.cos(np.radians(JACK_SIDE_NAILING_ANGLE)),
+                                  object_pose.p[1]+(Left_Jack_Checker*(JACK_NAILING_OFFSET-((el_dims[1]/2)/np.cos(np.radians(JACK_SIDE_NAILING_ANGLE)))+push_to_nail))*np.cos(np.radians(JACK_SIDE_NAILING_ANGLE)),
                                   object_pose.p[2]-((JACK_NAILING_OFFSET-((el_dims[1]/2)/np.cos(np.radians(JACK_SIDE_NAILING_ANGLE)))+push_to_nail))*np.sin(np.radians(JACK_SIDE_NAILING_ANGLE))],
                     target_orientation= [object_pose.r[3], object_pose.r[0], object_pose.r[1], object_pose.r[2]],
                     update_world_needed= True,
@@ -2924,7 +2939,7 @@ def Robot_1_Do_Jack_Nail(push_to_nail: float = None,
     object_pose=dc.get_rigid_body_pose(object)
     Robot_1.plan(tcp_name= "tool2",
                     target_pose= [object_pose.p[0],
-                                  object_pose.p[1]-(Side_Selector*(JACK_NAILING_OFFSET-((el_dims[1]/2)/np.cos(np.radians(JACK_SIDE_NAILING_ANGLE)))+push_to_nail))*np.cos(np.radians(JACK_SIDE_NAILING_ANGLE)),
+                                  object_pose.p[1]-(Left_Jack_Checker*(JACK_NAILING_OFFSET-((el_dims[1]/2)/np.cos(np.radians(JACK_SIDE_NAILING_ANGLE)))+push_to_nail))*np.cos(np.radians(JACK_SIDE_NAILING_ANGLE)),
                                   object_pose.p[2]+((JACK_NAILING_OFFSET-((el_dims[1]/2)/np.cos(np.radians(JACK_SIDE_NAILING_ANGLE)))+push_to_nail))*np.sin(np.radians(JACK_SIDE_NAILING_ANGLE))],
                     target_orientation= [object_pose.r[3], object_pose.r[0], object_pose.r[1], object_pose.r[2]],
                     update_world_needed= True,
@@ -2952,7 +2967,7 @@ def Robot_1_Do_Jack_Nail(push_to_nail: float = None,
     object_pose=dc.get_rigid_body_pose(object)
     Robot_1.plan(tcp_name= "tool2",
                     target_pose= [object_pose.p[0],
-                                  object_pose.p[1]+(Side_Selector*(JACK_NAILING_OFFSET-((el_dims[1]/2)/np.cos(np.radians(JACK_SIDE_NAILING_ANGLE)))+push_to_nail))*np.cos(np.radians(JACK_SIDE_NAILING_ANGLE)),
+                                  object_pose.p[1]+(Left_Jack_Checker*(JACK_NAILING_OFFSET-((el_dims[1]/2)/np.cos(np.radians(JACK_SIDE_NAILING_ANGLE)))+push_to_nail))*np.cos(np.radians(JACK_SIDE_NAILING_ANGLE)),
                                   object_pose.p[2]-((JACK_NAILING_OFFSET-((el_dims[1]/2)/np.cos(np.radians(JACK_SIDE_NAILING_ANGLE)))+push_to_nail))*np.sin(np.radians(JACK_SIDE_NAILING_ANGLE))],
                     target_orientation= [object_pose.r[3], object_pose.r[0], object_pose.r[1], object_pose.r[2]],
                     update_world_needed= True,
@@ -2966,7 +2981,7 @@ def Robot_1_Do_Jack_Nail(push_to_nail: float = None,
     object_pose=dc.get_rigid_body_pose(object)
     Robot_1.plan(tcp_name= "tool2",
                     target_pose= [object_pose.p[0],
-                                  object_pose.p[1]-(Side_Selector*(JACK_NAILING_OFFSET-((el_dims[1]/2)/np.cos(np.radians(JACK_SIDE_NAILING_ANGLE)))+push_to_nail))*np.cos(np.radians(JACK_SIDE_NAILING_ANGLE)),
+                                  object_pose.p[1]-(Left_Jack_Checker*(JACK_NAILING_OFFSET-((el_dims[1]/2)/np.cos(np.radians(JACK_SIDE_NAILING_ANGLE)))+push_to_nail))*np.cos(np.radians(JACK_SIDE_NAILING_ANGLE)),
                                   object_pose.p[2]+((JACK_NAILING_OFFSET-((el_dims[1]/2)/np.cos(np.radians(JACK_SIDE_NAILING_ANGLE)))+push_to_nail))*np.sin(np.radians(JACK_SIDE_NAILING_ANGLE))],
                     target_orientation= [object_pose.r[3], object_pose.r[0], object_pose.r[1], object_pose.r[2]],
                     update_world_needed= True,
@@ -2976,9 +2991,6 @@ def Robot_1_Do_Jack_Nail(push_to_nail: float = None,
                             Show_Sphere= False)
 
     Robot_1.move_to_home()
-
-    Robot_1.free_TCP_movement("tool2")
-
 
 def RJCK(el_name: str = None,
         X: float = None,
@@ -3034,21 +3046,24 @@ def RJCK(el_name: str = None,
 
     # Conveyor Move For Placement
     Side_Selector: float = 0
-    if (OVERALL_PANEL_LENGTH/2)- Y +(SMART_CONV_RANGE_OF_MOTION_J1/2)+NAILING_CONV_TARGET > SMART_CONV_RANGE_OF_MOTION_J1:
-        Side_Selector = -1
-    else:
+    Jack_Y_Placement_Offset: float = None
+
+    if (Is_LJCK == False):
         Side_Selector = 1
+        Jack_Y_Placement_Offset =-JACK_PLACEMENT_SIDE_DRAG
+        if ((OVERALL_PANEL_LENGTH/2)- Y +(SMART_CONV_RANGE_OF_MOTION_J1/2)+NAILING_CONV_TARGET > SMART_CONV_RANGE_OF_MOTION_J1):
+            Side_Selector = -1
+
+    if (Is_LJCK == True):
+        Side_Selector = -1
+        Jack_Y_Placement_Offset = JACK_PLACEMENT_SIDE_DRAG
+        if ((OVERALL_PANEL_LENGTH/2)- Y +(SMART_CONV_RANGE_OF_MOTION_J1/2)+NAILING_CONV_TARGET < 0):
+            Side_Selector = 1
 
     Smart_Conv.render_exec('Joint_1', (OVERALL_PANEL_LENGTH/2)- Y +(SMART_CONV_RANGE_OF_MOTION_J1/2)+NAILING_CONV_TARGET*Side_Selector)
     # Saving Joint Location For Nailing
     Smart_Conv._nail_poses.append(((OVERALL_PANEL_LENGTH/2)- Y +(SMART_CONV_RANGE_OF_MOTION_J1/2)+NAILING_CONV_TARGET*Side_Selector, Side_Selector))
-
-    Jack_Y_Placement_Offset: float = None
-    if Is_LJCK == False :
-        Jack_Y_Placement_Offset =-JACK_PLACEMENT_SIDE_DRAG
-    else:
-        Jack_Y_Placement_Offset = JACK_PLACEMENT_SIDE_DRAG
-
+        
     Robot_2.move_to_home()
 
     # Pre Place
@@ -3078,13 +3093,13 @@ def RJCK(el_name: str = None,
     Smart_Conv.attach_object_to_conv(obj_name= el_name)
 
     # Robot 1 Nail !!
-    PUSH_TO_NAIL_OFFSET: float = 0
+    PUSH_TO_NAIL_OFFSET: float = 0.01
     Robot_1_Do_Jack_Nail(push_to_nail=PUSH_TO_NAIL_OFFSET, el_pose=[X,Y,Z], el_dims=[L,W,H], Is_LJCK= Is_LJCK, Side_Selector= Side_Selector)
 
     # Post Place
     Robot_2.plan(tcp_name= "tool0",
                     target_pose= [2.3+(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT+((L/2)-(ROBOT_2_GRIPPER_LENGTH/2)-PICK_OFFSET_FROM_L_CORNER)+0.2,
-                                  NAILING_CONV_TARGET*Side_Selector+Jack_Y_Placement_Offset,
+                                  NAILING_CONV_TARGET*Side_Selector,
                                   SMART_CONV_REST_ELEVATION+H-PICK_OFFSET_FROM_W_CORNER+0.1],
                     target_orientation= [0, ev, ev, 0],
                     update_world_needed= True,
@@ -3158,15 +3173,15 @@ def main():
         # for robot in robots:
         #         robot.ros_js_publisher()
 
-        # T = time.time()
-        # while time.time() - T <= 5:
-        #     test._my_world.step(render= True)
+        T = time.time()
+        while time.time() - T <= 5:
+            test._my_world.step(render= True)
 
         # TPL DONE !
         # TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
         # KING DONE !
-        # KING("Wooden_Element_2", 1.2592, 0.02, 0, 2.4384, 0.04, 0.12)
-        # KING("Wooden_Element_3", 1.2592, 0.4, 0, 2.4384, 0.04, 0.12)
+        KING("Wooden_Element_2", 1.2592, 0.02, 0, 2.4384, 0.04, 0.12)
+        KING("Wooden_Element_3", 1.2592, 0.4, 0, 2.4384, 0.04, 0.12)
         # KING("Wooden_Element_4", 1.2592, 0.9, 0, 2.4384, 0.04, 0.12)
         # KING("Wooden_Element_5", 1.2592, 1.4, 0, 2.4384, 0.04, 0.12)
         # KING("Wooden_Element_6", 1.2592, 1.52, 0, 2.4384, 0.04, 0.12)
@@ -3175,12 +3190,12 @@ def main():
         # KING("Wooden_Element_9", 1.2592, 3.14, 0, 2.4384, 0.04, 0.12)
         # KING("Wooden_Element_10", 1.2592, SMART_MAT_TABLE_MAX_LENGTH-0.02, 0, 2.4384, 0.04, 0.12)
 
-        # JACK NAIL !
-        RJCK("Wooden_Element_11", 1.4784, 2.48, 0, 2, 0.04, 0.12)
-        LJCK("Wooden_Element_12", 1.4784, 1.56, 0, 2, 0.04, 0.12)
+        # JACK DONE !
+        # LJCK("Wooden_Element_12", 1.4784, 1.56, 0, 2, 0.04, 0.12)
+        # RJCK("Wooden_Element_11", 1.4784, 2.48, 0, 2, 0.04, 0.12)
 
         # BPL DONE !
-        # BPL("Wooden_Element_13", OVERALL_PANEL_HEIGHT-0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
+        BPL("Wooden_Element_13", OVERALL_PANEL_HEIGHT-0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
 
         Robot_2.free_TCP_movement(moving_tcp= "tool1")
 

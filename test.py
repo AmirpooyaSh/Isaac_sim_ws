@@ -17,4 +17,6 @@ def divide_portions(x, y):
     return portions, remainder
 
 # Example usage
-print(np.tan(0))
+quat = R.from_euler('xyz', [(np.pi/2), 0, -np.pi/2]).as_quat()
+quat[1] *= -1
+print(quat)
