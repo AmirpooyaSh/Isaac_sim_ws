@@ -212,8 +212,6 @@ class WorldManager(object):
         super(WorldManager, self).__init__()
         # Giving the World (Meter Scale)
         self._my_world = World(stage_units_in_meters=1.0)
-        # Creating "Prim !"
-        self._my_world.get_physics_context().set_gravity(0.0)
 
         self._stage = self._my_world.stage
         self._xform = self._stage.DefinePrim("/World", "Xform")
@@ -1785,7 +1783,7 @@ Robot_1 = None
 Robot_1 = CuRoboRobot(working_world=test, 
                 R_Name="IRB6620_R1",
                 pose=[0,0,0.025],
-                input_tool="tool2", 
+                input_tool="tool0", 
                 w_dir=INSTALLATION_DIRECTORY+"/Isaac_sim_ws/robot", 
                 r_conf_name="IRB6620_Config.yaml",
                 Gripper_List=[RobotGripper(RobName= "IRB6620_R1",
@@ -2373,7 +2371,7 @@ def TPL(el_name: str = None,
                     orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
     Robot_2.render_exec(renderInstance= True,
                             Show_Sphere= False)
-
+    
     # Creating the Wooden Element Within the Smart Material Supply
     Create_Wooden_Element_For_Smart_Mat_Table(el_name= el_name, L= L, W= W, H= H)
 
@@ -3030,6 +3028,7 @@ def RJCK(el_name: str = None,
                     update_world_needed= True,
                     removing_primitives=["Smart_Conveyor", "world/obstacles"],
                     orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
+
     Robot_2.render_exec(renderInstance= True,
                             Show_Sphere= False)
     # Saw Action
@@ -3076,28 +3075,32 @@ def RJCK(el_name: str = None,
 
     # Pre Place
     Robot_2.plan(tcp_name= "tool0",
-                    target_pose= [2.3+(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT+((L/2)-(ROBOT_2_GRIPPER_LENGTH/2)-PICK_OFFSET_FROM_L_CORNER)+0.2,
-                                  NAILING_CONV_TARGET*Side_Selector+Jack_Y_Placement_Offset,
-                                  SMART_CONV_REST_ELEVATION+H-PICK_OFFSET_FROM_W_CORNER+0.1],
-                    target_orientation= [0, ev, ev, 0],
-                    update_world_needed= True)
-    Robot_2.render_exec(renderInstance= True,
-                            Show_Sphere= False)
-    # Place
-    Robot_2.plan(tcp_name= "tool0",
                     target_pose= [2.3+(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT+((L/2)-(ROBOT_2_GRIPPER_LENGTH/2)-PICK_OFFSET_FROM_L_CORNER),
                                   NAILING_CONV_TARGET*Side_Selector,
-                                  SMART_CONV_REST_ELEVATION+H-PICK_OFFSET_FROM_W_CORNER],
+                                  SMART_CONV_REST_ELEVATION+H-PICK_OFFSET_FROM_W_CORNER+0.1],
                     target_orientation= [0, ev, ev, 0],
                     update_world_needed= True,
-                    removing_primitives=["Smart_Conveyor", "world/obstacles"],
-                    orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
+                    removing_primitives=["Smart_Conveyor", "world/obstacles"])
     Robot_2.render_exec(renderInstance= True,
                             Show_Sphere= False)
+
+    # Place
+    # Robot_2.plan(tcp_name= "tool0",
+    #                 target_pose= [2.3+(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT+((L/2)-(ROBOT_2_GRIPPER_LENGTH/2)-PICK_OFFSET_FROM_L_CORNER),
+    #                               NAILING_CONV_TARGET*Side_Selector,
+    #                               SMART_CONV_REST_ELEVATION+H-PICK_OFFSET_FROM_W_CORNER],
+    #                 target_orientation= [0, ev, ev, 0],
+    #                 update_world_needed= True,
+    #                 removing_primitives=["Smart_Conveyor", "world/obstacles"],
+    #                 orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
+    # Robot_2.render_exec(renderInstance= True,
+    #                         Show_Sphere= False)
 
     # Detech
     Robot_2.eef_detach(tool_name="tool0",
                         detaching_object_name= el_name)
+    # Enabling Gravity For The Stud
+    test._stage.GetPrimAtPath("/world/obstacles/" + el_name).GetAttribute("physxRigidBody:disableGravity").Set(False)
     Smart_Conv.attach_object_to_conv(obj_name= el_name)
 
     # Robot 1 Nail !!
@@ -3105,16 +3108,16 @@ def RJCK(el_name: str = None,
     Robot_1_Do_Jack_Nail(push_to_nail=PUSH_TO_NAIL_OFFSET, el_pose=[X,Y,Z], el_dims=[L,W,H], Is_LJCK= Is_LJCK, Side_Selector= Side_Selector)
 
     # Post Place
-    Robot_2.plan(tcp_name= "tool0",
-                    target_pose= [2.3+(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT+((L/2)-(ROBOT_2_GRIPPER_LENGTH/2)-PICK_OFFSET_FROM_L_CORNER)+0.2,
-                                  NAILING_CONV_TARGET*Side_Selector,
-                                  SMART_CONV_REST_ELEVATION+H-PICK_OFFSET_FROM_W_CORNER+0.1],
-                    target_orientation= [0, ev, ev, 0],
-                    update_world_needed= True,
-                    removing_primitives=["Smart_Conveyor", "world/obstacles"],
-                    orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
-    Robot_2.render_exec(renderInstance= True,
-                            Show_Sphere= False)
+    # Robot_2.plan(tcp_name= "tool0",
+    #                 target_pose= [2.3+(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT+((L/2)-(ROBOT_2_GRIPPER_LENGTH/2)-PICK_OFFSET_FROM_L_CORNER)+0.2,
+    #                               NAILING_CONV_TARGET*Side_Selector,
+    #                               SMART_CONV_REST_ELEVATION+H-PICK_OFFSET_FROM_W_CORNER+0.1],
+    #                 target_orientation= [0, ev, ev, 0],
+    #                 update_world_needed= True,
+    #                 removing_primitives=["Smart_Conveyor", "world/obstacles"],
+    #                 orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
+    # Robot_2.render_exec(renderInstance= True,
+    #                         Show_Sphere= False)
 
     Robot_2.move_to_home()
 
@@ -3185,25 +3188,27 @@ def main():
         while time.time() - T <= 5:
             test._my_world.step(render= True)
 
+        Robot_1.free_TCP_movement(moving_tcp= "tool1")
+
         # TPL DONE !
-        TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
+        # TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
         # KING DONE !
-        KING("Wooden_Element_2", 1.2592, 0.02, 0, 2.4384, 0.04, 0.12)
-        KING("Wooden_Element_3", 1.2592, 0.4, 0, 2.4384, 0.04, 0.12)
-        KING("Wooden_Element_4", 1.2592, 0.9, 0, 2.4384, 0.04, 0.12)
-        KING("Wooden_Element_5", 1.2592, 1.4, 0, 2.4384, 0.04, 0.12)
-        KING("Wooden_Element_6", 1.2592, 1.52, 0, 2.4384, 0.04, 0.12)
-        KING("Wooden_Element_7", 1.2592, 2.52, 0, 2.4384, 0.04, 0.12)
-        KING("Wooden_Element_8", 1.2592, 2.64, 0, 2.4384, 0.04, 0.12)
-        KING("Wooden_Element_9", 1.2592, 3.14, 0, 2.4384, 0.04, 0.12)
-        KING("Wooden_Element_10", 1.2592, SMART_MAT_TABLE_MAX_LENGTH-0.02, 0, 2.4384, 0.04, 0.12)
+        # KING("Wooden_Element_2", 1.2592, 0.02, 0, 2.4384, 0.04, 0.12)
+        # KING("Wooden_Element_3", 1.2592, 0.4, 0, 2.4384, 0.04, 0.12)
+        # KING("Wooden_Element_4", 1.2592, 0.9, 0, 2.4384, 0.04, 0.12)
+        # KING("Wooden_Element_5", 1.2592, 1.4, 0, 2.4384, 0.04, 0.12)
+        # KING("Wooden_Element_6", 1.2592, 1.52, 0, 2.4384, 0.04, 0.12)
+        # KING("Wooden_Element_7", 1.2592, 2.52, 0, 2.4384, 0.04, 0.12)
+        # KING("Wooden_Element_8", 1.2592, 2.64, 0, 2.4384, 0.04, 0.12)
+        # KING("Wooden_Element_9", 1.2592, 3.14, 0, 2.4384, 0.04, 0.12)
+        # KING("Wooden_Element_10", 1.2592, SMART_MAT_TABLE_MAX_LENGTH-0.02, 0, 2.4384, 0.04, 0.12)
 
         # JACK DONE !
-        LJCK("Wooden_Element_12", 1.4784, 1.56, 0, 2, 0.04, 0.12)
-        RJCK("Wooden_Element_11", 1.4784, 2.48, 0, 2, 0.04, 0.12)
+        # LJCK("Wooden_Element_12", 1.4784, 1.56, 0, 2, 0.04, 0.12)
+        # RJCK("Wooden_Element_11", 1.4784, 2.48, 0, 2, 0.04, 0.12)
 
-        # BPL DONE !
-        BPL("Wooden_Element_13", OVERALL_PANEL_HEIGHT-0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
+        # # BPL DONE !
+        # BPL("Wooden_Element_13", OVERALL_PANEL_HEIGHT-0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
 
         Robot_2.free_TCP_movement(moving_tcp= "tool1")
 
