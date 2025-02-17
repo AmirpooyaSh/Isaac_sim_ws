@@ -213,6 +213,8 @@ class WorldManager(object):
         # Giving the World (Meter Scale)
         self._my_world = World(stage_units_in_meters=1.0)
         # Creating "Prim !"
+        self._my_world.get_physics_context().set_gravity(0.0)
+
         self._stage = self._my_world.stage
         self._xform = self._stage.DefinePrim("/World", "Xform")
         self._stage.SetDefaultPrim(self._xform)
@@ -432,6 +434,12 @@ class CuRoboConv(object):
         # Not Tested ! Might Cause Failures !
         # self._L1_Prim = self._temp_world_manager._stage.GetPrimAtPath("/" + Conv_Name + "/Link_1/collisions")
         # self._Collider_Off = self._L1_Prim.GetAttribute("physics:collisionEnabled").Set(False)
+
+        self._TL_Prim = self._temp_world_manager._stage.GetPrimAtPath("/" + Conv_Name + "/track_link/collisions")
+        self._Collider_Off = self._TL_Prim.GetAttribute("physics:collisionEnabled").Set(False)
+
+        self._BL_Prim = self._temp_world_manager._stage.GetPrimAtPath("/" + Conv_Name + "/base_link/collisions")
+        self._Collider_Off = self._BL_Prim.GetAttribute("physics:collisionEnabled").Set(False)
 
         self._L1_Prim = self._temp_world_manager._stage.GetPrimAtPath("/" + Conv_Name + "/Link_1/collisions")
         self._Collider_Off = self._L1_Prim.GetAttribute("physics:collisionEnabled").Set(False)
@@ -3178,21 +3186,21 @@ def main():
             test._my_world.step(render= True)
 
         # TPL DONE !
-        # TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
+        TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
         # KING DONE !
         KING("Wooden_Element_2", 1.2592, 0.02, 0, 2.4384, 0.04, 0.12)
         KING("Wooden_Element_3", 1.2592, 0.4, 0, 2.4384, 0.04, 0.12)
-        # KING("Wooden_Element_4", 1.2592, 0.9, 0, 2.4384, 0.04, 0.12)
-        # KING("Wooden_Element_5", 1.2592, 1.4, 0, 2.4384, 0.04, 0.12)
-        # KING("Wooden_Element_6", 1.2592, 1.52, 0, 2.4384, 0.04, 0.12)
-        # KING("Wooden_Element_7", 1.2592, 2.52, 0, 2.4384, 0.04, 0.12)
-        # KING("Wooden_Element_8", 1.2592, 2.64, 0, 2.4384, 0.04, 0.12)
-        # KING("Wooden_Element_9", 1.2592, 3.14, 0, 2.4384, 0.04, 0.12)
-        # KING("Wooden_Element_10", 1.2592, SMART_MAT_TABLE_MAX_LENGTH-0.02, 0, 2.4384, 0.04, 0.12)
+        KING("Wooden_Element_4", 1.2592, 0.9, 0, 2.4384, 0.04, 0.12)
+        KING("Wooden_Element_5", 1.2592, 1.4, 0, 2.4384, 0.04, 0.12)
+        KING("Wooden_Element_6", 1.2592, 1.52, 0, 2.4384, 0.04, 0.12)
+        KING("Wooden_Element_7", 1.2592, 2.52, 0, 2.4384, 0.04, 0.12)
+        KING("Wooden_Element_8", 1.2592, 2.64, 0, 2.4384, 0.04, 0.12)
+        KING("Wooden_Element_9", 1.2592, 3.14, 0, 2.4384, 0.04, 0.12)
+        KING("Wooden_Element_10", 1.2592, SMART_MAT_TABLE_MAX_LENGTH-0.02, 0, 2.4384, 0.04, 0.12)
 
         # JACK DONE !
-        # LJCK("Wooden_Element_12", 1.4784, 1.56, 0, 2, 0.04, 0.12)
-        # RJCK("Wooden_Element_11", 1.4784, 2.48, 0, 2, 0.04, 0.12)
+        LJCK("Wooden_Element_12", 1.4784, 1.56, 0, 2, 0.04, 0.12)
+        RJCK("Wooden_Element_11", 1.4784, 2.48, 0, 2, 0.04, 0.12)
 
         # BPL DONE !
         BPL("Wooden_Element_13", OVERALL_PANEL_HEIGHT-0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
