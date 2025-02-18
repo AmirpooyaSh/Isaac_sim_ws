@@ -146,6 +146,10 @@ INSTALLATION_DIRECTORY: str = "/home/apshirazi"
 
 # Robot Gripper Lengths (In CM) The Most Accuracte Numbers Captured From the CAD Model
 ROBOT_1_GRIPPER_LENGTH: float = 0.600202
+ROBOT_1_SUCTION_LENGTH: float = 0.549999565226
+ROBOT_1_SUCTION_WIDTH: float = 0.359199802554
+ROBOT_1_SUCTION_CUP_R: float = 0.035000000104
+
 ROBOT_2_GRIPPER_LENGTH: float = 0.590042
 # Robotic Movement Accelaration
 MOTION_ACCELERAION_VALUE: float = 0.6
@@ -162,6 +166,7 @@ STUD_TO_SAW_OFFSET: float = 0.12093
 
 # Offset Required to Pick Woods From the Table
 PICK_OFFSET_FROM_L_CORNER: float = 0.05
+PICK_OFFSET_FROM_L_CORNER_AFTER_PASS: float = 0.2
 PICK_OFFSET_FROM_W_CORNER: float = 0.0061
 
 JACK_PLACEMENT_SIDE_DRAG: float = 0.1
@@ -179,6 +184,16 @@ SLOPED_MAT_TABLE_ANGLE: float = 30
 
 SLOPED_TABLE_PICK_OFFSET_FROM_L_CORNER: float = 0.17
 SLOPED_TABLE_PICK_OFFSET_FROM_W_CORNER: float = 0.0061
+
+### Small Cut Table
+# Upon Reloating the Table, The Offset Should be Adjusted Accordingly
+SMALL_CUT_TABLE_SAW_POSE: list[float] = [1, 1, 0.5]
+
+NUMBER_OF_HEADERS: int = 2
+# 2in x 10in 
+# 1 Meters Length Timers Stacked !
+RAW_HEADER_DIMENSIONS: list[float] = [1, 0.0508, 0.254]
+
 # Position: ['3.999', '-2.417', '1.045'], Orientation: ['0.966', '-0.259', '0.000', '0.000']
 
 # 0.5m Is a Suitable Value. Changing it might ruine the Whole Assembly Process
@@ -364,6 +379,18 @@ class WorldManager(object):
             scale=[0.001, 0.001, 0.001]
         )
 
+        # Small Cutting Table
+        Small_Cutting_Table = Mesh(
+            name="Small_Cutting_Table",
+            pose=[-0.5 , -1.2, 0, 0, 0, -ev, -ev],
+            file_path= cur_dir + "cutting_table/Small_Cut_Table.stl",
+            color= [0.2, 0.2, 0.2, 1],
+            scale=[0.001, 0.001, 0.001]
+        )
+        SMALL_CUT_TABLE_SAW_POSE[0] = Small_Cutting_Table.pose[0]+0.15
+        SMALL_CUT_TABLE_SAW_POSE[1] = Small_Cutting_Table.pose[1]
+        SMALL_CUT_TABLE_SAW_POSE[2] = Small_Cutting_Table.pose[2] 
+
         # Ground !
         Cube = Cuboid (
             name="Ground",
@@ -385,7 +412,7 @@ class WorldManager(object):
         )
                                                                                                                                                                                                                                                                                             
         world_model = WorldConfig(
-            mesh=[IDC_Lab, Smart_Mat_Table, Sloped_Table],
+            mesh=[IDC_Lab, Smart_Mat_Table, Sloped_Table, Small_Cutting_Table],
             cuboid=[Cube],
             capsule=[],
             cylinder=[],
@@ -1050,7 +1077,7 @@ class CuRoboRobot(object):
                                         enable_graph_attempt=2,
                                         max_attempts=10,
                                         enable_finetune_trajopt=False,
-                                        pose_cost_metric= PoseCostMetric.create_grasp_approach_metric(offset_position=0.01, tstep_fraction=0.001,linear_axis=1),
+                                        pose_cost_metric= PoseCostMetric.create_grasp_approach_metric(offset_position=0.01, tstep_fraction=0.001,linear_axis=0),
                                         time_dilation_factor= MOTION_ACCELERAION_VALUE) 
 
                     # Setting the Initial Pose/Orientation of the Target Cube to the Targetting TCP !!
@@ -1247,13 +1274,14 @@ class CuRoboRobot(object):
 
             # 3. Check for a Solution
             # Updating Target Pose with Respect To the Robot's Location
-            target_pose[0] -= self._r_pose[0]
-            target_pose[1] -= self._r_pose[1]
-            ### Testing ????? Tired_Bear_Test
-            target_pose[2] -= self._r_pose[2]
-            # Z Does not need to be updated
+            Adjusted_Target_Pose: np.array = [target_pose[0]-self._r_pose[0], target_pose[1]-self._r_pose[1], target_pose[2]-self._r_pose[2]]
+            # target_pose[0] -= self._r_pose[0]
+            # target_pose[1] -= self._r_pose[1]
+            # ### Testing ????? Tired_Bear_Test
+            # target_pose[2] -= self._r_pose[2]
+            # # Z Does not need to be updated
             ik_goal = Pose(
-                position=self._tensor_args.to_device(target_pose),
+                position=self._tensor_args.to_device(Adjusted_Target_Pose),
                 quaternion=self._tensor_args.to_device(target_orientation),
             )
             result = self._motion_gen.plan_single(cu_js.unsqueeze(0), ik_goal, self._plan_config)
@@ -1789,7 +1817,7 @@ Robot_1 = CuRoboRobot(working_world=test,
                 Gripper_List=[RobotGripper(RobName= "IRB6620_R1",
                                            ParentLink= "Link_6",
                                            TCP_Name= "T0",
-                                           C_Pose= [0.09 , 0, -0.29]),
+                                           C_Pose= [0.09 , -0.3, -0.29]),
                                 RobotGripper(RobName= "IRB6620_R1",
                                              ParentLink= "Link_6",
                                              TCP_Name= "T1",
@@ -1807,7 +1835,7 @@ Robot_2 = CuRoboRobot(working_world=test,
                 Gripper_List=[RobotGripper(RobName= "IRB6620_R2",
                                            ParentLink= "Link_6",
                                            TCP_Name="T0",
-                                           C_Pose=[0.62, 0.15, -0.11]),
+                                           C_Pose=[0.62, -0.13, -0.11]),
                                            ],
                 Cuda_Device= 0)
 
@@ -3143,7 +3171,118 @@ def LJCK(el_name: str = None,
     # Same As RJCK !
     RJCK(el_name= el_name, X= X, Y= Y, Z= Z, L= L, W= W, H= H, Is_LJCK= True)
 
+def HDR(el_name: str = None,
+        X: float = None,
+        Y: float = None,
+        Z: float = None,
+        L: float = None,
+        W: float = None,
+        H: float = None):
+    
+    # Dragging the Required Length
+    Drag_Stud(el_name= el_name, el_dims= [L, W, H])
 
+    #[0, -ev, 0, -ev]
+    # Pre Pick
+    Robot_2.plan(tcp_name= "tool0",
+                    target_pose= [SMART_MAT_TABLE[0]+PICK_OFFSET_FROM_W_CORNER-0.3,
+                                  SMART_MAT_TABLE[1]-SMART_MAT_TABLE_MAX_LENGTH-STUD_TO_SAW_OFFSET-PICK_OFFSET_FROM_L_CORNER-(ROBOT_2_GRIPPER_LENGTH/2),
+                                  SMART_MAT_TABLE[2]+(W/2)],
+                    target_orientation= [0, -ev, 0, -ev],
+                    update_world_needed= True)
+    Robot_2.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+    
+    # Pick
+    Robot_2.plan(tcp_name= "tool0",
+                    target_pose= [SMART_MAT_TABLE[0]+PICK_OFFSET_FROM_W_CORNER,
+                                  SMART_MAT_TABLE[1]-SMART_MAT_TABLE_MAX_LENGTH-STUD_TO_SAW_OFFSET-PICK_OFFSET_FROM_L_CORNER-(ROBOT_2_GRIPPER_LENGTH/2),
+                                  SMART_MAT_TABLE[2]+(W/2)],
+                    target_orientation= [0, -ev, 0, -ev],
+                    update_world_needed= True,
+                    removing_primitives=["Smart_Conveyor", "world/obstacles"],
+                    orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
+    Robot_2.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+    
+    # Saw Action + Attach
+    # Removing 12ft Primitive and Replacing it with L !
+    prims_utils.delete_prim("/world/obstacles/"+el_name+"Temp")
+    Create_Wooden_Element_For_Smart_Mat_Table(el_name= el_name, L= L, W= W, H= H, Debug_Offset= True)
+
+    Robot_2.eef_attach(tool_name= "tool0", attaching_object_name= el_name)
+    #.....
+
+    # Post Pick
+    Robot_2.plan(tcp_name= "tool0",
+                    target_pose= [SMART_MAT_TABLE[0]+PICK_OFFSET_FROM_W_CORNER-0.3,
+                                  SMART_MAT_TABLE[1]-SMART_MAT_TABLE_MAX_LENGTH-STUD_TO_SAW_OFFSET-PICK_OFFSET_FROM_L_CORNER-(ROBOT_2_GRIPPER_LENGTH/2),
+                                  SMART_MAT_TABLE[2]+(W/2)],
+                    target_orientation= [0, -ev, 0, -ev],
+                    update_world_needed= True,
+                    removing_primitives=["Smart_Conveyor", "world/obstacles"],
+                    orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
+    Robot_2.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+    
+    # Home
+    Robot_2.move_to_home()
+
+    # Height Passing Location
+
+    # Small Stud Passing
+    # X: 2.05, Y: 0, Z: 1.55
+    # Rob_1: [ev, 0, ev, 0] (GR)
+    # Rob_2: [0, ev, 0, -ev] (GR)
+
+    PASSING_LOC: list[float] = [2.05, 0, 1.55]
+
+    # Robot 1 Pre Take Location
+    Robot_1.plan(tcp_name= "tool0",
+                    target_pose= [PASSING_LOC[0]+2*(PICK_OFFSET_FROM_W_CORNER-(H/2))-0.3,
+                                  (ROBOT_2_GRIPPER_LENGTH/2)+PICK_OFFSET_FROM_L_CORNER-(PICK_OFFSET_FROM_L_CORNER_AFTER_PASS+(ROBOT_1_GRIPPER_LENGTH/2)), 1.55],
+                    target_orientation= [ev, 0, ev, 0],
+                    update_world_needed= True)
+    Robot_1.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+
+    Robot_2.plan(tcp_name= "tool0",
+                    target_pose= PASSING_LOC,
+                    target_orientation= [0, ev, 0, -ev],
+                    update_world_needed= True)
+    Robot_2.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+
+    # Robot 1 Reach
+    Robot_1.plan(tcp_name= "tool0",
+                    target_pose= [PASSING_LOC[0]+2*(PICK_OFFSET_FROM_W_CORNER-(H/2)),
+                                  (ROBOT_2_GRIPPER_LENGTH/2)+PICK_OFFSET_FROM_L_CORNER-(PICK_OFFSET_FROM_L_CORNER_AFTER_PASS+(ROBOT_1_GRIPPER_LENGTH/2)), 1.55],
+                    target_orientation= [ev, 0, ev, 0],
+                    update_world_needed= True,
+                    removing_primitives=["Smart_Conveyor", "world/obstacles", "IRB6620_R2"],
+                    orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
+    Robot_1.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+
+    # Transfer Attachment
+    Robot_2.eef_detach(tool_name="tool0", detaching_object_name= el_name)
+    # To See the Detached Object within the Scene !!!
+    Robot_1.motion_gen_update_world()
+    Robot_1.eef_attach(tool_name="tool0", attaching_object_name= el_name)
+
+    Robot_2.plan(tcp_name= "tool0",
+                    target_pose= [PASSING_LOC[0]+0.2, PASSING_LOC[1], PASSING_LOC[2]],
+                    target_orientation= [0, ev, 0, -ev],
+                    update_world_needed= True,
+                    removing_primitives=["Smart_Conveyor", "world/obstacles", "IRB6620_R1"],
+                    orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
+    Robot_2.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+    
+    Robot_2.move_to_home()
+    Robot_1.move_to_home()
+
+    Robot_1.free_TCP_movement(moving_tcp= "tool0")
 ###########
 ####END####
 ###########
@@ -3184,12 +3323,26 @@ def main():
         # for robot in robots:
         #         robot.ros_js_publisher()
 
-        T = time.time()
-        while time.time() - T <= 5:
-            test._my_world.step(render= True)
+        # T = time.time()
+        # while time.time() - T <= 5:
+        #     test._my_world.step(render= True)
 
-        Robot_1.free_TCP_movement(moving_tcp= "tool1")
+        # Robot_1.plan(tcp_name= "tool1",
+        #                 target_pose= [-0.95, -1.2, 0.6],
+        #                 target_orientation= [0, ev, ev, 0],
+        #                 update_world_needed= True)
+        # Robot_1.render_exec(renderInstance= True,
+        #                         Show_Sphere= False)
+        #
+        # Robot_1.plan(tcp_name= "tool1",
+        #                 target_pose= [2, -0.28, 1.05],
+        #                 target_orientation= [0, -ev, -ev, 0],
+        #                 update_world_needed= True)
+        # Robot_1.render_exec(renderInstance= True,
+        #                         Show_Sphere= False)        
 
+
+        HDR("Small_Stud_1", 0.4584, 2, 0, 1, 0.04, 0.12)
         # TPL DONE !
         # TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
         # KING DONE !
@@ -3210,7 +3363,7 @@ def main():
         # # BPL DONE !
         # BPL("Wooden_Element_13", OVERALL_PANEL_HEIGHT-0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
 
-        Robot_2.free_TCP_movement(moving_tcp= "tool1")
+        Robot_2.free_TCP_movement(moving_tcp= "tool0")
 
 if __name__ == "__main__":
     main()
