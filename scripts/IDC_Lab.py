@@ -3260,7 +3260,7 @@ def HDR(el_name: str = None,
                     target_orientation= [ev, 0, ev, 0],
                     update_world_needed= True,
                     removing_primitives=["Smart_Conveyor", "world/obstacles", "IRB6620_R2"],
-                    orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
+                    direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.0, tstep_fraction=0.001,linear_axis=2))
     Robot_1.render_exec(renderInstance= True,
                             Show_Sphere= False)
 
@@ -3269,6 +3269,8 @@ def HDR(el_name: str = None,
     # To See the Detached Object within the Scene !!!
     Robot_1.motion_gen_update_world()
     Robot_1.eef_attach(tool_name="tool0", attaching_object_name= el_name)
+
+    Robot_1.free_TCP_movement(moving_tcp= "tool0")
 
     Robot_2.plan(tcp_name= "tool0",
                     target_pose= [PASSING_LOC[0]+0.2, PASSING_LOC[1], PASSING_LOC[2]],
@@ -3282,6 +3284,58 @@ def HDR(el_name: str = None,
     Robot_2.move_to_home()
     Robot_1.move_to_home()
 
+    Robot_1.free_TCP_movement(moving_tcp= "tool0")
+
+    # Move Conveyor To TCP's 0 Position For Placement
+    Smart_Conv.render_exec('Joint_1', Y - (OVERALL_PANEL_LENGTH/2) + ((L/2)-PICK_OFFSET_FROM_L_CORNER_AFTER_PASS-(ROBOT_1_GRIPPER_LENGTH/2)+(SMART_CONV_RANGE_OF_MOTION_J1/2)))
+
+
+    # 2.3+(X-(OVERALL_PANEL_HEIGHT/2))
+
+    # Robot 1 Pre Place Movement
+    Robot_1.plan(tcp_name= "tool0",
+                    target_pose= [2.3+(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT,
+                                  0,
+                                  SMART_CONV_REST_ELEVATION+H-PICK_OFFSET_FROM_W_CORNER+0.1],
+                    target_orientation= [0, 1, 0, 0],
+                    update_world_needed= True)
+    Robot_1.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+    
+    # Robot 1 Place Movement
+    # Robot_1.plan(tcp_name= "tool0",
+    #                 target_pose= [2.3+(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT,
+    #                               0,
+    #                               SMART_CONV_REST_ELEVATION+H-PICK_OFFSET_FROM_W_CORNER],
+    #                 target_orientation= [0, 1, 0, 0],
+    #                 update_world_needed= True,
+    #                 removing_primitives=["Smart_Conveyor" ,"world/obstacles"],
+    #                 orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
+    # Robot_1.render_exec(renderInstance= True,
+    #                         Show_Sphere= False)
+
+    # Detach
+    Robot_1.eef_detach(tool_name="tool0",
+                        detaching_object_name= el_name)
+    test._stage.GetPrimAtPath("/world/obstacles/" + el_name).GetAttribute("physxRigidBody:disableGravity").Set(False)
+    Smart_Conv.attach_object_to_conv(obj_name= el_name)
+
+    # Robot 1 Post Place Movement
+    # Robot_1.plan(tcp_name= "tool0",
+    #                 target_pose= [2.3+(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT,
+    #                               0,
+    #                               SMART_CONV_REST_ELEVATION+H-PICK_OFFSET_FROM_W_CORNER+0.2],
+    #                 target_orientation= [0, 1, 0, 0],
+    #                 update_world_needed= True,
+    #                 removing_primitives=["Smart_Conveyor", "world/obstacles"],
+    #                 orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
+    # Robot_1.render_exec(renderInstance= True,
+    #                         Show_Sphere= False)
+
+    # Back To Home
+    Robot_1.move_to_home()
+
+    # Nailing From Sides !
     Robot_1.free_TCP_movement(moving_tcp= "tool0")
 ###########
 ####END####
@@ -3341,8 +3395,6 @@ def main():
         # Robot_1.render_exec(renderInstance= True,
         #                         Show_Sphere= False)        
 
-
-        HDR("Small_Stud_1", 0.4584, 2, 0, 1, 0.04, 0.12)
         # TPL DONE !
         # TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
         # KING DONE !
@@ -3358,7 +3410,9 @@ def main():
 
         # JACK DONE !
         # LJCK("Wooden_Element_12", 1.4784, 1.56, 0, 2, 0.04, 0.12)
-        # RJCK("Wooden_Element_11", 1.4784, 2.48, 0, 2, 0.04, 0.12)
+        RJCK("Wooden_Element_11", 1.4784, 2.48, 0, 2, 0.04, 0.12)
+
+        HDR("Small_Stud_1", 0.4584, 2.02, 0, 0.96, 0.04, 0.12)
 
         # # BPL DONE !
         # BPL("Wooden_Element_13", OVERALL_PANEL_HEIGHT-0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
