@@ -174,6 +174,9 @@ JACK_PLACEMENT_SIDE_DRAG: float = 0.1
 JACK_SIDE_NAILING_ANGLE: float = 30
 JACK_NAILING_OFFSET: float = 0.1
 
+SILL_NAILING_ANGLE: float = 30
+SILL_NAILING_OFFSET: float = 0.1
+
 # Smart Material Table's Maximum Length Capability
 SMART_MAT_TABLE_MAX_LENGTH: float = 3.6576
 
@@ -3174,7 +3177,37 @@ def LJCK(el_name: str = None,
     # Same As RJCK !
     RJCK(el_name= el_name, X= X, Y= Y, Z= Z, L= L, W= W, H= H, Is_LJCK= True)
 
-def HDR(el_name: str = None,
+def Robot_1_Do_TopSill_Nail(push_to_nail: float = None,
+                            el_pose: List[float] = [],
+                            el_dims: List[float] = [],
+                            conv_current_location: float = None):
+
+    # [-90, 0, 90]
+    # [0.5, -0.5, 0.5, 0.5]
+    quat = R.from_euler('xyz', [((np.pi/2)+np.radians(SILL_NAILING_ANGLE))*(-1), 0, (np.pi/2)]).as_quat()
+    quat[1] *= -1
+
+    # Left Nail
+    if(conv_current_location+(el_dims[0]/2)+NAILING_CONV_TARGET > SMART_CONV_RANGE_OF_MOTION_J1):
+        print("Left Nail is Not Possible ! Due To Conveyor Reachability")
+    else:
+        Smart_Conv.render_exec('Joint_1', conv_current_location+(el_dims[0]/2)+NAILING_CONV_TARGET)
+        # Robot 1 Move For Nail
+        # Pre Nail
+        Nail_Doable: bool = Robot_1.plan(tcp_name= "tool2",
+                        target_pose= [2.3+(el_pose[0]-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT,
+                                    NAILING_CONV_TARGET+((SILL_NAILING_OFFSET*np.cos(np.radians(JACK_SIDE_NAILING_ANGLE))+el_dims[1])*(-1)),
+                                    SMART_CONV_REST_ELEVATION+(el_dims[2]*0.3)+((SILL_NAILING_OFFSET)*np.sin(np.radians(SILL_NAILING_ANGLE)))],
+                        target_orientation= [quat[3], quat[0], quat[1], quat[2]],
+                        update_world_needed= True)
+        if (Nail_Doable == True):
+            r=1
+            # Do The Nail !
+        else:
+            print("Left Nail is Not Possible ! Due To Robot NailGun Reachability")
+
+
+def TSP(el_name: str = None,
         X: float = None,
         Y: float = None,
         Z: float = None,
@@ -3288,6 +3321,7 @@ def HDR(el_name: str = None,
     # Moving Conveyor
     Smart_Conv.render_exec('Joint_1', -(Y - (OVERALL_PANEL_LENGTH/2)) + ((L/2)-PICK_OFFSET_FROM_L_CORNER_AFTER_PASS-(ROBOT_1_GRIPPER_LENGTH/2)) + (SMART_CONV_RANGE_OF_MOTION_J1/2))
 
+    Conv_Curr_Loc: float = -(Y - (OVERALL_PANEL_LENGTH/2)) + ((L/2)-PICK_OFFSET_FROM_L_CORNER_AFTER_PASS-(ROBOT_1_GRIPPER_LENGTH/2)) + (SMART_CONV_RANGE_OF_MOTION_J1/2)
 
     # 2.3+(X-(OVERALL_PANEL_HEIGHT/2))
 
@@ -3345,6 +3379,11 @@ def HDR(el_name: str = None,
 
     # Back To Home
     Robot_1.move_to_home()
+
+    # Nailing the Silling !
+    Robot_1_Do_TopSill_Nail(push_to_nail=0.01, el_pose=[X, Y, Z], el_dims=[L, W, H], conv_current_location=Conv_Curr_Loc)
+
+
 
 ###########
 ####END####
@@ -3405,26 +3444,28 @@ def main():
         #                         Show_Sphere= False)        
 
         # TPL DONE !
-        TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.1016)
+        # TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.1016)
         # KING DONE !
-        KING("Wooden_Element_2", 1.2592, 0.02, 0, 2.4384, 0.04, 0.1016)
+        # KING("Wooden_Element_2", 1.2592, 0.02, 0, 2.4384, 0.04, 0.1016)
         # KING("Wooden_Element_3", 1.2592, 0.4, 0, 2.4384, 0.04, 0.1016)
         # KING("Wooden_Element_4", 1.2592, 0.9, 0, 2.4384, 0.04, 0.1016)
         # KING("Wooden_Element_5", 1.2592, 1.4, 0, 2.4384, 0.04, 0.1016)
-        KING("Wooden_Element_6", 1.2592, 1.52, 0, 2.4384, 0.04, 0.1016)
-        KING("Wooden_Element_7", 1.2592, 2.52, 0, 2.4384, 0.04, 0.1016)
+        # KING("Wooden_Element_6", 1.2592, 1.52, 0, 2.4384, 0.04, 0.1016)
+        # KING("Wooden_Element_7", 1.2592, 2.52, 0, 2.4384, 0.04, 0.1016)
         # KING("Wooden_Element_8", 1.2592, 2.64, 0, 2.4384, 0.04, 0.1016)
         # KING("Wooden_Element_9", 1.2592, 3.14, 0, 2.4384, 0.04, 0.1016)
-        KING("Wooden_Element_10", 1.2592, SMART_MAT_TABLE_MAX_LENGTH-0.02, 0, 2.4384, 0.04, 0.1016)
+        # KING("Wooden_Element_10", 1.2592, SMART_MAT_TABLE_MAX_LENGTH-0.02, 0, 2.4384, 0.04, 0.1016)
+
+        Robot_1_Do_TopSill_Nail(0.1, [0.4584, 2.02, 0], [0.96, 0.04, 0.1016], 1)
 
         # JACK DONE !
-        LJCK("Wooden_Element_12", 1.4784, 1.46, 0, 2, 0.04, 0.1016)
-        RJCK("Wooden_Element_11", 1.4784, 2.58, 0, 2, 0.04, 0.1016)
+        LJCK("Wooden_Element_12", 1.4784, 1.56, 0, 2, 0.04, 0.1016)
+        RJCK("Wooden_Element_11", 1.4784, 2.48, 0, 2, 0.04, 0.1016)
 
-        HDR("Small_Stud_1", 0.4584, 2.02, 0, 0.96, 0.04, 0.1016)
+        TSP("Small_Stud_1", 0.4584, 2.02, 0, 0.96, 0.04, 0.1016)
 
         # # BPL DONE !
-        BPL("Wooden_Element_13", OVERALL_PANEL_HEIGHT-0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
+        # BPL("Wooden_Element_13", OVERALL_PANEL_HEIGHT-0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.1016)
 
         Robot_2.free_TCP_movement(moving_tcp= "tool0")
 
