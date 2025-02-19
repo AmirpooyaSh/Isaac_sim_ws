@@ -512,7 +512,7 @@ class CuRoboConv(object):
                 self._temp_world_manager._conv_cube.set_world_pose(position=[2.3, current_state[0]-SMART_CONV_RANGE_OF_MOTION_J1/2, current_state[1]],
                                                         orientation=[1, 0, 0, 0])
                 continue
-            if np.round(cube_position[2],0) == 500:
+            if np.round(cube_position[2],0) == 1000:
                 break
             if cube_position[1]+SMART_CONV_RANGE_OF_MOTION_J1/2 > SMART_CONV_RANGE_OF_MOTION_J1 or cube_position[1]+SMART_CONV_RANGE_OF_MOTION_J1/2 < 0:
                 self._temp_world_manager._conv_cube.set_world_pose(position=[2.3, current_state[0]-SMART_CONV_RANGE_OF_MOTION_J1/2, current_state[1]],
@@ -2459,17 +2459,19 @@ def TPL(el_name: str = None,
     Robot_2.plan(tcp_name= "tool0",
                     target_pose= [2.3+(L/2)-PICK_OFFSET_FROM_L_CORNER-(ROBOT_2_GRIPPER_LENGTH/2),
                                   -1,
-                                  PASSING_ELEVATION],
+                                  PASSING_ELEVATION+(H)],
                     target_orientation= [0, ev, ev, 0],
                     update_world_needed= True)
     Robot_2.render_exec(renderInstance= True,
                             Show_Sphere= False)
     
+    # Robot_2.free_TCP_movement()
+
     # ROBOT 1 MOVEMENT
     Robot_1.plan(tcp_name= "tool0",
                     target_pose= [2.3-(L/2)+PICK_OFFSET_FROM_L_CORNER+(ROBOT_1_GRIPPER_LENGTH/2),
                                   -1,
-                                  PASSING_ELEVATION+0.1],
+                                  PASSING_ELEVATION+(H)+0.1],
                     target_orientation= [0, ev, -ev, 0],
                     update_world_needed= True)
     Robot_1.render_exec(renderInstance= True,
@@ -2478,7 +2480,7 @@ def TPL(el_name: str = None,
     Robot_1.plan(tcp_name= "tool0",
                     target_pose= [2.3-(L/2)+PICK_OFFSET_FROM_L_CORNER+(ROBOT_1_GRIPPER_LENGTH/2),
                                   -1,
-                                  PASSING_ELEVATION],
+                                  PASSING_ELEVATION+(H)],
                     target_orientation= [0, ev, -ev, 0],
                     update_world_needed= True)
     Robot_1.render_exec(renderInstance= True,
@@ -2494,7 +2496,7 @@ def TPL(el_name: str = None,
     Robot_2.plan(tcp_name= "tool0",
                     target_pose= [2.3+(L/2)-PICK_OFFSET_FROM_L_CORNER-(ROBOT_2_GRIPPER_LENGTH/2),
                                   -1,
-                                  PASSING_ELEVATION+0.1],
+                                  PASSING_ELEVATION+(H)+0.1],
                     target_orientation= [0, ev, ev, 0],
                     update_world_needed= True,
                     orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
@@ -2527,7 +2529,7 @@ def TPL(el_name: str = None,
                     target_orientation= [0, 1, 0, 0],
                     update_world_needed= True,
                     removing_primitives=["Smart_Conveyor" ,"world/obstacles"],
-                    orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
+                    direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.0, tstep_fraction=0.001,linear_axis=2))
     Robot_1.render_exec(renderInstance= True,
                             Show_Sphere= False)
 
@@ -2545,7 +2547,7 @@ def TPL(el_name: str = None,
                     target_orientation= [0, 1, 0, 0],
                     update_world_needed= True,
                     removing_primitives=["Smart_Conveyor", "world/obstacles"],
-                    orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
+                    direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.0, tstep_fraction=0.001,linear_axis=2))
     Robot_1.render_exec(renderInstance= True,
                             Show_Sphere= False)
 
@@ -2745,6 +2747,7 @@ def KING(el_name: str = None,
                     update_world_needed= True)
     Robot_2.render_exec(renderInstance= True,
                             Show_Sphere= False)
+
     # Place
     Robot_2.plan(tcp_name= "tool0",
                     target_pose= [2.3+(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT+((L/2)-(ROBOT_2_GRIPPER_LENGTH/2)-SLOPED_TABLE_PICK_OFFSET_FROM_L_CORNER),
@@ -3221,7 +3224,7 @@ def HDR(el_name: str = None,
                     target_orientation= [0, -ev, 0, -ev],
                     update_world_needed= True,
                     removing_primitives=["Smart_Conveyor", "world/obstacles"],
-                    orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
+                    direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.0, tstep_fraction=0.001,linear_axis=2))
     Robot_2.render_exec(renderInstance= True,
                             Show_Sphere= False)
     
@@ -3247,7 +3250,7 @@ def HDR(el_name: str = None,
                             Show_Sphere= False)
 
     Robot_2.plan(tcp_name= "tool0",
-                    target_pose= PASSING_LOC,
+                    target_pose= [2.05, 0, 1.55],
                     target_orientation= [0, ev, 0, -ev],
                     update_world_needed= True)
     Robot_2.render_exec(renderInstance= True,
@@ -3270,8 +3273,6 @@ def HDR(el_name: str = None,
     Robot_1.motion_gen_update_world()
     Robot_1.eef_attach(tool_name="tool0", attaching_object_name= el_name)
 
-    Robot_1.free_TCP_movement(moving_tcp= "tool0")
-
     Robot_2.plan(tcp_name= "tool0",
                     target_pose= [PASSING_LOC[0]+0.2, PASSING_LOC[1], PASSING_LOC[2]],
                     target_orientation= [0, ev, 0, -ev],
@@ -3284,10 +3285,8 @@ def HDR(el_name: str = None,
     Robot_2.move_to_home()
     Robot_1.move_to_home()
 
-    Robot_1.free_TCP_movement(moving_tcp= "tool0")
-
-    # Move Conveyor To TCP's 0 Position For Placement
-    Smart_Conv.render_exec('Joint_1', Y - (OVERALL_PANEL_LENGTH/2) + ((L/2)-PICK_OFFSET_FROM_L_CORNER_AFTER_PASS-(ROBOT_1_GRIPPER_LENGTH/2)+(SMART_CONV_RANGE_OF_MOTION_J1/2)))
+    # Moving Conveyor
+    Smart_Conv.render_exec('Joint_1', -(Y - (OVERALL_PANEL_LENGTH/2)) + ((L/2)-PICK_OFFSET_FROM_L_CORNER_AFTER_PASS-(ROBOT_1_GRIPPER_LENGTH/2)) + (SMART_CONV_RANGE_OF_MOTION_J1/2))
 
 
     # 2.3+(X-(OVERALL_PANEL_HEIGHT/2))
@@ -3296,9 +3295,21 @@ def HDR(el_name: str = None,
     Robot_1.plan(tcp_name= "tool0",
                     target_pose= [2.3+(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT,
                                   0,
-                                  SMART_CONV_REST_ELEVATION+H-PICK_OFFSET_FROM_W_CORNER+0.1],
+                                  SMART_CONV_REST_ELEVATION+H-PICK_OFFSET_FROM_W_CORNER+0.3],
                     target_orientation= [0, 1, 0, 0],
                     update_world_needed= True)
+    Robot_1.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+
+    # Robot 1 Pre Place Movement
+    Robot_1.plan(tcp_name= "tool0",
+                    target_pose= [2.3+(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT,
+                                  0,
+                                  SMART_CONV_REST_ELEVATION+H-PICK_OFFSET_FROM_W_CORNER+0.1],
+                    target_orientation= [0, 1, 0, 0],
+                    update_world_needed= True,
+                    removing_primitives=["Smart_Conveyor", "world/obstacles"],
+                    direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.0, tstep_fraction=0.001,linear_axis=2))
     Robot_1.render_exec(renderInstance= True,
                             Show_Sphere= False)
     
@@ -3335,8 +3346,6 @@ def HDR(el_name: str = None,
     # Back To Home
     Robot_1.move_to_home()
 
-    # Nailing From Sides !
-    Robot_1.free_TCP_movement(moving_tcp= "tool0")
 ###########
 ####END####
 ###########
@@ -3396,26 +3405,26 @@ def main():
         #                         Show_Sphere= False)        
 
         # TPL DONE !
-        # TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
+        TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.1016)
         # KING DONE !
-        # KING("Wooden_Element_2", 1.2592, 0.02, 0, 2.4384, 0.04, 0.12)
-        # KING("Wooden_Element_3", 1.2592, 0.4, 0, 2.4384, 0.04, 0.12)
-        # KING("Wooden_Element_4", 1.2592, 0.9, 0, 2.4384, 0.04, 0.12)
-        # KING("Wooden_Element_5", 1.2592, 1.4, 0, 2.4384, 0.04, 0.12)
-        # KING("Wooden_Element_6", 1.2592, 1.52, 0, 2.4384, 0.04, 0.12)
-        # KING("Wooden_Element_7", 1.2592, 2.52, 0, 2.4384, 0.04, 0.12)
-        # KING("Wooden_Element_8", 1.2592, 2.64, 0, 2.4384, 0.04, 0.12)
-        # KING("Wooden_Element_9", 1.2592, 3.14, 0, 2.4384, 0.04, 0.12)
-        # KING("Wooden_Element_10", 1.2592, SMART_MAT_TABLE_MAX_LENGTH-0.02, 0, 2.4384, 0.04, 0.12)
+        KING("Wooden_Element_2", 1.2592, 0.02, 0, 2.4384, 0.04, 0.1016)
+        # KING("Wooden_Element_3", 1.2592, 0.4, 0, 2.4384, 0.04, 0.1016)
+        # KING("Wooden_Element_4", 1.2592, 0.9, 0, 2.4384, 0.04, 0.1016)
+        # KING("Wooden_Element_5", 1.2592, 1.4, 0, 2.4384, 0.04, 0.1016)
+        KING("Wooden_Element_6", 1.2592, 1.52, 0, 2.4384, 0.04, 0.1016)
+        KING("Wooden_Element_7", 1.2592, 2.52, 0, 2.4384, 0.04, 0.1016)
+        # KING("Wooden_Element_8", 1.2592, 2.64, 0, 2.4384, 0.04, 0.1016)
+        # KING("Wooden_Element_9", 1.2592, 3.14, 0, 2.4384, 0.04, 0.1016)
+        KING("Wooden_Element_10", 1.2592, SMART_MAT_TABLE_MAX_LENGTH-0.02, 0, 2.4384, 0.04, 0.1016)
 
         # JACK DONE !
-        # LJCK("Wooden_Element_12", 1.4784, 1.56, 0, 2, 0.04, 0.12)
-        RJCK("Wooden_Element_11", 1.4784, 2.48, 0, 2, 0.04, 0.12)
+        LJCK("Wooden_Element_12", 1.4784, 1.46, 0, 2, 0.04, 0.1016)
+        RJCK("Wooden_Element_11", 1.4784, 2.58, 0, 2, 0.04, 0.1016)
 
-        HDR("Small_Stud_1", 0.4584, 2.02, 0, 0.96, 0.04, 0.12)
+        HDR("Small_Stud_1", 0.4584, 2.02, 0, 0.96, 0.04, 0.1016)
 
         # # BPL DONE !
-        # BPL("Wooden_Element_13", OVERALL_PANEL_HEIGHT-0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
+        BPL("Wooden_Element_13", OVERALL_PANEL_HEIGHT-0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.12)
 
         Robot_2.free_TCP_movement(moving_tcp= "tool0")
 
