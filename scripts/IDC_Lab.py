@@ -3556,6 +3556,12 @@ def TSP(el_name: str = None,
     # Nailing the Silling !
     Robot_1_Do_TopSill_Nail(push_to_nail=0.01, el_pose=[X, Y, Z], el_dims=[L, W, H], conv_current_location=Conv_Curr_Loc)
 
+def Robot_2_Do_BotSill_Nail(push_to_nail: float = None,
+                            el_pose: List[float] = [],
+                            el_dims: List[float] = [],
+                            conv_current_location: float = None):
+    r=1
+
 def BSP(el_name: str = None,
         X: float = None,
         Y: float = None,
@@ -3617,10 +3623,10 @@ def BSP(el_name: str = None,
     # [0, -1, 0, 0]
 
     # Moving Conveyor
-    Smart_Conv.render_exec('Joint_1', -(Y - (OVERALL_PANEL_LENGTH/2)) - ((L/2)-PICK_OFFSET_FROM_L_CORNER_AFTER_PASS-(ROBOT_1_GRIPPER_LENGTH/2)) + (SMART_CONV_RANGE_OF_MOTION_J1/2))
+    Smart_Conv.render_exec('Joint_1', -(Y - (OVERALL_PANEL_LENGTH/2)) - ((L/2)-PICK_OFFSET_FROM_L_CORNER-(ROBOT_1_GRIPPER_LENGTH/2)) + (SMART_CONV_RANGE_OF_MOTION_J1/2))
 
     # It Calculates the Conveyor Joint Value where the Stud is in 0 Position
-    Conv_Curr_Loc: float = -(Y - (OVERALL_PANEL_LENGTH/2)) - (SMART_CONV_RANGE_OF_MOTION_J1/2)
+    Conv_Curr_Loc: float = -(Y - (OVERALL_PANEL_LENGTH/2)) + (SMART_CONV_RANGE_OF_MOTION_J1/2)
 
     # 2.3+(X-(OVERALL_PANEL_HEIGHT/2))
 
@@ -3698,22 +3704,30 @@ def BSP(el_name: str = None,
         # Stud
         # [ev, 0, ev, 0]
         dc=_dynamic_control.acquire_dynamic_control_interface()
-        object=dc.get_rigid_body("/world/obstacles/"+el_name)
+        test._stage.GetPrimAtPath("/world/obstacles/"+el_name).GetAttribute("physics:rigidBodyEnabled").Set(True)
+        object = dc.get_rigid_body("/world/obstacles/"+el_name)
         object_pose=dc.get_rigid_body_pose(object)
+
         # Create new position
         New_Loc = Gf.Vec3d(object_pose.p[0], object_pose.p[1], SMART_CONV_REST_ELEVATION + (H / 2))
-
         # Create a valid quaternion and rotation
         quat = Gf.Quatd(ev, 0, 1, 0)  # Ensure this follows (real, x, y, z)
         New_Or = Gf.Rotation(quat)
-
-        # Create a new transformation matrix
-        new_transform = Gf.Matrix4d().SetRotate(New_Or)
-        new_transform.SetTranslate(New_Loc)
-
+        # Convert quaternion to required format
+        quat_as_tuple = (New_Or.GetQuat().GetReal(), *New_Or.GetQuat().GetImaginary())
+        # Create a Transform object
+        new_transform = _dynamic_control.Transform()
+        new_transform.p.x = New_Loc[0]
+        new_transform.p.y = New_Loc[1]
+        new_transform.p.z = New_Loc[2]
+        new_transform.r.w = quat_as_tuple[0]  # real part
+        new_transform.r.x = quat_as_tuple[1]
+        new_transform.r.y = quat_as_tuple[2]
+        new_transform.r.z = quat_as_tuple[3]
         # Apply transformation
         dc.set_rigid_body_pose(object, new_transform)
 
+        test._stage.GetPrimAtPath("/world/obstacles/"+el_name).GetAttribute("physics:rigidBodyEnabled").Set(False)
         test._stage.GetPrimAtPath("/world/obstacles/" + el_name).GetAttribute("physxRigidBody:disableGravity").Set(False)
         Smart_Conv.attach_object_to_conv(obj_name= el_name)
 
@@ -3721,9 +3735,9 @@ def BSP(el_name: str = None,
     # Back To Home
     Robot_2.move_to_home()
 
-
-    Robot_2.free_TCP_movement()
-
+    # Nailing
+    Robot_2_Do_BotSill_Nail(push_to_nail=0.01, el_pose=[X, Y, Z], el_dims=[L, W, H], conv_current_location=Conv_Curr_Loc)
+    
 ###########
 ####END####
 ###########
