@@ -3196,7 +3196,7 @@ def Robot_1_Do_TopSill_Nail(push_to_nail: float = None,
         # Pre Nail
         Nail_Doable: bool = Robot_1.plan(tcp_name= "tool2",
                         target_pose= [2.3+(el_pose[0]-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT,
-                                    NAILING_CONV_TARGET+((SILL_NAILING_OFFSET*np.cos(np.radians(SILL_NAILING_ANGLE)))*(-1)),
+                                    NAILING_CONV_TARGET+((SILL_NAILING_OFFSET*np.cos(np.radians(SILL_NAILING_ANGLE))+(el_dims[1]/2))*(-1)),
                                     SMART_CONV_REST_ELEVATION+(el_dims[2]*0.3)+((SILL_NAILING_OFFSET)*np.sin(np.radians(SILL_NAILING_ANGLE)))],
                         target_orientation= [quat[3], quat[0], quat[1], quat[2]],
                         update_world_needed= True)
@@ -3293,7 +3293,7 @@ def Robot_1_Do_TopSill_Nail(push_to_nail: float = None,
         # Pre Nail
         Nail_Doable: bool = Robot_1.plan(tcp_name= "tool2",
                         target_pose= [2.3+(el_pose[0]-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT,
-                                    -NAILING_CONV_TARGET+((SILL_NAILING_OFFSET*np.cos(np.radians(SILL_NAILING_ANGLE)))),
+                                    -NAILING_CONV_TARGET+((SILL_NAILING_OFFSET*np.cos(np.radians(SILL_NAILING_ANGLE))+(el_dims[1]/2))),
                                     SMART_CONV_REST_ELEVATION+(el_dims[2]*0.3)+((SILL_NAILING_OFFSET)*np.sin(np.radians(SILL_NAILING_ANGLE)))],
                         target_orientation= [quat[3], quat[0], quat[1], quat[2]],
                         update_world_needed= True)
