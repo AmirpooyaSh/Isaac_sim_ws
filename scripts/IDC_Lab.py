@@ -3892,7 +3892,7 @@ def BSP(el_name: str = None,
         print("Bottom Silling Plate Place location is out of Robot#2 Reach !")
         print("Manual Action Needed to Place the Stud")
         Robot_2.plan(tcp_name= "tool0",
-                    target_pose= [2.3+(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT,
+                    target_pose= [2.3+(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT+(H/2-PICK_OFFSET_FROM_W_CORNER),
                                   0,
                                   SMART_CONV_REST_ELEVATION+H-PICK_OFFSET_FROM_W_CORNER+0.3],
                     target_orientation= [0, -ev, 0, ev],
@@ -3938,8 +3938,125 @@ def BSP(el_name: str = None,
     Robot_2.move_to_home()
 
     # Nailing
-    Robot_2_Do_BotSill_Nail(push_to_nail=0.01, el_pose=[X, Y, Z], el_dims=[L, W, H], conv_current_location=Conv_Curr_Loc)
+    # Robot_2_Do_BotSill_Nail(push_to_nail=0.01, el_pose=[X, Y, Z], el_dims=[L, W, H], conv_current_location=Conv_Curr_Loc)
+
+def LCP(el_name: str = None,
+        X: float = None,
+        Y: float = None,
+        Z: float = None,
+        L: float = None,
+        W: float = None,
+        H: float = None):
+    # Dragging the Required Length
+    # Drag_Stud(el_name= el_name, el_dims= [L, W, H])
+
+    #[0, -ev, -ev, 0]
+    # Pre Pick
+    Robot_2.plan(tcp_name= "tool0",
+                    target_pose= [SMART_MAT_TABLE[0]+PICK_OFFSET_FROM_W_CORNER-0.3,
+                                  SMART_MAT_TABLE[1]-SMART_MAT_TABLE_MAX_LENGTH-STUD_TO_SAW_OFFSET-PICK_OFFSET_FROM_L_CORNER-(ROBOT_2_GRIPPER_LENGTH/2),
+                                  SMART_MAT_TABLE[2]+(W/2)],
+                    target_orientation= [0, -ev, 0, -ev],
+                    update_world_needed= True)
+    Robot_2.render_exec(renderInstance= True,
+                            Show_Sphere= False)
     
+    # Pick
+    Robot_2.plan(tcp_name= "tool0",
+                    target_pose= [SMART_MAT_TABLE[0]+PICK_OFFSET_FROM_W_CORNER,
+                                  SMART_MAT_TABLE[1]-SMART_MAT_TABLE_MAX_LENGTH-STUD_TO_SAW_OFFSET-PICK_OFFSET_FROM_L_CORNER-(ROBOT_2_GRIPPER_LENGTH/2),
+                                  SMART_MAT_TABLE[2]+(W/2)],
+                    target_orientation= [0, -ev, 0, -ev],
+                    update_world_needed= True,
+                    removing_primitives=["Smart_Conveyor", "world/obstacles"],
+                    orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
+    Robot_2.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+    
+    # Saw Action + Attach
+    # Removing 12ft Primitive and Replacing it with L !
+    # prims_utils.delete_prim("/world/obstacles/"+el_name+"Temp")
+    Create_Wooden_Element_For_Smart_Mat_Table(el_name= el_name, L= L, W= W, H= H, Debug_Offset= True)
+
+    Robot_2.eef_attach(tool_name= "tool0", attaching_object_name= el_name)
+    #.....
+
+    # Post Pick
+    Robot_2.plan(tcp_name= "tool0",
+                    target_pose= [SMART_MAT_TABLE[0]+PICK_OFFSET_FROM_W_CORNER-0.3,
+                                  SMART_MAT_TABLE[1]-SMART_MAT_TABLE_MAX_LENGTH-STUD_TO_SAW_OFFSET-PICK_OFFSET_FROM_L_CORNER-(ROBOT_2_GRIPPER_LENGTH/2),
+                                  SMART_MAT_TABLE[2]+(W/2)],
+                    target_orientation= [0, -ev, 0, -ev],
+                    update_world_needed= True,
+                    removing_primitives=["Smart_Conveyor", "world/obstacles"],
+                    direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.0, tstep_fraction=0.001,linear_axis=2))
+    Robot_2.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+
+    # Moving Conveyor
+    Smart_Conv.render_exec('Joint_1', -(Y - (OVERALL_PANEL_LENGTH/2)) + (SMART_CONV_RANGE_OF_MOTION_J1/2))
+
+    # Home
+    Robot_2.move_to_home()
+
+    # Pre Place1
+    Robot_2.plan(tcp_name= "tool0",
+                    target_pose= [2.3+(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT-((L/2)-(ROBOT_2_GRIPPER_LENGTH/2)-PICK_OFFSET_FROM_L_CORNER)+0.1,
+                                  0,
+                                  SMART_CONV_REST_ELEVATION+H-PICK_OFFSET_FROM_W_CORNER+0.15],
+                    target_orientation= [0, -ev, -ev, 0],
+                    update_world_needed= True)
+    Robot_2.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+
+    # Pre Place2
+    Robot_2.plan(tcp_name= "tool0",
+                    target_pose= [2.3+(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT-((L/2)-(ROBOT_2_GRIPPER_LENGTH/2)-PICK_OFFSET_FROM_L_CORNER),
+                                  0,
+                                  SMART_CONV_REST_ELEVATION+H-PICK_OFFSET_FROM_W_CORNER],
+                    target_orientation= [0, -ev, -ev, 0],
+                    update_world_needed= True,
+                    removing_primitives=["Smart_Conveyor", "world/obstacles"],
+                    orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
+    Robot_2.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+    
+    Robot_2.eef_detach(tool_name="tool0",
+                        detaching_object_name= el_name)
+    # Enabling Gravity For The Stud
+    test._stage.GetPrimAtPath("/world/obstacles/" + el_name).GetAttribute("physxRigidBody:disableGravity").Set(False)
+    Smart_Conv.attach_object_to_conv(obj_name= el_name)
+
+    # Post Place
+    Robot_2.plan(tcp_name= "tool0",
+                    target_pose= [2.3+(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT-((L/2)-(ROBOT_2_GRIPPER_LENGTH/2)-PICK_OFFSET_FROM_L_CORNER)+0.1,
+                                  0,
+                                  SMART_CONV_REST_ELEVATION+H-PICK_OFFSET_FROM_W_CORNER+0.15],
+                    target_orientation= [0, -ev, -ev, 0],
+                    update_world_needed= True,
+                    removing_primitives=["Smart_Conveyor", "world/obstacles"],
+                    orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
+    Robot_2.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+
+    Robot_2.move_to_home()
+
+    # Adding Nail Targets For BPL !
+
+    # Conveyor Move For Placement
+    Side_Selector: float = 0
+
+    Side_Selector = 1
+    if ((OVERALL_PANEL_LENGTH/2)- Y +(SMART_CONV_RANGE_OF_MOTION_J1/2)+NAILING_CONV_TARGET > SMART_CONV_RANGE_OF_MOTION_J1):
+        Side_Selector = -1
+
+    Side_Selector = -1
+    if ((OVERALL_PANEL_LENGTH/2)- Y +(SMART_CONV_RANGE_OF_MOTION_J1/2)+NAILING_CONV_TARGET < 0):
+        Side_Selector = 1
+
+    # Saving Joint Location For Nailing
+    Smart_Conv._nail_poses.append(((OVERALL_PANEL_LENGTH/2)- Y +(SMART_CONV_RANGE_OF_MOTION_J1/2)+NAILING_CONV_TARGET*Side_Selector, Side_Selector))
+
 ###########
 ####END####
 ###########
@@ -4012,13 +4129,16 @@ def main():
         # # KING("Wooden_Element_10", 1.2592, SMART_MAT_TABLE_MAX_LENGTH-0.02, 0, 2.4384, 0.04, 0.1016)
 
         # # JACK DONE !
-        # LJCK("Wooden_Element_12", 1.4784, 1.56, 0, 2, 0.04, 0.1016)
-        # RJCK("Wooden_Element_11", 1.4784, 2.48, 0, 2, 0.04, 0.1016)
+        LJCK("Wooden_Element_12", 1.4784, 1.56, 0, 2, 0.04, 0.1016)
+        RJCK("Wooden_Element_11", 1.4784, 2.48, 0, 2, 0.04, 0.1016)
 
         # TSP("Small_Stud_1", 0.4584, 2.02, 0, 0.96, 0.04, 0.1016)
 
-        BSP("Small_Stud_2", 2.1784, 2.02, 0, 0.88, 0.04, 0.1016)
+        BSP("Small_Stud_2", 1.9784, 2.02, 0, 0.88, 0.04, 0.1016)
 
+        LCP("Small_Stud_3", 2.2384, 2.25, 0, 0.48, 0.04, 0.1016)
+
+        LCP("Small_Stud_4", 2.2384, 2.05, 0, 0.48, 0.04, 0.1016)
         # # BPL DONE !
         # BPL("Wooden_Element_13", OVERALL_PANEL_HEIGHT-0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.1016)
 
