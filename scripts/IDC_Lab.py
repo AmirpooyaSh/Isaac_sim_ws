@@ -3380,7 +3380,6 @@ def Robot_1_Do_TopSill_Nail(push_to_nail: float = None,
         else:
             print("Right Nail is Not Possible ! Due To Robot NailGun Reachability")
 
-
 def TSP(el_name: str = None,
         X: float = None,
         Y: float = None,
@@ -3558,7 +3557,14 @@ def TSP(el_name: str = None,
     # Nailing the Silling !
     Robot_1_Do_TopSill_Nail(push_to_nail=0.01, el_pose=[X, Y, Z], el_dims=[L, W, H], conv_current_location=Conv_Curr_Loc)
 
-
+def LSP(el_name: str = None,
+        X: float = None,
+        Y: float = None,
+        Z: float = None,
+        L: float = None,
+        W: float = None,
+        H: float = None):
+    r=1
 
 ###########
 ####END####
