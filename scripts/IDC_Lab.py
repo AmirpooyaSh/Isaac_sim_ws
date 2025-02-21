@@ -4413,25 +4413,9 @@ def main():
         # for robot in robots:
         #         robot.ros_js_publisher()
 
-
-
         # T = time.time()
         # while time.time() - T <= 5:
-        #     test._my_world.step(render= True)
-
-        # Robot_1.plan(tcp_name= "tool1",
-        #                 target_pose= [-0.95, -1.2, 0.6],
-        #                 target_orientation= [0, ev, ev, 0],
-        #                 update_world_needed= True)
-        # Robot_1.render_exec(renderInstance= True,
-        #                         Show_Sphere= False)
-        #
-        # Robot_1.plan(tcp_name= "tool1",
-        #                 target_pose= [2, -0.28, 1.05],
-        #                 target_orientation= [0, -ev, -ev, 0],
-        #                 update_world_needed= True)
-        # Robot_1.render_exec(renderInstance= True,
-        #                         Show_Sphere= False)        
+        #     test._my_world.step(render= True)  
 
         # TPL
         TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.1524)

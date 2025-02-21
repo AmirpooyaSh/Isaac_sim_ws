@@ -19,3 +19,4 @@ def divide_portions(x, y):
 
 quat = R.from_euler('xyz', [(-(np.pi/2)), 0, np.pi]).as_quat()
 print(quat)
+
