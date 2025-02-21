@@ -169,7 +169,7 @@ PICK_OFFSET_FROM_L_CORNER: float = 0.05
 PICK_OFFSET_FROM_L_CORNER_AFTER_PASS: float = 0.2
 PICK_OFFSET_FROM_W_CORNER: float = 0.0061
 
-JACK_PLACEMENT_SIDE_DRAG: float = 0.1
+JACK_PLACEMENT_SIDE_DRAG: float = 0.05
 # This represents the angle in which Robot 1 will nail the Jacks to the Kings ! (20 To 45 is a good range)
 JACK_SIDE_NAILING_ANGLE: float = 30
 JACK_NAILING_OFFSET: float = 0.1
@@ -1465,7 +1465,11 @@ class CuRoboRobot(object):
                         "Joint_6",
                         ],
                 )
-            result = self._motion_gen.plan_single_js(cu_js.unsqueeze(0), home_state, self._plan_config)
+            # A Planning Config For Getting Move to Home (With Trajectory Optimization being disabled)
+            Home_Planner = MotionGenPlanConfig(time_dilation_factor= MOTION_ACCELERAION_VALUE)
+            
+            self._motion_gen.reset_seed()
+            result = self._motion_gen.plan_single_js(cu_js.unsqueeze(0), home_state, Home_Planner)
             succ = result.success.item()
 
 
@@ -1669,7 +1673,7 @@ class CuRoboRobot(object):
                    r_name: str = "IRB6620_R1",
                    tool_name: str = "tool1",
                    attaching_object_name: str = None,
-                   gen_sphere_radius: float = 0.01,
+                   gen_sphere_radius: float = 0.001,
                    voxelization_method: SphereFitType = SphereFitType.VOXEL_VOLUME_SAMPLE_SURFACE):
         
         if(attaching_object_name == None):
@@ -3109,17 +3113,29 @@ def RJCK(el_name: str = None,
     Smart_Conv.render_exec('Joint_1', (OVERALL_PANEL_LENGTH/2)- Y +(SMART_CONV_RANGE_OF_MOTION_J1/2)+NAILING_CONV_TARGET*Side_Selector)
     # Saving Joint Location For Nailing
     Smart_Conv._nail_poses.append(((OVERALL_PANEL_LENGTH/2)- Y +(SMART_CONV_RANGE_OF_MOTION_J1/2)+NAILING_CONV_TARGET*Side_Selector, Side_Selector))
-        
+
+    # Move To Home ! 
     Robot_2.move_to_home()
 
     # Pre Place
     Robot_2.plan(tcp_name= "tool0",
+                    target_pose= [2.3+(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT+((L/2)-(ROBOT_2_GRIPPER_LENGTH/2)-PICK_OFFSET_FROM_L_CORNER)+0.1,
+                                  NAILING_CONV_TARGET*Side_Selector+Jack_Y_Placement_Offset,
+                                  SMART_CONV_REST_ELEVATION+H-PICK_OFFSET_FROM_W_CORNER+0.05],
+                    target_orientation= [0, ev, ev, 0],
+                    update_world_needed= True)
+    Robot_2.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+
+    # Place
+    Robot_2.plan(tcp_name= "tool0",
                     target_pose= [2.3+(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT+((L/2)-(ROBOT_2_GRIPPER_LENGTH/2)-PICK_OFFSET_FROM_L_CORNER),
                                   NAILING_CONV_TARGET*Side_Selector,
-                                  SMART_CONV_REST_ELEVATION+H-PICK_OFFSET_FROM_W_CORNER+0.1],
+                                  SMART_CONV_REST_ELEVATION+H-PICK_OFFSET_FROM_W_CORNER+0.05],
                     target_orientation= [0, ev, ev, 0],
                     update_world_needed= True,
-                    removing_primitives=["Smart_Conveyor", "world/obstacles"])
+                    removing_primitives=["Smart_Conveyor", "world/obstacles"],
+                    orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
     Robot_2.render_exec(renderInstance= True,
                             Show_Sphere= False)
 
@@ -4397,6 +4413,8 @@ def main():
         # for robot in robots:
         #         robot.ros_js_publisher()
 
+
+
         # T = time.time()
         # while time.time() - T <= 5:
         #     test._my_world.step(render= True)
@@ -4415,34 +4433,31 @@ def main():
         # Robot_1.render_exec(renderInstance= True,
         #                         Show_Sphere= False)        
 
-        # TPL DONE !
-        # TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.1016)
-        # KING DONE !
-        # KING("Wooden_Element_2", 1.2592, 0.02, 0, 2.4384, 0.04, 0.1016)
-        # KING("Wooden_Element_3", 1.2592, 0.4, 0, 2.4384, 0.04, 0.1016)
-        # KING("Wooden_Element_4", 1.2592, 0.9, 0, 2.4384, 0.04, 0.1016)
-        # KING("Wooden_Element_5", 1.2592, 1.4, 0, 2.4384, 0.04, 0.1016)
-        # KING("Wooden_Element_6", 1.2592, 1.52, 0, 2.4384, 0.04, 0.1016)
-        # KING("Wooden_Element_7", 1.2592, 2.52, 0, 2.4384, 0.04, 0.1016)
-        # # KING("Wooden_Element_8", 1.2592, 2.64, 0, 2.4384, 0.04, 0.1016)
-        # # KING("Wooden_Element_9", 1.2592, 3.14, 0, 2.4384, 0.04, 0.1016)
-        # # KING("Wooden_Element_10", 1.2592, SMART_MAT_TABLE_MAX_LENGTH-0.02, 0, 2.4384, 0.04, 0.1016)
+        # TPL
+        TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.1524)
 
-        # # JACK DONE !
-        # LJCK("Wooden_Element_12", 1.4784, 1.56, 0, 2, 0.04, 0.1016)
-        # RJCK("Wooden_Element_11", 1.4784, 2.48, 0, 2, 0.04, 0.1016)
+        # Door
+        KING("Wooden_Element_6", 1.2592, 1.52, 0, 2.4384, 0.04, 0.1524)
+        KING("Wooden_Element_7", 1.2592, 2.52, 0, 2.4384, 0.04, 0.1524)
+        LJCK("Wooden_Element_12", 1.4784, 1.56, 0, 2, 0.04, 0.1524)
+        RJCK("Wooden_Element_11", 1.4784, 2.48, 0, 2, 0.04, 0.1524)
+        TSP("Small_Stud_1", 0.4584, 2.02, 0, 0.96, 0.04, 0.1524)
+        TCP("Small_Stud_5", 0.2392, 2.02, 0, 0.3984, 0.04, 0.1524)
+        BSP("Small_Stud_2", 1.9784, 2.02, 0, 0.88, 0.04, 0.1524)
+        LCP("Small_Stud_3", 2.2384, 1.87, 0, 0.48, 0.04, 0.1524)
+        LCP("Small_Stud_4", 2.2384, 2.17, 0, 0.48, 0.04, 0.1524)
 
-        TSP("Small_Stud_1", 0.4584, 2.02, 0, 0.96, 0.04, 0.1016)
+        # IST
+        KING("Wooden_Element_2", 1.2592, 0.02, 0, 2.4384, 0.04, 0.1524)
+        KING("Wooden_Element_3", 1.2592, 0.4, 0, 2.4384, 0.04, 0.1524)
+        KING("Wooden_Element_4", 1.2592, 0.9, 0, 2.4384, 0.04, 0.1524)
+        KING("Wooden_Element_5", 1.2592, 1.4, 0, 2.4384, 0.04, 0.1524)
+        KING("Wooden_Element_8", 1.2592, 2.64, 0, 2.4384, 0.04, 0.1524)
+        KING("Wooden_Element_9", 1.2592, 3.14, 0, 2.4384, 0.04, 0.1524)
+        KING("Wooden_Element_10", 1.2592, SMART_MAT_TABLE_MAX_LENGTH-0.02, 0, 2.4384, 0.04, 0.1524)
 
-        TCP("Small_Stud_5", 0.2392, 2.02, 0, 0.3984, 0.04, 0.1016)
-
-        # BSP("Small_Stud_2", 1.9784, 2.02, 0, 0.88, 0.04, 0.1016)
-
-        # LCP("Small_Stud_3", 2.2384, 2.02, 0, 0.48, 0.04, 0.1016)
-
-        # LCP("Small_Stud_4", 2.2384, 2.05, 0, 0.48, 0.04, 0.1016)
-        # # BPL DONE !
-        # BPL("Wooden_Element_13", OVERALL_PANEL_HEIGHT-0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.1016)
+        # BPL
+        BPL("Wooden_Element_13", OVERALL_PANEL_HEIGHT-0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.1524)
 
         Robot_1.free_TCP_movement(moving_tcp= "tool0")
 
