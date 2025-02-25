@@ -381,17 +381,17 @@ class WorldManager(object):
             scale=[0.001, 0.001, 0.001]
         )
 
-        # Small Cutting Table
-        Small_Cutting_Table = Mesh(
-            name="Small_Cutting_Table",
-            pose=[-0.5 , -1.2, 0, 0, 0, -ev, -ev],
-            file_path= cur_dir + "cutting_table/Small_Cut_Table.stl",
-            color= [0.2, 0.2, 0.2, 1],
-            scale=[0.001, 0.001, 0.001]
-        )
-        SMALL_CUT_TABLE_SAW_POSE[0] = Small_Cutting_Table.pose[0]+0.15
-        SMALL_CUT_TABLE_SAW_POSE[1] = Small_Cutting_Table.pose[1]
-        SMALL_CUT_TABLE_SAW_POSE[2] = Small_Cutting_Table.pose[2] 
+        # # Small Cutting Table
+        # Small_Cutting_Table = Mesh(
+        #     name="Small_Cutting_Table",
+        #     pose=[-0.5 , -1.2, 0, 0, 0, -ev, -ev],
+        #     file_path= cur_dir + "cutting_table/Small_Cut_Table.stl",
+        #     color= [0.2, 0.2, 0.2, 1],
+        #     scale=[0.001, 0.001, 0.001]
+        # )
+        # SMALL_CUT_TABLE_SAW_POSE[0] = Small_Cutting_Table.pose[0]+0.15
+        # SMALL_CUT_TABLE_SAW_POSE[1] = Small_Cutting_Table.pose[1]
+        # SMALL_CUT_TABLE_SAW_POSE[2] = Small_Cutting_Table.pose[2] 
 
         # Ground !
         Cube = Cuboid (
@@ -412,9 +412,20 @@ class WorldManager(object):
             color= [0.1, 0.05, 0, 1],
             scale=[0.001, 0.001, 0.001]
         )
-                                                                                                                                                                                                                                                                                            
+
+
+        SheathingTable = Mesh(
+            name="Sheathing_Table",
+            pose=[0, -2, 0, ev, ev, 0, 0],
+            file_path= cur_dir + "sheathing_table/SheathingTable.stl",
+            color= [0.1, 0.05, 0, 1],
+            scale=[0.001, 0.001, 0.001]
+        )
+
+
+        # Small_Cutting_Table
         world_model = WorldConfig(
-            mesh=[IDC_Lab, Smart_Mat_Table, Sloped_Table, Small_Cutting_Table],
+            mesh=[IDC_Lab, Smart_Mat_Table, Sloped_Table, SheathingTable],
             cuboid=[Cube],
             capsule=[],
             cylinder=[],
@@ -1817,7 +1828,7 @@ Robot_1 = None
 Robot_1 = CuRoboRobot(working_world=test, 
                 R_Name="IRB6620_R1",
                 pose=[0,0,0.025],
-                input_tool="tool0", 
+                input_tool="tool1", 
                 w_dir=INSTALLATION_DIRECTORY+"/Isaac_sim_ws/robot", 
                 r_conf_name="IRB6620_Config.yaml",
                 Gripper_List=[RobotGripper(RobName= "IRB6620_R1",
@@ -4372,6 +4383,16 @@ def TCP(el_name: str = None,
         elif (OVERALL_PANEL_LENGTH/2)- Y +(SMART_CONV_RANGE_OF_MOTION_J1/2)-(NAILING_CONV_TARGET*2) < 0:
             Robot_1_Do_Side_Nail(push_to_nail= PUSH_TO_NAIL_OFFSET, H= H, Side_Selector= 1)
 
+def SHT(el_name: str = None,
+        X: float = None,
+        Y: float = None,
+        Z: float = None,
+        L: float = None,
+        W: float = None,
+        H: float = None):
+    r=1
+    # Pick Orientation [0, ev, ev, 0]
+    # From Sheathing Table
 
 ###########
 ####END####
@@ -4417,6 +4438,8 @@ def main():
         # while time.time() - T <= 5:
         #     test._my_world.step(render= True)  
 
+        Robot_1.free_TCP_movement("tool1")
+
         # TPL
         TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.1524)
 
@@ -4439,6 +4462,8 @@ def main():
         KING("Wooden_Element_8", 1.2592, 2.64, 0, 2.4384, 0.04, 0.1524)
         KING("Wooden_Element_9", 1.2592, 3.14, 0, 2.4384, 0.04, 0.1524)
         KING("Wooden_Element_10", 1.2592, SMART_MAT_TABLE_MAX_LENGTH-0.02, 0, 2.4384, 0.04, 0.1524)
+
+        SHT("Wooden_Element_9", 1.2592, 3.14, 0, 2.4384, 0.04, 0.1524)
 
         # BPL
         BPL("Wooden_Element_13", OVERALL_PANEL_HEIGHT-0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.1524)
