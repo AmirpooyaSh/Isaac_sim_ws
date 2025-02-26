@@ -217,6 +217,7 @@ NAILING_CONV_TARGET: float = 0.5
 OVERALL_PANEL_LENGTH: float = SMART_MAT_TABLE_MAX_LENGTH
 OVERALL_PANEL_HEIGHT: float = 2.5184
 STUD_THICKNESS: float = 0.04
+STUD_HEIGHT: float = 0.1524
 
 # Class Robot Gripper
 class RobotGripper(object):
@@ -4406,10 +4407,116 @@ def Create_Wooden_Element_For_Sheathing_Table(el_name: str = None,
     )
     Add_Rigid_Object_To_Scene(test, "Cuboid", Element)
 
-def Do_Vertical_Nail(R: CuRoboRobot = None,
-                     push_to_nail: float = 0.01,
-                     nail_num: int = 6):
-    r=1
+def Do_Vertical_Nail(push_to_nail: float = 0.01,
+                     nail_num: int = 6,
+                     el_dims: list[float] = []):
+
+    Starting_X: float = 2.3 - (OVERALL_PANEL_HEIGHT/2)+(STUD_THICKNESS/2) + SMART_CONV_X_SHIFT
+    Ending_X: float = 2.3 + (OVERALL_PANEL_HEIGHT/2)-(STUD_THICKNESS/2) + SMART_CONV_X_SHIFT
+    L: float = np.round((Ending_X - Starting_X) / (nail_num-1), 0)
+
+    it: int = 0
+    dc=_dynamic_control.acquire_dynamic_control_interface()
+
+    # Robot_1.free_TCP_movement("tool3")
+    # #Or [1, 0, 0, 0] => [0, 0, 0]
+
+
+#ROBOT_1
+    while it < (nail_num/2):
+
+#ROBOT 1 VERTICAL NAILING
+        #Pre Nail Rob1
+        Robot_1.plan(tcp_name= "tool3",
+                        target_pose= [2.3 - (OVERALL_PANEL_HEIGHT/2)+(STUD_THICKNESS/2) + SMART_CONV_X_SHIFT + (it*L),
+                                      0,
+                                      SMART_CONV_REST_ELEVATION+STUD_HEIGHT+el_dims[2]+0.05],
+                        target_orientation= [1, 0, 0, 0],
+                        update_world_needed= True)
+        Robot_1.render_exec(renderInstance= True,
+                                Show_Sphere= False)
+
+        #Nail Rob1
+        object=dc.get_rigid_body("/"+Robot_1._ROS_JS_robot_indicator+"/tool3")
+        object_pose=dc.get_rigid_body_pose(object)
+        Robot_1.plan(tcp_name= "tool3",
+                        target_pose= [object_pose.p[0],
+                                    object_pose.p[1],
+                                    object_pose.p[2]-push_to_nail-0.05],
+                        target_orientation= [object_pose.r[3], object_pose.r[0], object_pose.r[1], object_pose.r[2]],
+                        update_world_needed= True,
+                        removing_primitives=["Smart_Conveyor", "world/obstacles"],
+                        direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.0, tstep_fraction=0.001,linear_axis=2))
+        Robot_1.render_exec(renderInstance= True,
+                                Show_Sphere= False)
+
+        #Post Nail Rob1
+        object=dc.get_rigid_body("/"+Robot_1._ROS_JS_robot_indicator+"/tool3")
+        object_pose=dc.get_rigid_body_pose(object)
+        Robot_1.plan(tcp_name= "tool3",
+                        target_pose= [object_pose.p[0],
+                                    object_pose.p[1],
+                                    object_pose.p[2]+push_to_nail+0.05],
+                        target_orientation= [object_pose.r[3], object_pose.r[0], object_pose.r[1], object_pose.r[2]],
+                        update_world_needed= True,
+                        removing_primitives=["Smart_Conveyor", "world/obstacles"],
+                        direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.0, tstep_fraction=0.001,linear_axis=2))
+        Robot_1.render_exec(renderInstance= True,
+                                Show_Sphere= False)
+        # Next Nail !
+        it+=1
+
+    it: int = 0
+    dc=_dynamic_control.acquire_dynamic_control_interface()
+
+    # Robot_2.free_TCP_movement("tool2")
+    # #Or [1, 0, 0, 0] => [0, 0, 0]
+    Robot_1.move_to_home()
+#ROBOT_2
+    while it < (nail_num/2):
+
+#ROBOT 2 VERTICAL NAILING
+        #Pre Nail Rob2
+        Robot_2.plan(tcp_name= "tool2",
+                        target_pose= [2.3 + (OVERALL_PANEL_HEIGHT/2)-(STUD_THICKNESS/2) + SMART_CONV_X_SHIFT - (it*L),
+                                      0,
+                                      SMART_CONV_REST_ELEVATION+STUD_HEIGHT+el_dims[2]+0.05],
+                        target_orientation= [1, 0, 0, 0],
+                        update_world_needed= True)
+        Robot_2.render_exec(renderInstance= True,
+                                Show_Sphere= False)
+
+        #Nail Rob2
+        object=dc.get_rigid_body("/"+Robot_2._ROS_JS_robot_indicator+"/tool2")
+        object_pose=dc.get_rigid_body_pose(object)
+        Robot_2.plan(tcp_name= "tool2",
+                        target_pose= [object_pose.p[0],
+                                    object_pose.p[1],
+                                    object_pose.p[2]-push_to_nail-0.05],
+                        target_orientation= [object_pose.r[3], object_pose.r[0], object_pose.r[1], object_pose.r[2]],
+                        update_world_needed= True,
+                        removing_primitives=["Smart_Conveyor", "world/obstacles"],
+                        direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.0, tstep_fraction=0.001,linear_axis=2))
+        Robot_2.render_exec(renderInstance= True,
+                                Show_Sphere= False)
+
+        #Post Nail Rob1
+        object=dc.get_rigid_body("/"+Robot_2._ROS_JS_robot_indicator+"/tool2")
+        object_pose=dc.get_rigid_body_pose(object)
+        Robot_2.plan(tcp_name= "tool2",
+                        target_pose= [object_pose.p[0],
+                                    object_pose.p[1],
+                                    object_pose.p[2]+push_to_nail+0.05],
+                        target_orientation= [object_pose.r[3], object_pose.r[0], object_pose.r[1], object_pose.r[2]],
+                        update_world_needed= True,
+                        removing_primitives=["Smart_Conveyor", "world/obstacles"],
+                        direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.0, tstep_fraction=0.001,linear_axis=2))
+        Robot_2.render_exec(renderInstance= True,
+                                Show_Sphere= False)
+        # Next Nail !
+        it+=1
+
+    Robot_2.move_to_home()
 
 def SHT(el_name: str = None,
         X: float = None,
@@ -4515,20 +4622,15 @@ def SHT(el_name: str = None,
     Robot_2.move_to_home()
 
     # Vertical Nailing !!!
-    Robot_1.free_TCP_movement("tool3")
-    #Or [1, 0, 0, 0] => [0, 0, 0]
-    Robot_2.free_TCP_movement("tool2")
-    #Or [1, 0, 0, 0] => [0, 0, 0]
 
     Sht_plate_on_conv_loc: float = -(Y - (OVERALL_PANEL_LENGTH/2)) + (SMART_CONV_RANGE_OF_MOTION_J1/2)
 
     for nail in Smart_Conv._vertical_nail_poses:
         # It means that we should vertically nail the sheathing plate to the king at these locations
         if(nail <= Sht_plate_on_conv_loc + (W/2) and nail >= Sht_plate_on_conv_loc - (W/2)):
-            # Do Nail ^-^
-            r=1
-
-            #Rob 1
+            # Move Nail Target To Y=0
+            Smart_Conv.render_exec('Joint_1', nail)
+            Do_Vertical_Nail(push_to_nail= 0.005, nail_num= 6, el_dims= [L, W, H])
 
 ###########
 ####END####
@@ -4581,8 +4683,8 @@ def main():
         TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.1524)
 
         # # Door
-        # KING("Wooden_Element_6", 1.2592, 1.52, 0, 2.4384, 0.04, 0.1524)
-        # KING("Wooden_Element_7", 1.2592, 2.52, 0, 2.4384, 0.04, 0.1524)
+        KING("Wooden_Element_6", 1.2592, 1.52, 0, 2.4384, 0.04, 0.1524)
+        KING("Wooden_Element_7", 1.2592, 2.52, 0, 2.4384, 0.04, 0.1524)
         # LJCK("Wooden_Element_12", 1.4784, 1.56, 0, 2, 0.04, 0.1524)
         # RJCK("Wooden_Element_11", 1.4784, 2.48, 0, 2, 0.04, 0.1524)
         # TSP("Small_Stud_1", 0.4584, 2.02, 0, 0.96, 0.04, 0.1524)
