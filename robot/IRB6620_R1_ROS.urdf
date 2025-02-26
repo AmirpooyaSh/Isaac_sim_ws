@@ -314,9 +314,10 @@
     </joint>
 
     <!-- EF1_NG2 tool frame -->
+    <!-- rpy: -pi/2, 0.174533, 0 -->
     <link name="tool3" />
     <joint name="Link_6-tool3" type="fixed">
-        <origin xyz="0.226962 -0.705 0.002537" rpy="-1.57079632679 0.174533 0" />
+        <origin xyz="0.226962 -0.705 0.002537" rpy="-1.57079632679 0 0" />
         <parent link="flange" />
         <child link="tool3" />
     </joint>

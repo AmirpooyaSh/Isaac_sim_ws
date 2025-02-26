@@ -216,6 +216,7 @@ NAILING_CONV_TARGET: float = 0.5
 # Variables That Should be Changed For Each Design (For Now)
 OVERALL_PANEL_LENGTH: float = SMART_MAT_TABLE_MAX_LENGTH
 OVERALL_PANEL_HEIGHT: float = 2.5184
+STUD_THICKNESS: float = 0.04
 
 # Class Robot Gripper
 class RobotGripper(object):
@@ -470,8 +471,11 @@ class CuRoboConv(object):
         # Articulation Controller
         self._articulation_controller: ArticulationController = None
 
-        # Nailing Positions For Sheathing (Vertical Nailing)
+        # Nailing Positions For Side Nailing
         self._nail_poses: List[Tuple[float, float]] = []
+
+        # Nailing Positions For Vertical Nailing
+        self._vertical_nail_poses: List[float] = []
 
         # Disabling Colliders
         # Not Tested ! Might Cause Failures !
@@ -2762,6 +2766,9 @@ def KING(el_name: str = None,
     # Saving Joint Location For Nailing
     Smart_Conv._nail_poses.append(((OVERALL_PANEL_LENGTH/2)- Y +(SMART_CONV_RANGE_OF_MOTION_J1/2)+NAILING_CONV_TARGET*Side_Selector, Side_Selector))
 
+    # Saving Joint Coordination For Vertical Nailing After Placing the Sheathing Plates
+    Smart_Conv._vertical_nail_poses.append((OVERALL_PANEL_LENGTH/2)- Y +(SMART_CONV_RANGE_OF_MOTION_J1/2))
+
     # Pre Place
     Robot_2.plan(tcp_name= "tool0",
                     target_pose= [2.3+(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT+((L/2)-(ROBOT_2_GRIPPER_LENGTH/2)-SLOPED_TABLE_PICK_OFFSET_FROM_L_CORNER)+0.2,
@@ -4399,6 +4406,11 @@ def Create_Wooden_Element_For_Sheathing_Table(el_name: str = None,
     )
     Add_Rigid_Object_To_Scene(test, "Cuboid", Element)
 
+def Do_Vertical_Nail(R: CuRoboRobot = None,
+                     push_to_nail: float = 0.01,
+                     nail_num: int = 6):
+    r=1
+
 def SHT(el_name: str = None,
         X: float = None,
         Y: float = None,
@@ -4503,8 +4515,20 @@ def SHT(el_name: str = None,
     Robot_2.move_to_home()
 
     # Vertical Nailing !!!
+    Robot_1.free_TCP_movement("tool3")
+    #Or [1, 0, 0, 0] => [0, 0, 0]
+    Robot_2.free_TCP_movement("tool2")
+    #Or [1, 0, 0, 0] => [0, 0, 0]
 
-    Robot_1.free_TCP_movement("tool1")
+    Sht_plate_on_conv_loc: float = -(Y - (OVERALL_PANEL_LENGTH/2)) + (SMART_CONV_RANGE_OF_MOTION_J1/2)
+
+    for nail in Smart_Conv._vertical_nail_poses:
+        # It means that we should vertically nail the sheathing plate to the king at these locations
+        if(nail <= Sht_plate_on_conv_loc + (W/2) and nail >= Sht_plate_on_conv_loc - (W/2)):
+            # Do Nail ^-^
+            r=1
+
+            #Rob 1
 
 ###########
 ####END####
