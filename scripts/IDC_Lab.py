@@ -149,6 +149,7 @@ ROBOT_1_GRIPPER_LENGTH: float = 0.600202
 ROBOT_1_SUCTION_LENGTH: float = 0.549999565226
 ROBOT_1_SUCTION_WIDTH: float = 0.359199802554
 ROBOT_1_SUCTION_CUP_R: float = 0.035000000104
+ROBOT_1_SUCTION_CUP_TO_TOOL_OFFSET: float = 0.03
 
 ROBOT_2_GRIPPER_LENGTH: float = 0.590042
 # Robotic Movement Accelaration
@@ -191,6 +192,10 @@ SLOPED_TABLE_PICK_OFFSET_FROM_W_CORNER: float = 0.0061
 ### Small Cut Table
 # Upon Reloating the Table, The Offset Should be Adjusted Accordingly
 SMALL_CUT_TABLE_SAW_POSE: list[float] = [1, 1, 0.5]
+
+# Sheathing Plate Table ( Used to Pick Sheathing Plates )
+SHEATHING_PLATE_TABLE_BOTTOM_CENTER: list[float] = [0, -1.2, 0.6]
+OFFSET_FROM_SHEATHING_PLATE_TABLE_BOT: float = 0.3
 
 NUMBER_OF_HEADERS: int = 2
 # 2in x 10in 
@@ -576,7 +581,8 @@ class CuRoboConv(object):
         # obstacles.save_world_as_mesh(file_path)
 
     def attach_object_to_conv(self,
-                              obj_name: str = None):
+                              obj_name: str = None,
+                              Enable_Gravity: bool = True):
         
         # Disabling Gravity Right After Detaching
         Obj_Prim = self._temp_world_manager._stage.GetPrimAtPath("/world/obstacles/" + obj_name)
@@ -589,7 +595,8 @@ class CuRoboConv(object):
 
         Obj_Prim.GetAttribute("physics:rigidBodyEnabled").Set(True)
         Obj_Prim.GetAttribute("physics:collisionEnabled").Set(True)
-        Obj_Prim.GetAttribute("physxRigidBody:disableGravity").Set(False)
+        if(Enable_Gravity):
+            Obj_Prim.GetAttribute("physxRigidBody:disableGravity").Set(False)
         self._temp_world_manager._my_world.step(render= True)    
 
         Time = time.time()
@@ -604,8 +611,8 @@ class CuRoboConv(object):
         Obj_Prim.GetAttribute("physxRigidBody:linearDamping").Set(20)
         Obj_Prim.GetAttribute("physxRigidBody:angularDamping").Set(20)
 
-
-        Obj_Prim.GetAttribute("physxRigidBody:disableGravity").Set(True)
+        if(Enable_Gravity):
+            Obj_Prim.GetAttribute("physxRigidBody:disableGravity").Set(True)
         Obj_Prim.GetAttribute("physics:collisionEnabled").Set(False)
         Conv_Collision_Prim.GetAttribute("physics:collisionEnabled").Set(False)
         self._temp_world_manager._my_world.step(render= True)
@@ -613,7 +620,6 @@ class CuRoboConv(object):
 
         
         return prim
-
 
 class CuRoboRobot(object):
     def __init__(self,
@@ -1424,7 +1430,8 @@ class CuRoboRobot(object):
         self._computed_idx_list = []
 
     def move_to_home(self,
-                     if_show_spheres: bool = False):
+                     if_show_spheres: bool = False,
+                     Customized_JS: List[float] = [0, -0.5, 0.5, 0, 0, 0]):
 
         # If Robot is Already at Home Position
         if self._is_at_home == True:
@@ -1458,13 +1465,7 @@ class CuRoboRobot(object):
             cu_js = cu_js.get_ordered_joint_state(self._motion_gen.kinematics.joint_names)
 
             # Home Position is Defined as all 0
-            Home_Loc = torch.zeros(1,6).cuda()
-
-            # Sleep Point For Robots To Reduce Collision !
-            Home_Loc[0, 1] = -0.5
-            Home_Loc[0, 2] = 0.5
-            Home_Loc[0, 4] = 0
-
+            Home_Loc = torch.tensor(Customized_JS, dtype=torch.float32).unsqueeze(0).cuda()
             home_state = JointState.from_position(
                     Home_Loc,
                     joint_names=[
@@ -4383,6 +4384,21 @@ def TCP(el_name: str = None,
         elif (OVERALL_PANEL_LENGTH/2)- Y +(SMART_CONV_RANGE_OF_MOTION_J1/2)-(NAILING_CONV_TARGET*2) < 0:
             Robot_1_Do_Side_Nail(push_to_nail= PUSH_TO_NAIL_OFFSET, H= H, Side_Selector= 1)
 
+def Create_Wooden_Element_For_Sheathing_Table(el_name: str = None,
+                                # L is constant since this table is only for 8ft studs
+                                L: float = None,
+                                W: float = None,
+                                H: float = None):
+    
+    Element = Cuboid(
+        name= el_name,
+        # 12ft is equal to 3.6576 meters (which is the maximum length of the Smart Material Table !)
+        pose= [SHEATHING_PLATE_TABLE_BOTTOM_CENTER[0], SHEATHING_PLATE_TABLE_BOTTOM_CENTER[1]-(L/2), SHEATHING_PLATE_TABLE_BOTTOM_CENTER[2]+(H/2), 1, 0, 0, 0],
+        dims= [W, L, H],
+        color= [0.4, 0.2, 0, 1]
+    )
+    Add_Rigid_Object_To_Scene(test, "Cuboid", Element)
+
 def SHT(el_name: str = None,
         X: float = None,
         Y: float = None,
@@ -4390,9 +4406,105 @@ def SHT(el_name: str = None,
         L: float = None,
         W: float = None,
         H: float = None):
-    r=1
+
     # Pick Orientation [0, ev, ev, 0]
     # From Sheathing Table
+    # Local Coordination: [0, -1.2, 0.6]
+
+    # Pre Pick
+    Robot_1.plan(tcp_name= "tool1",
+                    target_pose= [SHEATHING_PLATE_TABLE_BOTTOM_CENTER[0]+(ROBOT_1_SUCTION_WIDTH/2),
+                                  SHEATHING_PLATE_TABLE_BOTTOM_CENTER[1]-(ROBOT_1_SUCTION_LENGTH)-(ROBOT_1_SUCTION_CUP_R+OFFSET_FROM_SHEATHING_PLATE_TABLE_BOT),
+                                  SHEATHING_PLATE_TABLE_BOTTOM_CENTER[2]+H+0.1],
+                    target_orientation= [0, ev, ev, 0],
+                    update_world_needed= True)
+    Robot_1.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+
+    # Pick
+    Robot_1.plan(tcp_name= "tool1",
+                    target_pose= [SHEATHING_PLATE_TABLE_BOTTOM_CENTER[0]+(ROBOT_1_SUCTION_WIDTH/2),
+                                  SHEATHING_PLATE_TABLE_BOTTOM_CENTER[1]-(ROBOT_1_SUCTION_LENGTH)-(ROBOT_1_SUCTION_CUP_R+OFFSET_FROM_SHEATHING_PLATE_TABLE_BOT),
+                                  SHEATHING_PLATE_TABLE_BOTTOM_CENTER[2]+H+ROBOT_1_SUCTION_CUP_TO_TOOL_OFFSET],
+                    target_orientation= [0, ev, ev, 0],
+                    update_world_needed= True,
+                    removing_primitives=["Smart_Conveyor", "world/obstacles"],
+                    direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.0, tstep_fraction=0.001,linear_axis=2))
+    Robot_1.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+    
+    Create_Wooden_Element_For_Sheathing_Table(el_name= el_name, L= L, W= W, H= H)
+
+    # Attach
+    Robot_1.eef_attach(tool_name= "tool1", attaching_object_name= el_name)
+
+    # Post Pick
+    Robot_1.plan(tcp_name= "tool1",
+                    target_pose= [SHEATHING_PLATE_TABLE_BOTTOM_CENTER[0]+(ROBOT_1_SUCTION_WIDTH/2),
+                                  SHEATHING_PLATE_TABLE_BOTTOM_CENTER[1]-(ROBOT_1_SUCTION_LENGTH)-(ROBOT_1_SUCTION_CUP_R+OFFSET_FROM_SHEATHING_PLATE_TABLE_BOT),
+                                  SHEATHING_PLATE_TABLE_BOTTOM_CENTER[2]+H+0.1],
+                    target_orientation= [0, ev, ev, 0],
+                    update_world_needed= True,
+                    removing_primitives=["Smart_Conveyor", "world/obstacles", "World/obstacles/Sheathing_Table"],
+                    direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.0, tstep_fraction=0.001,linear_axis=2))
+    Robot_1.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+
+    # Letting Space For the First Robot To Place The Sheathing Plate
+    Robot_2.move_to_home(Customized_JS= [np.radians(90), -0.5, 0.5, 0, 0, 0])
+
+    # Moving the Conveyor
+    Smart_Conv.render_exec('Joint_1', -(Y - (OVERALL_PANEL_LENGTH/2)) + (SMART_CONV_RANGE_OF_MOTION_J1/2) - (ROBOT_1_SUCTION_WIDTH/2))
+
+    # Place Location
+    # Orientation [0, 0, -1, 0]
+    # Orientation [-180, 0, 180]
+
+    # Pre Place
+    Robot_1.plan(tcp_name= "tool1",
+                    target_pose= [2.3-(X)+OFFSET_FROM_SHEATHING_PLATE_TABLE_BOT+ROBOT_1_SUCTION_LENGTH+ROBOT_1_SUCTION_CUP_R+SMART_CONV_X_SHIFT-0.1,
+                                  0,
+                                  SMART_CONV_REST_ELEVATION+Z+0.1],
+                    target_orientation= [0, 0, -1, 0],
+                    update_world_needed= True)
+    Robot_1.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+
+    #Place
+    Robot_1.plan(tcp_name= "tool1",
+                    target_pose= [2.3-(X)+OFFSET_FROM_SHEATHING_PLATE_TABLE_BOT+ROBOT_1_SUCTION_LENGTH+ROBOT_1_SUCTION_CUP_R+SMART_CONV_X_SHIFT,
+                                  0,
+                                  SMART_CONV_REST_ELEVATION+Z+ROBOT_1_SUCTION_CUP_TO_TOOL_OFFSET],
+                    target_orientation= [0, 0, -1, 0],
+                    update_world_needed= True,
+                    removing_primitives=["Smart_Conveyor", "world/obstacles"],
+                    orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
+    Robot_1.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+
+    # Detach
+    Robot_1.eef_detach(tool_name="tool1", detaching_object_name= el_name)
+    Smart_Conv.attach_object_to_conv(obj_name= el_name, Enable_Gravity= False)
+
+    # Post Place
+    Robot_1.plan(tcp_name= "tool1",
+                    target_pose= [2.3-(X)+OFFSET_FROM_SHEATHING_PLATE_TABLE_BOT+ROBOT_1_SUCTION_LENGTH+ROBOT_1_SUCTION_CUP_R+SMART_CONV_X_SHIFT-0.1,
+                                  0,
+                                  SMART_CONV_REST_ELEVATION+Z+0.1],
+                    target_orientation= [0, 0, -1, 0],
+                    update_world_needed= True,
+                    removing_primitives=["Smart_Conveyor", "world/obstacles"],
+                    orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
+    Robot_1.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+    
+    # Move To Home
+    Robot_1.move_to_home()
+    Robot_2.move_to_home()
+
+    # Vertical Nailing !!!
+
+    Robot_1.free_TCP_movement("tool1")
 
 ###########
 ####END####
@@ -4438,35 +4550,37 @@ def main():
         # while time.time() - T <= 5:
         #     test._my_world.step(render= True)  
 
-        Robot_1.free_TCP_movement("tool1")
 
-        # TPL
+
+
+        # # TPL
         TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.1524)
 
-        # Door
-        KING("Wooden_Element_6", 1.2592, 1.52, 0, 2.4384, 0.04, 0.1524)
-        KING("Wooden_Element_7", 1.2592, 2.52, 0, 2.4384, 0.04, 0.1524)
-        LJCK("Wooden_Element_12", 1.4784, 1.56, 0, 2, 0.04, 0.1524)
-        RJCK("Wooden_Element_11", 1.4784, 2.48, 0, 2, 0.04, 0.1524)
-        TSP("Small_Stud_1", 0.4584, 2.02, 0, 0.96, 0.04, 0.1524)
-        TCP("Small_Stud_5", 0.2392, 2.02, 0, 0.3984, 0.04, 0.1524)
-        BSP("Small_Stud_2", 1.9784, 2.02, 0, 0.88, 0.04, 0.1524)
-        LCP("Small_Stud_3", 2.2384, 1.87, 0, 0.48, 0.04, 0.1524)
-        LCP("Small_Stud_4", 2.2384, 2.17, 0, 0.48, 0.04, 0.1524)
+        # # Door
+        # KING("Wooden_Element_6", 1.2592, 1.52, 0, 2.4384, 0.04, 0.1524)
+        # KING("Wooden_Element_7", 1.2592, 2.52, 0, 2.4384, 0.04, 0.1524)
+        # LJCK("Wooden_Element_12", 1.4784, 1.56, 0, 2, 0.04, 0.1524)
+        # RJCK("Wooden_Element_11", 1.4784, 2.48, 0, 2, 0.04, 0.1524)
+        # TSP("Small_Stud_1", 0.4584, 2.02, 0, 0.96, 0.04, 0.1524)
+        # TCP("Small_Stud_5", 0.2392, 2.02, 0, 0.3984, 0.04, 0.1524)
+        # BSP("Small_Stud_2", 1.9784, 2.02, 0, 0.88, 0.04, 0.1524)
+        # LCP("Small_Stud_3", 2.2384, 1.87, 0, 0.48, 0.04, 0.1524)
+        # LCP("Small_Stud_4", 2.2384, 2.17, 0, 0.48, 0.04, 0.1524)
 
-        # IST
-        KING("Wooden_Element_2", 1.2592, 0.02, 0, 2.4384, 0.04, 0.1524)
-        KING("Wooden_Element_3", 1.2592, 0.4, 0, 2.4384, 0.04, 0.1524)
-        KING("Wooden_Element_4", 1.2592, 0.9, 0, 2.4384, 0.04, 0.1524)
-        KING("Wooden_Element_5", 1.2592, 1.4, 0, 2.4384, 0.04, 0.1524)
-        KING("Wooden_Element_8", 1.2592, 2.64, 0, 2.4384, 0.04, 0.1524)
-        KING("Wooden_Element_9", 1.2592, 3.14, 0, 2.4384, 0.04, 0.1524)
-        KING("Wooden_Element_10", 1.2592, SMART_MAT_TABLE_MAX_LENGTH-0.02, 0, 2.4384, 0.04, 0.1524)
+        # # IST
+        # KING("Wooden_Element_2", 1.2592, 0.02, 0, 2.4384, 0.04, 0.1524)
+        # KING("Wooden_Element_3", 1.2592, 0.4, 0, 2.4384, 0.04, 0.1524)
+        # KING("Wooden_Element_4", 1.2592, 0.9, 0, 2.4384, 0.04, 0.1524)
+        # KING("Wooden_Element_5", 1.2592, 1.4, 0, 2.4384, 0.04, 0.1524)
+        # KING("Wooden_Element_8", 1.2592, 2.64, 0, 2.4384, 0.04, 0.1524)
+        # KING("Wooden_Element_9", 1.2592, 3.14, 0, 2.4384, 0.04, 0.1524)
+        # KING("Wooden_Element_10", 1.2592, SMART_MAT_TABLE_MAX_LENGTH-0.02, 0, 2.4384, 0.04, 0.1524)
 
-        SHT("Wooden_Element_9", 1.2592, 3.14, 0, 2.4384, 0.04, 0.1524)
-
-        # BPL
+        # # BPL
         BPL("Wooden_Element_13", OVERALL_PANEL_HEIGHT-0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.1524)
+
+        # Sht
+        SHT("Wooden_Element_9", OVERALL_PANEL_HEIGHT/2, 2.02, 0.1724, OVERALL_PANEL_HEIGHT, 1.04, 0.02)
 
         Robot_1.free_TCP_movement(moving_tcp= "tool0")
 
