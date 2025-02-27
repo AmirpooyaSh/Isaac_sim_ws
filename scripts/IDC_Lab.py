@@ -201,9 +201,9 @@ OFFSET_FROM_SHEATHING_PLATE_TABLE_BOT: float = 0.3
 NUMBER_OF_HEADERS: int = 5
 # 2in x 10in 
 # 1 Meters Length Timbers Stacked !
-RAW_HEADER_DIMENSIONS: list[float] = [1.5, 0.0508, 0.254]
+RAW_HEADER_DIMENSIONS: list[float] = [1, 0.0508, 0.254]
 HEADER_CENTER_COORINATION: list[float] = [-1, 1.5, 0.1]
-HEADER_PICK_OFFSET_L: float = 0.1
+HEADER_PICK_OFFSET_L: float = 0.02
 
 # Position: ['3.999', '-2.417', '1.045'], Orientation: ['0.966', '-0.259', '0.000', '0.000']
 
@@ -401,7 +401,8 @@ class WorldManager(object):
         )
         SMALL_CUT_TABLE_SAW_POSE[0] = Small_Cutting_Table.pose[0]+0.15
         SMALL_CUT_TABLE_SAW_POSE[1] = Small_Cutting_Table.pose[1]
-        SMALL_CUT_TABLE_SAW_POSE[2] = Small_Cutting_Table.pose[2] 
+        #Table Height = 0.5
+        SMALL_CUT_TABLE_SAW_POSE[2] = Small_Cutting_Table.pose[2]+0.5
 
         # Ground !
         Cube = Cuboid (
@@ -4660,6 +4661,11 @@ def BL(el_name: str = None,
 
     global NUMBER_OF_HEADERS
 
+    # Check if the Requested Length is less or equal to the Maximum Length of the Bear Loading elements pilled up
+    if RAW_HEADER_DIMENSIONS[0] < L:
+        print("The Requested Length is Less Than the Maximum Length of the Bear Loading Elements")
+        return
+
     # Pick Orientation [0, ev, -ev, 0] => From The Pile
     # Pre Pick
     Robot_1.plan(tcp_name= "tool1",
@@ -4699,14 +4705,73 @@ def BL(el_name: str = None,
     Robot_1.render_exec(renderInstance= True,
                             Show_Sphere= False)
 
+    # Cut Orientation [0, 0, -1, 0] => On the Cutting Table
+    # Pre Cut
+    Robot_1.plan(tcp_name= "tool1",
+                    target_pose= [SMALL_CUT_TABLE_SAW_POSE[0]+(ROBOT_1_SUCTION_LENGTH+ROBOT_1_SUCTION_CUP_R+HEADER_PICK_OFFSET_L-L),
+                                  SMALL_CUT_TABLE_SAW_POSE[1]+(ROBOT_1_SUCTION_WIDTH/2),
+                                  SMALL_CUT_TABLE_SAW_POSE[2]+W+ROBOT_1_SUCTION_CUP_TO_TOOL_OFFSET+0.5],
+                    target_orientation= [0, 0, -1, 0],
+                    update_world_needed= True)
+    Robot_1.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+
+    # Cut
+    Robot_1.plan(tcp_name= "tool1",
+                    target_pose= [SMALL_CUT_TABLE_SAW_POSE[0]+(ROBOT_1_SUCTION_LENGTH+ROBOT_1_SUCTION_CUP_R+HEADER_PICK_OFFSET_L-L),
+                                  SMALL_CUT_TABLE_SAW_POSE[1]+(ROBOT_1_SUCTION_WIDTH/2),
+                                  SMALL_CUT_TABLE_SAW_POSE[2]+W+ROBOT_1_SUCTION_CUP_TO_TOOL_OFFSET],
+                    target_orientation= [0, 0, -1, 0],
+                    update_world_needed= True,
+                    removing_primitives=["Smart_Conveyor", "world/obstacles", "World/obstacles/Small_Cutting_Table"],
+                    direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.0, tstep_fraction=0.001,linear_axis=2))
+    Robot_1.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+
+    # Simulated CUT
+    Robot_1.eef_detach(tool_name="tool1", detaching_object_name= "Bear_Loading_Element_"+str(NUMBER_OF_HEADERS))
+
+    dc=_dynamic_control.acquire_dynamic_control_interface()
+    test._stage.GetPrimAtPath("/world/obstacles/Bear_Loading_Element_"+str(NUMBER_OF_HEADERS)).GetAttribute("physics:rigidBodyEnabled").Set(True)
+    object = dc.get_rigid_body("/world/obstacles/Bear_Loading_Element_"+str(NUMBER_OF_HEADERS))
+    object_pose=dc.get_rigid_body_pose(object)
+
+    prims_utils.delete_prim("/world/obstacles/Bear_Loading_Element_"+str(NUMBER_OF_HEADERS))
+
+    new_el = Cuboid(
+        name= "Bear_Loading_Element_"+str(NUMBER_OF_HEADERS),
+        pose= [object_pose.p[0]-((RAW_HEADER_DIMENSIONS[0]-L)/2),
+               object_pose.p[1],
+               object_pose.p[2],
+               object_pose.r[3], object_pose.r[0], object_pose.r[1], object_pose.r[2]],
+        dims= [H, L, W],
+        color= [0.4, 0.2, 0, 1]
+    )
+    Add_Rigid_Object_To_Scene(test, "Cuboid", new_el)
+
+    # Attaching the Cut Element
+    Robot_1.eef_attach(tool_name="tool1", attaching_object_name= "Bear_Loading_Element_"+str(NUMBER_OF_HEADERS))
+
+    # Post Cut
+    Robot_1.plan(tcp_name= "tool1",
+                    target_pose= [SMALL_CUT_TABLE_SAW_POSE[0]+(ROBOT_1_SUCTION_LENGTH+ROBOT_1_SUCTION_CUP_R+HEADER_PICK_OFFSET_L-L),
+                                  SMALL_CUT_TABLE_SAW_POSE[1]+(ROBOT_1_SUCTION_WIDTH/2),
+                                  SMALL_CUT_TABLE_SAW_POSE[2]+W+ROBOT_1_SUCTION_CUP_TO_TOOL_OFFSET+0.5],
+                    target_orientation= [0, 0, -1, 0],
+                    update_world_needed= True,
+                    removing_primitives=["Smart_Conveyor", "world/obstacles", "World/obstacles/Small_Cutting_Table"],
+                    direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.0, tstep_fraction=0.001,linear_axis=2))
+    Robot_1.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+
+    Robot_1.move_to_home()
+
+    #Placing Orientation [0, ev, ev, 0] or [0, ev, -ev, 0]
+
+    Robot_1.free_TCP_movement(moving_tcp= "tool1")
+
     # We Used The Top Bear Loading Element
     NUMBER_OF_HEADERS-=1
-
-    Robot_1.free_TCP_movement("tool1")
-
-    # Cut Orientation [0, 0, 1, 0] => On the Cutting Table
-
-
 
 ###########
 ####END####
@@ -4793,7 +4858,7 @@ def main():
 
         # # Sht
         # SHT("Wooden_Element_9", OVERALL_PANEL_HEIGHT/2, 2.02, 0.1724, OVERALL_PANEL_HEIGHT, 1.04, 0.02)
-        BL("Wooden_Element_13", 0.02, 2.02, 0.1724, 0.96, 1.04, 0.02)
+        BL("Wooden_Element_13", 0.02, 2.02, 0.1724, 0.8, RAW_HEADER_DIMENSIONS[1], RAW_HEADER_DIMENSIONS[2])
 
         Robot_1.free_TCP_movement(moving_tcp= "tool0")
 
