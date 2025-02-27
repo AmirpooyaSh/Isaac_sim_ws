@@ -4413,18 +4413,16 @@ def Do_Vertical_Nail(push_to_nail: float = 0.01,
 
     Starting_X: float = 2.3 - (OVERALL_PANEL_HEIGHT/2)+(STUD_THICKNESS/2) + SMART_CONV_X_SHIFT
     Ending_X: float = 2.3 + (OVERALL_PANEL_HEIGHT/2)-(STUD_THICKNESS/2) + SMART_CONV_X_SHIFT
-    L: float = np.round((Ending_X - Starting_X) / (nail_num-1), 0)
-
+    # Might Be Less Than 1, so 2 decimals
+    L: float = np.round((Ending_X - Starting_X) / (nail_num-1), 2)
     it: int = 0
     dc=_dynamic_control.acquire_dynamic_control_interface()
 
     # Robot_1.free_TCP_movement("tool3")
     # #Or [1, 0, 0, 0] => [0, 0, 0]
 
-
 #ROBOT_1
     while it < (nail_num/2):
-
 #ROBOT 1 VERTICAL NAILING
         #Pre Nail Rob1
         Robot_1.plan(tcp_name= "tool3",
@@ -4468,8 +4466,6 @@ def Do_Vertical_Nail(push_to_nail: float = 0.01,
 
     it: int = 0
     dc=_dynamic_control.acquire_dynamic_control_interface()
-
-    # Robot_2.free_TCP_movement("tool2")
     # #Or [1, 0, 0, 0] => [0, 0, 0]
     Robot_1.move_to_home()
 #ROBOT_2
@@ -4680,7 +4676,7 @@ def main():
 
 
         # # TPL
-        TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.1524)
+        # TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.1524)
 
         # # Door
         KING("Wooden_Element_6", 1.2592, 1.52, 0, 2.4384, 0.04, 0.1524)
@@ -4703,7 +4699,7 @@ def main():
         # KING("Wooden_Element_10", 1.2592, SMART_MAT_TABLE_MAX_LENGTH-0.02, 0, 2.4384, 0.04, 0.1524)
 
         # # BPL
-        BPL("Wooden_Element_13", OVERALL_PANEL_HEIGHT-0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.1524)
+        # BPL("Wooden_Element_13", OVERALL_PANEL_HEIGHT-0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.1524)
 
         # Sht
         SHT("Wooden_Element_9", OVERALL_PANEL_HEIGHT/2, 2.02, 0.1724, OVERALL_PANEL_HEIGHT, 1.04, 0.02)
