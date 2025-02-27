@@ -4764,11 +4764,39 @@ def BL(el_name: str = None,
     Robot_1.render_exec(renderInstance= True,
                             Show_Sphere= False)
 
-    Robot_1.move_to_home()
+    #Placing Orientation [0, ev, ev, 0]
+    # Moving Conveyor
+    Smart_Conv.render_exec('Joint_1', -(Y - (OVERALL_PANEL_LENGTH/2)) - ((L/2)-ROBOT_1_SUCTION_LENGTH-ROBOT_1_SUCTION_CUP_R-HEADER_PICK_OFFSET_L) + (SMART_CONV_RANGE_OF_MOTION_J1/2))
 
-    #Placing Orientation [0, ev, ev, 0] or [0, ev, -ev, 0]
+    # Pre Place
+    Place_Doable: bool = Robot_1.plan(tcp_name= "tool1",
+                    target_pose= [2.3+(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT+(ROBOT_1_SUCTION_WIDTH/2),
+                                  0,
+                                  SMART_CONV_REST_ELEVATION+W+ROBOT_1_SUCTION_CUP_TO_TOOL_OFFSET+0.3],
+                    target_orientation= [0, ev, ev, 0],
+                    update_world_needed= True)
+    Robot_1.render_exec(renderInstance= True,
+                            Show_Sphere= False)
 
-    Robot_1.free_TCP_movement(moving_tcp= "tool1")
+    if Place_Doable:
+        # Drop
+        Robot_1.plan(tcp_name= "tool1",
+                        target_pose= [2.3+(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT+(ROBOT_1_SUCTION_WIDTH/2),
+                                    0,
+                                    SMART_CONV_REST_ELEVATION+W+ROBOT_1_SUCTION_CUP_TO_TOOL_OFFSET+0.15],
+                        target_orientation= [0, ev, ev, 0],
+                        update_world_needed= True)
+        Robot_1.render_exec(renderInstance= True,
+                                Show_Sphere= False)
+
+        Robot_1.eef_detach(tool_name="tool1", detaching_object_name= "Bear_Loading_Element_"+str(NUMBER_OF_HEADERS))
+        test._stage.GetPrimAtPath("/world/obstacles/Bear_Loading_Element_"+str(NUMBER_OF_HEADERS)).GetAttribute("physxRigidBody:disableGravity").Set(False)
+        Smart_Conv.attach_object_to_conv(obj_name= "Bear_Loading_Element_"+str(NUMBER_OF_HEADERS))
+        # Enabling Colliders
+        test._stage.GetPrimAtPath("/world/obstacles/Bear_Loading_Element_"+str(NUMBER_OF_HEADERS)).GetAttribute("physics:collisionEnabled").Set(True)
+    else:
+        # Automatic Placement of the Bear Loading when Robot 1 Can't Place it
+        r=1
 
     # We Used The Top Bear Loading Element
     NUMBER_OF_HEADERS-=1
@@ -4836,10 +4864,13 @@ def main():
         # # Door
         # KING("Wooden_Element_6", 1.2592, 1.52, 0, 2.4384, 0.04, 0.1524)
         # KING("Wooden_Element_7", 1.2592, 2.52, 0, 2.4384, 0.04, 0.1524)
-        # LJCK("Wooden_Element_12", 1.4784, 1.56, 0, 2, 0.04, 0.1524)
-        # RJCK("Wooden_Element_11", 1.4784, 2.48, 0, 2, 0.04, 0.1524)
+        LJCK("Wooden_Element_12", 1.4784, 1.56, 0, 2, 0.04, 0.1524)
+        RJCK("Wooden_Element_11", 1.4784, 2.48, 0, 2, 0.04, 0.1524)
         # TSP("Small_Stud_1", 0.4584, 2.02, 0, 0.96, 0.04, 0.1524)
         # TCP("Small_Stud_5", 0.2392, 2.02, 0, 0.3984, 0.04, 0.1524)
+
+        BL("Wooden_Element_13", 0.4784-(RAW_HEADER_DIMENSIONS[2]/2), 2.02, 0, 0.96, RAW_HEADER_DIMENSIONS[1], RAW_HEADER_DIMENSIONS[2])
+        BL("Wooden_Element_13", 0.4784-(RAW_HEADER_DIMENSIONS[2]/2), 2.02, 0, 0.96, RAW_HEADER_DIMENSIONS[1], RAW_HEADER_DIMENSIONS[2])
         # BSP("Small_Stud_2", 1.9784, 2.02, 0, 0.88, 0.04, 0.1524)
         # LCP("Small_Stud_3", 2.2384, 1.87, 0, 0.48, 0.04, 0.1524)
         # LCP("Small_Stud_4", 2.2384, 2.17, 0, 0.48, 0.04, 0.1524)
@@ -4858,7 +4889,6 @@ def main():
 
         # # Sht
         # SHT("Wooden_Element_9", OVERALL_PANEL_HEIGHT/2, 2.02, 0.1724, OVERALL_PANEL_HEIGHT, 1.04, 0.02)
-        BL("Wooden_Element_13", 0.02, 2.02, 0.1724, 0.8, RAW_HEADER_DIMENSIONS[1], RAW_HEADER_DIMENSIONS[2])
 
         Robot_1.free_TCP_movement(moving_tcp= "tool0")
 
