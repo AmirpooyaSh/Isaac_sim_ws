@@ -157,7 +157,9 @@ MOTION_ACCELERAION_VALUE: float = 0.6
 
 SMART_CONV_RANGE_OF_MOTION_J1: float = 4.55
 SMART_CONV_RANGE_OF_MOTION_J2: float = 0.5
+## Test: Reducing it by 10CM
 SMART_CONV_REST_ELEVATION: float = 0.89546
+SMART_CONV_MODEL_ON_GROUND_HEIGHT: float = 0.89546
 # This shift is required to satisfy the symmetry of the smart conveyor platform
 SMART_CONV_X_SHIFT: float = 0.09179
 
@@ -220,7 +222,7 @@ NAILING_CONV_TARGET: float = 0.5
 OVERALL_PANEL_LENGTH: float = SMART_MAT_TABLE_MAX_LENGTH
 OVERALL_PANEL_HEIGHT: float = 2.5184
 STUD_THICKNESS: float = 0.04
-STUD_HEIGHT: float = 0.1524
+STUD_HEIGHT: float = 0.1016
 
 # Class Robot Gripper
 class RobotGripper(object):
@@ -1875,7 +1877,7 @@ Robot_2 = CuRoboRobot(working_world=test,
 
 Smart_Conv = CuRoboConv(working_world=test,
                Conv_Name="Smart_Conveyor",
-               pose=[2.3, -3.25, 0],
+               pose=[2.3, -3.25, (SMART_CONV_REST_ELEVATION-SMART_CONV_MODEL_ON_GROUND_HEIGHT)],
                w_dir=INSTALLATION_DIRECTORY+"/Isaac_sim_ws/smart_conveyor",
                c_conf_name="Smart_Conveyor.yaml")
 
@@ -4900,33 +4902,33 @@ def main():
 
 
         # # TPL
-        # TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.1524)
+        TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, STUD_HEIGHT)
 
         # # Door
-        # KING("Wooden_Element_6", 1.2592, 1.52, 0, 2.4384, 0.04, 0.1524)
-        # KING("Wooden_Element_7", 1.2592, 2.52, 0, 2.4384, 0.04, 0.1524)
-        LJCK("Wooden_Element_12", 1.4784, 1.56, 0, 2, 0.04, 0.1524)
-        RJCK("Wooden_Element_11", 1.4784, 2.48, 0, 2, 0.04, 0.1524)
-        # TSP("Small_Stud_1", 0.4584, 2.02, 0, 0.96, 0.04, 0.1524)
-        # TCP("Small_Stud_5", 0.2392, 2.02, 0, 0.3984, 0.04, 0.1524)
+        KING("Wooden_Element_6", 1.2592, 1.52, 0, 2.4384, 0.04, STUD_HEIGHT)
+        KING("Wooden_Element_7", 1.2592, 2.52, 0, 2.4384, 0.04, STUD_HEIGHT)
+        LJCK("Wooden_Element_12", 1.4784, 1.56, 0, 2, 0.04, STUD_HEIGHT)
+        RJCK("Wooden_Element_11", 1.4784, 2.48, 0, 2, 0.04, STUD_HEIGHT)
+        TSP("Small_Stud_1", 0.4584, 2.02, 0, 0.96, 0.04, STUD_HEIGHT)
+        TCP("Small_Stud_5", 0.2392, 2.02, 0, 0.3984, 0.04, STUD_HEIGHT)
 
-        BL("Wooden_Element_13", 0.4784-(RAW_HEADER_DIMENSIONS[2]/2), 2.02, RAW_HEADER_DIMENSIONS[1]*0.5, 0.96, RAW_HEADER_DIMENSIONS[1], RAW_HEADER_DIMENSIONS[2])
-        BL("Wooden_Element_13", 0.4784-(RAW_HEADER_DIMENSIONS[2]/2), 2.02, RAW_HEADER_DIMENSIONS[1]*1.5, 0.96, RAW_HEADER_DIMENSIONS[1], RAW_HEADER_DIMENSIONS[2])
-        # BSP("Small_Stud_2", 1.9784, 2.02, 0, 0.88, 0.04, 0.1524)
-        # LCP("Small_Stud_3", 2.2384, 1.87, 0, 0.48, 0.04, 0.1524)
-        # LCP("Small_Stud_4", 2.2384, 2.17, 0, 0.48, 0.04, 0.1524)
+        # BL("Wooden_Element_13", 0.4784-(RAW_HEADER_DIMENSIONS[2]/2), 2.02, RAW_HEADER_DIMENSIONS[1]*0.5, 0.96, RAW_HEADER_DIMENSIONS[1], RAW_HEADER_DIMENSIONS[2])
+        # BL("Wooden_Element_13", 0.4784-(RAW_HEADER_DIMENSIONS[2]/2), 2.02, RAW_HEADER_DIMENSIONS[1]*1.5, 0.96, RAW_HEADER_DIMENSIONS[1], RAW_HEADER_DIMENSIONS[2])
+        BSP("Small_Stud_2", 1.9784, 2.02, 0, 0.88, 0.04, STUD_HEIGHT)
+        LCP("Small_Stud_3", 2.2384, 1.87, 0, 0.48, 0.04, STUD_HEIGHT)
+        LCP("Small_Stud_4", 2.2384, 2.17, 0, 0.48, 0.04, STUD_HEIGHT)
 
         # # IST
-        # KING("Wooden_Element_2", 1.2592, 0.02, 0, 2.4384, 0.04, 0.1524)
-        # KING("Wooden_Element_3", 1.2592, 0.4, 0, 2.4384, 0.04, 0.1524)
-        # KING("Wooden_Element_4", 1.2592, 0.9, 0, 2.4384, 0.04, 0.1524)
-        # KING("Wooden_Element_5", 1.2592, 1.4, 0, 2.4384, 0.04, 0.1524)
-        # KING("Wooden_Element_8", 1.2592, 2.64, 0, 2.4384, 0.04, 0.1524)
-        # KING("Wooden_Element_9", 1.2592, 3.14, 0, 2.4384, 0.04, 0.1524)
-        # KING("Wooden_Element_10", 1.2592, SMART_MAT_TABLE_MAX_LENGTH-0.02, 0, 2.4384, 0.04, 0.1524)
+        KING("Wooden_Element_2", 1.2592, 0.02, 0, 2.4384, 0.04, STUD_HEIGHT)
+        # KING("Wooden_Element_3", 1.2592, 0.4, 0, 2.4384, 0.04, STUD_HEIGHT)
+        # KING("Wooden_Element_4", 1.2592, 0.9, 0, 2.4384, 0.04, STUD_HEIGHT)
+        # KING("Wooden_Element_5", 1.2592, 1.4, 0, 2.4384, 0.04, STUD_HEIGHT)
+        # KING("Wooden_Element_8", 1.2592, 2.64, 0, 2.4384, 0.04, STUD_HEIGHT)
+        # KING("Wooden_Element_9", 1.2592, 3.14, 0, 2.4384, 0.04, STUD_HEIGHT)
+        KING("Wooden_Element_10", 1.2592, SMART_MAT_TABLE_MAX_LENGTH-0.02, 0, 2.4384, 0.04, STUD_HEIGHT)
 
         # # BPL
-        # BPL("Wooden_Element_13", OVERALL_PANEL_HEIGHT-0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, 0.1524)
+        BPL("Wooden_Element_13", OVERALL_PANEL_HEIGHT-0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, STUD_HEIGHT)
 
         # # Sht
         # SHT("Wooden_Element_9", OVERALL_PANEL_HEIGHT/2, 2.02, 0.1724, OVERALL_PANEL_HEIGHT, 1.04, 0.02)
