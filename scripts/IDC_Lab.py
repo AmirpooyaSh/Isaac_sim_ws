@@ -4775,10 +4775,11 @@ def BL(el_name: str = None,
                                   SMART_CONV_REST_ELEVATION+W+ROBOT_1_SUCTION_CUP_TO_TOOL_OFFSET+0.3],
                     target_orientation= [0, ev, ev, 0],
                     update_world_needed= True)
-    Robot_1.render_exec(renderInstance= True,
-                            Show_Sphere= False)
 
-    if Place_Doable:
+    if Place_Doable == False:
+        # Execute Pre Drop
+        Robot_1.render_exec(renderInstance= True,
+                                Show_Sphere= False)
         # Drop
         Robot_1.plan(tcp_name= "tool1",
                         target_pose= [2.3+(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT+(ROBOT_1_SUCTION_WIDTH/2),
@@ -4796,7 +4797,47 @@ def BL(el_name: str = None,
         test._stage.GetPrimAtPath("/world/obstacles/Bear_Loading_Element_"+str(NUMBER_OF_HEADERS)).GetAttribute("physics:collisionEnabled").Set(True)
     else:
         # Automatic Placement of the Bear Loading when Robot 1 Can't Place it
-        r=1
+        # Pass To Human Location
+        Robot_1.plan(tcp_name= "tool1",
+                        target_pose= [2.3+(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT-(ROBOT_1_SUCTION_CUP_TO_TOOL_OFFSET+(W/2)),
+                                      0,
+                                      SMART_CONV_REST_ELEVATION+H+ROBOT_1_SUCTION_WIDTH],
+                        target_orientation= [0.5, 0.5, 0.5, 0.5],
+                        update_world_needed= True)
+        Robot_1.render_exec(renderInstance= True,
+                                Show_Sphere= False)
+
+        Robot_1.eef_detach(tool_name="tool1", detaching_object_name= "Bear_Loading_Element_"+str(NUMBER_OF_HEADERS))
+
+        # [ev, 0, ev, 0]
+        dc=_dynamic_control.acquire_dynamic_control_interface()
+        test._stage.GetPrimAtPath("/world/obstacles/Bear_Loading_Element_"+str(NUMBER_OF_HEADERS)).GetAttribute("physics:rigidBodyEnabled").Set(True)
+        object = dc.get_rigid_body("/world/obstacles/Bear_Loading_Element_"+str(NUMBER_OF_HEADERS))
+        object_pose=dc.get_rigid_body_pose(object)
+
+        # Create new position
+        New_Loc = Gf.Vec3d(object_pose.p[0], object_pose.p[1], SMART_CONV_REST_ELEVATION + Z)
+        # Create a valid quaternion and rotation
+        quat = Gf.Quatd(1, 0, 0, 0)  # Ensure this follows (real, x, y, z)
+        New_Or = Gf.Rotation(quat)
+        # Convert quaternion to required format
+        quat_as_tuple = (New_Or.GetQuat().GetReal(), *New_Or.GetQuat().GetImaginary())
+        # Create a Transform object
+        new_transform = _dynamic_control.Transform()
+        new_transform.p.x = New_Loc[0]
+        new_transform.p.y = New_Loc[1]
+        new_transform.p.z = New_Loc[2]
+        new_transform.r.w = quat_as_tuple[0]  # real part
+        new_transform.r.x = quat_as_tuple[1]
+        new_transform.r.y = quat_as_tuple[2]
+        new_transform.r.z = quat_as_tuple[3]
+        # Apply transformation
+        dc.set_rigid_body_pose(object, new_transform)
+
+        test._stage.GetPrimAtPath("/world/obstacles/Bear_Loading_Element_"+str(NUMBER_OF_HEADERS)).GetAttribute("physxRigidBody:disableGravity").Set(True)
+        Smart_Conv.attach_object_to_conv(obj_name= "Bear_Loading_Element_"+str(NUMBER_OF_HEADERS), Enable_Gravity= False)
+
+    Robot_1.move_to_home()
 
     # We Used The Top Bear Loading Element
     NUMBER_OF_HEADERS-=1
@@ -4869,8 +4910,8 @@ def main():
         # TSP("Small_Stud_1", 0.4584, 2.02, 0, 0.96, 0.04, 0.1524)
         # TCP("Small_Stud_5", 0.2392, 2.02, 0, 0.3984, 0.04, 0.1524)
 
-        BL("Wooden_Element_13", 0.4784-(RAW_HEADER_DIMENSIONS[2]/2), 2.02, 0, 0.96, RAW_HEADER_DIMENSIONS[1], RAW_HEADER_DIMENSIONS[2])
-        BL("Wooden_Element_13", 0.4784-(RAW_HEADER_DIMENSIONS[2]/2), 2.02, 0, 0.96, RAW_HEADER_DIMENSIONS[1], RAW_HEADER_DIMENSIONS[2])
+        BL("Wooden_Element_13", 0.4784-(RAW_HEADER_DIMENSIONS[2]/2), 2.02, RAW_HEADER_DIMENSIONS[1]*0.5, 0.96, RAW_HEADER_DIMENSIONS[1], RAW_HEADER_DIMENSIONS[2])
+        BL("Wooden_Element_13", 0.4784-(RAW_HEADER_DIMENSIONS[2]/2), 2.02, RAW_HEADER_DIMENSIONS[1]*1.5, 0.96, RAW_HEADER_DIMENSIONS[1], RAW_HEADER_DIMENSIONS[2])
         # BSP("Small_Stud_2", 1.9784, 2.02, 0, 0.88, 0.04, 0.1524)
         # LCP("Small_Stud_3", 2.2384, 1.87, 0, 0.48, 0.04, 0.1524)
         # LCP("Small_Stud_4", 2.2384, 2.17, 0, 0.48, 0.04, 0.1524)
