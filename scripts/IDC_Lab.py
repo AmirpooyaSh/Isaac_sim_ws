@@ -4900,6 +4900,28 @@ def main():
             test._stage.GetPrimAtPath("/world/obstacles/Bear_Loading_Element_"+str(it+1)).GetAttribute("physics:collisionEnabled").Set(False)
             it+=1
 
+        # USED TO EXPORT SMART CONVEYOR STL !
+        # Smart_Conv.render_exec('Joint_1', SMART_CONV_RANGE_OF_MOTION_J1/2)
+
+        # ignoring_prim_paths = [
+        #     "/IRB6620_R1",
+        #     "IRB6620_R2",
+        #     "/Smart_Conveyor/base_link/collisions",
+        #     "/Smart_Conveyor/track_link/collisions",
+        #     "/Smart_Conveyor/Link_1/collisions",
+        #     "/Smart_Conveyor/Link_2/collisions",
+        #     "/World/obstacles",
+        #     "/world/obstacles",
+        #     "/World/defaultGroundPlane",
+        # ]
+
+        # obstacles = test._usd_help.get_obstacles_from_stage(
+        #     reference_prim_path="/Smart_Conveyor",
+        #     ignore_substring=ignoring_prim_paths,
+        # ).get_collision_check_world()
+        # obstacles.save_world_as_mesh("Conveyor.stl")
+
+        # Robot_2.free_TCP_movement()
 
         # # TPL
         TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, STUD_HEIGHT)
