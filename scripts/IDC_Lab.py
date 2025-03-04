@@ -4844,6 +4844,89 @@ def BL(el_name: str = None,
     # We Used The Top Bear Loading Element
     NUMBER_OF_HEADERS-=1
 
+def L_U(el_name: str = None,
+        X: float = None,
+        Y: float = None,
+        Z: float = None,
+        L: float = None,
+        W: float = None,
+        H: float = None):
+
+    # Robot 2 Picking the L/U
+    diagonal_stud_l = np.sqrt(W**2+H**2)
+    z_increase = (diagonal_stud_l/2)*np.sin(np.radians(SLOPED_MAT_TABLE_ANGLE)+np.arcsin((W/2)/(diagonal_stud_l/2)))
+    y_increase = (diagonal_stud_l/2)*np.cos(np.radians(SLOPED_MAT_TABLE_ANGLE)+np.arcsin((W/2)/(diagonal_stud_l/2)))
+    Stud_Pose = [SLOPED_MAT_TABLE[0] + (L / 2), 
+                 SLOPED_MAT_TABLE[1] - y_increase, 
+                 SLOPED_MAT_TABLE[2] + z_increase]
+    
+    PRE_PICK_OFFSET: float = 0.2
+    quat = R.from_euler('xyz', [(np.pi/2)-np.radians(SLOPED_MAT_TABLE_ANGLE), 0, np.pi/2]).as_quat()
+    # Because of Euler Lack of Singularity !!!!
+    quat[1] *= -1  # Negate the Y component
+
+    # Helping Pick
+    Robot_2.plan(tcp_name= "tool0",
+                    target_pose= [SLOPED_MAT_TABLE[0]+SLOPED_TABLE_PICK_OFFSET_FROM_L_CORNER+(ROBOT_2_GRIPPER_LENGTH/2),
+                                  Stud_Pose[1]+PRE_PICK_OFFSET,
+                                  Stud_Pose[2]-(PRE_PICK_OFFSET*np.tan(np.radians(SLOPED_MAT_TABLE_ANGLE)))],
+                    target_orientation= [quat[3], quat[0], quat[1], quat[2]],
+                    update_world_needed= True)
+    Robot_2.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+
+    # Pick
+    Val = (H/2) - PICK_OFFSET_FROM_W_CORNER
+    Robot_2.plan(tcp_name= "tool0",
+                    target_pose= [SLOPED_MAT_TABLE[0]+SLOPED_TABLE_PICK_OFFSET_FROM_L_CORNER+(ROBOT_2_GRIPPER_LENGTH/2),
+                                  Stud_Pose[1]+(Val*np.cos(np.radians(SLOPED_MAT_TABLE_ANGLE))),
+                                  Stud_Pose[2]-(Val*np.sin(np.radians(SLOPED_MAT_TABLE_ANGLE)))],
+                    target_orientation= [quat[3], quat[0], quat[1], quat[2]],
+                    update_world_needed= True,
+                    removing_primitives=["world/obstacles", "World/obstacles/Sloped_Table"],
+                    orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
+    Robot_2.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+
+    # Creating the Stud
+    Create_Wooden_Element_For_Sloped_Table(el_name= el_name, L=L, W=W, H=H)
+
+    # Attach
+    Robot_2.eef_attach(tool_name="tool0",
+                       attaching_object_name=el_name)
+
+    # Post Pick
+    Val = (H/2) - PICK_OFFSET_FROM_W_CORNER
+    Robot_2.plan(tcp_name= "tool0",
+                    target_pose= [SLOPED_MAT_TABLE[0]+SLOPED_TABLE_PICK_OFFSET_FROM_L_CORNER+(ROBOT_2_GRIPPER_LENGTH/2),
+                                  Stud_Pose[1]+(Val*np.cos(np.radians(SLOPED_MAT_TABLE_ANGLE))),
+                                  Stud_Pose[2]-(Val*np.sin(np.radians(SLOPED_MAT_TABLE_ANGLE)))+PRE_PICK_OFFSET*2],
+                    target_orientation= [quat[3], quat[0], quat[1], quat[2]],
+                    update_world_needed= True,
+                    removing_primitives=["world/obstacles", "World/obstacles/Sloped_Table"],
+                    orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
+    Robot_2.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+    
+    # Back To Home
+    Robot_2.move_to_home()
+
+    # Moving Conveyor To End
+    Smart_Conv.render_exec('Joint_1', SMART_CONV_RANGE_OF_MOTION_J1)
+
+    PASSING_ELEVATION: float = 0.85
+    # Passing To Rob 1
+    
+    Robot_2.plan(tcp_name= "tool0",
+                    target_pose= [2.3+(L/2)-SLOPED_TABLE_PICK_OFFSET_FROM_L_CORNER-(ROBOT_2_GRIPPER_LENGTH/2),
+                                  -1,
+                                  PASSING_ELEVATION+(H)],
+                    target_orientation= [0, ev, ev, 0],
+                    update_world_needed= True)
+    Robot_2.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+
+    Robot_1.free_TCP_movement("tool1")
 ###########
 ####END####
 ###########
@@ -4923,25 +5006,28 @@ def main():
 
         # Robot_2.free_TCP_movement()
 
-        # # TPL
-        TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, STUD_HEIGHT)
+        # # # TPL
+        # TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, STUD_HEIGHT)
 
-        # # Door
-        KING("Wooden_Element_6", 1.2592, 1.52, 0, 2.4384, 0.04, STUD_HEIGHT)
-        KING("Wooden_Element_7", 1.2592, 2.52, 0, 2.4384, 0.04, STUD_HEIGHT)
-        LJCK("Wooden_Element_12", 1.4784, 1.56, 0, 2, 0.04, STUD_HEIGHT)
-        RJCK("Wooden_Element_11", 1.4784, 2.48, 0, 2, 0.04, STUD_HEIGHT)
-        TSP("Small_Stud_1", 0.4584, 2.02, 0, 0.96, 0.04, STUD_HEIGHT)
-        TCP("Small_Stud_5", 0.2392, 2.02, 0, 0.3984, 0.04, STUD_HEIGHT)
+        # # # Door
+        # KING("Wooden_Element_6", 1.2592, 1.52, 0, 2.4384, 0.04, STUD_HEIGHT)
+        # KING("Wooden_Element_7", 1.2592, 2.52, 0, 2.4384, 0.04, STUD_HEIGHT)
+        # LJCK("Wooden_Element_12", 1.4784, 1.56, 0, 2, 0.04, STUD_HEIGHT)
+        # RJCK("Wooden_Element_11", 1.4784, 2.48, 0, 2, 0.04, STUD_HEIGHT)
+        # TSP("Small_Stud_1", 0.4584, 2.02, 0, 0.96, 0.04, STUD_HEIGHT)
+        # TCP("Small_Stud_5", 0.2392, 2.02, 0, 0.3984, 0.04, STUD_HEIGHT)
 
-        # BL("Wooden_Element_13", 0.4784-(RAW_HEADER_DIMENSIONS[2]/2), 2.02, RAW_HEADER_DIMENSIONS[1]*0.5, 0.96, RAW_HEADER_DIMENSIONS[1], RAW_HEADER_DIMENSIONS[2])
-        # BL("Wooden_Element_13", 0.4784-(RAW_HEADER_DIMENSIONS[2]/2), 2.02, RAW_HEADER_DIMENSIONS[1]*1.5, 0.96, RAW_HEADER_DIMENSIONS[1], RAW_HEADER_DIMENSIONS[2])
-        BSP("Small_Stud_2", 1.9784, 2.02, 0, 0.88, 0.04, STUD_HEIGHT)
-        LCP("Small_Stud_3", 2.2384, 1.87, 0, 0.48, 0.04, STUD_HEIGHT)
-        LCP("Small_Stud_4", 2.2384, 2.17, 0, 0.48, 0.04, STUD_HEIGHT)
+        # # BL("Wooden_Element_13", 0.4784-(RAW_HEADER_DIMENSIONS[2]/2), 2.02, RAW_HEADER_DIMENSIONS[1]*0.5, 0.96, RAW_HEADER_DIMENSIONS[1], RAW_HEADER_DIMENSIONS[2])
+        # # BL("Wooden_Element_13", 0.4784-(RAW_HEADER_DIMENSIONS[2]/2), 2.02, RAW_HEADER_DIMENSIONS[1]*1.5, 0.96, RAW_HEADER_DIMENSIONS[1], RAW_HEADER_DIMENSIONS[2])
+        # BSP("Small_Stud_2", 1.9784, 2.02, 0, 0.88, 0.04, STUD_HEIGHT)
+        # LCP("Small_Stud_3", 2.2384, 1.87, 0, 0.48, 0.04, STUD_HEIGHT)
+        # LCP("Small_Stud_4", 2.2384, 2.17, 0, 0.48, 0.04, STUD_HEIGHT)
 
-        # # IST
-        KING("Wooden_Element_2", 1.2592, 0.02, 0, 2.4384, 0.04, STUD_HEIGHT)
+        # # # IST
+        # KING("Wooden_Element_2", 1.2592, 0.02, 0, 2.4384, 0.04, STUD_HEIGHT)
+            # L/U
+        L_U("L_U_Element_1", 1.2592, 0.04+STUD_HEIGHT, STUD_HEIGHT-0.02, 2.4384, 0.04, STUD_HEIGHT)
+            # End L/U
         # KING("Wooden_Element_3", 1.2592, 0.4, 0, 2.4384, 0.04, STUD_HEIGHT)
         # KING("Wooden_Element_4", 1.2592, 0.9, 0, 2.4384, 0.04, STUD_HEIGHT)
         # KING("Wooden_Element_5", 1.2592, 1.4, 0, 2.4384, 0.04, STUD_HEIGHT)
