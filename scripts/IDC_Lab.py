@@ -183,6 +183,9 @@ SILL_NAILING_OFFSET: float = 0.1
 BR_NAILING_ANGLE: float = 45
 BR_NAILING_OFFSET: float = 0.1
 
+# This Angle is For the L_U Pass Angle Between Robots 1 and 2
+L_U_PASS_ANGLE: float = 30
+
 # Smart Material Table's Maximum Length Capability
 SMART_MAT_TABLE_MAX_LENGTH: float = 3.6576
 
@@ -5125,45 +5128,61 @@ def L_U(el_name: str = None,
     # Back To Home
     Robot_2.move_to_home()
 
-    # Moving Conveyor To End
-    Smart_Conv.render_exec('Joint_1', SMART_CONV_RANGE_OF_MOTION_J1)
+    # Moving Conveyor To Start Point
+    Smart_Conv.render_exec('Joint_1', 0)
 
-    # PASSING_ELEVATION: float = 0.4
-    # # Passing To Rob 1
-    
-    # Robot_2.plan(tcp_name= "tool0",
-    #                 target_pose= [2.3+(L/2)-SLOPED_TABLE_PICK_OFFSET_FROM_L_CORNER-(ROBOT_2_GRIPPER_LENGTH/2),
-    #                               -1,
-    #                               PASSING_ELEVATION+(H)],
-    #                 target_orientation= [0, ev, ev, 0],
-    #                 update_world_needed= True,
-    #                 removing_primitives=["world/obstacles", "Smart_Conveyor"],)
-    # Robot_2.render_exec(renderInstance= True,
-    #                         Show_Sphere= False)
-# Reached Pose: ['3.09', '1.03', '1.53'], Reached Orientation: [array([-0.49999565,  0.50000435,  0.49999565,  0.50000435], dtype=float32)]
+    # Robot 1 Passing Location
+    # Coordination: [1.15434, 1.32075, 2.27362]
+    # Orientation: [0, Theta, 0] , [0.96593, 0, 0.25882, 0]
+
+    # Robot 2 Passing Location
+    # Coordination: [2.81634, 1.25053, 1.35738]
+    # Orientation: [-90, 0, -90+Theta], [-0.6123661 ,  0.6123697 ,  0.35354862,  0.35357386]
+
+    # We Consider this As a Constant Point Regardless of the Dimensions of the Passing L_U
+    R2_LU_Pass_Loc: List[float] = [2.81634, 1.25053, 1.35738]
+
+    Length_Diff_Term: float = (-ROBOT_2_GRIPPER_LENGTH/2)-SLOPED_TABLE_PICK_OFFSET_FROM_L_CORNER+L-SLOPED_TABLE_PICK_OFFSET_FROM_L_CORNER-(ROBOT_1_SUCTION_CUP_R)
 
     Robot_2.plan(tcp_name= "tool0",
-                    target_pose= [3.09,
-                                  1.03,
-                                  1.53],
-                    target_orientation= [-0.49999565,  0.50000435,  0.49999565,  0.50000435],
+                    target_pose= R2_LU_Pass_Loc,
+                    target_orientation= [-0.6123661 ,  0.6123697 ,  0.35354862,  0.35357386],
                     update_world_needed= True,
                     removing_primitives=["world/obstacles"],)
     Robot_2.render_exec(renderInstance= True,
                             Show_Sphere= False)
 
-# Reached Pose: ['1.16', '1.00', '1.74'], Reached Orientation: [array([-0.70090926,  0.71325046,  0.        ,  0.        ], dtype=float32)]
+    # Pre Passing
     Robot_1.plan(tcp_name= "tool1",
-                    target_pose= [1.16, 1, 1.74],
-                    target_orientation= [-0.70090926,  0.71325046,  0.        ,  0.        ],
-                    update_world_needed= True,
-                    removing_primitives=["world/obstacles", "Smart_Conveyor"],)
+                    target_pose= [R2_LU_Pass_Loc[0]-(Length_Diff_Term*np.cos(np.radians(L_U_PASS_ANGLE))),
+                                  R2_LU_Pass_Loc[1]-PICK_OFFSET_FROM_W_CORNER+H,
+                                  R2_LU_Pass_Loc[2]+(Length_Diff_Term*np.sin(np.radians(L_U_PASS_ANGLE)))-0.1],
+                    target_orientation= [0.96593, 0, 0.25882, 0],
+                    update_world_needed= True)
     Robot_1.render_exec(renderInstance= True,
                             Show_Sphere= False)
 
-    # while True:
-    #     Robot_2.free_TCP_movement("tool0")
-    #     Robot_1.free_TCP_movement("tool1")
+    # Passing
+    Robot_1.plan(tcp_name= "tool1",
+                    target_pose= [R2_LU_Pass_Loc[0]-(Length_Diff_Term*np.cos(np.radians(L_U_PASS_ANGLE))),
+                                  R2_LU_Pass_Loc[1]-PICK_OFFSET_FROM_W_CORNER+H,
+                                  R2_LU_Pass_Loc[2]+(Length_Diff_Term*np.sin(np.radians(L_U_PASS_ANGLE)))-0.06],
+                    target_orientation= [0.96593, 0, 0.25882, 0],
+                    update_world_needed= True,
+                    removing_primitives=["IRB6620_R2"],)
+    Robot_1.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+
+    # Attach
+    Robot_2.eef_detach(tool_name="tool0",
+                        detaching_object_name= el_name)
+    # Isaac Attach is Not Working Cause the OmniGraph Attacher Coordination is Outside of the Stud for Suction !!
+    Robot_1.eef_attach(tool_name="tool1",
+                       attaching_object_name=el_name)
+    
+    Robot_2.move_to_home()
+
+    Robot_1.move_to_home()
 
 ###########
 ####END####
@@ -5245,40 +5264,40 @@ def main():
         # Robot_2.free_TCP_movement()
 
         # # # TPL
-        TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, STUD_HEIGHT)
+        # TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, STUD_HEIGHT)
 
         # # # Door
-        KING("Wooden_Element_6", 1.2592, 1.52, 0, 2.4384, 0.04, STUD_HEIGHT)
-        KING("Wooden_Element_7", 1.2592, 2.52, 0, 2.4384, 0.04, STUD_HEIGHT)
-        LJCK("Wooden_Element_12", 1.4784, 1.56, 0, 2, 0.04, STUD_HEIGHT)
-        RJCK("Wooden_Element_11", 1.4784, 2.48, 0, 2, 0.04, STUD_HEIGHT)
+        # KING("Wooden_Element_6", 1.2592, 1.52, 0, 2.4384, 0.04, STUD_HEIGHT)
+        # KING("Wooden_Element_7", 1.2592, 2.52, 0, 2.4384, 0.04, STUD_HEIGHT)
+        # LJCK("Wooden_Element_12", 1.4784, 1.56, 0, 2, 0.04, STUD_HEIGHT)
+        # RJCK("Wooden_Element_11", 1.4784, 2.48, 0, 2, 0.04, STUD_HEIGHT)
         # TSP("Small_Stud_1", 0.4584, 2.02, 0, 0.96, 0.04, STUD_HEIGHT)
         # TCP("Small_Stud_5", 0.2392, 2.02, 0, 0.3984, 0.04, STUD_HEIGHT)
 
-        BL("Wooden_Element_13", 0.4784-(RAW_HEADER_DIMENSIONS[2]/2), 2.02, RAW_HEADER_DIMENSIONS[1]*0.5, 0.96, RAW_HEADER_DIMENSIONS[1], RAW_HEADER_DIMENSIONS[2])
-        BL("Wooden_Element_13", 0.4784-(RAW_HEADER_DIMENSIONS[2]/2), 2.02, RAW_HEADER_DIMENSIONS[1]*1.5, 0.96, RAW_HEADER_DIMENSIONS[1], RAW_HEADER_DIMENSIONS[2])
-        BSP("Small_Stud_2", 1.9784, 2.02, 0, 0.88, 0.04, STUD_HEIGHT)
-        LCP("Small_Stud_3", 2.2384, 1.87, 0, 0.48, 0.04, STUD_HEIGHT)
-        LCP("Small_Stud_4", 2.2384, 2.17, 0, 0.48, 0.04, STUD_HEIGHT)
+        # BL("Wooden_Element_13", 0.4784-(RAW_HEADER_DIMENSIONS[2]/2), 2.02, RAW_HEADER_DIMENSIONS[1]*0.5, 0.96, RAW_HEADER_DIMENSIONS[1], RAW_HEADER_DIMENSIONS[2])
+        # BL("Wooden_Element_13", 0.4784-(RAW_HEADER_DIMENSIONS[2]/2), 2.02, RAW_HEADER_DIMENSIONS[1]*1.5, 0.96, RAW_HEADER_DIMENSIONS[1], RAW_HEADER_DIMENSIONS[2])
+        # BSP("Small_Stud_2", 1.9784, 2.02, 0, 0.88, 0.04, STUD_HEIGHT)
+        # LCP("Small_Stud_3", 2.2384, 1.87, 0, 0.48, 0.04, STUD_HEIGHT)
+        # LCP("Small_Stud_4", 2.2384, 2.17, 0, 0.48, 0.04, STUD_HEIGHT)
 
         # # # IST
-        KING("Wooden_Element_2", 1.2592, 0.02, 0, 2.4384, 0.04, STUD_HEIGHT)
+        # KING("Wooden_Element_2", 1.2592, 0.02, 0, 2.4384, 0.04, STUD_HEIGHT)
             # L/U
-        # L_U("L_U_Element_1", 1.2592, 0.04+STUD_HEIGHT, STUD_HEIGHT-0.02, 2.4384, 0.04, STUD_HEIGHT)
+        L_U("L_U_Element_1", 1.2592, 0.04+STUD_HEIGHT, STUD_HEIGHT-0.02, 2.4384, 0.04, STUD_HEIGHT)
             # End L/U
         # KING("Wooden_Element_3", 1.2592, 0.4, 0, 2.4384, 0.04, STUD_HEIGHT)
         # KING("Wooden_Element_4", 1.2592, 0.9, 0, 2.4384, 0.04, STUD_HEIGHT)
         # KING("Wooden_Element_5", 1.2592, 1.4, 0, 2.4384, 0.04, STUD_HEIGHT)
         # KING("Wooden_Element_8", 1.2592, 2.64, 0, 2.4384, 0.04, STUD_HEIGHT)
         # KING("Wooden_Element_9", 1.2592, 3.14, 0, 2.4384, 0.04, STUD_HEIGHT)
-        KING("Wooden_Element_10", 1.2592, SMART_MAT_TABLE_MAX_LENGTH-0.02, 0, 2.4384, 0.04, STUD_HEIGHT)
+        # KING("Wooden_Element_10", 1.2592, SMART_MAT_TABLE_MAX_LENGTH-0.02, 0, 2.4384, 0.04, STUD_HEIGHT)
 
         # # BPL
-        BPL("Wooden_Element_13", OVERALL_PANEL_HEIGHT-0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, STUD_HEIGHT)
+        # BPL("Wooden_Element_13", OVERALL_PANEL_HEIGHT-0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, STUD_HEIGHT)
 
         # # Sht
-        Sheathing_Tickness: float = 0.02
-        SHT("Wooden_Element_9", OVERALL_PANEL_HEIGHT/2, 2.02, STUD_HEIGHT+Sheathing_Tickness/2, OVERALL_PANEL_HEIGHT, 1.04, Sheathing_Tickness)
+        # Sheathing_Tickness: float = 0.02
+        # SHT("Wooden_Element_9", OVERALL_PANEL_HEIGHT/2, 2.02, STUD_HEIGHT+Sheathing_Tickness/2, OVERALL_PANEL_HEIGHT, 1.04, Sheathing_Tickness)
 
         Robot_1.free_TCP_movement(moving_tcp= "tool0")
 
