@@ -5113,7 +5113,6 @@ def L_U(el_name: str = None,
                        attaching_object_name=el_name)
 
     # Post Pick
-    Val = (H/2) - PICK_OFFSET_FROM_W_CORNER
     Robot_2.plan(tcp_name= "tool0",
                     target_pose= [SLOPED_MAT_TABLE[0]+SLOPED_TABLE_PICK_OFFSET_FROM_L_CORNER+(ROBOT_2_GRIPPER_LENGTH/2),
                                   Stud_Pose[1]+(Val*np.cos(np.radians(SLOPED_MAT_TABLE_ANGLE))),
@@ -5142,7 +5141,7 @@ def L_U(el_name: str = None,
     # We Consider this As a Constant Point Regardless of the Dimensions of the Passing L_U
     R2_LU_Pass_Loc: List[float] = [2.81634, 1.25053, 1.35738]
 
-    Length_Diff_Term: float = (-ROBOT_2_GRIPPER_LENGTH/2)-SLOPED_TABLE_PICK_OFFSET_FROM_L_CORNER+L-SLOPED_TABLE_PICK_OFFSET_FROM_L_CORNER-(ROBOT_1_SUCTION_CUP_R)
+    Length_Diff_Term: float = (-ROBOT_2_GRIPPER_LENGTH/2)-SLOPED_TABLE_PICK_OFFSET_FROM_L_CORNER+L-(ROBOT_1_SUCTION_CUP_R)
 
     Robot_2.plan(tcp_name= "tool0",
                     target_pose= R2_LU_Pass_Loc,
@@ -5155,7 +5154,7 @@ def L_U(el_name: str = None,
     # Pre Passing
     Robot_1.plan(tcp_name= "tool1",
                     target_pose= [R2_LU_Pass_Loc[0]-(Length_Diff_Term*np.cos(np.radians(L_U_PASS_ANGLE))),
-                                  R2_LU_Pass_Loc[1]-PICK_OFFSET_FROM_W_CORNER+H,
+                                  R2_LU_Pass_Loc[1]-PICK_OFFSET_FROM_W_CORNER+H/2+(ROBOT_1_SUCTION_WIDTH/2),
                                   R2_LU_Pass_Loc[2]+(Length_Diff_Term*np.sin(np.radians(L_U_PASS_ANGLE)))-0.1],
                     target_orientation= [0.96593, 0, 0.25882, 0],
                     update_world_needed= True)
@@ -5165,7 +5164,7 @@ def L_U(el_name: str = None,
     # Passing
     Robot_1.plan(tcp_name= "tool1",
                     target_pose= [R2_LU_Pass_Loc[0]-(Length_Diff_Term*np.cos(np.radians(L_U_PASS_ANGLE))),
-                                  R2_LU_Pass_Loc[1]-PICK_OFFSET_FROM_W_CORNER+H,
+                                  R2_LU_Pass_Loc[1]-PICK_OFFSET_FROM_W_CORNER+H/2+(ROBOT_1_SUCTION_WIDTH/2),
                                   R2_LU_Pass_Loc[2]+(Length_Diff_Term*np.sin(np.radians(L_U_PASS_ANGLE)))-0.06],
                     target_orientation= [0.96593, 0, 0.25882, 0],
                     update_world_needed= True,
@@ -5181,8 +5180,13 @@ def L_U(el_name: str = None,
                        attaching_object_name=el_name)
     
     Robot_2.move_to_home()
-
     Robot_1.move_to_home()
+
+    Robot_1.free_TCP_movement("tool1")
+
+    #Robot 1 Drop Orientation: [0, 1, 0, 0]
+    # [180, 0, 0]
+
 
 ###########
 ####END####
@@ -5283,7 +5287,7 @@ def main():
         # # # IST
         # KING("Wooden_Element_2", 1.2592, 0.02, 0, 2.4384, 0.04, STUD_HEIGHT)
             # L/U
-        L_U("L_U_Element_1", 1.2592, 0.04+STUD_HEIGHT, STUD_HEIGHT-0.02, 2.4384, 0.04, STUD_HEIGHT)
+        L_U("L_U_Element_1", 1.2592, 0.04+(STUD_HEIGHT/2), STUD_HEIGHT-0.02, 2.4384, 0.04, STUD_HEIGHT)
             # End L/U
         # KING("Wooden_Element_3", 1.2592, 0.4, 0, 2.4384, 0.04, STUD_HEIGHT)
         # KING("Wooden_Element_4", 1.2592, 0.9, 0, 2.4384, 0.04, STUD_HEIGHT)
