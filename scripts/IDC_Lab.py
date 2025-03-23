@@ -5168,7 +5168,8 @@ def L_U(el_name: str = None,
                                   R2_LU_Pass_Loc[2]+(Length_Diff_Term*np.sin(np.radians(L_U_PASS_ANGLE)))-0.06],
                     target_orientation= [0.96593, 0, 0.25882, 0],
                     update_world_needed= True,
-                    removing_primitives=["IRB6620_R2"],)
+                    removing_primitives=["IRB6620_R2"],
+                    direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.0, tstep_fraction=0.001,linear_axis=2))
     Robot_1.render_exec(renderInstance= True,
                             Show_Sphere= False)
 
@@ -5182,10 +5183,57 @@ def L_U(el_name: str = None,
     Robot_2.move_to_home()
     Robot_1.move_to_home()
 
-    Robot_1.free_TCP_movement("tool1")
-
     #Robot 1 Drop Orientation: [0, 1, 0, 0]
     # [180, 0, 0]
+
+    # Moving Conveyor
+    Smart_Conv.render_exec('Joint_1', -(Y - (OVERALL_PANEL_LENGTH/2)) + (SMART_CONV_RANGE_OF_MOTION_J1/2))
+
+    #2.3+(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT+((L/2)-(ROBOT_2_GRIPPER_LENGTH/2)-SLOPED_TABLE_PICK_OFFSET_FROM_L_CORNER)+0.2
+
+    Placement_Offset: float = 0.00565
+
+    #Robot 1 Pre Place
+    Robot_1.plan(tcp_name= "tool1",
+                    target_pose= [2.3-(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT-((L/2)-2*ROBOT_1_SUCTION_CUP_R)-Placement_Offset,
+                                  (-ROBOT_1_SUCTION_WIDTH)/2,
+                                  SMART_CONV_REST_ELEVATION+Z+0.1+ROBOT_1_SUCTION_CUP_TO_TOOL_OFFSET+(W/2)],
+                    target_orientation= [0, 1, 0, 0],
+                    update_world_needed= True)
+    Robot_1.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+    
+    #Robot 1 Place
+    Robot_1.plan(tcp_name= "tool1",
+                    target_pose= [2.3-(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT-((L/2)-2*ROBOT_1_SUCTION_CUP_R)-Placement_Offset,
+                                  (-ROBOT_1_SUCTION_WIDTH)/2,
+                                  SMART_CONV_REST_ELEVATION+Z+ROBOT_1_SUCTION_CUP_TO_TOOL_OFFSET+(W/2)],
+                    target_orientation= [0, 1, 0, 0],
+                    update_world_needed= True,
+                    removing_primitives=["world/obstacles", "Smart_Conveyor"],
+                    direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.0, tstep_fraction=0.001,linear_axis=2))
+    Robot_1.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+
+    Robot_1.eef_detach(tool_name="tool1", detaching_object_name= el_name)
+    test._stage.GetPrimAtPath("/world/obstacles/"+el_name).GetAttribute("physxRigidBody:disableGravity").Set(False)
+    Smart_Conv.attach_object_to_conv(obj_name= el_name, Enable_Gravity= False)
+    # Enabling Colliders
+    test._stage.GetPrimAtPath("/world/obstacles/"+el_name).GetAttribute("physics:collisionEnabled").Set(True)
+
+    #Robot 1 Post Place
+    Robot_1.plan(tcp_name= "tool1",
+                    target_pose= [2.3-(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT-((L/2)-2*ROBOT_1_SUCTION_CUP_R)-Placement_Offset,
+                                  (-ROBOT_1_SUCTION_WIDTH)/2,
+                                  SMART_CONV_REST_ELEVATION+Z+0.1+ROBOT_1_SUCTION_CUP_TO_TOOL_OFFSET+(W/2)],
+                    target_orientation= [0, 1, 0, 0],
+                    update_world_needed= True,
+                    removing_primitives=["world/obstacles", "Smart_Conveyor"],
+                    direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.0, tstep_fraction=0.001,linear_axis=2))
+    Robot_1.render_exec(renderInstance= True,
+                            Show_Sphere= False)
+
+    Robot_1.move_to_home()
 
 
 ###########
@@ -5268,7 +5316,7 @@ def main():
         # Robot_2.free_TCP_movement()
 
         # # # TPL
-        # TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, STUD_HEIGHT)
+        TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, STUD_HEIGHT)
 
         # # # Door
         # KING("Wooden_Element_6", 1.2592, 1.52, 0, 2.4384, 0.04, STUD_HEIGHT)
@@ -5285,7 +5333,7 @@ def main():
         # LCP("Small_Stud_4", 2.2384, 2.17, 0, 0.48, 0.04, STUD_HEIGHT)
 
         # # # IST
-        # KING("Wooden_Element_2", 1.2592, 0.02, 0, 2.4384, 0.04, STUD_HEIGHT)
+        KING("Wooden_Element_2", 1.2592, 0.02, 0, 2.4384, 0.04, STUD_HEIGHT)
             # L/U
         L_U("L_U_Element_1", 1.2592, 0.04+(STUD_HEIGHT/2), STUD_HEIGHT-0.02, 2.4384, 0.04, STUD_HEIGHT)
             # End L/U
@@ -5308,3 +5356,4 @@ def main():
 if __name__ == "__main__":
     main()
 
+Place
