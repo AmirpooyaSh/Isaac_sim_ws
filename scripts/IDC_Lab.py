@@ -153,7 +153,7 @@ ROBOT_1_SUCTION_CUP_TO_TOOL_OFFSET: float = 0.03
 
 ROBOT_2_GRIPPER_LENGTH: float = 0.590042
 # Robotic Movement Accelaration
-MOTION_ACCELERAION_VALUE: float = 0.6
+MOTION_ACCELERAION_VALUE: float = 0.9
 
 SMART_CONV_RANGE_OF_MOTION_J1: float = 4.55
 SMART_CONV_RANGE_OF_MOTION_J2: float = 0.5
@@ -448,10 +448,18 @@ class WorldManager(object):
             color= [0.2, 0.2, 0.2, 1]
         )
 
+        Human_Worker = Mesh(
+            name="Human_Worker",
+            pose=[4.2, 1.5, 0, ev, 0, 0, ev],
+            file_path= cur_dir + "Human_Worker/Worker.stl",
+            color= [0.1, 0.05, 0, 1],
+            scale=[0.001, 0.001, 0.001]
+        )
+
 
         # Small_Cutting_Table
         world_model = WorldConfig(
-            mesh=[IDC_Lab, Smart_Mat_Table, Sloped_Table, SheathingTable, Small_Cutting_Table],
+            mesh=[IDC_Lab, Smart_Mat_Table, Sloped_Table, SheathingTable, Small_Cutting_Table, Human_Worker],
             cuboid=[Cube, BearLoadingPileStand],
             capsule=[],
             cylinder=[],
@@ -624,7 +632,7 @@ class CuRoboConv(object):
         self._temp_world_manager._my_world.step(render= True)    
 
         Time = time.time()
-        while time.time() - Time <= 0.1:
+        while time.time() - Time <= 0.2:
             self._temp_world_manager._my_world.step(render= True)
         
         # Fix Jointing Stud To Conveyor
@@ -994,7 +1002,9 @@ class CuRoboRobot(object):
             # Moving Cubes Should also be ignored
             "/World/target",
             "/World/measurer",
-            "/World/conv_cube",         
+            "/World/conv_cube",
+            # Human Worker's Visual Model !
+            "/World/obstacles/Human_Worker",      
             # Other Robot's Prim Path Should also be Ignored !
             # This feature is to be developed (MPC)
         ]
@@ -1853,7 +1863,7 @@ Robot_1 = None
 Robot_1 = CuRoboRobot(working_world=test, 
                 R_Name="IRB6620_R1",
                 pose=[0,0,0.025],
-                input_tool="tool1", 
+                input_tool="tool0", 
                 w_dir=INSTALLATION_DIRECTORY+"/Isaac_sim_ws/robot", 
                 r_conf_name="IRB6620_Config.yaml",
                 Gripper_List=[RobotGripper(RobName= "IRB6620_R1",
@@ -1979,7 +1989,13 @@ R2_Smart_Mat_Table_Box2 = Cuboid(
 )
 Add_Rigid_Object_To_Scene(test, "Cuboid", R2_Smart_Mat_Table_Box2, True, True)
 
-
+Human_Representation_Box = Cuboid(
+    name= "Human_Box",
+    pose= [4.2, 1.5, 1, 1, 0, 0, 0],
+    dims= [0.5, 1, 2],
+    color= [1, 1, 1, 0]
+)
+Add_Rigid_Object_To_Scene(test, "Cuboid", Human_Representation_Box, True, True)
 
 #############
 ####Start#### Manufacturing Strategies !!!
@@ -2396,7 +2412,7 @@ def BPL(el_name: str = None,
                             Show_Sphere= False)
 
     PUSH_TO_NAIL_OFFSET: float = 0.05
-    Robot_2_Do_Side_Nail(push_to_nail= PUSH_TO_NAIL_OFFSET, H= H)
+    # Robot_2_Do_Side_Nail(push_to_nail= PUSH_TO_NAIL_OFFSET, H= H)
 
     # Back To Home
     Robot_2.move_to_home()
@@ -2816,7 +2832,7 @@ def KING(el_name: str = None,
     ###
 
     PUSH_TO_NAIL_OFFSET: float = 0.05
-    Robot_1_Do_Side_Nail(push_to_nail= PUSH_TO_NAIL_OFFSET, H= H, Side_Selector= Side_Selector)
+    # Robot_1_Do_Side_Nail(push_to_nail= PUSH_TO_NAIL_OFFSET, H= H, Side_Selector= Side_Selector)
 
     ###
     ###NAILING DONE
@@ -4115,8 +4131,8 @@ def LCP(el_name: str = None,
     if ((OVERALL_PANEL_LENGTH/2)- Y +(SMART_CONV_RANGE_OF_MOTION_J1/2)+NAILING_CONV_TARGET < 0):
         Side_Selector = 1
 
-    # Saving Joint Location For Nailing
-    Smart_Conv._nail_poses.append(((OVERALL_PANEL_LENGTH/2)- Y +(SMART_CONV_RANGE_OF_MOTION_J1/2)+NAILING_CONV_TARGET*Side_Selector, Side_Selector))
+    # # Saving Joint Location For Nailing
+    # Smart_Conv._nail_poses.append(((OVERALL_PANEL_LENGTH/2)- Y +(SMART_CONV_RANGE_OF_MOTION_J1/2)+NAILING_CONV_TARGET*Side_Selector, Side_Selector))
 
 def TCP(el_name: str = None,
         X: float = None,
@@ -4298,7 +4314,7 @@ def TCP(el_name: str = None,
 
         Robot_1.move_to_home()
 
-        Robot_1_Do_Side_Nail(push_to_nail= PUSH_TO_NAIL_OFFSET, H= H, Side_Selector= 1)
+        # Robot_1_Do_Side_Nail(push_to_nail= PUSH_TO_NAIL_OFFSET, H= H, Side_Selector= 1)
 
         Solver_Flag = True
 
@@ -4348,7 +4364,7 @@ def TCP(el_name: str = None,
 
         # Changing Is_TCP to true for the condition that cripple is being dropped in Y = -nail_offset (to set the nailgun's target to -2*nail_offset rather than nail_offset)
         # why? because on y = -nail_offset the robot's nailgun will hit the links, so we have to push it further !
-        Robot_1_Do_Side_Nail(push_to_nail= PUSH_TO_NAIL_OFFSET, H= H, Side_Selector= -1, Is_TCP= True)
+        # Robot_1_Do_Side_Nail(push_to_nail= PUSH_TO_NAIL_OFFSET, H= H, Side_Selector= -1, Is_TCP= True)
 
         Solver_Flag = True
 
@@ -5313,22 +5329,20 @@ def main():
         # ).get_collision_check_world()
         # obstacles.save_world_as_mesh("Conveyor.stl")
 
-        # Robot_2.free_TCP_movement()
-
         # # # TPL
         TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, STUD_HEIGHT)
 
         # # # Door
-        # KING("Wooden_Element_6", 1.2592, 1.52, 0, 2.4384, 0.04, STUD_HEIGHT)
-        # KING("Wooden_Element_7", 1.2592, 2.52, 0, 2.4384, 0.04, STUD_HEIGHT)
-        # LJCK("Wooden_Element_12", 1.4784, 1.56, 0, 2, 0.04, STUD_HEIGHT)
-        # RJCK("Wooden_Element_11", 1.4784, 2.48, 0, 2, 0.04, STUD_HEIGHT)
-        # TSP("Small_Stud_1", 0.4584, 2.02, 0, 0.96, 0.04, STUD_HEIGHT)
-        # TCP("Small_Stud_5", 0.2392, 2.02, 0, 0.3984, 0.04, STUD_HEIGHT)
+        KING("Wooden_Element_6", 1.2592, 1.52, 0, 2.4384, 0.04, STUD_HEIGHT)
+        KING("Wooden_Element_7", 1.2592, 2.52, 0, 2.4384, 0.04, STUD_HEIGHT)
+        LJCK("Wooden_Element_12", 1.4784, 1.56, 0, 2, 0.04, STUD_HEIGHT)
+        RJCK("Wooden_Element_11", 1.4784, 2.48, 0, 2, 0.04, STUD_HEIGHT)
+        TSP("Small_Stud_1", 0.4584, 2.02, 0, 0.96, 0.04, STUD_HEIGHT)
 
+        TCP("Small_Stud_5", 0.2392, 2.02, 0, 0.3984, 0.04, STUD_HEIGHT)
         # BL("Wooden_Element_13", 0.4784-(RAW_HEADER_DIMENSIONS[2]/2), 2.02, RAW_HEADER_DIMENSIONS[1]*0.5, 0.96, RAW_HEADER_DIMENSIONS[1], RAW_HEADER_DIMENSIONS[2])
         # BL("Wooden_Element_13", 0.4784-(RAW_HEADER_DIMENSIONS[2]/2), 2.02, RAW_HEADER_DIMENSIONS[1]*1.5, 0.96, RAW_HEADER_DIMENSIONS[1], RAW_HEADER_DIMENSIONS[2])
-        # BSP("Small_Stud_2", 1.9784, 2.02, 0, 0.88, 0.04, STUD_HEIGHT)
+        BSP("Small_Stud_2", 2.1, 2.02, 0, 0.88, 0.04, STUD_HEIGHT)
         # LCP("Small_Stud_3", 2.2384, 1.87, 0, 0.48, 0.04, STUD_HEIGHT)
         # LCP("Small_Stud_4", 2.2384, 2.17, 0, 0.48, 0.04, STUD_HEIGHT)
 
@@ -5342,18 +5356,16 @@ def main():
         # KING("Wooden_Element_5", 1.2592, 1.4, 0, 2.4384, 0.04, STUD_HEIGHT)
         # KING("Wooden_Element_8", 1.2592, 2.64, 0, 2.4384, 0.04, STUD_HEIGHT)
         # KING("Wooden_Element_9", 1.2592, 3.14, 0, 2.4384, 0.04, STUD_HEIGHT)
-        # KING("Wooden_Element_10", 1.2592, SMART_MAT_TABLE_MAX_LENGTH-0.02, 0, 2.4384, 0.04, STUD_HEIGHT)
+        KING("Wooden_Element_10", 1.2592, SMART_MAT_TABLE_MAX_LENGTH-0.02, 0, 2.4384, 0.04, STUD_HEIGHT)
 
         # # BPL
-        # BPL("Wooden_Element_13", OVERALL_PANEL_HEIGHT-0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, STUD_HEIGHT)
+        BPL("Wooden_Element_13", OVERALL_PANEL_HEIGHT-0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, STUD_HEIGHT)
 
         # # Sht
-        # Sheathing_Tickness: float = 0.02
-        # SHT("Wooden_Element_9", OVERALL_PANEL_HEIGHT/2, 2.02, STUD_HEIGHT+Sheathing_Tickness/2, OVERALL_PANEL_HEIGHT, 1.04, Sheathing_Tickness)
+        Sheathing_Tickness: float = 0.02
+        SHT("Wooden_Element_9", OVERALL_PANEL_HEIGHT/2, 2.02, STUD_HEIGHT+Sheathing_Tickness/2, OVERALL_PANEL_HEIGHT, 1.04, Sheathing_Tickness)
 
         Robot_1.free_TCP_movement(moving_tcp= "tool0")
 
 if __name__ == "__main__":
     main()
-
-Place

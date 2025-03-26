@@ -17,6 +17,6 @@ def divide_portions(x, y):
     return portions, remainder
 
 
-quat = R.from_euler('xyz', [(-(np.pi/2)), 0, -(np.pi/2)+30]).as_quat()
+quat = R.from_euler('xyz', [0, 0, 90]).as_quat()
 print(quat)
 
