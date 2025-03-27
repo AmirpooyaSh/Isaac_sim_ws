@@ -5329,6 +5329,8 @@ def main():
         # ).get_collision_check_world()
         # obstacles.save_world_as_mesh("Conveyor.stl")
 
+        Robot_1.free_TCP_movement(moving_tcp= "tool0")
+
         # # # TPL
         TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, STUD_HEIGHT)
 
