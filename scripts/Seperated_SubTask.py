@@ -130,6 +130,12 @@ import threading
 # Quat Transform
 from scipy.spatial.transform import Rotation as R
 
+### ABB RWS Implementation
+import abb_motion_program_exec as ABB
+from abb_robot_client.rws import JointTarget
+
+# Setting Controller IP (Virtual Controller as of Now)
+client = ABB.MotionProgramExecClient(base_url="http://192.168.1.14")
 
 ####################
 #### PARAMETERS ####
@@ -154,6 +160,7 @@ ROBOT_1_SUCTION_CUP_TO_TOOL_OFFSET: float = 0.03
 ROBOT_2_GRIPPER_LENGTH: float = 0.590042
 # Robotic Movement Accelaration
 MOTION_ACCELERAION_VALUE: float = 0.9
+STATION_SPEED: ABB.speeddata = ABB.v1000
 
 SMART_CONV_RANGE_OF_MOTION_J1: float = 4.55
 SMART_CONV_RANGE_OF_MOTION_J2: float = 0.5
@@ -848,6 +855,9 @@ class CuRoboRobot(object):
         #     drive.GetStiffnessAttr().Set(1e2)
         #     self._temp_world_manager._my_world.step(render=True)
 
+        # Synchronizer Value For Each Robot
+        self._synchronizer: bool = False
+
     def articulation_controller_init(self, step_index):
         if self._articulation_controller is None:
             self._articulation_controller = cast(ArticulationController, self._robot.get_articulation_controller())
@@ -1265,7 +1275,26 @@ class CuRoboRobot(object):
                         removing_primitives: List[str] = None,
                         linear_restriction: torch.tensor = None,
                         orientational_restriction: torch.tensor = None,
-                        direct_pose_cost: PoseCostMetric = None):
+                        direct_pose_cost: PoseCostMetric = None,
+                        synchronization_required: bool = True):
+
+        if synchronization_required and self._synchronizer == False:
+            try:
+                mechunit_name = "ROB_1" if self._ROS_JS_robot_indicator == "IRB6620_R1" else "ROB_2"
+                Actual_JS: JointTarget = client.abb_client.get_jointtarget(mechunit=mechunit_name)
+                if(Actual_JS != None):
+                    print("Joint Values are Captured from Robot "+ self._ROS_JS_robot_indicator)
+                    Is_Synced = self.move_to_js(Customized_JS=[math.radians(j) for j in Actual_JS.robax])
+                    if Is_Synced:
+                        print("Station and Simulation are Synced Now")
+                        self._synchronizer = True
+                    else:
+                        print("WARNING: SIMULATION IS DESYNCHRONIZED")
+                    print("__________________________________________________")
+            except Exception as e:
+                print(f"Failed to get joint target: {e}")
+                print("WARNING: SIMULATION IS DESYNCHRONIZED")
+                print("__________________________________________________")
 
         # Updating MotionGenConfig if there is any new TCP Being Used
         if tcp_name != self._robot_cfg["kinematics"]["ee_link"]:
@@ -1296,13 +1325,6 @@ class CuRoboRobot(object):
         succ = None
         # Start the timer
         TimeOut_Timer = time.time()
-
-        # dc=_dynamic_control.acquire_dynamic_control_interface()
-        # object=dc.get_rigid_body("/"+self._ROS_JS_robot_indicator+"/tool0")
-        # object_pose=dc.get_rigid_body_pose(object)
-        # print(object_pose.p)
-        # print(object_pose.r)
-        # print("__________________________________________________")
 
         # Planning Announcement
         print("Robot "+self._ROS_JS_robot_indicator+" started to find a path for "+tcp_name+" to coords: ")
@@ -1377,7 +1399,8 @@ class CuRoboRobot(object):
     def render_exec(self,
                     renderInstance: bool = True,
                     # Optional To Show Spheres For Traj (True)
-                    Show_Sphere: Optional[bool] = True):
+                    Show_Sphere: Optional[bool] = True,
+                    is_synchronizer: bool = False):
 
         if not self._computed_path_result.success.item():
             print("Path was not Generated")
@@ -1395,6 +1418,11 @@ class CuRoboRobot(object):
                     common_js_names.append(x)
             cmd_plan = cmd_plan.get_ordered_joint_state(common_js_names)
             cmd_idx = 0
+
+            # Adding the RWS Client to Publish the JS Array !
+            my_tool = ABB.tooldata(True, ABB.pose([0, 0, 0.1], [1, 0, 0, 0]), ABB.loaddata(0.001, [0, 0, 0.001], [1, 0, 0, 0], 0, 0, 0))
+            # Create a motion program
+            mp = ABB.MotionProgram(tool=my_tool)
 
             while cmd_idx < len(cmd_plan.position):
                 if renderInstance:
@@ -1447,6 +1475,10 @@ class CuRoboRobot(object):
                     joint_indices=idx_list,
                 )
 
+                if cmd_idx == 0 or cmd_idx % 10 == 0 or cmd_idx == len(cmd_plan.position)-1:
+                    # Creating RWS Position
+                    Cur_Pose: JointTarget = ABB.jointtarget(np.degrees(cmd_state.position.cpu().numpy()), [0]*6)
+                    mp.MoveAbsJ(Cur_Pose, STATION_SPEED, ABB.fine)
                 # set desired joint angles obtained from IK:
                 self._articulation_controller.apply_action(art_action)
 
@@ -1457,7 +1489,16 @@ class CuRoboRobot(object):
                 if renderInstance:
                     for _ in range(2):
                         self._temp_world_manager._my_world.step(render=False)
-        
+            # If the synchronizing plan is being transfered, it cause the robot to Flip !
+            if is_synchronizer == False:
+                Rob_Task = "T_ROB1" if self._ROS_JS_robot_indicator == "IRB6620_R1" else "T_ROB2"
+                while client.is_motion_program_running():
+                    self._temp_world_manager._my_world.step(render=True)
+                log_results = client.execute_motion_program(mp, task= Rob_Task, wait= False)
+                # Waiting for the Robotic Station To Finish The Movement
+                while client.is_motion_program_running():
+                    self._temp_world_manager._my_world.step(render=True)
+
         # Cleaning out !
         self._computed_path_result = None
         self._computed_cmd_plan = None
@@ -1540,6 +1581,85 @@ class CuRoboRobot(object):
 
                 # Execution
                 self.render_exec(renderInstance= True, Show_Sphere= if_show_spheres)
+                self._is_at_home = True
+                return True
+            print(result.status)
+            
+        carb.log_warn("Plan did not converge to a solution: " + str(result.status))
+        # No IK could solve this movement within 10 sec
+        return False
+
+    # Used to Synchronize Simulation with the Actual Robots
+    def move_to_js(self,
+                     if_show_spheres: bool = False,
+                     Customized_JS: List[float] = [0, 0, 0, 0, 0, 0]):
+
+        self.motion_gen_update_world()
+
+        self.release_path_plan_restriction()
+
+        result: MotionGenResult = None
+        succ = None
+        # Start the timer
+        TimeOut_Timer = time.time()
+
+        # Giving a 10-second timer to solve IK
+        while (time.time() - TimeOut_Timer <= 10):
+            # Render
+            self._temp_world_manager._my_world.step(render=True)
+            # 2. Getting Current JS
+            sim_js = self._robot.get_joints_state()
+            sim_js_names = self._robot.dof_names
+
+            cu_js = JointState(
+                position=self._tensor_args.to_device(sim_js.positions),
+                velocity=self._tensor_args.to_device(sim_js.velocities) * 0.0,
+                acceleration=self._tensor_args.to_device(sim_js.velocities) * 0.0,
+                jerk=self._tensor_args.to_device(sim_js.velocities) * 0.0,
+                joint_names=sim_js_names,
+            )
+            cu_js = cu_js.get_ordered_joint_state(self._motion_gen.kinematics.joint_names)
+
+            # Home Position is Defined as all 0
+            Home_Loc = torch.tensor(Customized_JS, dtype=torch.float32).unsqueeze(0).cuda()
+            home_state = JointState.from_position(
+                    Home_Loc,
+                    joint_names=[
+                        "Joint_1",
+                        "Joint_2",
+                        "Joint_3",
+                        "Joint_4",
+                        "Joint_5",
+                        "Joint_6",
+                        ],
+                )
+            # A Planning Config For Getting Move to Home (With Trajectory Optimization being disabled)
+            Home_Planner = MotionGenPlanConfig(time_dilation_factor= MOTION_ACCELERAION_VALUE)
+            
+            self._motion_gen.reset_seed()
+            result = self._motion_gen.plan_single_js(cu_js.unsqueeze(0), home_state, Home_Planner)
+            succ = result.success.item()
+
+
+            # Adding the solution to Robot Object
+            self._computed_path_result = result
+
+            if succ and np.max(np.abs(sim_js.velocities)) < 0.2:
+                # Clear the cache after each iteration to avoid memory buildupworld_reset
+                self._computed_cmd_plan = self._computed_path_result.get_interpolated_plan()
+                self._computed_cmd_plan = self._motion_gen.get_full_js(self._computed_cmd_plan)
+                self._computed_idx_list = []
+                common_js_names = []
+                sim_js_names = self._robot.dof_names
+
+                for x in sim_js_names:
+                    if x in self._computed_cmd_plan.joint_names:
+                        self._computed_idx_list.append(self._robot.get_dof_index(x))
+                        common_js_names.append(x)
+                self._computed_cmd_plan = self._computed_cmd_plan.get_ordered_joint_state(common_js_names)
+
+                # Execution
+                self.render_exec(renderInstance= True, Show_Sphere= if_show_spheres, is_synchronizer= True)
                 self._is_at_home = True
                 return True
             print(result.status)
@@ -2001,182 +2121,6 @@ Add_Rigid_Object_To_Scene(test, "Cuboid", Human_Representation_Box, True, True)
 ####Start#### Manufacturing Strategies !!!
 #############
 
-# Robot_2_To Pick Position
-def Do_Pick(Stud_Name: str = None,
-            Stud_Dims: List[float] = None,
-            Stud_Pose: List[float] = None):
-
-        Robot_2.move_to_home()
-        # Helping Pick
-        Robot_2.plan(tcp_name= "tool0",
-                       target_pose= [5.5, 1.44, 0.82],
-                       target_orientation= [ev, 0, ev, 0],
-                       update_world_needed= True)
-        Robot_2.render_exec(renderInstance= True,
-                              Show_Sphere= False)
-
-        # Pick
-        Robot_2.plan(tcp_name= "tool0",
-                       target_pose= [6.17, 1.44, 0.82],
-                       target_orientation= [ev, 0, ev, 0],
-                       update_world_needed= True,
-                       removing_primitives=["world/obstacles"])
-        Robot_2.render_exec(renderInstance= True,
-                              Show_Sphere= False)
-
-        # Attach
-
-        # Create Element
-        Attaching_Element = Cuboid(
-            name= Stud_Name,
-            pose= [Stud_Pose[0], Stud_Pose[1], Stud_Pose[2], 1, 0, 0, 0],
-            dims= [Stud_Dims[0], Stud_Dims[1], Stud_Dims[2]],
-            color= [0.87, 0.72, 0.53, 1]
-        )
-        Add_Rigid_Object_To_Scene(test, "Cuboid", Attaching_Element)
-
-        Robot_2.eef_attach(r_name= "IRB6620_R2",
-                           tool_name="tool0",
-                           attaching_object_name=Attaching_Element.name)
-
-        # Helping Pick      
-        Robot_2.plan(tcp_name= "tool0",
-                       target_pose= [5.5, 1.44, 0.82],
-                       target_orientation= [ev, 0, ev, 0],
-                       update_world_needed= True,
-                       removing_primitives=["world/obstacles"])
-        Robot_2.render_exec(renderInstance= True,
-                              Show_Sphere= False)
-
-        Robot_2.plan(tcp_name= "tool0",
-                       target_pose= [3.3, 0, 1.7],
-                       target_orientation= [0, -ev, 0, ev],
-                       update_world_needed= True)
-        Robot_2.render_exec(renderInstance= True,
-                              Show_Sphere= False)
-        
-        Robot_1.move_to_home()      
-        
-def Vertical(el_name: str = None,
-             el_dims: List[float] = None,
-             el_pose: List[float] = None,
-             conveyor_pose: float = 0):
-
-    if(el_name == None):
-        return False
-    
-    # Moving Conveyor To Target Location
-    Smart_Conv.render_exec('Joint_1', conveyor_pose)
-
-    Do_Pick(Stud_Name= el_name,
-            Stud_Dims= el_dims,
-            Stud_Pose= el_pose)
-
-    # Place Location (Helping)
-    Robot_2.plan(tcp_name= "tool0",
-                    target_pose= [3.08, 0.00, 1.05],
-                    target_orientation= [0, ev, ev, 0],
-                    update_world_needed= True)
-    Robot_2.render_exec(renderInstance= True,
-                            Show_Sphere= False)
-
-    # Place Location
-    Robot_2.plan(tcp_name= "tool0",
-                    target_pose= [3.1, 0.00, 0.98],
-                    target_orientation= [0, ev, ev, 0],
-                    update_world_needed= True,
-                    removing_primitives=["Smart_Conveyor/Link_2", "world/obstacles"])
-    Robot_2.render_exec(renderInstance= True,
-                            Show_Sphere= False)
-    
-    Robot_2.eef_detach(tool_name="tool0",
-                        detaching_object_name= el_name)
-
-    # Place Location (Helping)
-    Robot_2.plan(tcp_name= "tool0",
-                    target_pose= [3.08, 0.00, 1.05],
-                    target_orientation= [0, ev, ev, 0],
-                    update_world_needed= True,
-                    removing_primitives=["Smart_Conveyor/Link_2", "world/obstacles"],
-                    orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
-    Robot_2.render_exec(renderInstance= True,
-                            Show_Sphere= False)
-    
-    Robot_2.release_path_plan_restriction()
-
-    # Home Position
-    # Robot_2.plan(tcp_name= "tool0",
-    #                 target_pose= [3.3, 0, 1.7],
-    #                 target_orientation= [0, -ev, 0, ev],
-    #                 update_world_needed= True,
-    #                 removing_primitives=["Smart_Conveyor", "world/obstacles"])
-    # Robot_2.render_exec(renderInstance= True,
-    #                         Show_Sphere= False)
-    Robot_2.move_to_home()
-    
-    ## Attaching The Placed Stud To Conveyor
-    print(Smart_Conv.attach_object_to_conv(obj_name= el_name))
-    test._my_world.step(render= True)
-
-def Horizontal(el_name: str = None,
-               el_dims: List[float] = None,
-               el_pose: List[float] = None,
-               conveyor_pose: float = 0):
-
-    # Moving Conveyor To Target Location
-    Smart_Conv.render_exec('Joint_1', conveyor_pose)
-
-    Do_Pick(Stud_Name= el_name,
-            Stud_Dims= el_dims,
-            Stud_Pose= el_pose)
-
-    # Place Location (Helping)
-    Robot_2.plan(tcp_name= "tool0",
-                    target_pose= [3.542, -0.21, 1.12],
-                    target_orientation= [0, 0, 1, 0],
-                    update_world_needed= True)
-    Robot_2.render_exec(renderInstance= True,
-                            Show_Sphere= False)
-    
-
-
-    # Place
-    Robot_2.plan(tcp_name= "tool0",
-                    target_pose= [3.542, -0.21, 0.98],
-                    target_orientation= [0, 0, 1, 0],
-                    update_world_needed= True,
-                    removing_primitives=["Smart_Conveyor", "world/obstacles"],
-                    orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
-    Robot_2.render_exec(renderInstance= True,
-                            Show_Sphere= False)
-
-    Robot_2.eef_detach(tool_name="tool0",
-                        detaching_object_name= el_name)
-
-    Robot_2.plan(tcp_name= "tool0",
-                    target_pose= [3.542, -0.21, 1.12],
-                    target_orientation= [0, 0, 1, 0],
-                    update_world_needed= True,
-                    removing_primitives=["Smart_Conveyor", "world/obstacles"],
-                    orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
-    Robot_2.render_exec(renderInstance= True,
-                            Show_Sphere= False)
-
-    Robot_2.release_path_plan_restriction()
-
-    # Home Position
-    # Robot_2.plan(tcp_name= "tool0",
-    #                 target_pose= [3.3, 0, 1.7],
-    #                 target_orientation= [0, -ev, 0, ev],
-    #                 update_world_needed= True)
-    # Robot_2.render_exec(renderInstance= True,
-    #                         Show_Sphere= False)
-    Robot_2.move_to_home()
-
-    ## Attaching The Placed Stud To Conveyor
-    print(Smart_Conv.attach_object_to_conv(obj_name= el_name))
-    test._my_world.step(render= True)
-
 def Create_Wooden_Element_For_Smart_Mat_Table(el_name: str = None,
                                 L: float = None,
                                 W: float = None,
@@ -2294,7 +2238,7 @@ def BPL(el_name: str = None,
 
     # Correcting Movement Before Reaching the Smart Material Table
     Robot_2.plan(tcp_name= "tool0",
-                    target_pose= [4.70, 1.08, 0.87],
+                    target_pose= [5.0, 1.08, 0.87],
                     target_orientation= [0, 1, 0, 0],
                     update_world_needed= True)
     Robot_2.render_exec(renderInstance= True,
@@ -2430,7 +2374,7 @@ def TPL(el_name: str = None,
 
     # Correcting Movement Before Reaching the Smart Material Table
     Robot_2.plan(tcp_name= "tool0",
-                    target_pose= [4.70, 1.08, 0.87],
+                    target_pose= [5.0, 1.08, 0.87],
                     target_orientation= [0, 1, 0, 0],
                     update_world_needed= True)
     Robot_2.render_exec(renderInstance= True,
@@ -2868,7 +2812,7 @@ def Drag_Stud(el_name: str = None,
 
     # Correcting Movement Before Reaching the Smart Material Table
     Robot_2.plan(tcp_name= "tool0",
-                    target_pose= [4.70, 1.08, 0.87],
+                    target_pose= [5.0, 1.08, 0.87],
                     target_orientation= [0, 1, 0, 0],
                     update_world_needed= True)
     Robot_2.render_exec(renderInstance= True,
@@ -5288,86 +5232,10 @@ def main():
         if step_index < 20:
             continue
 
-# Publishing ROS JointState on Movement
-        # for robot in robots:
-        #         robot.ros_js_publisher()
-
-        # T = time.time()
-        # while time.time() - T <= 5:
-        #     test._my_world.step(render= True)  
-
-        # Creating The Bear Loading Pile !!!
-        it: int = 0
-        while it < NUMBER_OF_HEADERS:
-            r=1
-            Create_BearLoading_Element(el_name= "Bear_Loading_Element_"+str(it+1),
-                                        X= HEADER_CENTER_COORINATION[0]-(RAW_HEADER_DIMENSIONS[2]/2),
-                                        Y= HEADER_CENTER_COORINATION[1],
-                                        Z= HEADER_CENTER_COORINATION[2]+((it+0.5)*RAW_HEADER_DIMENSIONS[1]))
-            # Diabling Colliders
-            test._stage.GetPrimAtPath("/world/obstacles/Bear_Loading_Element_"+str(it+1)).GetAttribute("physics:collisionEnabled").Set(False)
-            it+=1
-
-        # USED TO EXPORT SMART CONVEYOR STL !
-        # Smart_Conv.render_exec('Joint_1', SMART_CONV_RANGE_OF_MOTION_J1/2)
-
-        # ignoring_prim_paths = [
-        #     "/IRB6620_R1",
-        #     "IRB6620_R2",
-        #     "/Smart_Conveyor/base_link/collisions",
-        #     "/Smart_Conveyor/track_link/collisions",
-        #     "/Smart_Conveyor/Link_1/collisions",
-        #     "/Smart_Conveyor/Link_2/collisions",
-        #     "/World/obstacles",
-        #     "/world/obstacles",
-        #     "/World/defaultGroundPlane",
-        # ]
-
-        # obstacles = test._usd_help.get_obstacles_from_stage(
-        #     reference_prim_path="/Smart_Conveyor",
-        #     ignore_substring=ignoring_prim_paths,
-        # ).get_collision_check_world()
-        # obstacles.save_world_as_mesh("Conveyor.stl")
-
+        # This flag is used to change the network 
         Robot_1.free_TCP_movement(moving_tcp= "tool0")
 
-        # # # TPL
         TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, STUD_HEIGHT)
-
-        # # # Door
-        KING("Wooden_Element_6", 1.2592, 1.52, 0, 2.4384, 0.04, STUD_HEIGHT)
-        KING("Wooden_Element_7", 1.2592, 2.52, 0, 2.4384, 0.04, STUD_HEIGHT)
-        LJCK("Wooden_Element_12", 1.4784, 1.56, 0, 2, 0.04, STUD_HEIGHT)
-        RJCK("Wooden_Element_11", 1.4784, 2.48, 0, 2, 0.04, STUD_HEIGHT)
-        TSP("Small_Stud_1", 0.4584, 2.02, 0, 0.96, 0.04, STUD_HEIGHT)
-
-        TCP("Small_Stud_5", 0.2392, 2.02, 0, 0.3984, 0.04, STUD_HEIGHT)
-        # BL("Wooden_Element_13", 0.4784-(RAW_HEADER_DIMENSIONS[2]/2), 2.02, RAW_HEADER_DIMENSIONS[1]*0.5, 0.96, RAW_HEADER_DIMENSIONS[1], RAW_HEADER_DIMENSIONS[2])
-        # BL("Wooden_Element_13", 0.4784-(RAW_HEADER_DIMENSIONS[2]/2), 2.02, RAW_HEADER_DIMENSIONS[1]*1.5, 0.96, RAW_HEADER_DIMENSIONS[1], RAW_HEADER_DIMENSIONS[2])
-        BSP("Small_Stud_2", 2.1, 2.02, 0, 0.88, 0.04, STUD_HEIGHT)
-        # LCP("Small_Stud_3", 2.2384, 1.87, 0, 0.48, 0.04, STUD_HEIGHT)
-        # LCP("Small_Stud_4", 2.2384, 2.17, 0, 0.48, 0.04, STUD_HEIGHT)
-
-        # # # IST
-        KING("Wooden_Element_2", 1.2592, 0.02, 0, 2.4384, 0.04, STUD_HEIGHT)
-            # L/U
-        L_U("L_U_Element_1", 1.2592, 0.04+(STUD_HEIGHT/2), STUD_HEIGHT-0.02, 2.4384, 0.04, STUD_HEIGHT)
-            # End L/U
-        # KING("Wooden_Element_3", 1.2592, 0.4, 0, 2.4384, 0.04, STUD_HEIGHT)
-        # KING("Wooden_Element_4", 1.2592, 0.9, 0, 2.4384, 0.04, STUD_HEIGHT)
-        # KING("Wooden_Element_5", 1.2592, 1.4, 0, 2.4384, 0.04, STUD_HEIGHT)
-        # KING("Wooden_Element_8", 1.2592, 2.64, 0, 2.4384, 0.04, STUD_HEIGHT)
-        # KING("Wooden_Element_9", 1.2592, 3.14, 0, 2.4384, 0.04, STUD_HEIGHT)
-        KING("Wooden_Element_10", 1.2592, SMART_MAT_TABLE_MAX_LENGTH-0.02, 0, 2.4384, 0.04, STUD_HEIGHT)
-
-        # # BPL
-        BPL("Wooden_Element_13", OVERALL_PANEL_HEIGHT-0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, STUD_HEIGHT)
-
-        # # Sht
-        Sheathing_Tickness: float = 0.02
-        SHT("Wooden_Element_9", OVERALL_PANEL_HEIGHT/2, 2.02, STUD_HEIGHT+Sheathing_Tickness/2, OVERALL_PANEL_HEIGHT, 1.04, Sheathing_Tickness)
-
-        Robot_1.free_TCP_movement(moving_tcp= "tool0")
 
 if __name__ == "__main__":
     main()

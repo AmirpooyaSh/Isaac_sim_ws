@@ -2294,7 +2294,7 @@ def BPL(el_name: str = None,
 
     # Correcting Movement Before Reaching the Smart Material Table
     Robot_2.plan(tcp_name= "tool0",
-                    target_pose= [4.70, 1.08, 0.87],
+                    target_pose= [5.0, 1.08, 0.87],
                     target_orientation= [0, 1, 0, 0],
                     update_world_needed= True)
     Robot_2.render_exec(renderInstance= True,
@@ -2430,7 +2430,7 @@ def TPL(el_name: str = None,
 
     # Correcting Movement Before Reaching the Smart Material Table
     Robot_2.plan(tcp_name= "tool0",
-                    target_pose= [4.70, 1.08, 0.87],
+                    target_pose= [5.0, 1.08, 0.87],
                     target_orientation= [0, 1, 0, 0],
                     update_world_needed= True)
     Robot_2.render_exec(renderInstance= True,
@@ -2868,7 +2868,7 @@ def Drag_Stud(el_name: str = None,
 
     # Correcting Movement Before Reaching the Smart Material Table
     Robot_2.plan(tcp_name= "tool0",
-                    target_pose= [4.70, 1.08, 0.87],
+                    target_pose= [5.0, 1.08, 0.87],
                     target_orientation= [0, 1, 0, 0],
                     update_world_needed= True)
     Robot_2.render_exec(renderInstance= True,
