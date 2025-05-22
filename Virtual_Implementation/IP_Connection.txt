@@ -1,0 +1,16 @@
+Steps to establish joint movements from an Ubuntu Machine to Simulated/Actual IRC5 Controller:
+
+1- You need to create a local network and assign a static IP to both ubuntu machine and windows machine (or the IRC5 if you sending commands to the actual controller)
+
+2- In terms of windows machine (virtual controller) you have to whitelist the ubuntu machine's IP to let the Robot Studio accept commands.
+To do so, create a file called "vcconf.xml" within the "C/Users/{The User You're Logged Into}/AppData/Roaming/ABB Industrial IP/ Robotics IT" and put the ubuntu machine's ip in it like below:
+
+<VCConfiguration><RemoteVCConfiguration PublicationEnabled="true" /><hosts><host ip="192.168.1.16"/></hosts>
+</VCConfiguration>
+
+192.168.1.16 is the ubuntu machine's static IP address assigned in the local network in my case (You have to change it to yours)
+
+3- After that, running the "rws_2_laptop.py" within Tutorials subdirectory will make the simulated robot's work
+
+4- If you're working with the actual controller, the above steps are not required and you only have to change the IP address of the entity controlling robots (windows machine or the IRC5 in simulated and actual developement)
+in the provided python script (192.168.1.14 is the windows machine in my case and 192.168.1.4 is the actual IRC5 within the Smart IDC Lab).
