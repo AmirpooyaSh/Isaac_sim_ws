@@ -1504,8 +1504,9 @@ class CuRoboRobot(object):
 
                     log_results = client.execute_motion_program(mp, task= Rob_Task, wait= False)
 
-                    RAPID_Results = mp.get_program_rapid()
-                    print(RAPID_Results)
+                    # Used to visualize RAPID MODULES created by the library
+                    # RAPID_Results = mp.get_program_rapid()
+                    # print(RAPID_Results)
 
                     # Waiting for the Robotic Station To Finish The Movement
                     while client.is_motion_program_running():
