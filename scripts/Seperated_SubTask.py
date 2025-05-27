@@ -5268,27 +5268,6 @@ def main():
             test._stage.GetPrimAtPath("/world/obstacles/Bear_Loading_Element_"+str(it+1)).GetAttribute("physics:collisionEnabled").Set(False)
             it+=1
 
-        # USED TO EXPORT SMART CONVEYOR STL !
-        # Smart_Conv.render_exec('Joint_1', SMART_CONV_RANGE_OF_MOTION_J1/2)
-
-        # ignoring_prim_paths = [
-        #     "/IRB6620_R1",
-        #     "IRB6620_R2",
-        #     "/Smart_Conveyor/base_link/collisions",
-        #     "/Smart_Conveyor/track_link/collisions",
-        #     "/Smart_Conveyor/Link_1/collisions",
-        #     "/Smart_Conveyor/Link_2/collisions",
-        #     "/World/obstacles",
-        #     "/world/obstacles",
-        #     "/World/defaultGroundPlane",
-        # ]
-
-        # obstacles = test._usd_help.get_obstacles_from_stage(
-        #     reference_prim_path="/Smart_Conveyor",
-        #     ignore_substring=ignoring_prim_paths,
-        # ).get_collision_check_world()
-        # obstacles.save_world_as_mesh("Conveyor.stl")
-
         Robot_1.free_TCP_movement(moving_tcp= "tool0")
 
         # # TPL
@@ -5311,7 +5290,7 @@ def main():
         # # # IST
         KING("Wooden_Element_2", 1.2592, 0.02, 0, 2.4384, 0.04, STUD_HEIGHT)
             # L/U
-        L_U("L_U_Element_1", 1.2592, 0.04+(STUD_HEIGHT/2), STUD_HEIGHT-0.02, 2.4384, 0.04, STUD_HEIGHT)
+        L_U("L_U_Element_1", 1.2592, 0.04+(STUD_HEIGHT/2), 0.02, 2.4384, 0.04, STUD_HEIGHT)
             # End L/U
         KING("Wooden_Element_3", 1.2592, 0.4, 0, 2.4384, 0.04, STUD_HEIGHT)
         # KING("Wooden_Element_4", 1.2592, 0.9, 0, 2.4384, 0.04, STUD_HEIGHT)
