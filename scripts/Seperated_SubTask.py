@@ -2372,7 +2372,7 @@ def BPL(el_name: str = None,
                             Show_Sphere= False)
 
     PUSH_TO_NAIL_OFFSET: float = 0.05
-    # Robot_2_Do_Side_Nail(push_to_nail= PUSH_TO_NAIL_OFFSET, H= H)
+    Robot_2_Do_Side_Nail(push_to_nail= PUSH_TO_NAIL_OFFSET, H= H)
 
     # Back To Home
     Robot_2.move_to_home()
@@ -2792,7 +2792,7 @@ def KING(el_name: str = None,
     ###
 
     PUSH_TO_NAIL_OFFSET: float = 0.05
-    # Robot_1_Do_Side_Nail(push_to_nail= PUSH_TO_NAIL_OFFSET, H= H, Side_Selector= Side_Selector)
+    Robot_1_Do_Side_Nail(push_to_nail= PUSH_TO_NAIL_OFFSET, H= H, Side_Selector= Side_Selector)
 
     ###
     ###NAILING DONE
@@ -3065,7 +3065,7 @@ def RJCK(el_name: str = None,
         H: float = None,
         Is_LJCK: bool = False):
 
-    # Drag_Stud(el_name= el_name, el_dims= [L, W, H])
+    Drag_Stud(el_name= el_name, el_dims= [L, W, H])
 
     #[ev, 0, ev, 0]
     # Pre Pick
@@ -3091,7 +3091,7 @@ def RJCK(el_name: str = None,
                             Show_Sphere= False)
     # Saw Action
     # Removing 12ft Primitive and Replacing it with L !
-    # prims_utils.delete_prim("/world/obstacles/"+el_name+"Temp")
+    prims_utils.delete_prim("/world/obstacles/"+el_name+"Temp")
     Create_Wooden_Element_For_Smart_Mat_Table(el_name= el_name, L= L, W= W, H= H, Debug_Offset= True)
 
     Robot_2.eef_attach(tool_name= "tool0", attaching_object_name= el_name)
@@ -3175,7 +3175,7 @@ def RJCK(el_name: str = None,
 
     # Robot 1 Nail !!
     PUSH_TO_NAIL_OFFSET: float = 0.01
-    # Robot_1_Do_Jack_Nail(push_to_nail=PUSH_TO_NAIL_OFFSET, el_pose=[X,Y,Z], el_dims=[L,W,H], Is_LJCK= Is_LJCK, Side_Selector= Side_Selector)
+    Robot_1_Do_Jack_Nail(push_to_nail=PUSH_TO_NAIL_OFFSET, el_pose=[X,Y,Z], el_dims=[L,W,H], Is_LJCK= Is_LJCK, Side_Selector= Side_Selector)
 
     # Post Place
     # Robot_2.plan(tcp_name= "tool0",
@@ -3425,7 +3425,7 @@ def TSP(el_name: str = None,
         H: float = None):
     
     # Dragging the Required Length
-    # Drag_Stud(el_name= el_name, el_dims= [L, W, H])
+    Drag_Stud(el_name= el_name, el_dims= [L, W, H])
 
     #[0, -ev, 0, -ev]
     # Pre Pick
@@ -3452,7 +3452,7 @@ def TSP(el_name: str = None,
     
     # Saw Action + Attach
     # Removing 12ft Primitive and Replacing it with L !
-    # prims_utils.delete_prim("/world/obstacles/"+el_name+"Temp")
+    prims_utils.delete_prim("/world/obstacles/"+el_name+"Temp")
     Create_Wooden_Element_For_Smart_Mat_Table(el_name= el_name, L= L, W= W, H= H, Debug_Offset= True)
 
     Robot_2.eef_attach(tool_name= "tool0", attaching_object_name= el_name)
@@ -3591,7 +3591,7 @@ def TSP(el_name: str = None,
     Robot_1.move_to_home()
 
     # Nailing the Silling !
-    # Robot_1_Do_TopSill_Nail(push_to_nail=0.01, el_pose=[X, Y, Z], el_dims=[L, W, H], conv_current_location=Conv_Curr_Loc)
+    Robot_1_Do_TopSill_Nail(push_to_nail=0.01, el_pose=[X, Y, Z], el_dims=[L, W, H], conv_current_location=Conv_Curr_Loc)
 
 def Robot_2_Do_BotSill_Nail(push_to_nail: float = None,
                             el_pose: List[float] = [],
@@ -3810,7 +3810,7 @@ def BSP(el_name: str = None,
         H: float = None):
 
     # Dragging the Required Length
-    # Drag_Stud(el_name= el_name, el_dims= [L, W, H])
+    Drag_Stud(el_name= el_name, el_dims= [L, W, H])
 
     #[0, -ev, 0, -ev]
     # Pre Pick
@@ -3837,7 +3837,7 @@ def BSP(el_name: str = None,
     
     # Saw Action + Attach
     # Removing 12ft Primitive and Replacing it with L !
-    # prims_utils.delete_prim("/world/obstacles/"+el_name+"Temp")
+    prims_utils.delete_prim("/world/obstacles/"+el_name+"Temp")
     Create_Wooden_Element_For_Smart_Mat_Table(el_name= el_name, L= L, W= W, H= H, Debug_Offset= True)
 
     Robot_2.eef_attach(tool_name= "tool0", attaching_object_name= el_name)
@@ -3975,7 +3975,7 @@ def BSP(el_name: str = None,
     Robot_2.move_to_home()
 
     # Nailing
-    # Robot_2_Do_BotSill_Nail(push_to_nail=0.01, el_pose=[X, Y, Z], el_dims=[L, W, H], conv_current_location=Conv_Curr_Loc)
+    Robot_2_Do_BotSill_Nail(push_to_nail=0.01, el_pose=[X, Y, Z], el_dims=[L, W, H], conv_current_location=Conv_Curr_Loc)
 
 def LCP(el_name: str = None,
         X: float = None,
@@ -3985,7 +3985,7 @@ def LCP(el_name: str = None,
         W: float = None,
         H: float = None):
     # Dragging the Required Length
-    # Drag_Stud(el_name= el_name, el_dims= [L, W, H])
+    Drag_Stud(el_name= el_name, el_dims= [L, W, H])
 
     #[0, -ev, -ev, 0]
     # Pre Pick
@@ -4012,7 +4012,7 @@ def LCP(el_name: str = None,
     
     # Saw Action + Attach
     # Removing 12ft Primitive and Replacing it with L !
-    # prims_utils.delete_prim("/world/obstacles/"+el_name+"Temp")
+    prims_utils.delete_prim("/world/obstacles/"+el_name+"Temp")
     Create_Wooden_Element_For_Smart_Mat_Table(el_name= el_name, L= L, W= W, H= H, Debug_Offset= True)
 
     Robot_2.eef_attach(tool_name= "tool0", attaching_object_name= el_name)
@@ -4092,7 +4092,7 @@ def LCP(el_name: str = None,
         Side_Selector = 1
 
     # # Saving Joint Location For Nailing
-    # Smart_Conv._nail_poses.append(((OVERALL_PANEL_LENGTH/2)- Y +(SMART_CONV_RANGE_OF_MOTION_J1/2)+NAILING_CONV_TARGET*Side_Selector, Side_Selector))
+    Smart_Conv._nail_poses.append(((OVERALL_PANEL_LENGTH/2)- Y +(SMART_CONV_RANGE_OF_MOTION_J1/2)+NAILING_CONV_TARGET*Side_Selector, Side_Selector))
 
 def TCP(el_name: str = None,
         X: float = None,
@@ -4102,7 +4102,7 @@ def TCP(el_name: str = None,
         W: float = None,
         H: float = None):
     # Dragging the Required Length
-    # Drag_Stud(el_name= el_name, el_dims= [L, W, H])
+    Drag_Stud(el_name= el_name, el_dims= [L, W, H])
 
     #[0, -ev, -ev, 0]
     # Pre Pick
@@ -4274,7 +4274,7 @@ def TCP(el_name: str = None,
 
         Robot_1.move_to_home()
 
-        # Robot_1_Do_Side_Nail(push_to_nail= PUSH_TO_NAIL_OFFSET, H= H, Side_Selector= 1)
+        Robot_1_Do_Side_Nail(push_to_nail= PUSH_TO_NAIL_OFFSET, H= H, Side_Selector= 1)
 
         Solver_Flag = True
 
@@ -4324,7 +4324,7 @@ def TCP(el_name: str = None,
 
         # Changing Is_TCP to true for the condition that cripple is being dropped in Y = -nail_offset (to set the nailgun's target to -2*nail_offset rather than nail_offset)
         # why? because on y = -nail_offset the robot's nailgun will hit the links, so we have to push it further !
-        # Robot_1_Do_Side_Nail(push_to_nail= PUSH_TO_NAIL_OFFSET, H= H, Side_Selector= -1, Is_TCP= True)
+        Robot_1_Do_Side_Nail(push_to_nail= PUSH_TO_NAIL_OFFSET, H= H, Side_Selector= -1, Is_TCP= True)
 
         Solver_Flag = True
 
@@ -5299,11 +5299,11 @@ def main():
         KING("Wooden_Element_7", 1.2592, 2.52, 0, 2.4384, 0.04, STUD_HEIGHT)
         LJCK("Wooden_Element_12", 1.4784, 1.56, 0, 2, 0.04, STUD_HEIGHT)
         RJCK("Wooden_Element_11", 1.4784, 2.48, 0, 2, 0.04, STUD_HEIGHT)
-        # TSP("Small_Stud_1", 0.4584, 2.02, 0, 0.96, 0.04, STUD_HEIGHT)
-
-        # TCP("Small_Stud_5", 0.2392, 2.02, 0, 0.3984, 0.04, STUD_HEIGHT)
-        BL("Wooden_Element_13", 0.4784-(RAW_HEADER_DIMENSIONS[2]/2), 2.02, RAW_HEADER_DIMENSIONS[1]*0.5, 0.96, RAW_HEADER_DIMENSIONS[1], RAW_HEADER_DIMENSIONS[2])
-        BL("Wooden_Element_13", 0.4784-(RAW_HEADER_DIMENSIONS[2]/2), 2.02, RAW_HEADER_DIMENSIONS[1]*1.5, 0.96, RAW_HEADER_DIMENSIONS[1], RAW_HEADER_DIMENSIONS[2])
+        TSP("Small_Stud_1", 0.4584, 2.02, 0, 0.96, 0.04, STUD_HEIGHT)
+        TCP("Small_Stud_5", 0.2392, 2.02, 0, 0.3984, 0.04, STUD_HEIGHT)
+        
+        # BL("Wooden_Element_13", 0.4784-(RAW_HEADER_DIMENSIONS[2]/2), 2.02, RAW_HEADER_DIMENSIONS[1]*0.5, 0.96, RAW_HEADER_DIMENSIONS[1], RAW_HEADER_DIMENSIONS[2])
+        # BL("Wooden_Element_13", 0.4784-(RAW_HEADER_DIMENSIONS[2]/2), 2.02, RAW_HEADER_DIMENSIONS[1]*1.5, 0.96, RAW_HEADER_DIMENSIONS[1], RAW_HEADER_DIMENSIONS[2])
         BSP("Small_Stud_2", 2.1, 2.02, 0, 0.88, 0.04, STUD_HEIGHT)
         LCP("Small_Stud_3", 2.2384, 1.87, 0, 0.48, 0.04, STUD_HEIGHT)
         LCP("Small_Stud_4", 2.2384, 2.17, 0, 0.48, 0.04, STUD_HEIGHT)
