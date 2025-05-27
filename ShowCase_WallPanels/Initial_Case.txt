@@ -12,7 +12,7 @@
 
         # # # IST
         KING("Wooden_Element_2", 1.2592, 0.02, 0, 2.4384, 0.04, STUD_HEIGHT)
-            # L/U
+            # L/U        # LCP("LC_1", )
         L_U("L_U_Element_1", 1.2592, 0.04+(STUD_HEIGHT/2), STUD_HEIGHT-0.02, 2.4384, 0.04, STUD_HEIGHT)
             # End L/U
         KING("Wooden_Element_3", 1.2592, 0.4, 0, 2.4384, 0.04, STUD_HEIGHT)
