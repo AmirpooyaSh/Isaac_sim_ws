@@ -1,0 +1,37 @@
+        # TPL
+        TPL("Top_Stud", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, STUD_HEIGHT)
+
+        # Door LKing
+        KING("LK_1", 1.2592, 0.72, 0, 2.4384, 0.04, STUD_HEIGHT)
+        KING("RK_1", 1.2592, 1.68, 0, 2.4384, 0.04, STUD_HEIGHT)
+        # Door Jack
+        LJCK("LJ_1", 1.4784, 0.76, 0, 2, 0.04, STUD_HEIGHT)
+        RJCK("RJ_1", 1.4784, 1.64, 0, 2, 0.04, STUD_HEIGHT)
+        # Door Top
+        TSP("TSP_1", 0.4584, 1.2, 0, 0.92, 0.04, STUD_HEIGHT)
+        TCP("TCP_1", 0.2392, 1.2, 0, 0.3984, 0.04, STUD_HEIGHT)
+        TCP("TCP_2", 0.2392, 0.98, 0, 0.3984, 0.04, STUD_HEIGHT)
+        TCP("TCP_3", 0.2392, 1.42, 0, 0.3984, 0.04, STUD_HEIGHT)
+
+        # Window King
+        KING("LK_2", 1.2592, 3.1376, 0, 2.4384, 0.04, STUD_HEIGHT)
+        KING("RK_2", 1.2592, 2.2376, 0, 2.4384, 0.04, STUD_HEIGHT)
+        # Window Jack
+        RJCK("LJ_2", 1.5784, 3.0976, 0, 1.8, 0.04, STUD_HEIGHT)
+        LJCK("RJ_2", 1.5784, 2.2776, 0, 1.8, 0.04, STUD_HEIGHT)
+        # Window Top
+        BL("BL_1", 0.5514, 2.6876, 0.0254, 0.86, 0.0508, 0.254)
+        BL("BL_2", 0.5514, 2.6876, 0.0762, 0.86, 0.0508, 0.254)
+        # Window Botom
+        BSP("BS_1", 1.8984, 2.6876, 0, 0.78, 0.04, STUD_HEIGHT)
+        LCP("LC_1", 2.1984, 2.5376, 0, 0.56, 0.04, STUD_HEIGHT)
+        LCP("LC_2", 2.1984, 2.8376, 0, 0.56, 0.04, STUD_HEIGHT)
+        # # # IST
+        KING("F_Stud", 1.2592, 0.02, 0, 2.4384, 0.04, STUD_HEIGHT)
+        L_U("L_U_Element_1", 1.2592, 0.04+(STUD_HEIGHT/2), 0.02, 2.4384, 0.04, STUD_HEIGHT)
+        KING("R_Stud_1", 1.2592, 0.5, 0, 2.4384, 0.04, STUD_HEIGHT)
+        KING("R_Stud_2", 1.2592, 1.9588, 0, 2.4384, 0.04, STUD_HEIGHT)
+        KING("R_Stud_3", 1.2592, SMART_MAT_TABLE_MAX_LENGTH-0.02, 0, 2.4384, 0.04, STUD_HEIGHT)
+
+        # # BPL
+        BPL("Bot_Stud", OVERALL_PANEL_HEIGHT-0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, STUD_HEIGHT)

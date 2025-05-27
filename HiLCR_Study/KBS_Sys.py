@@ -942,7 +942,7 @@ class CuRoboRobot(object):
             trajopt_tsteps=trajopt_tsteps,
             trim_steps=trim_steps,
             # This Cache Value needs to be set PROPERLY
-            collision_cache={"obb":30, "mesh": 100}
+            collision_cache={"obb":100, "mesh": 200}
         )
         
         self._motion_gen = MotionGen(self._motion_gen_config)
@@ -1536,14 +1536,15 @@ class CuRoboRobot(object):
 
     def move_to_home(self,
                      if_show_spheres: bool = False,
-                     Customized_JS: List[float] = [0, -0.5, 0.5, 0, 0, 0]):
+                     Customized_JS: List[float] = [0, -0.5, 0.5, 0, 0, 0],
+                     removing_primitives= []):
 
         # If Robot is Already at Home Position
         if self._is_at_home == True:
             print("Robot " + self._ROS_JS_robot_indicator + " is Already at Home Position")
             return True
 
-        self.motion_gen_update_world()
+        self.motion_gen_update_world(Removing_Prim_Paths= removing_primitives)
 
         self.release_path_plan_restriction()
 
@@ -3562,8 +3563,8 @@ def Nail_Vertical_Element_With_Tangent_to_an_Element(
             Robot_1.render_exec(renderInstance=True, Show_Sphere=False)
 
         # Stage 5: Return Robot_1 and Robot_2 home
-        Robot_1.move_to_home()
-        Robot_2.move_to_home()
+        Robot_1.move_to_home(removing_primitives= ["Smart_Conveyor"])
+        Robot_2.move_to_home(removing_primitives= ["Smart_Conveyor"])
     else:
         print("Error: Side_Selector must be +1 or -1.")
 
@@ -3846,7 +3847,7 @@ def Nail_Short_Horizontal_Element_by_Rob1_NailGun(
                 )
                 Robot_1.render_exec(renderInstance=True, Show_Sphere=False)
 
-            Robot_1.move_to_home()
+            Robot_1.move_to_home(removing_primitives= ["Smart_Conveyor"])
         else:
             print("Left nail not possible due to Robot_1 reachability.")
 
@@ -3931,7 +3932,7 @@ def Nail_Short_Horizontal_Element_by_Rob1_NailGun(
                 )
                 Robot_1.render_exec(renderInstance=True, Show_Sphere=False)
 
-            Robot_1.move_to_home()
+            Robot_1.move_to_home(removing_primitives= ["Smart_Conveyor"])
         else:
             print("Right nail not possible due to Robot_1 reachability.")
 
@@ -4158,7 +4159,7 @@ def Nail_Short_Horizontal_Element_by_Rob2_NailGun(
                 )
                 Robot_2.render_exec(renderInstance=True, Show_Sphere=False)
 
-            Robot_2.move_to_home()
+            Robot_2.move_to_home(removing_primitives= ["Smart_Conveyor"])
         else:
             print("Left nail not possible due to Robot_2 reachability.")
     else:
@@ -4235,7 +4236,7 @@ def Nail_Short_Horizontal_Element_by_Rob2_NailGun(
                 )
                 Robot_2.render_exec(renderInstance=True, Show_Sphere=False)
 
-            Robot_2.move_to_home()
+            Robot_2.move_to_home(removing_primitives= ["Smart_Conveyor"])
         else:
             print("Right nail not possible due to Robot_2 reachability.")
     else:
@@ -5090,7 +5091,7 @@ def Nail_2x10_Header(push_to_nail: float = PUSH_TO_NAIL_OFFSET_TANGENT*2.5,
             Robot_1.render_exec(renderInstance= True,
                                     Show_Sphere= False)
 
-            Robot_1.move_to_home()
+            Robot_1.move_to_home(removing_primitives= ["Smart_Conveyor"])
         else:
             print("Left Nail is Not Possible ! Due To Robot NailGun Reachability")
 
@@ -5189,7 +5190,7 @@ def Nail_2x10_Header(push_to_nail: float = PUSH_TO_NAIL_OFFSET_TANGENT*2.5,
             Robot_1.render_exec(renderInstance= True,
                                     Show_Sphere= False)
 
-            Robot_1.move_to_home()
+            Robot_1.move_to_home(removing_primitives= ["Smart_Conveyor"])
         else:
             print("Right Nail is Not Possible ! Due To Robot NailGun Reachability")
 
@@ -5291,6 +5292,8 @@ def Complementary_Nail_Operation(push_to_nail: float = PUSH_TO_NAIL_OFFSET,
                         direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.0, tstep_fraction=0.001,linear_axis=2))
         Robot_2.render_exec(renderInstance= True,
                                 Show_Sphere= False)
+
+        Robot_2.move_to_home()
 
 def Pick_OSB_Plate(el_name: str = None,
         L: float = None,
@@ -5469,7 +5472,6 @@ def Place_OSB_Plate(el_name: str = None,
 def Nail_OSB_Plate(push_to_nail: float = PUSH_TO_NAIL_OFFSET_TANGENT,
                      nail_num: int = 6,
                      el_dims: list[float] = [],
-                     W: float = None,
                      Sht_plate_on_conv_loc: float = None):
     '''
     Brief Description:
@@ -5480,7 +5482,6 @@ def Nail_OSB_Plate(push_to_nail: float = PUSH_TO_NAIL_OFFSET_TANGENT,
         push_to_nail (float): Offset distance to push forward during each nailing action.
         nail_num (int): Total number of nails to place vertically (half by Robot 1, half by Robot 2).
         el_dims (list[float]): Dimensions of the plate [length, width, thickness].
-        W (float): Width of the OSB plate, used to filter valid nail poses.
         Sht_plate_on_conv_loc (float): Current conveyor Joint_1 position upon placing the OSB plate.
 
     Steps of Working:
@@ -5500,7 +5501,7 @@ def Nail_OSB_Plate(push_to_nail: float = PUSH_TO_NAIL_OFFSET_TANGENT,
 
     for nail in Smart_Conv._vertical_nail_poses:
         # It means that we should vertically nail the sheathing plate to the king at these locations
-        if(nail <= Sht_plate_on_conv_loc + (W/2) and nail >= Sht_plate_on_conv_loc - (W/2)):
+        if(nail <= Sht_plate_on_conv_loc + (el_dims[1]/2) and nail >= Sht_plate_on_conv_loc - (el_dims[1]/2)):
             # Move Nail Target To Y=0
             Smart_Conv.render_exec('Joint_1', nail)
 
@@ -5597,6 +5598,8 @@ def Nail_OSB_Plate(push_to_nail: float = PUSH_TO_NAIL_OFFSET_TANGENT,
                                         Show_Sphere= False)
                 it+=1
 
+            Robot_2.move_to_home()
+
 ###############################
 ###############################
 ##### Station Functions #######
@@ -5686,46 +5689,46 @@ def main():
         ################################
         ################################
 
-        # Robot_1.free_TCP_movement("tool0")
+        Robot_1.free_TCP_movement("tool0")
 
-        # # Top Plate
-        # Pick_Long_Element_From_Mat_Supply("Top_Plate", 3.6576, 0.04, 0.1016)
-        # Pass_Long_Element_G2G("Top_Plate", 3.6576, 0.1016)
-        # Place_Long_Element_On_Smart_Conveyor_by_Rob1_Gripper("Top_Plate", 0.02, 1.8288, 3.6576, 0.1016)
+        # Top Plate
+        Pick_Long_Element_From_Mat_Supply("Top_Plate", 3.6576, 0.04, 0.1016)
+        Pass_Long_Element_G2G("Top_Plate", 3.6576, 0.1016)
+        Place_Long_Element_On_Smart_Conveyor_by_Rob1_Gripper("Top_Plate", 0.02, 1.8288, 3.6576, 0.1016)
 
-        # # Left King
-        # Pick_8ft_Element_From_Sloped_Table("L_King_1", 2.4384, 0.04, 0.1016)
-        # L_King_1_SS = Place_and_Hold_8ft_Element_On_Smart_Conveyor(1.2592, 1.52, 2.4384, 0.1016)
-        # Nail_and_Release_Vertical_Element("L_King_1", 1.2592, PUSH_TO_NAIL_OFFSET, 2.4384, 0.1016, L_King_1_SS)
+        # Left King
+        Pick_8ft_Element_From_Sloped_Table("L_King_1", 2.4384, 0.04, 0.1016)
+        L_King_1_SS = Place_and_Hold_8ft_Element_On_Smart_Conveyor(1.2592, 1.52, 2.4384, 0.1016)
+        Nail_and_Release_Vertical_Element("L_King_1", 1.2592, PUSH_TO_NAIL_OFFSET, 2.4384, 0.1016, L_King_1_SS)
 
-        # # Right King
-        # Pick_8ft_Element_From_Sloped_Table("R_King_1", 2.4384, 0.04, 0.1016)
-        # R_King_1_SS = Place_and_Hold_8ft_Element_On_Smart_Conveyor(1.2592, 2.52, 2.4384, 0.1016)
-        # Nail_and_Release_Vertical_Element("R_King_1", 1.2592, PUSH_TO_NAIL_OFFSET, 2.4384, 0.1016, R_King_1_SS)
+        # Right King
+        Pick_8ft_Element_From_Sloped_Table("R_King_1", 2.4384, 0.04, 0.1016)
+        R_King_1_SS = Place_and_Hold_8ft_Element_On_Smart_Conveyor(1.2592, 2.52, 2.4384, 0.1016)
+        Nail_and_Release_Vertical_Element("R_King_1", 1.2592, PUSH_TO_NAIL_OFFSET, 2.4384, 0.1016, R_King_1_SS)
 
-        # # Left Jack
-        # Drag_Stud("L_Jack_1", [2, 0.04, 0.1016])
-        # Pick_Short_Element_From_Mat_Supply("L_Jack_1", 2, 0.04, 0.1016)
-        # L_Jack_1_SS = Drop_Short_Vertical_Element_With_Tangent_to_an_Element("L_Jack_1", 1.4784, 1.56, 2, 0.1016, True)
-        # Nail_Vertical_Element_With_Tangent_to_an_Element(PUSH_TO_NAIL_OFFSET_TANGENT, [1.4784, 1.56, 0], [2, 0.04, 0.1016], True, L_Jack_1_SS)
+        # Left Jack
+        Drag_Stud("L_Jack_1", [2, 0.04, 0.1016])
+        Pick_Short_Element_From_Mat_Supply("L_Jack_1", 2, 0.04, 0.1016)
+        L_Jack_1_SS = Drop_Short_Vertical_Element_With_Tangent_to_an_Element("L_Jack_1", 1.4784, 1.56, 2, 0.1016, True)
+        Nail_Vertical_Element_With_Tangent_to_an_Element(PUSH_TO_NAIL_OFFSET_TANGENT, [1.4784, 1.56, 0], [2, 0.04, 0.1016], True, L_Jack_1_SS)
 
-        # # Right Jack
-        # Drag_Stud("R_Jack_1", [2, 0.04, 0.1016])
-        # Pick_Short_Element_From_Mat_Supply("R_Jack_1", 2, 0.04, 0.1016)
-        # R_Jack_1_SS = Drop_Short_Vertical_Element_With_Tangent_to_an_Element("R_Jack_1", 1.4784, 2.48, 2, 0.1016, False)
-        # Nail_Vertical_Element_With_Tangent_to_an_Element(PUSH_TO_NAIL_OFFSET_TANGENT, [1.4784, 2,48, 0], [2, 0.04, 0.1016], False, R_Jack_1_SS)
+        # Right Jack
+        Drag_Stud("R_Jack_1", [2, 0.04, 0.1016])
+        Pick_Short_Element_From_Mat_Supply("R_Jack_1", 2, 0.04, 0.1016)
+        R_Jack_1_SS = Drop_Short_Vertical_Element_With_Tangent_to_an_Element("R_Jack_1", 1.4784, 2.48, 2, 0.1016, False)
+        Nail_Vertical_Element_With_Tangent_to_an_Element(PUSH_TO_NAIL_OFFSET_TANGENT, [1.4784, 2,48, 0], [2, 0.04, 0.1016], False, R_Jack_1_SS)
 
-        # # Bear Loading 1
-        # Pick_2x10_Header(0.3514, 0.96)
-        # Cut_2x10_Header(0.96, 0.0508, 0.254)
-        # BL_1_Placement_CurConv = Place_2x10_Header(0.3514, 2.02, 0.0254, 0.96, 0.0508, 0.254)
-        # Nail_2x10_Header(PUSH_TO_NAIL_OFFSET_TANGENT*2.5, [0.3514, 2.02, 0.0254], [0.96, 0.0508, 0.254], BL_1_Placement_CurConv)
+        # Bear Loading 1
+        Pick_2x10_Header(0.3514, 0.96)
+        Cut_2x10_Header(0.96, 0.0508, 0.254)
+        BL_1_Placement_CurConv = Place_2x10_Header(0.3514, 2.02, 0.0254, 0.96, 0.0508, 0.254)
+        Nail_2x10_Header(PUSH_TO_NAIL_OFFSET_TANGENT*2.5, [0.3514, 2.02, 0.0254], [0.96, 0.0508, 0.254], BL_1_Placement_CurConv)
 
-        # # Bear Loading 2
-        # Pick_2x10_Header(0.3514, 0.96)
-        # Cut_2x10_Header(0.96, 0.0508, 0.254)
-        # BL_2_Placement_CurConv = Place_2x10_Header(0.3514, 2.02, 0.0762, 0.96, 0.0508, 0.254)
-        # Nail_2x10_Header(PUSH_TO_NAIL_OFFSET_TANGENT*2.5, [0.3514, 2.02, 0.0762], [0.96, 0.0508, 0.254], BL_2_Placement_CurConv)
+        # Bear Loading 2
+        Pick_2x10_Header(0.3514, 0.96)
+        Cut_2x10_Header(0.96, 0.0508, 0.254)
+        BL_2_Placement_CurConv = Place_2x10_Header(0.3514, 2.02, 0.0762, 0.96, 0.0508, 0.254)
+        Nail_2x10_Header(PUSH_TO_NAIL_OFFSET_TANGENT*2.5, [0.3514, 2.02, 0.0762], [0.96, 0.0508, 0.254], BL_2_Placement_CurConv)
 
         # 1st Stud
         Pick_8ft_Element_From_Sloped_Table("F_Stud", 2.4384, 0.04, 0.1016)
@@ -5737,20 +5740,20 @@ def main():
         Pass_8ft_Element_G2S("LU_Stud", 2.4384, 0.1016)
         Place_8ft_Vertical_Element_On_Smart_Conveyor_by_Rob1_Suction("LU_Stud", 1.2592, 0.0908, 0.02, 2.4384, 0.04, 0.1016)
 
-        # # Repetitive Stud
-        # Pick_8ft_Element_From_Sloped_Table("R_1_Stud", 2.4384, 0.04, 0.1016)
-        # R_1_Stud = Place_and_Hold_8ft_Element_On_Smart_Conveyor(1.2592, 0.4, 2.4384, 0.1016)
-        # Nail_and_Release_Vertical_Element("R_1_Stud", 1.2592, PUSH_TO_NAIL_OFFSET, 2.4384, 0.1016, R_1_Stud)
+        # Repetitive Stud
+        Pick_8ft_Element_From_Sloped_Table("R_1_Stud", 2.4384, 0.04, 0.1016)
+        R_1_Stud = Place_and_Hold_8ft_Element_On_Smart_Conveyor(1.2592, 0.4, 2.4384, 0.1016)
+        Nail_and_Release_Vertical_Element("R_1_Stud", 1.2592, PUSH_TO_NAIL_OFFSET, 2.4384, 0.1016, R_1_Stud)
 
-        # # Repetitive Stud
-        # Pick_8ft_Element_From_Sloped_Table("R_2_Stud", 2.4384, 0.04, 0.1016)
-        # R_2_Stud = Place_and_Hold_8ft_Element_On_Smart_Conveyor(1.2592, 1.4, 2.4384, 0.1016)
-        # Nail_and_Release_Vertical_Element("R_2_Stud", 1.2592, PUSH_TO_NAIL_OFFSET, 2.4384, 0.1016, R_2_Stud)
+        # Repetitive Stud
+        Pick_8ft_Element_From_Sloped_Table("R_2_Stud", 2.4384, 0.04, 0.1016)
+        R_2_Stud = Place_and_Hold_8ft_Element_On_Smart_Conveyor(1.2592, 1.4, 2.4384, 0.1016)
+        Nail_and_Release_Vertical_Element("R_2_Stud", 1.2592, PUSH_TO_NAIL_OFFSET, 2.4384, 0.1016, R_2_Stud)
 
-        # # Repetitive Stud
-        # Pick_8ft_Element_From_Sloped_Table("R_3_Stud", 2.4384, 0.04, 0.1016)
-        # R_3_Stud = Place_and_Hold_8ft_Element_On_Smart_Conveyor(1.2592, 2.64, 2.4384, 0.1016)
-        # Nail_and_Release_Vertical_Element("R_3_Stud", 1.2592, PUSH_TO_NAIL_OFFSET, 2.4384, 0.1016, R_3_Stud)
+        # Repetitive Stud
+        Pick_8ft_Element_From_Sloped_Table("R_3_Stud", 2.4384, 0.04, 0.1016)
+        R_3_Stud = Place_and_Hold_8ft_Element_On_Smart_Conveyor(1.2592, 2.64, 2.4384, 0.1016)
+        Nail_and_Release_Vertical_Element("R_3_Stud", 1.2592, PUSH_TO_NAIL_OFFSET, 2.4384, 0.1016, R_3_Stud)
 
         # Repetitive Stud
         Pick_8ft_Element_From_Sloped_Table("R_4_Stud", 2.4384, 0.04, 0.1016)
@@ -5761,6 +5764,11 @@ def main():
         Pick_Long_Element_From_Mat_Supply("Bottom_Plate", 3.6576, 0.04, 0.1016)
         Place_Long_Element_On_Smart_Conveyor_by_Rob2_Gripper("Bottom_Plate", 2.4984, 1.8288, 3.6576, 0.1016)
         Complementary_Nail_Operation(PUSH_TO_NAIL_OFFSET, 0.1016)
+
+        # OSB Sheathing
+        Pick_OSB_Plate("OSB_1", 2.5184, 1.04, 0.02)
+        OSB_ConvLoc = Place_OSB_Plate("OSB_1", 1.2592, 2.02, 0.1116)
+        Nail_OSB_Plate(PUSH_TO_NAIL_OFFSET_TANGENT, 6, [2.5184, 1.04, 0.02], OSB_ConvLoc)
 
         ################################
         ################################

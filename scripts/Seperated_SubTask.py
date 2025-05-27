@@ -456,18 +456,18 @@ class WorldManager(object):
             color= [0.2, 0.2, 0.2, 1]
         )
 
-        Human_Worker = Mesh(
-            name="Human_Worker",
-            pose=[4.2, 1.5, 0, ev, 0, 0, ev],
-            file_path= cur_dir + "Human_Worker/Worker.stl",
-            color= [0.1, 0.05, 0, 1],
-            scale=[0.001, 0.001, 0.001]
-        )
+        # Human_Worker = Mesh(
+        #     name="Human_Worker",
+        #     pose=[4.2, 1.5, 0, ev, 0, 0, ev],
+        #     file_path= cur_dir + "Human_Worker/Worker.stl",
+        #     color= [0.1, 0.05, 0, 1],
+        #     scale=[0.001, 0.001, 0.001]
+        # )
 
 
         # Small_Cutting_Table
         world_model = WorldConfig(
-            mesh=[IDC_Lab, Smart_Mat_Table, Sloped_Table, SheathingTable, Small_Cutting_Table, Human_Worker],
+            mesh=[IDC_Lab, Smart_Mat_Table, Sloped_Table, SheathingTable, Small_Cutting_Table],
             cuboid=[Cube, BearLoadingPileStand],
             capsule=[],
             cylinder=[],
@@ -928,7 +928,7 @@ class CuRoboRobot(object):
             trajopt_tsteps=trajopt_tsteps,
             trim_steps=trim_steps,
             # This Cache Value needs to be set PROPERLY
-            collision_cache={"obb":30, "mesh": 100}
+            collision_cache={"obb":100, "mesh": 200}
         )
         
         self._motion_gen = MotionGen(self._motion_gen_config)
@@ -1522,14 +1522,16 @@ class CuRoboRobot(object):
 
     def move_to_home(self,
                      if_show_spheres: bool = False,
-                     Customized_JS: List[float] = [0, -0.5, 0.5, 0, 0, 0]):
+                     Customized_JS: List[float] = [0, -0.5, 0.5, 0, 0, 0],
+                     removing_primitives=[]):
 
         # If Robot is Already at Home Position
         if self._is_at_home == True:
             print("Robot " + self._ROS_JS_robot_indicator + " is Already at Home Position")
             return True
 
-        self.motion_gen_update_world()
+        # Making sure that robot is not in touch with world
+        self.motion_gen_update_world(Removing_Prim_Paths= removing_primitives)
 
         self.release_path_plan_restriction()
 
@@ -2125,13 +2127,13 @@ R2_Smart_Mat_Table_Box2 = Cuboid(
 )
 Add_Rigid_Object_To_Scene(test, "Cuboid", R2_Smart_Mat_Table_Box2, True, True)
 
-Human_Representation_Box = Cuboid(
-    name= "Human_Box",
-    pose= [4.2, 1.5, 1, 1, 0, 0, 0],
-    dims= [0.5, 1, 2],
-    color= [1, 1, 1, 0]
-)
-Add_Rigid_Object_To_Scene(test, "Cuboid", Human_Representation_Box, True, True)
+# Human_Representation_Box = Cuboid(
+#     name= "Human_Box",
+#     pose= [4.2, 1.5, 1, 1, 0, 0, 0],
+#     dims= [0.5, 1, 2],
+#     color= [1, 1, 1, 0]
+# )
+# Add_Rigid_Object_To_Scene(test, "Cuboid", Human_Representation_Box, True, True)
 
 #############
 ####Start#### Manufacturing Strategies !!!
@@ -3054,7 +3056,7 @@ def Robot_1_Do_Jack_Nail(push_to_nail: float = None,
     Robot_1.render_exec(renderInstance= True,
                             Show_Sphere= False)
 
-    Robot_1.move_to_home()
+    Robot_1.move_to_home(removing_primitives= ["Smart_Conveyor"])
 
 def RJCK(el_name: str = None,
         X: float = None,
@@ -3065,7 +3067,7 @@ def RJCK(el_name: str = None,
         H: float = None,
         Is_LJCK: bool = False):
 
-    Drag_Stud(el_name= el_name, el_dims= [L, W, H])
+    # Drag_Stud(el_name= el_name, el_dims= [L, W, H])
 
     #[ev, 0, ev, 0]
     # Pre Pick
@@ -3091,7 +3093,7 @@ def RJCK(el_name: str = None,
                             Show_Sphere= False)
     # Saw Action
     # Removing 12ft Primitive and Replacing it with L !
-    prims_utils.delete_prim("/world/obstacles/"+el_name+"Temp")
+    # prims_utils.delete_prim("/world/obstacles/"+el_name+"Temp")
     Create_Wooden_Element_For_Smart_Mat_Table(el_name= el_name, L= L, W= W, H= H, Debug_Offset= True)
 
     Robot_2.eef_attach(tool_name= "tool0", attaching_object_name= el_name)
@@ -3175,7 +3177,7 @@ def RJCK(el_name: str = None,
 
     # Robot 1 Nail !!
     PUSH_TO_NAIL_OFFSET: float = 0.01
-    Robot_1_Do_Jack_Nail(push_to_nail=PUSH_TO_NAIL_OFFSET, el_pose=[X,Y,Z], el_dims=[L,W,H], Is_LJCK= Is_LJCK, Side_Selector= Side_Selector)
+    # Robot_1_Do_Jack_Nail(push_to_nail=PUSH_TO_NAIL_OFFSET, el_pose=[X,Y,Z], el_dims=[L,W,H], Is_LJCK= Is_LJCK, Side_Selector= Side_Selector)
 
     # Post Place
     # Robot_2.plan(tcp_name= "tool0",
@@ -3313,7 +3315,7 @@ def Robot_1_Do_TopSill_Nail(push_to_nail: float = None,
             Robot_1.render_exec(renderInstance= True,
                                     Show_Sphere= False)
 
-            Robot_1.move_to_home()
+            Robot_1.move_to_home(removing_primitives= ["Smart_Conveyor"])
         else:
             print("Left Nail is Not Possible ! Due To Robot NailGun Reachability")
 
@@ -3412,7 +3414,7 @@ def Robot_1_Do_TopSill_Nail(push_to_nail: float = None,
             Robot_1.render_exec(renderInstance= True,
                                     Show_Sphere= False)
 
-            Robot_1.move_to_home()
+            Robot_1.move_to_home(removing_primitives= ["Smart_Conveyor"])
         else:
             print("Right Nail is Not Possible ! Due To Robot NailGun Reachability")
 
@@ -3425,7 +3427,7 @@ def TSP(el_name: str = None,
         H: float = None):
     
     # Dragging the Required Length
-    Drag_Stud(el_name= el_name, el_dims= [L, W, H])
+    # Drag_Stud(el_name= el_name, el_dims= [L, W, H])
 
     #[0, -ev, 0, -ev]
     # Pre Pick
@@ -3452,7 +3454,7 @@ def TSP(el_name: str = None,
     
     # Saw Action + Attach
     # Removing 12ft Primitive and Replacing it with L !
-    prims_utils.delete_prim("/world/obstacles/"+el_name+"Temp")
+    # prims_utils.delete_prim("/world/obstacles/"+el_name+"Temp")
     Create_Wooden_Element_For_Smart_Mat_Table(el_name= el_name, L= L, W= W, H= H, Debug_Offset= True)
 
     Robot_2.eef_attach(tool_name= "tool0", attaching_object_name= el_name)
@@ -3591,7 +3593,7 @@ def TSP(el_name: str = None,
     Robot_1.move_to_home()
 
     # Nailing the Silling !
-    Robot_1_Do_TopSill_Nail(push_to_nail=0.01, el_pose=[X, Y, Z], el_dims=[L, W, H], conv_current_location=Conv_Curr_Loc)
+    # Robot_1_Do_TopSill_Nail(push_to_nail=0.01, el_pose=[X, Y, Z], el_dims=[L, W, H], conv_current_location=Conv_Curr_Loc)
 
 def Robot_2_Do_BotSill_Nail(push_to_nail: float = None,
                             el_pose: List[float] = [],
@@ -3695,7 +3697,7 @@ def Robot_2_Do_BotSill_Nail(push_to_nail: float = None,
             Robot_2.render_exec(renderInstance= True,
                                     Show_Sphere= False)
 
-            Robot_2.move_to_home()
+            Robot_2.move_to_home(removing_primitives= ["Smart_Conveyor"])
         else:
             print("Left Nail is Not Possible ! Due To Robot NailGun Reachability")
 
@@ -3797,7 +3799,7 @@ def Robot_2_Do_BotSill_Nail(push_to_nail: float = None,
             Robot_2.render_exec(renderInstance= True,
                                     Show_Sphere= False)
 
-            Robot_2.move_to_home()
+            Robot_2.move_to_home(removing_primitives= ["Smart_Conveyor"])
         else:
             print("Right Nail is Not Possible ! Due To Robot NailGun Reachability")
 
@@ -3810,7 +3812,7 @@ def BSP(el_name: str = None,
         H: float = None):
 
     # Dragging the Required Length
-    Drag_Stud(el_name= el_name, el_dims= [L, W, H])
+    # Drag_Stud(el_name= el_name, el_dims= [L, W, H])
 
     #[0, -ev, 0, -ev]
     # Pre Pick
@@ -3837,7 +3839,7 @@ def BSP(el_name: str = None,
     
     # Saw Action + Attach
     # Removing 12ft Primitive and Replacing it with L !
-    prims_utils.delete_prim("/world/obstacles/"+el_name+"Temp")
+    # prims_utils.delete_prim("/world/obstacles/"+el_name+"Temp")
     Create_Wooden_Element_For_Smart_Mat_Table(el_name= el_name, L= L, W= W, H= H, Debug_Offset= True)
 
     Robot_2.eef_attach(tool_name= "tool0", attaching_object_name= el_name)
@@ -3975,7 +3977,7 @@ def BSP(el_name: str = None,
     Robot_2.move_to_home()
 
     # Nailing
-    Robot_2_Do_BotSill_Nail(push_to_nail=0.01, el_pose=[X, Y, Z], el_dims=[L, W, H], conv_current_location=Conv_Curr_Loc)
+    # Robot_2_Do_BotSill_Nail(push_to_nail=0.01, el_pose=[X, Y, Z], el_dims=[L, W, H], conv_current_location=Conv_Curr_Loc)
 
 def LCP(el_name: str = None,
         X: float = None,
@@ -3985,7 +3987,7 @@ def LCP(el_name: str = None,
         W: float = None,
         H: float = None):
     # Dragging the Required Length
-    Drag_Stud(el_name= el_name, el_dims= [L, W, H])
+    # Drag_Stud(el_name= el_name, el_dims= [L, W, H])
 
     #[0, -ev, -ev, 0]
     # Pre Pick
@@ -4012,7 +4014,7 @@ def LCP(el_name: str = None,
     
     # Saw Action + Attach
     # Removing 12ft Primitive and Replacing it with L !
-    prims_utils.delete_prim("/world/obstacles/"+el_name+"Temp")
+    # prims_utils.delete_prim("/world/obstacles/"+el_name+"Temp")
     Create_Wooden_Element_For_Smart_Mat_Table(el_name= el_name, L= L, W= W, H= H, Debug_Offset= True)
 
     Robot_2.eef_attach(tool_name= "tool0", attaching_object_name= el_name)
@@ -4102,7 +4104,7 @@ def TCP(el_name: str = None,
         W: float = None,
         H: float = None):
     # Dragging the Required Length
-    Drag_Stud(el_name= el_name, el_dims= [L, W, H])
+    # Drag_Stud(el_name= el_name, el_dims= [L, W, H])
 
     #[0, -ev, -ev, 0]
     # Pre Pick
@@ -4129,7 +4131,7 @@ def TCP(el_name: str = None,
     
     # Saw Action + Attach
     # Removing 12ft Primitive and Replacing it with L !
-    prims_utils.delete_prim("/world/obstacles/"+el_name+"Temp")
+    # prims_utils.delete_prim("/world/obstacles/"+el_name+"Temp")
     Create_Wooden_Element_For_Smart_Mat_Table(el_name= el_name, L= L, W= W, H= H, Debug_Offset= True)
 
     Robot_2.eef_attach(tool_name= "tool0", attaching_object_name= el_name)
@@ -4274,7 +4276,7 @@ def TCP(el_name: str = None,
 
         Robot_1.move_to_home()
 
-        Robot_1_Do_Side_Nail(push_to_nail= PUSH_TO_NAIL_OFFSET, H= H, Side_Selector= 1)
+        # Robot_1_Do_Side_Nail(push_to_nail= PUSH_TO_NAIL_OFFSET, H= H, Side_Selector= 1)
 
         Solver_Flag = True
 
@@ -4324,7 +4326,7 @@ def TCP(el_name: str = None,
 
         # Changing Is_TCP to true for the condition that cripple is being dropped in Y = -nail_offset (to set the nailgun's target to -2*nail_offset rather than nail_offset)
         # why? because on y = -nail_offset the robot's nailgun will hit the links, so we have to push it further !
-        Robot_1_Do_Side_Nail(push_to_nail= PUSH_TO_NAIL_OFFSET, H= H, Side_Selector= -1, Is_TCP= True)
+        # Robot_1_Do_Side_Nail(push_to_nail= PUSH_TO_NAIL_OFFSET, H= H, Side_Selector= -1, Is_TCP= True)
 
         Solver_Flag = True
 
@@ -4382,10 +4384,10 @@ def TCP(el_name: str = None,
 
         Robot_1.move_to_home()
 
-        if (OVERALL_PANEL_LENGTH/2)- Y +(SMART_CONV_RANGE_OF_MOTION_J1/2)+NAILING_CONV_TARGET > SMART_CONV_RANGE_OF_MOTION_J1:
-            Robot_1_Do_Side_Nail(push_to_nail= PUSH_TO_NAIL_OFFSET, H= H, Side_Selector= -1)
-        elif (OVERALL_PANEL_LENGTH/2)- Y +(SMART_CONV_RANGE_OF_MOTION_J1/2)-(NAILING_CONV_TARGET*2) < 0:
-            Robot_1_Do_Side_Nail(push_to_nail= PUSH_TO_NAIL_OFFSET, H= H, Side_Selector= 1)
+        # if (OVERALL_PANEL_LENGTH/2)- Y +(SMART_CONV_RANGE_OF_MOTION_J1/2)+NAILING_CONV_TARGET > SMART_CONV_RANGE_OF_MOTION_J1:
+        #     Robot_1_Do_Side_Nail(push_to_nail= PUSH_TO_NAIL_OFFSET, H= H, Side_Selector= -1)
+        # elif (OVERALL_PANEL_LENGTH/2)- Y +(SMART_CONV_RANGE_OF_MOTION_J1/2)-(NAILING_CONV_TARGET*2) < 0:
+        #     Robot_1_Do_Side_Nail(push_to_nail= PUSH_TO_NAIL_OFFSET, H= H, Side_Selector= 1)
 
 def Create_Wooden_Element_For_Sheathing_Table(el_name: str = None,
                                 # L is constant since this table is only for 8ft studs
@@ -4735,7 +4737,7 @@ def Robot_1_Do_BL_Nail(push_to_nail: float = None,
             Robot_1.render_exec(renderInstance= True,
                                     Show_Sphere= False)
 
-            Robot_1.move_to_home()
+            Robot_1.move_to_home(removing_primitives= ["Smart_Conveyor"])
         else:
             print("Left Nail is Not Possible ! Due To Robot NailGun Reachability")
 
@@ -4834,7 +4836,7 @@ def Robot_1_Do_BL_Nail(push_to_nail: float = None,
             Robot_1.render_exec(renderInstance= True,
                                     Show_Sphere= False)
 
-            Robot_1.move_to_home()
+            Robot_1.move_to_home(removing_primitives= ["Smart_Conveyor"])
         else:
             print("Right Nail is Not Possible ! Due To Robot NailGun Reachability")
 
@@ -5029,10 +5031,10 @@ def BL(el_name: str = None,
     Robot_1.move_to_home()
 
     # Doing Side Nails
-    Robot_1_Do_BL_Nail(push_to_nail= 0.02,
-                        el_pose= [X, Y, Z],
-                        el_dims= [L, W, H],
-                        conv_current_location= Conv_Curr_Loc)
+    # Robot_1_Do_BL_Nail(push_to_nail= 0.02,
+    #                     el_pose= [X, Y, Z],
+    #                     el_dims= [L, W, H],
+    #                     conv_current_location= Conv_Curr_Loc)
 
     # We Used The Top Bear Loading Element
     NUMBER_OF_HEADERS-=1
@@ -5267,44 +5269,6 @@ def main():
             # Diabling Colliders
             test._stage.GetPrimAtPath("/world/obstacles/Bear_Loading_Element_"+str(it+1)).GetAttribute("physics:collisionEnabled").Set(False)
             it+=1
-
-        Robot_1.free_TCP_movement(moving_tcp= "tool0")
-
-        # # TPL
-        TPL("Wooden_Element_1", 0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, STUD_HEIGHT)
-
-        # # # Door
-        KING("Wooden_Element_6", 1.2592, 1.52, 0, 2.4384, 0.04, STUD_HEIGHT)
-        KING("Wooden_Element_7", 1.2592, 2.52, 0, 2.4384, 0.04, STUD_HEIGHT)
-        LJCK("Wooden_Element_12", 1.4784, 1.56, 0, 2, 0.04, STUD_HEIGHT)
-        RJCK("Wooden_Element_11", 1.4784, 2.48, 0, 2, 0.04, STUD_HEIGHT)
-        # TSP("Small_Stud_1", 0.4584, 2.02, 0, 0.96, 0.04, STUD_HEIGHT)
-        # TCP("Small_Stud_5", 0.2392, 2.02, 0, 0.3984, 0.04, STUD_HEIGHT)
-        
-        BL("Wooden_Element_13", 0.4784-(RAW_HEADER_DIMENSIONS[2]/2), 2.02, RAW_HEADER_DIMENSIONS[1]*0.5, 0.96, RAW_HEADER_DIMENSIONS[1], RAW_HEADER_DIMENSIONS[2])
-        BL("Wooden_Element_13", 0.4784-(RAW_HEADER_DIMENSIONS[2]/2), 2.02, RAW_HEADER_DIMENSIONS[1]*1.5, 0.96, RAW_HEADER_DIMENSIONS[1], RAW_HEADER_DIMENSIONS[2])
-        # BSP("Small_Stud_2", 1.9784, 2.02, 0, 0.88, 0.04, STUD_HEIGHT)
-        # LCP("Small_Stud_3", 2.2384, 1.87, 0, 0.48, 0.04, STUD_HEIGHT)
-        # LCP("Small_Stud_4", 2.2384, 2.17, 0, 0.48, 0.04, STUD_HEIGHT)
-
-        # # # IST
-        KING("Wooden_Element_2", 1.2592, 0.02, 0, 2.4384, 0.04, STUD_HEIGHT)
-            # L/U
-        L_U("L_U_Element_1", 1.2592, 0.04+(STUD_HEIGHT/2), 0.02, 2.4384, 0.04, STUD_HEIGHT)
-            # End L/U
-        KING("Wooden_Element_3", 1.2592, 0.4, 0, 2.4384, 0.04, STUD_HEIGHT)
-        # KING("Wooden_Element_4", 1.2592, 0.9, 0, 2.4384, 0.04, STUD_HEIGHT)
-        KING("Wooden_Element_5", 1.2592, 1.4, 0, 2.4384, 0.04, STUD_HEIGHT)
-        KING("Wooden_Element_8", 1.2592, 2.64, 0, 2.4384, 0.04, STUD_HEIGHT)
-        # KING("Wooden_Element_9", 1.2592, 3.14, 0, 2.4384, 0.04, STUD_HEIGHT)
-        KING("Wooden_Element_10", 1.2592, SMART_MAT_TABLE_MAX_LENGTH-0.02, 0, 2.4384, 0.04, STUD_HEIGHT)
-
-        # # BPL
-        BPL("Wooden_Element_13", OVERALL_PANEL_HEIGHT-0.02, SMART_MAT_TABLE_MAX_LENGTH/2, 0.06, SMART_MAT_TABLE_MAX_LENGTH, 0.04, STUD_HEIGHT)
-
-        # # Sht
-        Sheathing_Tickness: float = 0.02
-        SHT("Wooden_Element_14", OVERALL_PANEL_HEIGHT/2, 2.02, STUD_HEIGHT+Sheathing_Tickness/2, OVERALL_PANEL_HEIGHT, 1.04, Sheathing_Tickness)
 
         Robot_1.free_TCP_movement(moving_tcp= "tool0")
 

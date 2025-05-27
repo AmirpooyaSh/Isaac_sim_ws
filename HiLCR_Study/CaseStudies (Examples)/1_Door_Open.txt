@@ -1,0 +1,78 @@
+        # Top Plate
+        Pick_Long_Element_From_Mat_Supply("Top_Plate", 3.6576, 0.04, 0.1016)
+        Pass_Long_Element_G2G("Top_Plate", 3.6576, 0.1016)
+        Place_Long_Element_On_Smart_Conveyor_by_Rob1_Gripper("Top_Plate", 0.02, 1.8288, 3.6576, 0.1016)
+
+        # Left King
+        Pick_8ft_Element_From_Sloped_Table("L_King_1", 2.4384, 0.04, 0.1016)
+        L_King_1_SS = Place_and_Hold_8ft_Element_On_Smart_Conveyor(1.2592, 1.52, 2.4384, 0.1016)
+        Nail_and_Release_Vertical_Element("L_King_1", 1.2592, PUSH_TO_NAIL_OFFSET, 2.4384, 0.1016, L_King_1_SS)
+
+        # Right King
+        Pick_8ft_Element_From_Sloped_Table("R_King_1", 2.4384, 0.04, 0.1016)
+        R_King_1_SS = Place_and_Hold_8ft_Element_On_Smart_Conveyor(1.2592, 2.52, 2.4384, 0.1016)
+        Nail_and_Release_Vertical_Element("R_King_1", 1.2592, PUSH_TO_NAIL_OFFSET, 2.4384, 0.1016, R_King_1_SS)
+
+        # Left Jack
+        Drag_Stud("L_Jack_1", [2, 0.04, 0.1016])
+        Pick_Short_Element_From_Mat_Supply("L_Jack_1", 2, 0.04, 0.1016)
+        L_Jack_1_SS = Drop_Short_Vertical_Element_With_Tangent_to_an_Element("L_Jack_1", 1.4784, 1.56, 2, 0.1016, True)
+        Nail_Vertical_Element_With_Tangent_to_an_Element(PUSH_TO_NAIL_OFFSET_TANGENT, [1.4784, 1.56, 0], [2, 0.04, 0.1016], True, L_Jack_1_SS)
+
+        # Right Jack
+        Drag_Stud("R_Jack_1", [2, 0.04, 0.1016])
+        Pick_Short_Element_From_Mat_Supply("R_Jack_1", 2, 0.04, 0.1016)
+        R_Jack_1_SS = Drop_Short_Vertical_Element_With_Tangent_to_an_Element("R_Jack_1", 1.4784, 2.48, 2, 0.1016, False)
+        Nail_Vertical_Element_With_Tangent_to_an_Element(PUSH_TO_NAIL_OFFSET_TANGENT, [1.4784, 2,48, 0], [2, 0.04, 0.1016], False, R_Jack_1_SS)
+
+        # Bear Loading 1
+        Pick_2x10_Header(0.3514, 0.96)
+        Cut_2x10_Header(0.96, 0.0508, 0.254)
+        BL_1_Placement_CurConv = Place_2x10_Header(0.3514, 2.02, 0.0254, 0.96, 0.0508, 0.254)
+        Nail_2x10_Header(PUSH_TO_NAIL_OFFSET_TANGENT*2.5, [0.3514, 2.02, 0.0254], [0.96, 0.0508, 0.254], BL_1_Placement_CurConv)
+
+        # Bear Loading 2
+        Pick_2x10_Header(0.3514, 0.96)
+        Cut_2x10_Header(0.96, 0.0508, 0.254)
+        BL_2_Placement_CurConv = Place_2x10_Header(0.3514, 2.02, 0.0762, 0.96, 0.0508, 0.254)
+        Nail_2x10_Header(PUSH_TO_NAIL_OFFSET_TANGENT*2.5, [0.3514, 2.02, 0.0762], [0.96, 0.0508, 0.254], BL_2_Placement_CurConv)
+
+        # 1st Stud
+        Pick_8ft_Element_From_Sloped_Table("F_Stud", 2.4384, 0.04, 0.1016)
+        F_Stud_SS = Place_and_Hold_8ft_Element_On_Smart_Conveyor(1.2592, 0.02, 2.4384, 0.1016)
+        Nail_and_Release_Vertical_Element("F_Stud", 1.2592, PUSH_TO_NAIL_OFFSET, 2.4384, 0.1016, F_Stud_SS)
+
+        # L/U Connection
+        Pick_8ft_Element_From_Sloped_Table("LU_Stud", 2.4384, 0.04, 0.1016)
+        Pass_8ft_Element_G2S("LU_Stud", 2.4384, 0.1016)
+        Place_8ft_Vertical_Element_On_Smart_Conveyor_by_Rob1_Suction("LU_Stud", 1.2592, 0.0908, 0.02, 2.4384, 0.04, 0.1016)
+
+        # Repetitive Stud
+        Pick_8ft_Element_From_Sloped_Table("R_1_Stud", 2.4384, 0.04, 0.1016)
+        R_1_Stud = Place_and_Hold_8ft_Element_On_Smart_Conveyor(1.2592, 0.4, 2.4384, 0.1016)
+        Nail_and_Release_Vertical_Element("R_1_Stud", 1.2592, PUSH_TO_NAIL_OFFSET, 2.4384, 0.1016, R_1_Stud)
+
+        # Repetitive Stud
+        Pick_8ft_Element_From_Sloped_Table("R_2_Stud", 2.4384, 0.04, 0.1016)
+        R_2_Stud = Place_and_Hold_8ft_Element_On_Smart_Conveyor(1.2592, 1.4, 2.4384, 0.1016)
+        Nail_and_Release_Vertical_Element("R_2_Stud", 1.2592, PUSH_TO_NAIL_OFFSET, 2.4384, 0.1016, R_2_Stud)
+
+        # Repetitive Stud
+        Pick_8ft_Element_From_Sloped_Table("R_3_Stud", 2.4384, 0.04, 0.1016)
+        R_3_Stud = Place_and_Hold_8ft_Element_On_Smart_Conveyor(1.2592, 2.64, 2.4384, 0.1016)
+        Nail_and_Release_Vertical_Element("R_3_Stud", 1.2592, PUSH_TO_NAIL_OFFSET, 2.4384, 0.1016, R_3_Stud)
+
+        # Repetitive Stud
+        Pick_8ft_Element_From_Sloped_Table("R_4_Stud", 2.4384, 0.04, 0.1016)
+        R_4_Stud = Place_and_Hold_8ft_Element_On_Smart_Conveyor(1.2592, 3.6376, 2.4384, 0.1016)
+        Nail_and_Release_Vertical_Element("R_4_Stud", 1.2592, PUSH_TO_NAIL_OFFSET, 2.4384, 0.1016, R_4_Stud)
+
+        # Bottom Plate
+        Pick_Long_Element_From_Mat_Supply("Bottom_Plate", 3.6576, 0.04, 0.1016)
+        Place_Long_Element_On_Smart_Conveyor_by_Rob2_Gripper("Bottom_Plate", 2.4984, 1.8288, 3.6576, 0.1016)
+        Complementary_Nail_Operation(PUSH_TO_NAIL_OFFSET, 0.1016)
+
+        # OSB Sheathing
+        Pick_OSB_Plate("OSB_1", 2.5184, 1.04, 0.02)
+        OSB_ConvLoc = Place_OSB_Plate("OSB_1", 1.2592, 2.02, 0.1116)
+        Nail_OSB_Plate(PUSH_TO_NAIL_OFFSET_TANGENT, 6, [2.5184, 1.04, 0.02], OSB_ConvLoc)
