@@ -2358,7 +2358,7 @@ def Drag_Stud(
     el_dims: List[float] = None
 ):
     """
-    Drag a stud from the Smart Material Table to right to cut in length with the smart material supply's saw.
+    Drag a stud from the Smart Material Table to right to cut in length (if lower than 8ft/2.4384m length is needed) with the smart material supply's saw before picking it.. 
 
     Parameters
     ----------
@@ -3314,7 +3314,7 @@ def Drop_Short_Vertical_Element_With_Tangent_to_an_Element(
     If_Tangent_From_Left: bool = False,
 ) -> int:
     """
-    Position and drop a less than 8ft (2.4384 m) vertical element onto the smart conveyor, allowing it to fall
+    Position and drop a less than 8ft (2.4384 m) vertical element onto the smart conveyor by Robot 2, allowing it to fall
     if it’s tangent to an adjacent vertical element.
 
     Parameters:
@@ -4537,6 +4537,7 @@ def Place_8ft_Vertical_Element_On_Smart_Conveyor_by_Rob1_Suction(el_name: str = 
     '''
     Brief Description:
         Places an 8-foot vertical element onto the smart conveyor using Robot 1’s suction tool.
+        This functionality is used for placing studs on their wider surface (such as L/U connection).
     Parameters:
         el_name (str): Name of the element to place.
         X (float): X value of element's position from the top left corner of the building panel.
@@ -5105,7 +5106,7 @@ def Complementary_Nail_Operation(push_to_nail: float = PUSH_TO_NAIL_OFFSET,
                          H: float = None):
     '''
     Brief Description:
-        Performs complementary nailing operations for each recorded nail pose on the smart conveyor,
+        Performs complementary nailing operations for each recorded nail pose on the smart conveyor once the the structural placements are done,
         coordinating conveyor movements and Robot 2’s nailing motions with dynamic control.
 
     Parameters:
@@ -5597,127 +5598,6 @@ def main():
         ################################
 
         Robot_1.free_TCP_movement("tool0")
-
-        # Top Plate
-        Pick_Long_Element_From_Mat_Supply("Top_Plate", 3.6576, 0.04, 0.1016)
-        Pass_Long_Element_G2G("Top_Plate", 3.6576, 0.1016)
-        Place_Long_Element_On_Smart_Conveyor_by_Rob1_Gripper("Top_Plate", 0.02, 1.8288, 3.6576, 0.1016)
-
-#DOOR OPENING
-        # Left King
-        Pick_8ft_Element_From_Sloped_Table("L_King_1", 2.4384, 0.04, 0.1016)
-        L_King_1_SS = Place_and_Hold_8ft_Element_On_Smart_Conveyor(1.2592, 0.72, 2.4384, 0.1016)
-        Nail_and_Release_Vertical_Element("L_King_1", 1.2592, PUSH_TO_NAIL_OFFSET, 2.4384, 0.1016, L_King_1_SS)
-        # Right King
-        Pick_8ft_Element_From_Sloped_Table("R_King_1", 2.4384, 0.04, 0.1016)
-        R_King_1_SS = Place_and_Hold_8ft_Element_On_Smart_Conveyor(1.2592, 1.68, 2.4384, 0.1016)
-        Nail_and_Release_Vertical_Element("R_King_1", 1.2592, PUSH_TO_NAIL_OFFSET, 2.4384, 0.1016, R_King_1_SS)
-        #Left Jack
-        Drag_Stud("L_Jack_1", [2, 0.04, 0.1016])
-        Pick_Short_Element_From_Mat_Supply("L_Jack_1", 2, 0.04, 0.1016)
-        L_Jack_1_SS = Drop_Short_Vertical_Element_With_Tangent_to_an_Element("L_Jack_1", 1.4784, 0.76, 2, 0.1016, True)
-        Nail_Vertical_Element_With_Tangent_to_an_Element(PUSH_TO_NAIL_OFFSET_TANGENT, [1.4784, 0.76, 0], [2, 0.04, 0.1016], True, L_Jack_1_SS)
-        # Right Jack
-        Drag_Stud("R_Jack_1", [2, 0.04, 0.1016])
-        Pick_Short_Element_From_Mat_Supply("R_Jack_1", 2, 0.04, 0.1016)
-        R_Jack_1_SS = Drop_Short_Vertical_Element_With_Tangent_to_an_Element("R_Jack_1", 1.4784, 1.64, 2, 0.1016, False)
-        Nail_Vertical_Element_With_Tangent_to_an_Element(PUSH_TO_NAIL_OFFSET_TANGENT, [1.4784, 1.64, 0], [2, 0.04, 0.1016], False, R_Jack_1_SS)
-        # Top Sill Plate
-        Drag_Stud("TS_1", [0.92, 0.04, 0.1016])
-        Pick_Short_Element_From_Mat_Supply("TS_1", 0.92, 0.04, 0.1016)
-        Pass_Short_Element_G2G("TS_1", 0.1016)
-        TS_1_CurConv = Place_Short_Horizontal_Element_On_Smart_Conveyor_by_Rob1_Gripper("TS_1", 0.4584, 1.2, 0.92, 0.1016)
-        Nail_Short_Horizontal_Element_by_Rob1_NailGun(PUSH_TO_NAIL_OFFSET_TANGENT, [0.4584, 1.2, 0], [0.92, 0.04, 0.1016], TS_1_CurConv)
-        # Top Cripple 1
-        Drag_Stud("TC_1", [0.3984, 0.04, 0.1016])
-        Pick_Short_Element_From_Mat_Supply("TC_1", 0.3984, 0.04, 0.1016)
-        Pass_Short_Element_G2G("TC_1", 0.1016)
-        TC_1_SS = Place_Short_Vertical_Element_On_Smart_Conveyor_by_Rob1_Gripper("TC_1", 0.2392, 1.2, 0.3984, 0.1016)
-        Nail_and_Release_Vertical_Element("TC_1", 0.2392, PUSH_TO_NAIL_OFFSET, 0.3984, 0.1016, TC_1_SS, True)
-        # Top Cripple 2
-        Drag_Stud("TC_2", [0.3984, 0.04, 0.1016])
-        Pick_Short_Element_From_Mat_Supply("TC_2", 0.3984, 0.04, 0.1016)
-        Pass_Short_Element_G2G("TC_2", 0.1016)
-        TC_2_SS = Place_Short_Vertical_Element_On_Smart_Conveyor_by_Rob1_Gripper("TC_2", 0.2392, 0.98, 0.3984, 0.1016)
-        Nail_and_Release_Vertical_Element("TC_2", 0.2392, PUSH_TO_NAIL_OFFSET, 0.3984, 0.1016, TC_2_SS, True)
-        # Top Cripple 3
-        Drag_Stud("TC_3", [0.3984, 0.04, 0.1016])
-        Pick_Short_Element_From_Mat_Supply("TC_3", 0.3984, 0.04, 0.1016)
-        Pass_Short_Element_G2G("TC_3", 0.1016)
-        TC_3_SS = Place_Short_Vertical_Element_On_Smart_Conveyor_by_Rob1_Gripper("TC_3", 0.2392, 1.42, 0.3984, 0.1016)
-        Nail_and_Release_Vertical_Element("TC_3", 0.2392, PUSH_TO_NAIL_OFFSET, 0.3984, 0.1016, TC_3_SS, True)
-
-#WINDOW OPENNING
-        # Left King
-        Pick_8ft_Element_From_Sloped_Table("L_King_2", 2.4384, 0.04, 0.1016)
-        L_King_2_SS = Place_and_Hold_8ft_Element_On_Smart_Conveyor(1.2592, 3.1376, 2.4384, 0.1016)
-        Nail_and_Release_Vertical_Element("L_King_2", 1.2592, PUSH_TO_NAIL_OFFSET, 2.4384, 0.1016, L_King_2_SS)
-        # Right King
-        Pick_8ft_Element_From_Sloped_Table("R_King_2", 2.4384, 0.04, 0.1016)
-        R_King_2_SS = Place_and_Hold_8ft_Element_On_Smart_Conveyor(1.2592, 2.2376, 2.4384, 0.1016)
-        Nail_and_Release_Vertical_Element("R_King_2", 1.2592, PUSH_TO_NAIL_OFFSET, 2.4384, 0.1016, R_King_2_SS)
-        # Left Jack
-        Drag_Stud("L_Jack_2", [1.8, 0.04, 0.1016])
-        Pick_Short_Element_From_Mat_Supply("L_Jack_2", 1.8, 0.04, 0.1016)
-        L_Jack_2_SS = Drop_Short_Vertical_Element_With_Tangent_to_an_Element("L_Jack_2", 1.5784, 2.2776, 1.8, 0.1016, True)
-        Nail_Vertical_Element_With_Tangent_to_an_Element(PUSH_TO_NAIL_OFFSET_TANGENT, [1.5784, 2.2776, 0], [1.8, 0.04, 0.1016], True, L_Jack_2_SS)
-        # Right Jack
-        Drag_Stud("R_Jack_2", [1.8, 0.04, 0.1016])
-        Pick_Short_Element_From_Mat_Supply("R_Jack_2", 1.8, 0.04, 0.1016)
-        R_Jack_2_SS = Drop_Short_Vertical_Element_With_Tangent_to_an_Element("R_Jack_2", 1.5784, 3.0976, 1.8, 0.1016, False)
-        Nail_Vertical_Element_With_Tangent_to_an_Element(PUSH_TO_NAIL_OFFSET_TANGENT, [1.5784, 3.0976, 0], [1.8, 0.04, 0.1016], False, R_Jack_2_SS)
-        # Bear Loading 1
-        Pick_2x10_Header(0.5514, 0.86)
-        Cut_2x10_Header(0.86, 0.0508, 0.254)
-        BL_1_Placement_CurConv = Place_2x10_Header(0.5514, 2.6876, 0.0254, 0.86, 0.0508, 0.254)
-        Nail_2x10_Header(PUSH_TO_NAIL_OFFSET_TANGENT*2.5, [0.5514, 2.6876, 0.0254], [0.86, 0.0508, 0.254], BL_1_Placement_CurConv)
-        # Bear Loading 2
-        Pick_2x10_Header(0.5514, 0.96)
-        Cut_2x10_Header(0.86, 0.0508, 0.254)
-        BL_2_Placement_CurConv = Place_2x10_Header(0.5514, 2.6876, 0.0762, 00.86, 0.0508, 0.254)
-        Nail_2x10_Header(PUSH_TO_NAIL_OFFSET_TANGENT*2.5, [0.5514, 2.6876, 0.0762], [0.86, 0.0508, 0.254], BL_2_Placement_CurConv)
-        # Bottom Sill
-        Drag_Stud("BS_1", [0.78, 0.04, 0.1016])
-        Pick_Short_Element_From_Mat_Supply("BS_1", 0.78, 0.04, 0.1016)
-        BS_1_CurConv = Place_Short_Horizontal_Element_On_Smart_Conveyor_by_Rob2_Gripper("BS_1", 1.8984, 2.6876, 0.78, 0.1016)
-        Nail_Short_Horizontal_Element_by_Rob2_NailGun(PUSH_TO_NAIL_OFFSET_TANGENT, [1.8984, 2.6876, 0], [0.78, 0.04, 0.1016], BS_1_CurConv)
-        # Lower Cripple 1
-        Drag_Stud("LC_1", [0.56, 0.04, 0.1016])
-        Pick_Short_Element_From_Mat_Supply("LC_1", 0.56, 0.04, 0.1016)
-        Place_Short_Vertical_Element_On_Smart_Conveyor_by_Rob2_Gripper("LC_1", 2.1984, 2.5376, 0.56, 0.1016)
-        # Lower Cripple 2
-        Drag_Stud("LC_2", [0.56, 0.04, 0.1016])
-        Pick_Short_Element_From_Mat_Supply("LC_2", 0.56, 0.04, 0.1016)
-        Place_Short_Vertical_Element_On_Smart_Conveyor_by_Rob2_Gripper("LC_2", 2.1984, 2.8376, 0.56, 0.1016)
-
-        # 1st Stud
-        Pick_8ft_Element_From_Sloped_Table("F_Stud", 2.4384, 0.04, 0.1016)
-        F_Stud_SS = Place_and_Hold_8ft_Element_On_Smart_Conveyor(1.2592, 0.02, 2.4384, 0.1016)
-        Nail_and_Release_Vertical_Element("F_Stud", 1.2592, PUSH_TO_NAIL_OFFSET, 2.4384, 0.1016, F_Stud_SS)
-
-        # L/U Connection
-        Pick_8ft_Element_From_Sloped_Table("LU_Stud", 2.4384, 0.04, 0.1016)
-        Pass_8ft_Element_G2S("LU_Stud", 2.4384, 0.1016)
-        Place_8ft_Vertical_Element_On_Smart_Conveyor_by_Rob1_Suction("LU_Stud", 1.2592, 0.0908, 0.02, 2.4384, 0.04, 0.1016)
-
-        # Repetitive Stud
-        Pick_8ft_Element_From_Sloped_Table("R_1_Stud", 2.4384, 0.04, 0.1016)
-        R_1_Stud = Place_and_Hold_8ft_Element_On_Smart_Conveyor(1.2592, 0.5, 2.4384, 0.1016)
-        Nail_and_Release_Vertical_Element("R_1_Stud", 1.2592, PUSH_TO_NAIL_OFFSET, 2.4384, 0.1016, R_1_Stud)
-        # Repetitive Stud
-        Pick_8ft_Element_From_Sloped_Table("R_2_Stud", 2.4384, 0.04, 0.1016)
-        R_2_Stud = Place_and_Hold_8ft_Element_On_Smart_Conveyor(1.2592, 1.9588, 2.4384, 0.1016)
-        Nail_and_Release_Vertical_Element("R_2_Stud", 1.2592, PUSH_TO_NAIL_OFFSET, 2.4384, 0.1016, R_2_Stud)
-        # Repetitive Stud
-        Pick_8ft_Element_From_Sloped_Table("R_3_Stud", 2.4384, 0.04, 0.1016)
-        R_3_Stud = Place_and_Hold_8ft_Element_On_Smart_Conveyor(1.2592, 3.6376, 2.4384, 0.1016)
-        Nail_and_Release_Vertical_Element("R_3_Stud", 1.2592, PUSH_TO_NAIL_OFFSET, 2.4384, 0.1016, R_3_Stud)
-
-        # Bottom Plate
-        Pick_Long_Element_From_Mat_Supply("Bottom_Plate", 3.6576, 0.04, 0.1016)
-        Place_Long_Element_On_Smart_Conveyor_by_Rob2_Gripper("Bottom_Plate", 2.4984, 1.8288, 3.6576, 0.1016)
-        Complementary_Nail_Operation(PUSH_TO_NAIL_OFFSET, 0.1016)
-
 
         ################################
         ################################
