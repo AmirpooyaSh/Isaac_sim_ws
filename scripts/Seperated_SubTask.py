@@ -3057,7 +3057,7 @@ def Robot_1_Do_Jack_Nail(push_to_nail: float = None,
     Robot_1.render_exec(renderInstance= True,
                             Show_Sphere= False)
 
-    Robot_1.move_to_home(removing_primitives= ["Smart_Conveyor"])
+    Robot_1.move_to_home(removing_primitives= ["Smart_Conveyor", "world/obstacles"])
 
 def RJCK(el_name: str = None,
         X: float = None,
@@ -3316,7 +3316,7 @@ def Robot_1_Do_TopSill_Nail(push_to_nail: float = None,
             Robot_1.render_exec(renderInstance= True,
                                     Show_Sphere= False)
 
-            Robot_1.move_to_home(removing_primitives= ["Smart_Conveyor"])
+            Robot_1.move_to_home(removing_primitives= ["Smart_Conveyor", "world/obstacles"])
         else:
             print("Left Nail is Not Possible ! Due To Robot NailGun Reachability")
 
@@ -3415,7 +3415,7 @@ def Robot_1_Do_TopSill_Nail(push_to_nail: float = None,
             Robot_1.render_exec(renderInstance= True,
                                     Show_Sphere= False)
 
-            Robot_1.move_to_home(removing_primitives= ["Smart_Conveyor"])
+            Robot_1.move_to_home(removing_primitives= ["Smart_Conveyor", "world/obstacles"])
         else:
             print("Right Nail is Not Possible ! Due To Robot NailGun Reachability")
 
@@ -3698,7 +3698,7 @@ def Robot_2_Do_BotSill_Nail(push_to_nail: float = None,
             Robot_2.render_exec(renderInstance= True,
                                     Show_Sphere= False)
 
-            Robot_2.move_to_home(removing_primitives= ["Smart_Conveyor"])
+            Robot_2.move_to_home(removing_primitives= ["Smart_Conveyor", "world/obstacles"])
         else:
             print("Left Nail is Not Possible ! Due To Robot NailGun Reachability")
 
@@ -3800,7 +3800,7 @@ def Robot_2_Do_BotSill_Nail(push_to_nail: float = None,
             Robot_2.render_exec(renderInstance= True,
                                     Show_Sphere= False)
 
-            Robot_2.move_to_home(removing_primitives= ["Smart_Conveyor"])
+            Robot_2.move_to_home(removing_primitives= ["Smart_Conveyor", "world/obstacles"])
         else:
             print("Right Nail is Not Possible ! Due To Robot NailGun Reachability")
 
@@ -4738,7 +4738,7 @@ def Robot_1_Do_BL_Nail(push_to_nail: float = None,
             Robot_1.render_exec(renderInstance= True,
                                     Show_Sphere= False)
 
-            Robot_1.move_to_home(removing_primitives= ["Smart_Conveyor"])
+            Robot_1.move_to_home(removing_primitives= ["Smart_Conveyor", "world/obstacles"])
         else:
             print("Left Nail is Not Possible ! Due To Robot NailGun Reachability")
 
@@ -4837,7 +4837,7 @@ def Robot_1_Do_BL_Nail(push_to_nail: float = None,
             Robot_1.render_exec(renderInstance= True,
                                     Show_Sphere= False)
 
-            Robot_1.move_to_home(removing_primitives= ["Smart_Conveyor"])
+            Robot_1.move_to_home(removing_primitives= ["Smart_Conveyor", "world/obstacles"])
         else:
             print("Right Nail is Not Possible ! Due To Robot NailGun Reachability")
 
