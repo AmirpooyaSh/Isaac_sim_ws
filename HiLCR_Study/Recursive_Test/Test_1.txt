@@ -1,0 +1,61 @@
+Assume you are a robotic-station executive command generator.
+Your task is to devise a sequence for picking and placing a wooden stud.
+You may call two fundamental functions:
+  1.  Robot_X.move(Tool_Name, [X,Y,Z], [W,X,Y,Z]) — performs inverse-kinematic       path planning to move the specified tool to the target pose.
+  2.  Robot_X.trigger(Tool_Name, Element_Name) — activates the specified tool       (nail-gun, gripper, or suction cup). If the tool carries an element—      e.g., the gripper lifts a stud—pass the element’s name.
+
+You are given below data to design the task:
+  •  The stud’s current centre pose and its destination centre pose      (both in [X,Y,Z], [W,X,Y,Z] format).
+  •  Eight corner coordinates (X,Y,Z) for the stud in both the pick and      place locations.
+  •  The current poses of all robotic grippers in the station      ([X,Y,Z], [W,X,Y,Z]).
+
+Using this information, produce an ordered array of function calls that achieves the pick-and-place operation. If execution fails, details from the simulation appear at the end of this prompt under **IMPORTANT NOTES**; you must incorporate any statements found there.
+
+Output specification:
+  •  Return a *list of arrays*.
+  •  Index 0:  0 for a movement call, 1 for a trigger call.
+  •  Index 1:  the robot number used for the action.
+  •  Indices 2-8:  [X, Y, Z, W, X, Y, Z] — the target pose and orientation      (use zeros if this is a trigger call).
+  •  Indices 9-10:  strings → Tool_Name (always “tool0” is acceptable) and      Element_Name (“None” when the entry represents a movement).
+
+Information Needed:
+
+ • Stud's current centre pose:
+(6.4948, 2.7822, 0.823), (1, 0, 0, 0)
+
+ • Stud's final centre pose:
+(3.63075, 1.48443, 0.94819), (0.707107, 0, 0.707107, 0)
+
+ • Stud's current corner coordinates:
+[[6.44400009 0.9534001  0.80300001]
+ [6.54560009 0.9534001  0.80300001]
+ [6.44400009 0.9534001  0.84300001]
+ [6.54560009 0.9534001  0.84300001]
+ [6.44400009 4.6110001  0.80300001]
+ [6.54560009 4.6110001  0.80300001]
+ [6.44400009 4.6110001  0.84300001]
+ [6.54560009 4.6110001  0.84300001]]
+
+ • Stud's final corner coordinates:
+[[ 3.61074994 -0.34437004  0.99898997]
+ [ 3.61074994 -0.34437004  0.89738997]
+ [ 3.65074994 -0.34437004  0.99898997]
+ [ 3.65074994 -0.34437004  0.89738997]
+ [ 3.61074994  3.31322996  0.99898997]
+ [ 3.61074994  3.31322996  0.89738997]
+ [ 3.65074994  3.31322996  0.99898997]
+ [ 3.65074994  3.31322996  0.89738997]]
+
+ • Robot 1's gripper center point pose:
+(1.45695, 0.00540751, 1.64002), (0.000223626, -1, -6.71859e-08, -7.14802e-06)
+
+ • Robot 2's gripper center point pose:
+(2.61199, -0.155258, 1.77011), (-0.000247019, -0.707101, 0.000248698, 0.707112)
+
+**IMPORTANT NOTES**
+
+It's impossible to move Robot 1's tool0 to the location Position=[6.4948, 2.7822, 1.1] | Orientation=[1, 0, 0, 0] due to the reason: MotionGenStatus.IK_FAIL.
+It's impossible to move Robot 2's tool0 to the location Position=[6.4948, 2.7822, 1.2] | Orientation=[1, 0, 0, 0] due to the reason: MotionGenStatus.IK_FAIL.
+It's impossible to move Robot 2's tool0 to the location Position=[6.4948, 2.7822, 1.123] | Orientation=[0.707107, 0, 0.707107, 0] due to the reason: MotionGenStatus.IK_FAIL.
+
+# Then it failed cause it looked for Robot 3 :|
