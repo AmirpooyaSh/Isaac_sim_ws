@@ -126,6 +126,14 @@ from scipy.spatial.transform import Rotation as R
 import abb_motion_program_exec as ABB
 from abb_robot_client.rws import JointTarget
 
+### RGBD Imports
+import omni.replicator.core as rep
+import omni.syntheticdata._syntheticdata as sd
+from omni.isaac.sensor import Camera
+import omni.isaac.core.utils.numpy.rotations as rot_utils
+from omni.isaac.core_nodes.scripts.utils import set_target_prims
+from omni.isaac.core.utils.prims import is_prim_path_valid
+
 ###########################
 ###########################
 ### Importing Libraries ###
@@ -2008,6 +2016,163 @@ class CuRoboRobot(object):
 
         except Exception as e:
             rospy.logwarn(f"Error publishing joint state: {e}")
+
+class RGBDCameraROS:
+    """
+    Utility wrapper that:
+      1. Creates a Camera prim (RGB-D intrinsics) at the requested pose.
+      2. Wires up ROS 1 publishers for /tf, RGB, depth, CameraInfo, and a
+         depth-derived point-cloud.
+    """
+
+    def __init__(
+        self,
+        prim_path: str,
+        position,              # list/np.ndarray [x,y,z] (world, Z-up, metres)
+        orientation,           # list/np.ndarray Euler-deg [roll,pitch,yaw]   OR quat [w,x,y,z]
+        resolution=(640, 480),
+        frequency=30,          # sensor rate [Hz]  (render time is 60 Hz)
+        pointcloud_rate=5      # point-cloud down-sample [Hz]
+    ):
+        self.prim_path = prim_path
+        self.position  = np.asarray(position, dtype=float)
+
+        # accept either Euler-deg (length 3) or quaternion (length 4)
+        if len(orientation) == 3:
+            quat = rot_utils.euler_angles_to_quats(np.asarray(orientation, dtype=float),
+                                                   degrees=True)
+        else:
+            quat = np.asarray(orientation, dtype=float)
+        self.orientation     = quat
+        self.resolution      = resolution
+        self.frequency       = int(frequency)
+        self.pointcloud_rate = int(pointcloud_rate)
+
+        self._camera: Camera | None = None      # populated in spawn()
+
+    # --------------------------------------------------------------------- #
+    #  Internal helpers (straight from NVIDIA tutorial, wrapped in methods) #
+    # --------------------------------------------------------------------- #
+    def _set_gate_step(self, render_product: str, step_size: int, render_var: str):
+        gate_path = omni.syntheticdata.SyntheticData._get_node_path(
+            render_var + "IsaacSimulationGate", render_product
+        )
+        og.Controller.attribute(gate_path + ".inputs:step").set(step_size)
+
+    def _attach_writer(self, sensor_type: sd.SensorType, writer_suffix: str,
+                       topic: str, freq: int):
+        render_product = self._camera._render_product_path
+        step_size      = int(60 // freq)
+        frame_id       = self._camera.prim_path.split("/")[-1]
+
+        rv     = omni.syntheticdata.SyntheticData.convert_sensor_type_to_rendervar(
+                     sensor_type.name)
+        writer = rep.writers.get(rv + writer_suffix)
+        writer.initialize(frameId=frame_id, nodeNamespace="", queueSize=1,
+                          topicName=topic)
+        writer.attach([render_product])
+        self._set_gate_step(render_product, step_size, rv)
+
+    # --------------------------------------------------------------------- #
+    #  Public API                                                           #
+    # --------------------------------------------------------------------- #
+    def spawn(self):
+        """Create camera prim + wire all publishers."""
+        if self._camera is not None:
+            return self._camera                         # already spawned
+
+        # 1) Camera prim ----------------------------------------------------
+        self._camera = Camera(
+            prim_path=self.prim_path,
+            position=self.position,
+            orientation=self.orientation,
+            resolution=self.resolution,
+            frequency=self.frequency,
+        )
+        self._camera.initialize()
+
+        # 2) ROS publishers -------------------------------------------------
+        self._publish_camera_tf()
+        self._publish_camera_info(self.frequency)
+        self._publish_rgb(self.frequency)
+        self._publish_depth(self.frequency)
+        self._publish_pointcloud(self.pointcloud_rate)
+        return self._camera
+
+    # ------------------------------------------------------------------ #
+    #  Individual publisher helpers                                      #
+    # ------------------------------------------------------------------ #
+    def _publish_camera_tf(self):
+        """Dynamic world→camera and static camera→camera_optical /tf frames."""
+        cam   = self._camera
+        frame = cam.prim_path.split("/")[-1]
+        graph_path = "/CameraTFActionGraph"
+        if not is_prim_path_valid(graph_path):
+            # skeleton (OnTick + clock) only once
+            og.Controller.edit(
+                {"graph_path": graph_path,
+                 "evaluator_name": "execution",
+                 "pipeline_stage": og.GraphPipelineStage.GRAPH_PIPELINE_STAGE_SIMULATION},
+                {og.Controller.Keys.CREATE_NODES: [
+                     ("OnTick",    "omni.graph.action.OnTick"),
+                     ("IsaacTime", "omni.isaac.core_nodes.IsaacReadSimulationTime"),
+                     ("ClockPub",  "omni.isaac.ros_bridge.ROS1PublishClock"),
+                 ],
+                 og.Controller.Keys.CONNECT: [
+                     ("OnTick.outputs:tick",    "ClockPub.inputs:execIn"),
+                     ("IsaacTime.outputs:simulationTime", "ClockPub.inputs:timeStamp"),
+                 ]}
+            )
+
+        # camera TF nodes (can create multiple cameras safely)
+        og.Controller.edit(
+            graph_path,
+            {og.Controller.Keys.CREATE_NODES: [
+                 (f"TF_{frame}",       "omni.isaac.ros_bridge.ROS1PublishTransformTree"),
+                 (f"TF_{frame}_world", "omni.isaac.ros_bridge.ROS1PublishRawTransformTree"),
+             ],
+             og.Controller.Keys.SET_VALUES: [
+                 (f"TF_{frame}.inputs:topicName", "/tf"),
+                 (f"TF_{frame}_world.inputs:topicName", "/tf"),
+                 (f"TF_{frame}_world.inputs:parentFrameId", frame),
+                 (f"TF_{frame}_world.inputs:childFrameId",  f"{frame}_world"),
+                 (f"TF_{frame}_world.inputs:rotation",      [0.5, -0.5, 0.5, 0.5]),
+             ],
+             og.Controller.Keys.CONNECT: [
+                 (f"{graph_path}/OnTick.outputs:tick",        f"TF_{frame}.inputs:execIn"),
+                 (f"{graph_path}/OnTick.outputs:tick",        f"TF_{frame}_world.inputs:execIn"),
+                 (f"{graph_path}/IsaacTime.outputs:simulationTime",
+                      f"TF_{frame}.inputs:timeStamp"),
+                 (f"{graph_path}/IsaacTime.outputs:simulationTime",
+                      f"TF_{frame}_world.inputs:timeStamp"),
+             ]}
+        )
+        set_target_prims(f"{graph_path}/TF_{frame}",
+                         "inputs:targetPrims", [cam.prim_path])
+
+    def _publish_camera_info(self, freq):
+        render_product = self._camera._render_product_path
+        step_size      = int(60 // freq)
+        frame_id       = self._camera.prim_path.split("/")[-1]
+
+        writer = rep.writers.get("ROS1PublishCameraInfo")
+        writer.initialize(frameId=frame_id, nodeNamespace="", queueSize=1,
+                          topicName=f"{self._camera.name}_camera_info",
+                          stereoOffset=[0.0, 0.0])
+        writer.attach([render_product])
+        self._set_gate_step(render_product, step_size, "PostProcessDispatch")
+
+    def _publish_rgb(self, freq):
+        self._attach_writer(sd.SensorType.Rgb, "ROS1PublishImage",
+                            topic=f"{self._camera.name}_rgb", freq=freq)
+
+    def _publish_depth(self, freq):
+        self._attach_writer(sd.SensorType.DistanceToImagePlane, "ROS1PublishImage",
+                            topic=f"{self._camera.name}_depth", freq=freq)
+
+    def _publish_pointcloud(self, freq):
+        self._attach_writer(sd.SensorType.DistanceToImagePlane, "ROS1PublishPointCloud",
+                            topic=f"{self._camera.name}_pointcloud", freq=freq)
 
 ############################
 ############################

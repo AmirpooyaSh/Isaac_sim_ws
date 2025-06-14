@@ -131,6 +131,25 @@ import os, sys, json
 from typing import List, Dict
 from openai import OpenAI        # pip install openai>=1.14
 
+### RGBD Imports
+import omni.replicator.core as rep
+import omni.syntheticdata._syntheticdata as sd
+from omni.isaac.sensor import Camera
+import omni.isaac.core.utils.numpy.rotations as rot_utils
+from omni.isaac.core_nodes.scripts.utils import set_target_prims
+from omni.isaac.core.utils.prims import is_prim_path_valid
+from math import tan, radians
+
+import json, io, cv2
+from sensor_msgs.msg import Image as RosImage
+from cv_bridge import CvBridge
+
+from PIL import Image
+from io import BytesIO
+import base64
+import re, ast
+
+
 ###########################
 ###########################
 ### Importing Libraries ###
@@ -247,38 +266,43 @@ STUD_THICKNESS: float = 0.04
 STUD_HEIGHT: float = 0.1016
 
 # LLM Function to be Called
-FUNC_ACTION_LIST = [
+FUNC_ACTION = [
     {
+        "type": "function",
         "name": "get_robot_actions",
         "description": (
-            "Return an ordered list of arrays describing a pick/place sequence.\n"
-            "Each array MUST be:\n"
+            "Return an **ordered list of arrays** describing a pick/place sequence.\n"
+            "Each inner array MUST be:\n"
             "  [move_or_trigger, robot_id, X, Y, Z, W, Xo, Yo, Zo, tool_name, element_name]\n"
-            "Where move_or_trigger = 0 (move) or 1 (trigger)."
+            "Index-by-index requirements:\n"
+            "  • 0 → 0 = movement, 1 = trigger\n"
+            "  • 1 → robot number\n"
+            "  • 2-8 → [X Y Z W Xo Yo Zo] (all zeros if this is a trigger)\n"
+            "  • 9-10 → tool_name (e.g., \"tool0\") and element_name (\"None\" for moves)"
         ),
         "parameters": {
             "type": "object",
             "properties": {
                 "actions": {
                     "type": "array",
-                    "items": {                       # ← inner array schema
+                    "items": {               # inner array schema
                         "type": "array",
                         "minItems": 11,
                         "maxItems": 11,
-                        "items": {                   # ← **required**
-                            "anyOf": [
-                                {"type": "integer"},
-                                {"type": "number"},
-                                {"type": "string"}
-                            ]
-                        }
+                        "items": { "anyOf": [
+                            {"type": "integer"},
+                            {"type": "number"},
+                            {"type": "string"}
+                        ]}
                     }
                 }
             },
-            "required": ["actions"]
+            "required": ["actions"],
+            "additionalProperties": False
         }
     }
 ]
+
 
 
 ############################
@@ -487,13 +511,13 @@ class WorldManager(object):
         # )
         # world_cfg_table.cuboid[0].pose[2] -= 0.02
 
-        IDC_Lab = Mesh(
-            name="idc_lab_model",
-            pose=[0, 0, 0, 1, 0, 0, 0],
-            file_path= cur_dir + "lab_model/idc_lab_visualization.stl",
-            color= [0.1, 0.05, 0, 1],
-            scale=[0.001, 0.001, 0.001]
-        )
+        # IDC_Lab = Mesh(
+        #     name="idc_lab_model",
+        #     pose=[0, 0, 0, 1, 0, 0, 0],
+        #     file_path= cur_dir + "lab_model/idc_lab_visualization.stl",
+        #     color= [0.1, 0.05, 0, 1],
+        #     scale=[0.001, 0.001, 0.001]
+        # )
 
 
         SheathingTable = Mesh(
@@ -522,7 +546,7 @@ class WorldManager(object):
 
         # Small_Cutting_Table
         world_model = WorldConfig(
-            mesh=[IDC_Lab, Smart_Mat_Table, Sloped_Table, SheathingTable, Small_Cutting_Table],
+            mesh=[Smart_Mat_Table, Sloped_Table, SheathingTable, Small_Cutting_Table],
             cuboid=[Cube, BearLoadingPileStand],
             capsule=[],
             cylinder=[],
@@ -1387,7 +1411,7 @@ class CuRoboRobot(object):
         print(f"Pose (X,Y,Z): {target_pose}, Orientation (W,X,Y,Z): {target_orientation}")
 
         # Giving a 10-second timer to solve IK
-        while (time.time() - TimeOut_Timer <= 10):
+        while (time.time() - TimeOut_Timer <= 2):
             # Render
             self._temp_world_manager._my_world.step(render=True)
             # 2. Getting Current JS
@@ -2053,6 +2077,14 @@ class CuRoboRobot(object):
 class AI_Agent:
     """OpenAI o3 helper that forces a get_robot_actions function call."""
 
+    #OpenAI:
+    # "https://api.openai.com/v1"
+    # OPENAI_API_KEY
+
+    #UFL:
+    # "https://api.ai.it.ufl.edu"
+    # UFL_API_KEY
+
     def __init__(
         self,
         api_key: str | None = None,
@@ -2070,37 +2102,208 @@ class AI_Agent:
     # ------------------------------------------------------------------ #
     #  PUBLIC                                                            #
     # ------------------------------------------------------------------ #
-    def get_robot_actions(self, prompt: str) -> List[List]:
+    def get_robot_actions(self, prompt: str, image_uri: str) -> List[List]:
         """
-        Send *prompt* to the o3 model with a forced get_robot_actions
-        function-call and return the decoded list of actions.
+        Pull one frame from /camera_rgb, send prompt + image to the model,
+        force a get_robot_actions() function-call, and return decoded actions.
+        """
 
-        • No iterative retries
-        • No additional system/assistant messages are appended
-        """
         response = self.client.chat.completions.create(
-            model=self.model,
-            messages=[
-                {"role": "system",
-                "content": "You are a helpful construction estimator."},
-                {"role": "user", "content": prompt},
-            ],
-            functions=FUNC_ACTION_LIST,
-            function_call={"name": "get_robot_actions"},
-            # temperature=0,
+            model= self.model,
+            messages=[{
+                        "role": "user",
+                        "content": [
+                            # --- your prompt & image ---
+                            {"type": "text",  "text": prompt},
+                            {"type": "image_url", "image_url": {"url": image_uri}}
+                        ],
+                    }],
+            functions= FUNC_ACTION,
+            function_call={"name": "get_robot_actions"}
         )
 
-        msg = response.choices[0].message
+        # parse the function_call arguments
+        func_call = response.choices[0].message.function_call
+        reporting_list = json.loads(func_call.arguments).get("actions")
 
-        if not (msg.function_call and msg.function_call.name == "get_robot_actions"):
-            raise ValueError("Model did not return the expected function call.")
+        return reporting_list
 
-        try:
-            payload = json.loads(msg.function_call.arguments)
-            return payload["actions"]          # list[list]
-        except (json.JSONDecodeError, KeyError) as e:
-            raise ValueError(f"Malformed function arguments: {e}") from e
-        
+
+class RGBDCameraROS:
+    """
+    Utility wrapper that:
+      1. Creates a Camera prim (RGB-D intrinsics) at the requested pose.
+      2. Wires up ROS 1 publishers for /tf, RGB, depth, CameraInfo, and a
+         depth-derived point-cloud.
+    """
+
+    def __init__(
+        self,
+        prim_path: str,
+        position,              # list/np.ndarray [x,y,z] (world, Z-up, metres)
+        orientation,           # list/np.ndarray Euler-deg [roll,pitch,yaw]   OR quat [w,x,y,z]
+        resolution=(640, 480),
+        frequency=30,          # sensor rate [Hz]  (render time is 60 Hz)
+        pointcloud_rate=1,      # point-cloud down-sample [Hz]
+        focal_length_mm: float | None = None,
+        fov_deg: float | None = None
+    ):
+        self.prim_path = prim_path
+        self.position  = np.asarray(position, dtype=float)
+        self.focal_length_mm = focal_length_mm
+        self.fov_deg         = fov_deg
+        # accept either Euler-deg (length 3) or quaternion (length 4)
+        if len(orientation) == 3:
+            quat = rot_utils.euler_angles_to_quats(np.asarray(orientation, dtype=float),
+                                                   degrees=True)
+        else:
+            quat = np.asarray(orientation, dtype=float)
+        self.orientation     = quat
+        self.resolution      = resolution
+        self.frequency       = int(frequency)
+        self.pointcloud_rate = int(pointcloud_rate)
+
+        self._camera: Camera | None = None      # populated in spawn()
+
+    # --------------------------------------------------------------------- #
+    #  Internal helpers (straight from NVIDIA tutorial, wrapped in methods) #
+    # --------------------------------------------------------------------- #
+    def _set_gate_step(self, render_product: str, step_size: int, render_var: str):
+        gate_path = omni.syntheticdata.SyntheticData._get_node_path(
+            render_var + "IsaacSimulationGate", render_product
+        )
+        og.Controller.attribute(gate_path + ".inputs:step").set(step_size)
+
+    def _attach_writer(self, sensor_type: sd.SensorType, writer_suffix: str,
+                       topic: str, freq: int):
+        render_product = self._camera._render_product_path
+        step_size      = int(60 // freq)
+        frame_id       = self._camera.prim_path.split("/")[-1]
+
+        rv     = omni.syntheticdata.SyntheticData.convert_sensor_type_to_rendervar(
+                     sensor_type.name)
+        writer = rep.writers.get(rv + writer_suffix)
+        writer.initialize(frameId=frame_id, nodeNamespace="", queueSize=1,
+                          topicName=topic)
+        writer.attach([render_product])
+        self._set_gate_step(render_product, step_size, rv)
+
+    # --------------------------------------------------------------------- #
+    #  Public API                                                           #
+    # --------------------------------------------------------------------- #
+    def spawn(self):
+        """Create camera prim + wire all publishers."""
+        if self._camera is not None:
+            return self._camera                         # already spawned
+
+        # 1) Camera prim ----------------------------------------------------
+        self._camera = Camera(
+            prim_path=self.prim_path,
+            resolution=self.resolution,
+            frequency=self.frequency,
+        )
+        self._camera.initialize()
+
+        # Setting Camera Pose
+        self._camera.set_world_pose(position=self.position,
+                                    orientation=self.orientation,
+                                    camera_axes="usd")
+
+        usd_cam = UsdGeom.Camera(
+            omni.usd.get_context().get_stage().GetPrimAtPath(self.prim_path)
+        )
+
+        if self.focal_length_mm is not None:
+            usd_cam.GetFocalLengthAttr().Set(float(self.focal_length_mm))
+
+        elif self.fov_deg is not None:                       # compute focal length from desired FOV
+            h_ap = usd_cam.GetHorizontalApertureAttr().Get() # mm
+            f_len = 0.5 * h_ap / tan(radians(self.fov_deg) / 2)
+            usd_cam.GetFocalLengthAttr().Set(float(f_len))
+
+        # 2) ROS publishers -------------------------------------------------
+        self._publish_camera_tf()
+        self._publish_camera_info(self.frequency)
+        self._publish_rgb(self.frequency)
+        self._publish_depth(self.frequency)
+        self._publish_pointcloud(self.pointcloud_rate)
+        return self._camera
+
+    # ------------------------------------------------------------------ #
+    #  Individual publisher helpers                                      #
+    # ------------------------------------------------------------------ #
+    def _publish_camera_tf(self):
+        """Dynamic world→camera and static camera→camera_optical /tf frames."""
+        cam   = self._camera
+        frame = cam.prim_path.split("/")[-1]
+        graph_path = "/CameraTFActionGraph"
+        if not is_prim_path_valid(graph_path):
+            # skeleton (OnTick + clock) only once
+            og.Controller.edit(
+                {"graph_path": graph_path,
+                 "evaluator_name": "execution",
+                 "pipeline_stage": og.GraphPipelineStage.GRAPH_PIPELINE_STAGE_SIMULATION},
+                {og.Controller.Keys.CREATE_NODES: [
+                     ("OnTick",    "omni.graph.action.OnTick"),
+                     ("IsaacTime", "omni.isaac.core_nodes.IsaacReadSimulationTime"),
+                     ("ClockPub",  "omni.isaac.ros_bridge.ROS1PublishClock"),
+                 ],
+                 og.Controller.Keys.CONNECT: [
+                     ("OnTick.outputs:tick",    "ClockPub.inputs:execIn"),
+                     ("IsaacTime.outputs:simulationTime", "ClockPub.inputs:timeStamp"),
+                 ]}
+            )
+
+        # camera TF nodes (can create multiple cameras safely)
+        og.Controller.edit(
+            graph_path,
+            {og.Controller.Keys.CREATE_NODES: [
+                 (f"TF_{frame}",       "omni.isaac.ros_bridge.ROS1PublishTransformTree"),
+                 (f"TF_{frame}_world", "omni.isaac.ros_bridge.ROS1PublishRawTransformTree"),
+             ],
+             og.Controller.Keys.SET_VALUES: [
+                 (f"TF_{frame}.inputs:topicName", "/tf"),
+                 (f"TF_{frame}_world.inputs:topicName", "/tf"),
+                 (f"TF_{frame}_world.inputs:parentFrameId", frame),
+                 (f"TF_{frame}_world.inputs:childFrameId",  f"{frame}_world"),
+                 (f"TF_{frame}_world.inputs:rotation",      [0.5, -0.5, 0.5, 0.5]),
+             ],
+             og.Controller.Keys.CONNECT: [
+                 (f"{graph_path}/OnTick.outputs:tick",        f"TF_{frame}.inputs:execIn"),
+                 (f"{graph_path}/OnTick.outputs:tick",        f"TF_{frame}_world.inputs:execIn"),
+                 (f"{graph_path}/IsaacTime.outputs:simulationTime",
+                      f"TF_{frame}.inputs:timeStamp"),
+                 (f"{graph_path}/IsaacTime.outputs:simulationTime",
+                      f"TF_{frame}_world.inputs:timeStamp"),
+             ]}
+        )
+        set_target_prims(f"{graph_path}/TF_{frame}",
+                         "inputs:targetPrims", [cam.prim_path])
+
+    def _publish_camera_info(self, freq):
+        render_product = self._camera._render_product_path
+        step_size      = int(60 // freq)
+        frame_id       = self._camera.prim_path.split("/")[-1]
+
+        writer = rep.writers.get("ROS1PublishCameraInfo")
+        writer.initialize(frameId=frame_id, nodeNamespace="", queueSize=1,
+                          topicName=f"{self._camera.name}_camera_info",
+                          stereoOffset=[0.0, 0.0])
+        writer.attach([render_product])
+        self._set_gate_step(render_product, step_size, "PostProcessDispatch")
+
+    def _publish_rgb(self, freq):
+        self._attach_writer(sd.SensorType.Rgb, "ROS1PublishImage",
+                            topic=f"{self._camera.name}_rgb", freq=freq)
+
+    def _publish_depth(self, freq):
+        self._attach_writer(sd.SensorType.DistanceToImagePlane, "ROS1PublishImage",
+                            topic=f"{self._camera.name}_depth", freq=freq)
+
+    def _publish_pointcloud(self, freq):
+        self._attach_writer(sd.SensorType.DistanceToImagePlane, "ROS1PublishPointCloud",
+                            topic=f"{self._camera.name}_pointcloud", freq=freq)
+
 ############################
 ############################
 ##### Global Objects #######
@@ -2154,6 +2357,17 @@ Smart_Conv = CuRoboConv(working_world=test,
 
 IDC_Agent = AI_Agent()
 
+# Camera
+cam = RGBDCameraROS(
+    prim_path="/World/Observer",
+    position=[2, 0.9, 2.9],
+    orientation=[45, 0, -90],
+    resolution=(1024, 768),
+    pointcloud_rate=60,
+    fov_deg=110                     # ultra-wide lens
+).spawn()
+
+
 ###############################
 ###############################
 #### Object Identification ####
@@ -2192,7 +2406,8 @@ def Add_Rigid_Object_To_Scene(
     ObjectType: str = "Cuboid",
     obj: Any = Cuboid,
     rigid_body_disabler: bool = False,
-    make_invisible: bool = False
+    make_invisible: bool = False,
+    base_frame: str = None
 ):
     """
     Add a rigid object to the simulation scene.
@@ -2217,23 +2432,26 @@ def Add_Rigid_Object_To_Scene(
     None
     """
     Added_Obj_Prim_Root: str = None
+    placing_frame = "/world/obstacles"
+    if base_frame != None:
+        placing_frame = base_frame
 
     # It's better not to use CuRobo's enable_physics Attribute!
     if ObjectType == "Cuboid":
         Added_Obj_Prim_Root = World_Manager._usd_help.add_cuboid_to_stage(
-            obstacle=obj, enable_physics=False
+            obstacle=obj, enable_physics=False, base_frame=placing_frame
         )
     elif ObjectType == "Mesh":
         Added_Obj_Prim_Root = World_Manager._usd_help.add_mesh_to_stage(
-            obstacle=obj, enable_physics=False
+            obstacle=obj, enable_physics=False, base_frame=placing_frame
         )
     elif ObjectType == "Cylinder":
         Added_Obj_Prim_Root = World_Manager._usd_help.add_cylinder_to_stage(
-            obstacle=obj, enable_physics=False
+            obstacle=obj, enable_physics=False, base_frame=placing_frame
         )
     elif ObjectType == "Sphere":
         Added_Obj_Prim_Root = World_Manager._usd_help.add_sphere_to_stage(
-            obstacle=obj, enable_physics=False
+            obstacle=obj, enable_physics=False, base_frame=placing_frame
         )
 
     stage = World_Manager._my_world.stage
@@ -2631,6 +2849,36 @@ def stud_corners_quat(center, quat, length, width, height):
                for sH in (-1, 1)]
     return np.vstack(corners)
 
+def rgb_to_uri(rgb: np.ndarray) -> str:
+    """
+    Convert an (H×W×3) or (N×3) RGB array into a PNG data-URI.
+
+    Args:
+        rgb: RGB data returned by cam.get_rgb(). Values may be uint8 (0-255)
+             or float (0-1).
+
+    Returns:
+        A string of the form "data:image/png;base64,<...>".
+    """
+    # ---- normalise to uint8 -------------------------------------------------
+    if rgb.dtype != np.uint8:
+        rgb = np.clip(rgb * (255 if rgb.max() <= 1 else 1), 0, 255).astype(np.uint8)
+
+    # ---- reshape if input was flat (N×3) ------------------------------------
+    if rgb.ndim == 2:                       # (N, 3)  →  (H, W, 3)
+        N = rgb.shape[0]
+        H = int(np.sqrt(N))
+        W = N // H
+        rgb = rgb.reshape(H, W, 3)
+
+    # ---- encode as PNG in-memory -------------------------------------------
+    img     = Image.fromarray(rgb, mode="RGB")
+    buffer  = BytesIO()
+    img.save(buffer, format="PNG")
+    b64_png = base64.b64encode(buffer.getvalue()).decode()
+
+    return f"data:image/png;base64,{b64_png}"
+
 # ---------------------------------------------------------------
 #  Helper: pick robot instance by id (1 → Robot_1, 2 → Robot_2)
 # ---------------------------------------------------------------
@@ -2725,13 +2973,24 @@ def Automated_Pick_Place_No_Cut(
         "  •  Eight corner coordinates (X,Y,Z) for the stud in both the pick and "
         "     place locations.\n"
         "  •  The current poses of all robotic grippers in the station (Robot 1 and 2 are only presented in the station as of now) "
-        "     ([X,Y,Z], [W,X,Y,Z]).\n\n"
+        "     ([X,Y,Z], [W,X,Y,Z]).\n"
+        "  •  An image visualizing the stage. Within this image including RED SPHERES in it beside the stud and the scene. "
+        "     These RED SPHERES are representing the failure points that you previously tested upon generating 1 sub action to accomplish the task. "
+        "     in other word, the failed locations within the section below IMPORTANT NOTES are depicted to help you decide a better choice for the next"
+        "     step."
+        "  •  Position and Orientation of the Frame that took the given picture([X,Y,Z], [W,X,Y,Z])."
+
         "Using this information, produce an ordered array of function calls that "
         "achieves the pick-and-place operation. If execution fails, details from the "
         "simulation appear at the end of this prompt under **IMPORTANT NOTES**; you "
         "must incorporate any statements found there."
-        "The IMPORTANT NOTES section lists coded reasons for any movement failures that you must consider on "
-        "this attempt. A legend translating each code into its plain-language explanation is also included.\n"
+        "The IMPORTANT NOTES section lists coded reasons for any movement failures/success that you must consider on "
+        "this attempt. For the sake of resources, Make sure to take a look at the given image and do binary search in between "
+        "the failure locations or between the failure and given stud locations to find an optimal solution faster."
+        "By doing so, you have to make sure if you're not getting stuck within a specific area.\n"
+        "Lastly, legend translating each code into its plain-language explanation is also included for failure reasons.\n"
+        "if a success statement is mentioned within the IMPORTANT NOTES section, you have to only consider that action for the "
+        "corresponding substep of compliting the task.\n"
         "Output specification:\n"
         "  •  Return a *list of arrays*.\n"
         "  •  Index 0:  0 for a movement call, 1 for a trigger call.\n"
@@ -2757,14 +3016,24 @@ def Automated_Pick_Place_No_Cut(
         f"{Rob_2_GTCP}\n\n"
        " • Coded Reasons of Failure:\n"
         f"{legend_txt}\n\n"
+       " • Camera frame pose\n"
+        f"{cam.get_world_pose()}\n\n"
 
         "**IMPORTANT NOTES**\n"
     )
 
     Success_Flag = False
+    counter=1
+
+    Movement_Counter=0
+
     while Success_Flag == False:
-        Action_Sequence = IDC_Agent.get_robot_actions(Initial_Prompt)
+        # Extracting RGB-Array and Sending Over:
+        Image_URI = rgb_to_uri(cam.get_rgb())
+
+        Action_Sequence = IDC_Agent.get_robot_actions(Initial_Prompt, Image_URI)
         print(Action_Sequence)
+
         Solver = True
         for step_idx, arr in enumerate(Action_Sequence, start=1):
 
@@ -2785,7 +3054,7 @@ def Automated_Pick_Place_No_Cut(
                     tcp_name=tool_name,
                     target_pose=pose,
                     target_orientation=orient,
-                    removing_primitives=["world/obstacles", "Smart_Conveyor"],
+                    removing_primitives=["world/obstacles", "Smart_Conveyor", "World/Vis_Dots"],
                 )
 
                 if not ok:
@@ -2803,10 +3072,53 @@ def Automated_Pick_Place_No_Cut(
                     # ── 3. Append to next prompt under IMPORTANT NOTES ───────────
                     Initial_Prompt += f"\n{failure_note}"
 
+                    # Creating a Red Sphere that is representing the failed Goal Pose
+                    new_dot = Sphere(
+                        name="Dot_"+str(counter),
+                        pose= arr[2:9],
+                        radius=0.07,
+                        color=[1, 0, 0, 1]
+                    )
+                    counter+=1
+                    Add_Rigid_Object_To_Scene(test, "Sphere", new_dot, True, False, "/World/Vis_Dots")
+
+                    # 2 Sec pause to render
+                    TT = time.time()
+                    while time.time() - TT <= 2:
+                        test._my_world.step(render=True)
+                    
                     # ── 4. Console diagnostics ───────────────────────────────────
                     print(f"[FAIL] Step {step_idx}: {failure_note}")
                     Solver = False
                     break
+
+                if ok:
+                    if(Movement_Counter < step_idx):
+                        print("A new Substep Solved")
+                        Movement_Counter = step_idx
+
+                        # Resetting all the Dots !
+                        counter = 0
+                        prims_utils.delete_prim("/World/Vis_Dots")
+
+                        success_note = (
+                            f"Robot {rid}'s {tool_name} can reach the location: Position={pose} | Orientation={orient} "
+                            f"which should be used as the subtask number {Movement_Counter} from now on."
+                        )
+
+                        Initial_Prompt += f"\n{success_note}"
+
+                        #Removing Useless prompts (Associated with the previous dots)
+                        head, *rest = Initial_Prompt.split("**IMPORTANT NOTES**", 1)
+                        tail = rest[0]
+                        # Keep every line that does *not* match the unwanted phrase
+                        kept_lines = [
+                            line for line in tail.splitlines()
+                            if not re.match(r"\s*It's impossible to move Robot", line)
+                        ]
+                        # Re-assemble the cleaned prompt
+                        cleaned_prompt = head + "**IMPORTANT NOTES**\n" + "\n".join(kept_lines)
+                        Initial_Prompt = cleaned_prompt
 
             # ─────────────── bad opcode ──────────────────
             else:
@@ -2822,7 +3134,6 @@ def Automated_Pick_Place_No_Cut(
 
     print("Succeeded Result:")
     print(Action_Sequence)
-
 
 ###############################
 ###############################
@@ -2916,7 +3227,7 @@ def main():
         # Pick_Long_Element_From_Mat_Supply("Bottom_Plate", 3.6576, 0.04, 0.1016)
         # Place_Long_Element_On_Smart_Conveyor_by_Rob2_Gripper("Bottom_Plate", 2.4984, 1.8288, 3.6576, 0.1016)
 
-        Robot_1.free_TCP_movement("tool0")
+        # Robot_1.free_TCP_movement("tool0")
 
         Automated_Pick_Place_No_Cut("BPL", 2.4984, 1.8288, 0, 3.6576, 0.04, 0.1016)
 
