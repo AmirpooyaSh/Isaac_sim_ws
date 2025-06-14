@@ -22,27 +22,17 @@ class UFLOpenAI:
 if __name__ == "__main__":
     # instantiate the wrapper (replace with your actual key or set UFL_API_KEY)
     ufl_openai = UFLOpenAI()
-
-    # send a simple text-only prompt
-    response = ufl_openai.client.responses.create(
-        model=ufl_openai.model,
-        input=[{
-            "role": "user",
-            "content": [
-                {"type": "input_text", "text": "Hello, GPT-4o! Briefly introduce yourself."},
-            ],
-        }],
-    )
-
-    response = ufl_openai.client.responses.create(
+    ufl_openai.client.chat.completions.create
+    response = ufl_openai.client.chat.completions.create(
         model= ufl_openai.model,
-        input=[{
-            "role": "user",
-            "content": [
-                {"type": "input_text", "text": "Hello, GPT-4o! Briefly introduce yourself."},
-            ],
-        }],
+        messages=[{
+                    "role": "user",
+                    "content": [
+                        # --- your prompt & image ---
+                        {"type": "text",  "text": "Tell me a Joke"},
+                    ],
+                }]
     )
 
     # print the assistant’s reply
-    print(response)
+    print(response.choices[0].message)

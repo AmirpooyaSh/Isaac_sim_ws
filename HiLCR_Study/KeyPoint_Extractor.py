@@ -100,11 +100,12 @@ import sensor_msgs
 import sensor_msgs.msg
 
 import omni.graph.core as og
+import omni.kit.actions.core
 
 # Xform Creation and Transform
 import omni.kit.commands as cmd
 # Adding UsdPhysics to Add Mass To the Object
-from pxr import Gf, Usd, Sdf, UsdGeom, UsdPhysics
+from pxr import Gf, Usd, Sdf, UsdGeom, UsdPhysics, UsdLux
 
 import omni.usd
 # Creating SurfaceGripper OmniGraph
@@ -344,6 +345,17 @@ class WorldManager(object):
 
         # Adding the default Ground to the World
         cast(Scene, self._my_world.scene).add_default_ground_plane()
+
+        # Setting Light
+        # distantLight = UsdLux.DistantLight.Get(self._stage, Sdf.Path("/World/lightDistant"))
+        # distantLight.GetIntensityAttr().Set(5000.0)  # Set intensity to 5000
+        # distantLight.GetColorAttr().Set((1.0, 1.0, 1.0))
+        action_registry = omni.kit.actions.core.get_action_registry()
+        action = action_registry.get_action("omni.kit.viewport.menubar.lighting", "set_lighting_mode_camera")
+        action.execute()
+        # sphereLight = UsdLux.SphereLight.Define(self._stage, Sdf.Path("/World/sphereLight"))
+        # sphereLight.CreateIntensityAttr(1000.0)
+        # sphereLight.CreateRadiusAttr(0.5)
 
         # Creating USD Helper (CuRobo Object) to handle objects
         self._usd_help = UsdHelper()
@@ -772,9 +784,9 @@ class CuRoboRobot(object):
 
         # Setting up Extra Tool Spheres
         if self._ROS_JS_robot_indicator == "IRB6620_R1":
-            self._robot_cfg["kinematics"]["extra_collision_spheres"] = {"tool0": 100, "tool1": 1,}
+            self._robot_cfg["kinematics"]["extra_collision_spheres"] = {"tool0": 1, "tool1": 1,}
         if self._ROS_JS_robot_indicator == "IRB6620_R2":
-            self._robot_cfg["kinematics"]["extra_collision_spheres"] = {"tool0": 100,}
+            self._robot_cfg["kinematics"]["extra_collision_spheres"] = {"tool0": 1,}
 
         # if self._ROS_JS_robot_indicator == "IRB6620_R1":
         #     self._robot_cfg["kinematics"]["extra_collision_spheres"] = {"tool0": 50, "tool1": 100,}
@@ -2089,11 +2101,11 @@ class AI_Agent:
         self,
         api_key: str | None = None,
         model: str = "gpt-4o",
-        base_url: str = "https://api.openai.com/v1",
+        base_url: str = "https://api.ai.it.ufl.edu",
     ):
-        self.api_key = api_key or os.getenv("OPENAI_API_KEY")
+        self.api_key = api_key or os.getenv("UFL_API_KEY")
         if not self.api_key:
-            print("OPENAI_API_KEY not found; set it or pass api_key='…'")
+            print("UFL_API_KEY not found; set it or pass api_key='…'")
             sys.exit(1)
 
         self.client = OpenAI(api_key=self.api_key, base_url=base_url)
@@ -2360,8 +2372,8 @@ IDC_Agent = AI_Agent()
 # Camera
 cam = RGBDCameraROS(
     prim_path="/World/Observer",
-    position=[2, 0.9, 2.9],
-    orientation=[45, 0, -90],
+    position=[3.3, 3, 4.5],
+    orientation=[0.3886, 0.05626, -0.13582, -0.9096],
     resolution=(1024, 768),
     pointcloud_rate=60,
     fov_deg=110                     # ultra-wide lens
@@ -2968,12 +2980,12 @@ def Automated_Pick_Place_No_Cut(
         "      (nail-gun, gripper, or suction cup). If the tool carries an element—"
         "      e.g., the gripper lifts a stud—pass the element’s name.\n\n"
         "You are given below data to design the task:\n"
-        "  •  The stud’s current centre pose and its destination centre pose "
-        "     (both in [X,Y,Z], [W,X,Y,Z] format).\n"
+        # "  •  The stud’s current centre pose and its destination centre pose "
+        # "     (both in [X,Y,Z], [W,X,Y,Z] format).\n"
         "  •  Eight corner coordinates (X,Y,Z) for the stud in both the pick and "
         "     place locations.\n"
-        "  •  The current poses of all robotic grippers in the station (Robot 1 and 2 are only presented in the station as of now) "
-        "     ([X,Y,Z], [W,X,Y,Z]).\n"
+        # "  •  The current poses of all robotic grippers in the station (Robot 1 and 2 are only presented in the station as of now) "
+        # "     ([X,Y,Z], [W,X,Y,Z]).\n"
         "  •  An image visualizing the stage. Within this image including RED SPHERES in it beside the stud and the scene. "
         "     These RED SPHERES are representing the failure points that you previously tested upon generating 1 sub action to accomplish the task. "
         "     in other word, the failed locations within the section below IMPORTANT NOTES are depicted to help you decide a better choice for the next"
@@ -2986,7 +2998,7 @@ def Automated_Pick_Place_No_Cut(
         "must incorporate any statements found there."
         "The IMPORTANT NOTES section lists coded reasons for any movement failures/success that you must consider on "
         "this attempt. For the sake of resources, Make sure to take a look at the given image and do binary search in between "
-        "the failure locations or between the failure and given stud locations to find an optimal solution faster."
+        "the failure locations parallel to stud's length for each substep to compile the task."
         "By doing so, you have to make sure if you're not getting stuck within a specific area.\n"
         "Lastly, legend translating each code into its plain-language explanation is also included for failure reasons.\n"
         "if a success statement is mentioned within the IMPORTANT NOTES section, you have to only consider that action for the "
@@ -3002,18 +3014,18 @@ def Automated_Pick_Place_No_Cut(
 
         "Information Needed:\n\n"
 
-        " • Stud's current centre pose:\n"
-        f"{object_pose_pick}\n\n"
-        " • Stud's final centre pose:\n"
-        f"{object_pose_place}\n\n"
+        # " • Stud's current centre pose:\n"
+        # f"{object_pose_pick}\n\n"
+        # " • Stud's final centre pose:\n"
+        # f"{object_pose_place}\n\n"
         " • Stud's current corner coordinates:\n"
         f"{Picking_Stud_Corners}\n\n"
         " • Stud's final corner coordinates:\n"
         f"{Placing_Stud_Corners}\n\n"
-        " • Robot 1's gripper center point pose:\n"
-        f"{Rob_1_GTCP}\n\n"
-        " • Robot 2's gripper center point pose:\n"
-        f"{Rob_2_GTCP}\n\n"
+        # " • Robot 1's gripper center point pose:\n"
+        # f"{Rob_1_GTCP}\n\n"
+        # " • Robot 2's gripper center point pose:\n"
+        # f"{Rob_2_GTCP}\n\n"
        " • Coded Reasons of Failure:\n"
         f"{legend_txt}\n\n"
        " • Camera frame pose\n"
@@ -3227,7 +3239,7 @@ def main():
         # Pick_Long_Element_From_Mat_Supply("Bottom_Plate", 3.6576, 0.04, 0.1016)
         # Place_Long_Element_On_Smart_Conveyor_by_Rob2_Gripper("Bottom_Plate", 2.4984, 1.8288, 3.6576, 0.1016)
 
-        # Robot_1.free_TCP_movement("tool0")
+        Robot_1.free_TCP_movement("tool0")
 
         Automated_Pick_Place_No_Cut("BPL", 2.4984, 1.8288, 0, 3.6576, 0.04, 0.1016)
 
