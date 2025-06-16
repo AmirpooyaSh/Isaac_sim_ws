@@ -2931,6 +2931,47 @@ def Automated_Pick_Place_No_Cut(
     Picking_Stud_Corners= stud_corners_quat(object_pose_pick.p, [object_pose_pick.r[3], object_pose_pick.r[0], object_pose_pick.r[1], object_pose_pick.r[2]], L, W, H)
     object_pose_pick.r = [object_pose_pick.r[3], object_pose_pick.r[0], object_pose_pick.r[1], object_pose_pick.r[2]]
 
+    # Assuming object_pose_pick.r is [w, x, y, z]
+    quat = np.array([object_pose_pick.r[0],
+                     object_pose_pick.r[1],
+                     object_pose_pick.r[2],
+                     object_pose_pick.r[3]], dtype=float)           # (4,)
+
+    # If rot_utils.quats_to_euler_angles expects shape (N,4), wrap an extra axis
+    quat = quat.reshape(1, 4)                                       # (1,4)
+
+    rpy = rot_utils.quats_to_euler_angles(
+        quaternions=quat,
+        degrees=True,      # return degrees
+        extrinsic=True     # XYZ extrinsic convention
+    )
+
+    # round to whole degrees (still float so that -0. appears as 0.)
+    rpy_rounded = np.round(rpy, 0)
+    print("RPY rounded:", rpy_rounded)
+
+    # ─── fixed transform that carries [0 0 0] → [180 90 0] ───
+    from scipy.spatial.transform import Rotation as R
+    R_T = np.array([[ 0.,  0., -1.],        # Rz(0°) · Ry(90°) · Rx(180°)
+                    [ 0., -1.,  0.],
+                    [-1.,  0.,  0.]])
+
+    # compose the transform with the current rotation
+    R_current = R.from_euler('xyz', rpy_rounded[0], degrees=True).as_matrix()
+    R_new     = R_T @ R_current
+
+    # back to Euler, round, then normalise to 0-360 for nicer printing
+    rpy_transformed = np.rint(
+        R.from_matrix(R_new).as_euler('xyz', degrees=True)
+    ).astype(int)
+
+    rpy_transformed = (rpy_transformed + 360) % 360   # put −180 → 180 etc.
+    rpy_transformed[rpy_transformed == 360] = 0        # avoid 360 showing up
+
+    print("RPY after transform:", rpy_transformed)     # → [180  90   0]
+
+    Robot_2.free_TCP_movement("tool0")
+
     # Move Conveyor Belt (Temporary)
     Smart_Conv.render_exec('Joint_1', Y - (OVERALL_PANEL_LENGTH/2) + ((L/2)-PICK_OFFSET_FROM_L_CORNER-(ROBOT_2_GRIPPER_LENGTH/2)+(SMART_CONV_RANGE_OF_MOTION_J1/2)))
 
@@ -2948,6 +2989,44 @@ def Automated_Pick_Place_No_Cut(
     object_pose_place=dc.get_rigid_body_pose(object)
     Placing_Stud_Corners= stud_corners_quat(object_pose_place.p, [object_pose_place.r[3], object_pose_place.r[0], object_pose_place.r[1], object_pose_place.r[2]], L, W, H)
     object_pose_place.r = [object_pose_place.r[3], object_pose_place.r[0], object_pose_place.r[1], object_pose_place.r[2]]
+
+    # Assuming object_pose_pick.r is [w, x, y, z]
+    quat = np.array([object_pose_place.r[0],
+                     object_pose_place.r[1],
+                     object_pose_place.r[2],
+                     object_pose_place.r[3]], dtype=float)           # (4,)
+
+    # If rot_utils.quats_to_euler_angles expects shape (N,4), wrap an extra axis
+    quat = quat.reshape(1, 4)                                       # (1,4)
+
+    rpy = rot_utils.quats_to_euler_angles(
+        quaternions=quat,
+        degrees=True,      # return degrees
+        extrinsic=True     # XYZ extrinsic convention
+    )
+
+    # round to whole degrees (still float so that -0. appears as 0.)
+    rpy_rounded = np.round(rpy, 0)
+    print("RPY rounded:", rpy_rounded)
+
+    # ─── fixed transform that carries [0 0 0] → [180 90 0] ───
+    from scipy.spatial.transform import Rotation as R
+    R_T = np.array([[ 0.,  0., -1.],        # Rz(0°) · Ry(90°) · Rx(180°)
+                    [ 0., -1.,  0.],
+                    [-1.,  0.,  0.]])
+
+    # compose the transform with the current rotation
+    R_current = R.from_euler('xyz', rpy_rounded[0], degrees=True).as_matrix()
+    R_new     = R_T @ R_current
+
+    # back to Euler, round, then normalise to 0-360 for nicer printing
+    rpy_transformed = np.rint(
+        R.from_matrix(R_new).as_euler('xyz', degrees=True)
+    ).astype(int)
+
+    print("RPY after transform:", rpy_transformed)     # → [180  90   0]
+
+    Robot_2.free_TCP_movement("tool0")
 
     # Robots Gripper TCPs:
     Rob_1_GTCP= dc.get_rigid_body_pose(dc.get_rigid_body("/IRB6620_R1/tool0"))
@@ -2974,7 +3053,7 @@ def Automated_Pick_Place_No_Cut(
         "Assume you are a robotic-station executive command generator.\n"
         "Your task is to devise a sequence for picking and placing a wooden stud.\n"
         "You may call two fundamental functions:\n"
-        "  1.  Robot_X.move(Tool_Name, [X,Y,Z], [W,X,Y,Z]) — performs inverse-kinematic "
+        "  1.  Robot_X.move(Tool_Name, [X,Y,Z], [R, P ,Y]) — performs inverse-kinematic "
         "      path planning to move the specified tool to the target pose.\n"
         "  2.  Robot_X.trigger(Tool_Name, Element_Name) — activates the specified tool "
         "      (nail-gun, gripper, or suction cup). If the tool carries an element—"
@@ -2986,31 +3065,29 @@ def Automated_Pick_Place_No_Cut(
         "     place locations.\n"
         # "  •  The current poses of all robotic grippers in the station (Robot 1 and 2 are only presented in the station as of now) "
         # "     ([X,Y,Z], [W,X,Y,Z]).\n"
-        "  •  An image visualizing the stage. Within this image including RED SPHERES in it beside the stud and the scene. "
-        "     These RED SPHERES are representing the failure points that you previously tested upon generating 1 sub action to accomplish the task. "
-        "     in other word, the failed locations within the section below IMPORTANT NOTES are depicted to help you decide a better choice for the next"
-        "     step."
-        "  •  Position and Orientation of the Frame that took the given picture([X,Y,Z], [W,X,Y,Z])."
+        # "  •  An image visualizing the stage. Within this image including RED SPHERES in it beside the stud and the scene. "
+        # "     These RED SPHERES are representing the failure points that you previously tested upon generating 1 sub action to accomplish the task. "
+        # "     in other word, the failed locations within the section below IMPORTANT NOTES are depicted to help you decide a better choice for the next"
+        # "     step."
+        # "  •  Position and Orientation of the Frame that took the given picture([X,Y,Z], [W,X,Y,Z])."
 
         "Using this information, produce an ordered array of function calls that "
         "achieves the pick-and-place operation. If execution fails, details from the "
         "simulation appear at the end of this prompt under **IMPORTANT NOTES**; you "
         "must incorporate any statements found there."
         "The IMPORTANT NOTES section lists coded reasons for any movement failures/success that you must consider on "
-        "this attempt. For the sake of resources, Make sure to take a look at the given image and do binary search in between "
-        "the failure locations parallel to stud's length for each substep to compile the task."
-        "By doing so, you have to make sure if you're not getting stuck within a specific area.\n"
+        "this attempt. For the sake of resources, Make sure to do binary search in the direction of stud's length to find the best executable location.\n"
         "Lastly, legend translating each code into its plain-language explanation is also included for failure reasons.\n"
         "if a success statement is mentioned within the IMPORTANT NOTES section, you have to only consider that action for the "
         "corresponding substep of compliting the task.\n"
-        "Output specification:\n"
-        "  •  Return a *list of arrays*.\n"
-        "  •  Index 0:  0 for a movement call, 1 for a trigger call.\n"
-        "  •  Index 1:  the robot number used for the action.\n"
-        "  •  Indices 2-8:  [X, Y, Z, W, X, Y, Z] — the target pose and orientation "
-        "     (use zeros if this is a trigger call).\n"
-        "  •  Indices 9-10:  strings → Tool_Name (always “tool0” is acceptable) and "
-        "     Element_Name (“None” when the entry represents a movement).\n\n"
+        # "Output specification:\n"
+        # "  •  Return a *list of arrays*.\n"
+        # "  •  Index 0:  0 for a movement call, 1 for a trigger call.\n"
+        # "  •  Index 1:  the robot number used for the action.\n"
+        # "  •  Indices 2-8:  [X, Y, Z, W, X, Y, Z] — the target pose and orientation "
+        # "     (use zeros if this is a trigger call).\n"
+        # "  •  Indices 9-10:  strings → Tool_Name (always “tool0” is acceptable) and "
+        # "     Element_Name (“None” when the entry represents a movement).\n\n"
 
         "Information Needed:\n\n"
 
@@ -3028,8 +3105,8 @@ def Automated_Pick_Place_No_Cut(
         # f"{Rob_2_GTCP}\n\n"
        " • Coded Reasons of Failure:\n"
         f"{legend_txt}\n\n"
-       " • Camera frame pose\n"
-        f"{cam.get_world_pose()}\n\n"
+    #    " • Camera frame pose\n"
+    #     f"{cam.get_world_pose()}\n\n"
 
         "**IMPORTANT NOTES**\n"
     )
@@ -3239,9 +3316,51 @@ def main():
         # Pick_Long_Element_From_Mat_Supply("Bottom_Plate", 3.6576, 0.04, 0.1016)
         # Place_Long_Element_On_Smart_Conveyor_by_Rob2_Gripper("Bottom_Plate", 2.4984, 1.8288, 3.6576, 0.1016)
 
-        Robot_1.free_TCP_movement("tool0")
+        # Creating the Stud to Pick within the simulation
+        Create_Wooden_Element_For_Smart_Mat_Table(el_name="Test_Wood", L=3.6576, W=0.04, H=0.1016)
+
+        # # Move Conveyor Belt (Temporary)
+        # Smart_Conv.render_exec('Joint_1', 1.8288 - (OVERALL_PANEL_LENGTH/2) + ((3.6576/2)-PICK_OFFSET_FROM_L_CORNER-(ROBOT_2_GRIPPER_LENGTH/2)+(SMART_CONV_RANGE_OF_MOTION_J1/2)))
+
+        # # Creating the Stud that represents the Placed element within the simulation
+        # Element = Cuboid(
+        #     name="Test_Wood"+"_Final_Pose",
+        #     # 12 ft = 3.6576 m is the max length of the Smart Material Table
+        #     pose=[3.63075, 1.48443, 0.94819, ev, 0, ev, 0],
+        #     dims=[0.1016, 3.6576, 0.04],
+        #     color=[1, 0, 0, 1]
+        # )
+        # Add_Rigid_Object_To_Scene(test, "Cuboid", Element)
+
+        # # Robot 2 Pre Place Movement
+        # Robot_2.plan(tcp_name= "tool0",
+        #                 target_pose= [2.3+(2.4984-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT+0.2,
+        #                             0,
+        #                             SMART_CONV_REST_ELEVATION+0.1016-PICK_OFFSET_FROM_W_CORNER+0.2],
+        #                 target_orientation= [0, 1, 0, 0],
+        #                 update_world_needed= True)
+        # Robot_2.render_exec(renderInstance= True,
+        #                         Show_Sphere= False)
+
+        # Stage 2: Approach offset for picking
+        Robot_2.plan(
+            tcp_name="tool0",
+            target_pose=[
+                SMART_MAT_TABLE[0] + PICK_OFFSET_FROM_W_CORNER - 0.3,
+                SMART_MAT_TABLE[1]
+                - SMART_MAT_TABLE_MAX_LENGTH
+                + PICK_OFFSET_FROM_L_CORNER
+                + (ROBOT_2_GRIPPER_LENGTH / 2),
+                SMART_MAT_TABLE[2] + (0.04 / 2),
+            ],
+            target_orientation=[0, ev, 0, ev],
+            update_world_needed=True,
+        )
+        Robot_2.render_exec(renderInstance=True, Show_Sphere=False)
 
         Automated_Pick_Place_No_Cut("BPL", 2.4984, 1.8288, 0, 3.6576, 0.04, 0.1016)
+
+        Robot_2.free_TCP_movement("tool0")
 
         ################################
         ################################
