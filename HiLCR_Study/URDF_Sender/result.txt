@@ -1,0 +1,28 @@
+What the point cloud shows
+
+Overall limits
+
+Axis	Range	Span
+X	–2.10 … –0.48	≈ 1.6 units
+Y	–2.90 … –1.28	≈ 1.6 units
+Z	0 … 0.45	≈ 0.45 units
+
+Z-span is an order of magnitude smaller than X and Y → the object is very flat.
+
+Radial pattern (after XY centring)
+
+Radius √(x² + y²) clusters between 0.55 – 0.85 units.
+
+Points occur at every azimuth; the centre region is almost empty.
+
+→ Plan view matches an annulus: a continuous ring with little material inside.
+
+Combined interpretation
+Extremely thin, almost perfectly horizontal part (thickness ≈ 0.45 units).
+
+Nearly circular ring: OD ≈ 1.6 units, ID ≈ 1.1 units.
+
+No tall features above or below the main faces (upper surface rises only ~0.2–0.3 units above the lower one).
+
+In everyday words
+The point cloud depicts a flat, torus-like object—a “washer” or doughnut-shaped disc—lying on the XY-plane with modest, uniform thickness in Z.
