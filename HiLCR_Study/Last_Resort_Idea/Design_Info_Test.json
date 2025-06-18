@@ -1,0 +1,12 @@
+{
+  "elements": [
+    {
+      "name": "Bot_Stud",
+      "type": "Bottom Plate",
+      "coordination": [2.4984, 1.8288, 0.0508],
+      "dimension": [3.6576, 0.04, 0.1016],
+      "orientation": "H",
+      "is_placed": "No"
+    }
+  ]
+}

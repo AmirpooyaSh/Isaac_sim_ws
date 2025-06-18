@@ -1,0 +1,19 @@
+You're a construction robotic assistant. Your job is to find the optimal pick location for a 3.6576-meter stud from its picking position.
+The calculated pick location must satisfy two main objectives:
+   1. Length Optimization: In each iteration, minimize the distance between the    test location and the robotic tool's current center point by adjusting the Y    value between the stud’s start and end positions. The final pick point is not    necessarily the one with the shortest distance to the tool center.
+   2. Proximity to Stud Center: To avoid unexpected rotations or drops when picking    the stud, keep the tool center as close as possible to the stud center. Moving    closer than a certain limit may fail due to the robot’s range of motion.
+
+INFORMATION:
+Picking Stud Start and End Locations:
+[6.4948, 4.611, 0.823]
+[6.4948, 0.9534, 0.823]
+
+Robotic Tool Center Point Location:
+[2.61199, -0.15526, 1.77011]
+
+**IMPORTANT NOTES**:
+
+It's impossible to move Robot 2's gripper to the location Position=[6.4948, 2.3, 0.823] due to the reason: MotionGenStatus.IK_FAIL. Distance to Tool Center Point: 4.690579123711697
+It's impossible to move Robot 2's gripper to the location Position=[6.4948, 1.65, 0.823] due to the reason: MotionGenStatus.IK_FAIL. Distance to Tool Center Point: 4.385452601020789
+It's impossible to move Robot 2's gripper to the location Position=[6.4948, 3.0, 0.823] due to the reason: MotionGenStatus.IK_FAIL. Distance to Tool Center Point: 5.092042469952504
+Robot 2's gripper can reach the location: Position=[6.4948, 1.3, 0.823]
