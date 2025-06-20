@@ -3365,7 +3365,6 @@ def main():
                         # Conveyor Move
                         Smart_Conv.render_exec("Joint_1", (SMART_CONV_RANGE_OF_MOTION_J1/2)+(element.coordination[1]-(OVERALL_PANEL_LENGTH/2))+(2.7822-L_Plate_Y))
 
-
                         doability = Robot_2.plan(tcp_name="tool0",
                             target_pose=[2.3+(element.coordination[0]-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT,
                                          0,
