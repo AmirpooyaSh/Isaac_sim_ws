@@ -3010,6 +3010,90 @@ def Frame_8ft_V_Element(elem: Element):
     quat = R.from_euler('xyz', [(np.pi / 2) - angle, 0, np.pi / 2]).as_quat()
     quat[1] *= -1  # flip Y component to avoid Euler singularity
 
+    # Info !
+    Start_Loc = [6.4474, -2.41228, 1.06537]
+    End_Loc = [4.009, -2.41228, 1.06537]
+    Rob_Gripper_Loc = [2.61199, -0.15526, 1.77011]
+
+    init_prompt = (
+        "You're a construction robotic assistant. Your job is to find the optimal pick "
+        f"location for a {elem.dimension[0]}-meter stud from its picking position.\n"
+        "The calculated pick location must satisfy two main objectives:\n"
+        "   1. Length Optimization: In each iteration, minimize the distance between the "
+        "   test location and the robotic tool's current center point by adjusting the X "
+        "   value between the stud’s start and end positions. The final pick point is not "
+        "   necessarily the one with the shortest distance to the tool center.\n"
+        "   2. Proximity to Stud Center: To avoid unexpected rotations or drops when picking "
+        "   the stud, keep the tool center as close as possible to the stud center. Moving "
+        "   closer than a certain limit may fail due to the robot’s range of motion.\n\n"
+        # "Follow this procedure to find the optimal solution:\n"
+        # "   A. Find a success location with a binary search along the stud length (Y values). "
+        # "   Check **IMPORTANT NOTES** to skip points already tested and failed within your binary test.\n"
+        # "   B. If a success entry exists in **IMPORTANT NOTES**, the first objective is met. "
+        # "   Test points closer to the center to improve the second objective. Search between "
+        # "   the success point and the stud center using a 5 cm testing dl, starting from the "
+        # "   nearest success point.\n"
+        # "   C. If applying the 5 cm offset to the nearest success point results in failure, "
+        # "   the un-offset success point is the answer (You should check for the existance of a "
+        # "   statement declaring a point within the succsess and success+5cm length being failed). "
+        # "   Report it again; the loop ends when the same answer is returned twice.\n\n"
+        "INFORMATION:\n"
+        "Picking Stud Start and End Locations:\n"
+        f"{Start_Loc}\n"
+        f"{End_Loc}\n\n"
+        "Robotic Tool Center Point Location:\n"
+        f"{Rob_Gripper_Loc}\n\n"
+        "**IMPORTANT NOTES**:\n"
+    )
+
+    Solution_Founder: Tuple[float, float, float] = []
+    while 1>0:
+        #DEBUG
+        print(init_prompt)
+        # Recieve Response
+        Response_Loc = IDC_Agent.send_message(init_prompt)
+
+        print(Response_Loc)
+
+        # Planning Rob_2
+        doable = Robot_2.plan(tcp_name="tool0",
+                    target_pose=Response_Loc,
+                    target_orientation=[quat[3], quat[0], quat[1], quat[2]],
+                    removing_primitives=["world/obstacles", "Smart_Conveyor", "World/obstacles/Sloped_Table"],
+                    )
+        if not doable:
+            # ── 1. Acquire status text ───────────────────────────────────
+            status_obj = getattr(Robot_2, "_computed_path_result", None)
+            status_txt = status_obj.status if status_obj else "<status unavailable>"
+
+            # ── 2. Build failure statement ───────────────────────────────
+            Distance = np.sqrt(
+                (Response_Loc[0] - Rob_Gripper_Loc[0]) ** 2 +
+                (Response_Loc[1] - Rob_Gripper_Loc[1]) ** 2 +
+                (Response_Loc[2] - Rob_Gripper_Loc[2]) ** 2
+            )
+            failure_note = (
+                f"It's impossible to move Robot 2's gripper "
+                f"to the location Position={Response_Loc} "
+                f"due to the reason: {status_txt}."
+                f" Distance to Tool Center Point: {Distance}"
+            )
+
+            # ── 3. Append to next prompt under IMPORTANT NOTES ───────────
+            init_prompt += f"\n{failure_note}"
+
+        if doable:
+            if Solution_Founder == Response_Loc:
+                print("Solution Found")
+                break
+            else:
+                success_note = (f"Robot 2's gripper can reach the location: Position={Response_Loc}")
+                init_prompt += f"\n{success_note}"
+                Solution_Founder = Response_Loc
+
+
+    print("Final Calculated Location is :")
+    print(Solution_Founder)
 
 # less than 8ft (2.4384 m) Vertical
 def Frame_LessThan_8ft_V_Element(elem: Element):
@@ -3205,7 +3289,41 @@ def main():
                         Robot_2.move_to_home(removing_primitives=["world/obstacles"])
 
                     if element.dimension[0] == 2.4384:
-                        Frame_8ft_V_Element(element)
+                        # Frame_8ft_V_Element(element)
+
+                        # Compute stud center pose on the sloped table
+                        diagonal_stud_l = np.sqrt(element.dimension[1]**2 + element.dimension[2]**2)
+                        angle = np.radians(SLOPED_MAT_TABLE_ANGLE)
+                        half_diagonal = diagonal_stud_l / 2
+                        z_increase = half_diagonal * np.sin(angle + np.arcsin((element.dimension[1] / 2) / half_diagonal))
+                        y_increase = half_diagonal * np.cos(angle + np.arcsin((element.dimension[1] / 2) / half_diagonal))
+                        Stud_Pose = [
+                            SLOPED_MAT_TABLE[0] + (element.dimension[0] / 2),
+                            SLOPED_MAT_TABLE[1] - y_increase,
+                            SLOPED_MAT_TABLE[2] + z_increase,
+                        ]
+                        # Compute pick orientation quaternion
+                        quat = R.from_euler('xyz', [(np.pi / 2) - angle, 0, np.pi / 2]).as_quat()
+                        quat[1] *= -1  # flip Y component to avoid Euler singularity
+
+                        Robot_2.plan(tcp_name="tool0",
+                                            target_pose=[4.6186, -2.41228, 1.06537],
+                                            target_orientation=[quat[3], quat[0], quat[1], quat[2]],
+                                            removing_primitives=["world/obstacles", "World/obstacles/Sloped_Table"],
+                                    )
+                        Robot_2.render_exec(renderInstance= True, Show_Sphere= False)
+                        Create_Wooden_Element_For_Sloped_Table(element.name, element.dimension[0], element.dimension[1], element.dimension[2])
+
+                        Robot_2.eef_attach(tool_name="tool0", attaching_object_name= element.name)
+                        Robot_2.move_to_home(removing_primitives=["world/obstacles", "World/obstacles/Sloped_Table"])
+
+                        # Removing
+                        prims_utils.delete_prim("/world/obstacles/"+elem_name)
+
+                        #Place
+                        # Place [0, ev, ev, 0]
+                        Robot_2.free_TCP_movement()
+
                     if element.dimension[0] < 2.4384:
                         if element.orientation == "H":
                             Frame_LessThan_8ft_H_Element(element)

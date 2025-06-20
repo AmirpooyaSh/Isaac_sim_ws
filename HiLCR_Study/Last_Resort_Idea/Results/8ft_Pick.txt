@@ -1,0 +1,8 @@
+First :
+Robot 2's gripper can reach the location: Position=[4.6186, -2.41228, 1.06537]
+None
+[4.6186, -2.41228, 1.06537]
+Second :
+Robot 2's gripper can reach the location: Position=[4.5, -2.41228, 1.06537]
+None
+[4.5, -2.41228, 1.06537]

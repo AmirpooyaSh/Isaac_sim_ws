@@ -1,6 +1,22 @@
 {
   "elements": [
     {
+      "name": "LK_1",
+      "type": "King Stud",
+      "coordination": [1.2592, 0.72, 0.0508],
+      "dimension": [2.4384, 0.04, 0.1016],
+      "orientation": "V",
+      "is_placed": "No"
+    },
+    {
+      "name": "RK_1",
+      "type": "King Stud",
+      "coordination": [1.2592, 1.68, 0.0508],
+      "dimension": [2.4384, 0.04, 0.1016],
+      "orientation": "V",
+      "is_placed": "No"
+    },
+    {
       "name": "Bot_Stud",
       "type": "Bottom Plate",
       "coordination": [2.4984, 1.8288, 0.0508],
