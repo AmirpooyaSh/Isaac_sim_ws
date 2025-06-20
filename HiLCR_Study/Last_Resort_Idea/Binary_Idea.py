@@ -511,13 +511,13 @@ class WorldManager(object):
         # )
         # world_cfg_table.cuboid[0].pose[2] -= 0.02
 
-        # IDC_Lab = Mesh(
-        #     name="idc_lab_model",
-        #     pose=[0, 0, 0, 1, 0, 0, 0],
-        #     file_path= cur_dir + "lab_model/idc_lab_visualization.stl",
-        #     color= [0.1, 0.05, 0, 1],
-        #     scale=[0.001, 0.001, 0.001]
-        # )
+        IDC_Lab = Mesh(
+            name="idc_lab_model",
+            pose=[0, 0, 0, 1, 0, 0, 0],
+            file_path= cur_dir + "lab_model/idc_lab_visualization.stl",
+            color= [0.1, 0.05, 0, 1],
+            scale=[0.001, 0.001, 0.001]
+        )
 
 
         SheathingTable = Mesh(
@@ -546,7 +546,7 @@ class WorldManager(object):
 
         # Small_Cutting_Table
         world_model = WorldConfig(
-            mesh=[Smart_Mat_Table, Sloped_Table, SheathingTable, Small_Cutting_Table],
+            mesh=[IDC_Lab, Smart_Mat_Table, Sloped_Table, SheathingTable, Small_Cutting_Table],
             cuboid=[Cube, BearLoadingPileStand],
             capsule=[],
             cylinder=[],
@@ -772,9 +772,9 @@ class CuRoboRobot(object):
 
         # Setting up Extra Tool Spheres
         if self._ROS_JS_robot_indicator == "IRB6620_R1":
-            self._robot_cfg["kinematics"]["extra_collision_spheres"] = {"tool0": 1, "tool1": 1,}
+            self._robot_cfg["kinematics"]["extra_collision_spheres"] = {"tool0": 100, "tool1": 1,}
         if self._ROS_JS_robot_indicator == "IRB6620_R2":
-            self._robot_cfg["kinematics"]["extra_collision_spheres"] = {"tool0": 1,}
+            self._robot_cfg["kinematics"]["extra_collision_spheres"] = {"tool0": 100,}
 
         # if self._ROS_JS_robot_indicator == "IRB6620_R1":
         #     self._robot_cfg["kinematics"]["extra_collision_spheres"] = {"tool0": 50, "tool1": 100,}
@@ -2337,22 +2337,22 @@ class Element:
 
 test = WorldManager()
 Robot_1 = None
-# Robot_1 = CuRoboRobot(working_world=test, 
-#                 R_Name="IRB6620_R1",
-#                 pose=[0,0,0.025],
-#                 input_tool="tool0", 
-#                 w_dir=INSTALLATION_DIRECTORY+"/Isaac_sim_ws/robot", 
-#                 r_conf_name="IRB6620_Config.yaml",
-#                 Gripper_List=[RobotGripper(RobName= "IRB6620_R1",
-#                                            ParentLink= "Link_6",
-#                                            TCP_Name= "T0",
-#                                            C_Pose= [0.09 , -0.3, -0.29]),
-#                                 RobotGripper(RobName= "IRB6620_R1",
-#                                              ParentLink= "Link_6",
-#                                              TCP_Name= "T1",
-#                                              C_Pose= [0.55, 0.2, 0])
-#                                            ],
-#                 Cuda_Device= 0)
+Robot_1 = CuRoboRobot(working_world=test, 
+                R_Name="IRB6620_R1",
+                pose=[0,0,0.025],
+                input_tool="tool0", 
+                w_dir=INSTALLATION_DIRECTORY+"/Isaac_sim_ws/robot", 
+                r_conf_name="IRB6620_Config.yaml",
+                Gripper_List=[RobotGripper(RobName= "IRB6620_R1",
+                                           ParentLink= "Link_6",
+                                           TCP_Name= "T0",
+                                           C_Pose= [0.09 , -0.3, -0.29]),
+                                RobotGripper(RobName= "IRB6620_R1",
+                                             ParentLink= "Link_6",
+                                             TCP_Name= "T1",
+                                             C_Pose= [0.55, 0.2, 0])
+                                           ],
+                Cuda_Device= 0)
 
 Robot_2 = None
 Robot_2 = CuRoboRobot(working_world=test,
@@ -2906,8 +2906,8 @@ def Frame_12ft_H_Element(elem: Element):
     # Pick [0, ev, 0, ev]
     # Place [0, 1, 0, 0]
 
-    Start_Loc = [6.4948, 4.611, 0.823]
-    End_Loc = [6.4948, 0.9534, 0.823]
+    Start_Loc = [6.4501, 4.611, 0.823]
+    End_Loc = [6.4501, 0.9534, 0.823]
     Rob_Gripper_Loc = [2.61199, -0.15526, 1.77011]
 
     init_prompt = (
@@ -2989,6 +2989,102 @@ def Frame_12ft_H_Element(elem: Element):
 
     print("Final Calculated Location is :")
     print(Solution_Founder)
+
+    return Solution_Founder[1]
+
+def Pass_Frame_12ft_H_Element(elem: Element):
+    # target_pose=[
+    #     2.3 - (element.dimension[0] / 2) + PICK_OFFSET_FROM_L_CORNER + (ROBOT_1_GRIPPER_LENGTH / 2),
+    #     -1,
+    #     PASSING_ELEVATION + element.dimension[2],
+    # ],
+    # target_orientation=[0, ev, -ev, 0],
+
+    Start_Loc = [4.1288, -1, 0.9516]
+    End_Loc = [0.4712, -1, 0.9516]
+    Rob_Gripper_Loc = [1.45695, 0.00533, 1.64002]
+
+    init_prompt = (
+        "You're a construction robotic assistant. Your job is to find the optimal pick "
+        f"location for a {elem.dimension[0]}-meter stud from its picking position.\n"
+        "The calculated pick location must satisfy two main objectives:\n"
+        "   1. Length Optimization: In each iteration, minimize the distance between the "
+        "   test location and the robotic tool's current center point by adjusting the X "
+        "   value between the stud’s start and end positions. The final pick point is not "
+        "   necessarily the one with the shortest distance to the tool center.\n"
+        "   2. Proximity to Stud Center: To avoid unexpected rotations or drops when picking "
+        "   the stud, keep the tool center as close as possible to the stud center. Moving "
+        "   closer than a certain limit may fail due to the robot’s range of motion.\n\n"
+        # "Follow this procedure to find the optimal solution:\n"
+        # "   A. Find a success location with a binary search along the stud length (Y values). "
+        # "   Check **IMPORTANT NOTES** to skip points already tested and failed within your binary test.\n"
+        # "   B. If a success entry exists in **IMPORTANT NOTES**, the first objective is met. "
+        # "   Test points closer to the center to improve the second objective. Search between "
+        # "   the success point and the stud center using a 5 cm testing dl, starting from the "
+        # "   nearest success point.\n"
+        # "   C. If applying the 5 cm offset to the nearest success point results in failure, "
+        # "   the un-offset success point is the answer (You should check for the existance of a "
+        # "   statement declaring a point within the succsess and success+5cm length being failed). "
+        # "   Report it again; the loop ends when the same answer is returned twice.\n\n"
+        "INFORMATION:\n"
+        "Picking Stud Start and End Locations:\n"
+        f"{Start_Loc}\n"
+        f"{End_Loc}\n\n"
+        "Robotic Tool Center Point Location:\n"
+        f"{Rob_Gripper_Loc}\n\n"
+        "**IMPORTANT NOTES**:\n"
+    )
+
+    Solution_Founder: Tuple[float, float, float] = []
+    while 1>0:
+        #DEBUG
+        print(init_prompt)
+        # Recieve Response
+        Response_Loc = IDC_Agent.send_message(init_prompt)
+
+        print(Response_Loc)
+
+        # Planning Rob_2
+        doable = Robot_1.plan(tcp_name="tool0",
+                    target_pose=Response_Loc,
+                    target_orientation=[0, ev, -ev, 0],
+                    removing_primitives=["world/obstacles"],
+                    )
+        if not doable:
+            # ── 1. Acquire status text ───────────────────────────────────
+            status_obj = getattr(Robot_1, "_computed_path_result", None)
+            status_txt = status_obj.status if status_obj else "<status unavailable>"
+
+            # ── 2. Build failure statement ───────────────────────────────
+            Distance = np.sqrt(
+                (Response_Loc[0] - Rob_Gripper_Loc[0]) ** 2 +
+                (Response_Loc[1] - Rob_Gripper_Loc[1]) ** 2 +
+                (Response_Loc[2] - Rob_Gripper_Loc[2]) ** 2
+            )
+            failure_note = (
+                f"It's impossible to move Robot 1's gripper "
+                f"to the location Position={Response_Loc} "
+                f"due to the reason: {status_txt}."
+                f" Distance to Tool Center Point: {Distance}"
+            )
+
+            # ── 3. Append to next prompt under IMPORTANT NOTES ───────────
+            init_prompt += f"\n{failure_note}"
+
+        if doable:
+            if Solution_Founder == Response_Loc:
+                print("Solution Found")
+                break
+            else:
+                success_note = (f"Robot 1's gripper can reach the location: Position={Response_Loc}")
+                init_prompt += f"\n{success_note}"
+                Solution_Founder = Response_Loc
+
+
+    print("Final Calculated Location is :")
+    print(Solution_Founder)
+
+    return Solution_Founder[0]
 
 # 8ft (2.4384 m) Vertical
 def Frame_8ft_V_Element(elem: Element):
@@ -3094,6 +3190,8 @@ def Frame_8ft_V_Element(elem: Element):
 
     print("Final Calculated Location is :")
     print(Solution_Founder)
+
+    return Solution_Founder[0]
 
 # less than 8ft (2.4384 m) Vertical
 def Frame_LessThan_8ft_V_Element(elem: Element):
@@ -3250,9 +3348,9 @@ def main():
             if element.is_placed == False:
                     # 12ft H
                     if element.dimension[0] == 3.6576:
-                        # Frame_12ft_H_Element(element)
+                        L_Plate_Y = Frame_12ft_H_Element(element)
                         Robot_2.plan(tcp_name="tool0",
-                            target_pose=[6.4948, 1.3, 0.823],
+                            target_pose=[6.4501, L_Plate_Y, 0.823],
                             target_orientation=[0, ev, 0, ev],
                             removing_primitives=["world/obstacles"],
                             )
@@ -3265,31 +3363,117 @@ def main():
                         Robot_2.move_to_home(removing_primitives=["world/obstacles"])
 
                         # Conveyor Move
-                        Smart_Conv.render_exec("Joint_1", (SMART_CONV_RANGE_OF_MOTION_J1/2)+(element.coordination[1]-(OVERALL_PANEL_LENGTH/2))+(2.7822-1.3))
+                        Smart_Conv.render_exec("Joint_1", (SMART_CONV_RANGE_OF_MOTION_J1/2)+(element.coordination[1]-(OVERALL_PANEL_LENGTH/2))+(2.7822-L_Plate_Y))
 
-                        # Removing
-                        prims_utils.delete_prim("/world/obstacles/"+elem_name)
 
-                        Robot_2.plan(tcp_name="tool0",
+                        doability = Robot_2.plan(tcp_name="tool0",
                             target_pose=[2.3+(element.coordination[0]-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT,
                                          0,
                                          SMART_CONV_REST_ELEVATION+element.dimension[2]-PICK_OFFSET_FROM_W_CORNER],
                             target_orientation=[0, 1, 0, 0],
                             removing_primitives=["world/obstacles", "Smart_Conveyor"],
                             )
-                        Robot_2.render_exec(renderInstance= True,
-                                                Show_Sphere= False)
+                        
+                        # If Doable = BPL
+                        if doability:
+                            # Removing
+                            prims_utils.delete_prim("/world/obstacles/"+elem_name)
 
-                        # Detach
-                        Robot_2.eef_detach(tool_name="tool0",
-                        detaching_object_name= element.name)
-                        Smart_Conv.attach_object_to_conv(obj_name= element.name)
+                            Robot_2.render_exec(renderInstance= True,
+                                                    Show_Sphere= False)
 
-                        # Back to Home
-                        Robot_2.move_to_home(removing_primitives=["world/obstacles"])
+                            # Detach
+                            Robot_2.eef_detach(tool_name="tool0",
+                            detaching_object_name= element.name)
+                            Smart_Conv.attach_object_to_conv(obj_name= element.name)
+
+                            # Back to Home
+                            Robot_2.move_to_home(removing_primitives=["world/obstacles"])
+
+                        # If Not Doable = TPL
+                        else:
+                            Smart_Conv.render_exec("Joint_1", SMART_CONV_RANGE_OF_MOTION_J1)
+
+                            # Creating Passing Stud
+                            Temp_Stud = Cuboid(
+                                name= "Passing_Visualizer",
+                                pose= [2.3, -1, 0.90692, 0, 0, 0, 1],
+                                dims= element.dimension,
+                                color= [1, 1, 0, 1]
+                            )
+                            Add_Rigid_Object_To_Scene(test, "Cuboid", Temp_Stud, True, False)
+
+                            # Robot 2 To Pass Location
+                            Robot_2.plan(
+                                tcp_name="tool0",
+                                target_pose=[
+                                    2.3 + (2.7822-1.3),
+                                    -1,
+                                    PASSING_ELEVATION + element.dimension[2],
+                                ],
+                                target_orientation=[0, ev, ev, 0],
+                                update_world_needed=True,
+                                removing_primitives=["world/obstacles"]
+                            )
+                            Robot_2.render_exec(renderInstance=True, Show_Sphere=False)
+
+                            # Removing
+                            prims_utils.delete_prim("/world/obstacles/Passing_Visualizer")
+
+                            L_Plate_X = Pass_Frame_12ft_H_Element(element)
+
+                            #Robot 1's gripper can reach the location: Position=[1.8, -1, 0.9516]
+
+                            Robot_1.plan(
+                                tcp_name="tool0",
+                                target_pose=[L_Plate_X, -1, 0.9516],
+                                target_orientation=[0, ev, -ev, 0],
+                                update_world_needed=True,
+                                removing_primitives=["world/obstacles"]
+                            )
+                            Robot_1.render_exec(renderInstance=True, Show_Sphere=False)
+
+                            # Updaing World to see the Attaching Object
+                            Robot_1.motion_gen_update_world()
+                            # Stage 5: Transfer attachment
+                            Robot_2.eef_detach(tool_name="tool0", detaching_object_name=element.name)
+                            Robot_1.eef_attach(tool_name="tool0", attaching_object_name=element.name)
+
+                            # Stage 7: Return both robots home
+                            Robot_2.move_to_home(removing_primitives=["world/obstacles"])
+                            Robot_1.move_to_home()
+
+                            # Conveyor Move
+                            Smart_Conv.render_exec("Joint_1", (SMART_CONV_RANGE_OF_MOTION_J1/2)+(element.coordination[1]-(OVERALL_PANEL_LENGTH/2))+(2.3-L_Plate_X))
+
+                            prims_utils.delete_prim("/world/obstacles/"+elem_name)
+
+                            # Stage 3: Robot_1 place motion
+                            Robot_1.plan(
+                                tcp_name="tool0",
+                                target_pose=[
+                                    2.3 + (element.coordination[0] - (OVERALL_PANEL_HEIGHT / 2)) + SMART_CONV_X_SHIFT,
+                                    0,
+                                    SMART_CONV_REST_ELEVATION + element.dimension[2] - PICK_OFFSET_FROM_W_CORNER,
+                                ],
+                                target_orientation=[0, 1, 0, 0],
+                                update_world_needed=True,
+                                removing_primitives=["Smart_Conveyor", "world/obstacles"],
+                            )
+                            Robot_1.render_exec(renderInstance=True, Show_Sphere=False)
+
+                            # Stage 4: Detach from Robot_1 and attach to conveyor
+                            Robot_1.eef_detach(tool_name="tool0", detaching_object_name=element.name)
+                            Smart_Conv.attach_object_to_conv(obj_name=element.name)
+
+                            # Stage 6: Return Robot_1 home
+                            Robot_1.move_to_home(removing_primitives=["world/obstacles"])
 
                     if element.dimension[0] == 2.4384:
-                        # Frame_8ft_V_Element(element)
+                        ft8_Plate_X = Frame_8ft_V_Element(element)
+                        # To Avoid Placement Constraint Issues
+                        if ft8_Plate_X > 4.6186:
+                            ft8_Plate_X = 4.6186
 
                         # Compute stud center pose on the sloped table
                         diagonal_stud_l = np.sqrt(element.dimension[1]**2 + element.dimension[2]**2)
@@ -3307,7 +3491,7 @@ def main():
                         quat[1] *= -1  # flip Y component to avoid Euler singularity
 
                         Robot_2.plan(tcp_name="tool0",
-                                            target_pose=[4.6186, -2.41228, 1.06537],
+                                            target_pose=[ft8_Plate_X, -2.41228, 1.06537],
                                             target_orientation=[quat[3], quat[0], quat[1], quat[2]],
                                             removing_primitives=["world/obstacles", "World/obstacles/Sloped_Table"],
                                     )
@@ -3319,10 +3503,22 @@ def main():
 
                         # Removing
                         prims_utils.delete_prim("/world/obstacles/"+elem_name)
+                    
+                        Robot_2.plan(tcp_name="tool0",
+                                            target_pose=[2.3+ (element.coordination[0] - (OVERALL_PANEL_HEIGHT / 2)) + SMART_CONV_X_SHIFT + (5.2282-ft8_Plate_X),
+                                                         0,
+                                                         SMART_CONV_REST_ELEVATION+element.dimension[2]-PICK_OFFSET_FROM_W_CORNER],
+                                            target_orientation=[0, ev, ev, 0],
+                                            removing_primitives=["world/obstacles", "Smart_Conveyor"],
+                                    )
+                        Robot_2.render_exec(renderInstance= True, Show_Sphere= False)
+                        # Detach
+                        Robot_2.eef_detach(tool_name="tool0",
+                        detaching_object_name= element.name)
+                        Smart_Conv.attach_object_to_conv(obj_name= element.name)
 
-                        #Place
-                        # Place [0, ev, ev, 0]
-                        Robot_2.free_TCP_movement()
+                        # Back to Home
+                        Robot_2.move_to_home(removing_primitives=["world/obstacles"])
 
                     if element.dimension[0] < 2.4384:
                         if element.orientation == "H":

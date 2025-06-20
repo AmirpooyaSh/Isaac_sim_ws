@@ -1,6 +1,14 @@
 {
   "elements": [
     {
+      "name": "Top_Stud",
+      "type": "Top Plate",
+      "coordination": [0.02, 1.8288, 0.0508],
+      "dimension": [3.6576, 0.04, 0.1016],
+      "orientation": "H",
+      "is_placed": "No"
+    },
+    {
       "name": "LK_1",
       "type": "King Stud",
       "coordination": [1.2592, 0.72, 0.0508],
@@ -12,6 +20,110 @@
       "name": "RK_1",
       "type": "King Stud",
       "coordination": [1.2592, 1.68, 0.0508],
+      "dimension": [2.4384, 0.04, 0.1016],
+      "orientation": "V",
+      "is_placed": "No"
+    },
+    {
+      "name": "LK_2",
+      "type": "King Stud",
+      "coordination": [1.2592, 3.1376, 0.0508],
+      "dimension": [2.4384, 0.04, 0.1016],
+      "orientation": "V",
+      "is_placed": "Yes"
+    },
+    {
+      "name": "RK_2",
+      "type": "King Stud",
+      "coordination": [1.2592, 2.2376, 0.0508],
+      "dimension": [2.4384, 0.04, 0.1016],
+      "orientation": "V",
+      "is_placed": "Yes"
+    },
+    {
+      "name": "LJ_2",
+      "type": "Jack Stud",
+      "coordination": [1.5784, 3.0976, 0.0508],
+      "dimension": [1.8, 0.04, 0.1016],
+      "orientation": "V",
+      "is_placed": "Yes"
+    },
+    {
+      "name": "RJ_2",
+      "type": "Jack Stud",
+      "coordination": [1.5784, 2.2776, 0.0508],
+      "dimension": [1.8, 0.04, 0.1016],
+      "orientation": "V",
+      "is_placed": "Yes"
+    },
+    {
+      "name": "BL_1",
+      "type": "Bear Loading",
+      "coordination": [0.5514, 2.6876, 0.0254],
+      "dimension": [0.86, 0.254, 0.0508],
+      "orientation": "H",
+      "is_placed": "Yes"
+    },
+    {
+      "name": "BL_2",
+      "type": "Bear Loading",
+      "coordination": [0.5514, 2.6876, 0.0762],
+      "dimension": [0.86, 0.254, 0.0508],
+      "orientation": "H",
+      "is_placed": "Yes"
+    },
+    {
+      "name": "BS_1",
+      "type": "Lower Sill Plate",
+      "coordination": [1.8984, 2.6876, 0.0508],
+      "dimension": [0.78, 0.04, 0.1016],
+      "orientation": "H",
+      "is_placed": "Yes"
+    },
+    {
+      "name": "LC_1",
+      "type": "Lower Cripple Stud",
+      "coordination": [2.1984, 2.5376, 0.0508],
+      "dimension": [0.56, 0.04, 0.1016],
+      "orientation": "V",
+      "is_placed": "Yes"
+    },
+    {
+      "name": "LC_2",
+      "type": "Lower Cripple Stud",
+      "coordination": [2.1984, 2.8376, 0.0508],
+      "dimension": [0.56, 0.04, 0.1016],
+      "orientation": "V",
+      "is_placed": "Yes"
+    },
+    {
+      "name": "F_Stud",
+      "type": "King Stud",
+      "coordination": [1.2592, 0.02, 0.0508],
+      "dimension": [2.4384, 0.04, 0.1016],
+      "orientation": "V",
+      "is_placed": "No"
+    },
+    {
+      "name": "R_Stud_1",
+      "type": "King Stud",
+      "coordination": [1.2592, 0.5, 0.0508],
+      "dimension": [2.4384, 0.04, 0.1016],
+      "orientation": "V",
+      "is_placed": "No"
+    },
+    {
+      "name": "R_Stud_2",
+      "type": "King Stud",
+      "coordination": [1.2592, 1.9588, 0.0508],
+      "dimension": [2.4384, 0.04, 0.1016],
+      "orientation": "V",
+      "is_placed": "No"
+    },
+    {
+      "name": "R_Stud_3",
+      "type": "King Stud",
+      "coordination": [1.2592, 3.6376, 0.0508],
       "dimension": [2.4384, 0.04, 0.1016],
       "orientation": "V",
       "is_placed": "No"

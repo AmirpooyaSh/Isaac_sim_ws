@@ -1,0 +1,46 @@
+TPL:
+
+
+It's impossible to move Robot 2's gripper to the location Position=[6.4501, 2.6, 0.823] due to the reason: MotionGenStatus.IK_FAIL. Distance to Tool Center Point: 4.818668217651014
+Robot 2's gripper can reach the location: Position=[6.4501, 1.5, 0.823]
+
+PASS:
+
+It's impossible to move Robot 1's gripper to the location Position=[2.3, -1, 0.9516] due to the reason: MotionGenStatus.IK_FAIL. Distance to Tool Center Point: 1.4816692639722266
+Robot 1's gripper can reach the location: Position=[1.45695, -1, 0.9516]
+
+VERTICAL:
+**IMPORTANT NOTES**:
+
+It's impossible to move Robot 2's gripper to the location Position=[5.2287, -2.41228, 1.06537] due to the reason: MotionGenStatus.IK_FAIL. Distance to Tool Center Point: 3.526750483391191
+Robot 2's gripper can reach the location: Position=[4.75, -2.41228, 1.06537]
+
+**IMPORTANT NOTES**:
+
+Robot 2's gripper can reach the location: Position=[4.6188, -2.41228, 1.06537]
+
+**IMPORTANT NOTES**:
+
+It's impossible to move Robot 2's gripper to the location Position=[5.2282, -2.41228, 1.06537] due to the reason: MotionGenStatus.IK_FAIL. Distance to Tool Center Point: 3.5263795190109644
+Robot 2's gripper can reach the location: Position=[5.1, -2.41228, 1.06537]
+
+**IMPORTANT NOTES**:
+
+Robot 2's gripper can reach the location: Position=[4.8, -2.41228, 1.06537]
+
+**IMPORTANT NOTES**:
+
+It's impossible to move Robot 2's gripper to the location Position=[5.2282, -2.41228, 1.06537] due to the reason: MotionGenStatus.IK_FAIL. Distance to Tool Center Point: 3.5263795190109644
+Robot 2's gripper can reach the location: Position=[4.6, -2.41228, 1.06537]
+
+**IMPORTANT NOTES**:
+
+Robot 2's gripper can reach the location: Position=[4.3561, -2.41228, 1.06537]
+
+BPL:
+
+**IMPORTANT NOTES**:
+
+It's impossible to move Robot 2's gripper to the location Position=[6.4501, 2.7822, 0.823] due to the reason: MotionGenStatus.IK_FAIL. Distance to Tool Center Point: 4.925116950469298
+It's impossible to move Robot 2's gripper to the location Position=[6.4501, 2.2, 0.823] due to the reason: MotionGenStatus.IK_FAIL. Distance to Tool Center Point: 4.601668761634197
+Robot 2's gripper can reach the location: Position=[6.4501, 1.4, 0.823]
