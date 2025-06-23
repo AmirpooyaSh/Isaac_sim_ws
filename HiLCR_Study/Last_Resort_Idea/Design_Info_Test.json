@@ -6,7 +6,7 @@
       "coordination": [0.02, 1.8288, 0.0508],
       "dimension": [3.6576, 0.04, 0.1016],
       "orientation": "H",
-      "is_placed": "No"
+      "is_placed": "Yes"
     },
     {
       "name": "LK_1",
@@ -14,7 +14,7 @@
       "coordination": [1.2592, 0.72, 0.0508],
       "dimension": [2.4384, 0.04, 0.1016],
       "orientation": "V",
-      "is_placed": "No"
+      "is_placed": "Yes"
     },
     {
       "name": "RK_1",
@@ -22,7 +22,7 @@
       "coordination": [1.2592, 1.68, 0.0508],
       "dimension": [2.4384, 0.04, 0.1016],
       "orientation": "V",
-      "is_placed": "No"
+      "is_placed": "Yes"
     },
     {
       "name": "LK_2",
@@ -97,12 +97,20 @@
       "is_placed": "Yes"
     },
     {
+      "name": "TSP",
+      "type": "Top Sill Plate",
+      "coordination": [0.4584, 1.2, 0.0508],
+      "dimension": [0.92, 0.04, 0.1016],
+      "orientation": "H",
+      "is_placed": "No"
+    },
+    {
       "name": "F_Stud",
       "type": "King Stud",
       "coordination": [1.2592, 0.02, 0.0508],
       "dimension": [2.4384, 0.04, 0.1016],
       "orientation": "V",
-      "is_placed": "No"
+      "is_placed": "Yes"
     },
     {
       "name": "R_Stud_1",
@@ -110,7 +118,7 @@
       "coordination": [1.2592, 0.5, 0.0508],
       "dimension": [2.4384, 0.04, 0.1016],
       "orientation": "V",
-      "is_placed": "No"
+      "is_placed": "Yes"
     },
     {
       "name": "R_Stud_2",
@@ -118,7 +126,7 @@
       "coordination": [1.2592, 1.9588, 0.0508],
       "dimension": [2.4384, 0.04, 0.1016],
       "orientation": "V",
-      "is_placed": "No"
+      "is_placed": "Yes"
     },
     {
       "name": "R_Stud_3",
@@ -126,7 +134,7 @@
       "coordination": [1.2592, 3.6376, 0.0508],
       "dimension": [2.4384, 0.04, 0.1016],
       "orientation": "V",
-      "is_placed": "No"
+      "is_placed": "Yes"
     },
     {
       "name": "Bot_Stud",
@@ -134,7 +142,7 @@
       "coordination": [2.4984, 1.8288, 0.0508],
       "dimension": [3.6576, 0.04, 0.1016],
       "orientation": "H",
-      "is_placed": "No"
+      "is_placed": "Yes"
     }
   ]
 }

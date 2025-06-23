@@ -3521,9 +3521,192 @@ def main():
 
                     if element.dimension[0] < 2.4384:
                         if element.orientation == "H":
-                            Frame_LessThan_8ft_H_Element(element)
+
+                            # Frame_LessThan_8ft_H_Element(element)
+
+                            # Depicting TSP
+                            # Pre Pick
+                            Robot_2.plan(tcp_name= "tool0",
+                                            target_pose= [SMART_MAT_TABLE[0]+PICK_OFFSET_FROM_W_CORNER-0.3,
+                                                        SMART_MAT_TABLE[1]-SMART_MAT_TABLE_MAX_LENGTH-STUD_TO_SAW_OFFSET-PICK_OFFSET_FROM_L_CORNER-(ROBOT_2_GRIPPER_LENGTH/2),
+                                                        SMART_MAT_TABLE[2]+(element.dimension[1]/2)],
+                                            target_orientation= [0, -ev, 0, -ev],
+                                            update_world_needed= True)
+                            Robot_2.render_exec(renderInstance= True,
+                                                    Show_Sphere= False)
+                            
+                            # Pick
+                            Robot_2.plan(tcp_name= "tool0",
+                                            target_pose= [SMART_MAT_TABLE[0]+PICK_OFFSET_FROM_W_CORNER,
+                                                        SMART_MAT_TABLE[1]-SMART_MAT_TABLE_MAX_LENGTH-STUD_TO_SAW_OFFSET-PICK_OFFSET_FROM_L_CORNER-(ROBOT_2_GRIPPER_LENGTH/2),
+                                                        SMART_MAT_TABLE[2]+(element.dimension[1]/2)],
+                                            target_orientation= [0, -ev, 0, -ev],
+                                            update_world_needed= True,
+                                            removing_primitives=["Smart_Conveyor", "world/obstacles"],
+                                            orientational_restriction=torch.tensor([1,1,1], dtype=torch.float32))
+                            Robot_2.render_exec(renderInstance= True,
+                                                    Show_Sphere= False)
+                            
+                            # Saw Action + Attach
+                            Create_Wooden_Element_For_Smart_Mat_Table(el_name= element.name, L= element.dimension[0], W= element.dimension[1], H= element.dimension[2], Debug_Offset= True)
+
+                            Robot_2.eef_attach(tool_name= "tool0", attaching_object_name= element.name)
+                            #.....
+
+                            # Post Pick
+                            Robot_2.plan(tcp_name= "tool0",
+                                            target_pose= [SMART_MAT_TABLE[0]+PICK_OFFSET_FROM_W_CORNER-0.3,
+                                                        SMART_MAT_TABLE[1]-SMART_MAT_TABLE_MAX_LENGTH-STUD_TO_SAW_OFFSET-PICK_OFFSET_FROM_L_CORNER-(ROBOT_2_GRIPPER_LENGTH/2),
+                                                        SMART_MAT_TABLE[2]+(element.dimension[1]/2)],
+                                            target_orientation= [0, -ev, 0, -ev],
+                                            update_world_needed= True,
+                                            removing_primitives=["Smart_Conveyor", "world/obstacles"],
+                                            direct_pose_cost= PoseCostMetric.create_grasp_approach_metric(offset_position=0.0, tstep_fraction=0.001,linear_axis=2))
+                            Robot_2.render_exec(renderInstance= True,
+                                                    Show_Sphere= False)
+                            
+                            # Home
+                            Robot_2.move_to_home()
+
+                            PASSING_LOC = [2.05, 0, 1.55]
+                            half_grip = ROBOT_2_GRIPPER_LENGTH / 2
+                            delta = PICK_OFFSET_FROM_W_CORNER - (element.dimension[2] / 2)
+                            lateral = PICK_OFFSET_FROM_L_CORNER - (PICK_OFFSET_FROM_L_CORNER_AFTER_PASS + (ROBOT_1_GRIPPER_LENGTH / 2))
+
+                            # Stage 1: Robot_1 pre-take positioning
+                            Robot_1.plan(
+                                tcp_name="tool0",
+                                target_pose=[
+                                    PASSING_LOC[0] + 2 * delta - 0.3,
+                                    half_grip + lateral,
+                                    PASSING_LOC[2],
+                                ],
+                                target_orientation=[ev, 0, ev, 0],
+                                update_world_needed=True,
+                            )
+                            Robot_1.render_exec(renderInstance=True, Show_Sphere=False)
+
+                            # Creating Passing Stud
+                            Temp_Stud = Cuboid(
+                                name= "Passing_Visualizer",
+                                pose= [2.00562, -0.11505, 1.5513, -0.5, -0.5, -0.5, -0.5],
+                                dims= element.dimension,
+                                color= [1, 1, 0, 1]
+                            )
+                            Add_Rigid_Object_To_Scene(test, "Cuboid", Temp_Stud, True, False)
+
+                            Robot_2.free_TCP_movement()
+
+                            # Stage 2: Robot_2 move to passing location
+                            Robot_2.plan(
+                                tcp_name="tool0",
+                                target_pose=PASSING_LOC,
+                                target_orientation=[0, ev, 0, -ev],
+                                update_world_needed=True,
+                                removing_primitives=["world/obstacles"]
+                            )
+                            Robot_2.render_exec(renderInstance=True, Show_Sphere=False)
+
+                            # Stage 3: Robot_1 reach in to grasp
+                            Robot_1.plan(
+                                tcp_name="tool0",
+                                target_pose=[
+                                    PASSING_LOC[0] + 2 * delta,
+                                    half_grip + lateral,
+                                    PASSING_LOC[2],
+                                ],
+                                target_orientation=[ev, 0, ev, 0],
+                                update_world_needed=True,
+                                removing_primitives=["Smart_Conveyor", "world/obstacles", "IRB6620_R2"],
+                                direct_pose_cost=PoseCostMetric.create_grasp_approach_metric(
+                                    offset_position=0.0, tstep_fraction=0.001, linear_axis=2
+                                ),
+                            )
+                            Robot_1.render_exec(renderInstance=True, Show_Sphere=False)
+
+                            prims_utils.delete_prim("/world/obstacles/Passing_Visualizer")
+
+                            # Stage 4: Transfer attachment
+                            Robot_2.eef_detach(tool_name="tool0", detaching_object_name=element.name)
+                            Robot_1.motion_gen_update_world()
+                            Robot_1.eef_attach(tool_name="tool0", attaching_object_name=element.name)
+
+                            Robot_2.free_TCP_movement()
+
+                            # Stage 5: Robot_2 retract slightly
+                            Robot_2.plan(
+                                tcp_name="tool0",
+                                target_pose=[PASSING_LOC[0] + 0.2, PASSING_LOC[1], PASSING_LOC[2]],
+                                target_orientation=[0, ev, 0, -ev],
+                                update_world_needed=True,
+                                removing_primitives=["Smart_Conveyor", "world/obstacles", "IRB6620_R1"],
+                                orientational_restriction=torch.tensor([1, 1, 1], dtype=torch.float32),
+                            )
+                            Robot_2.render_exec(renderInstance=True, Show_Sphere=False)
+
+                            # Stage 6: Return both robots home
+                            Robot_2.move_to_home()
+                            Robot_1.move_to_home()
+
+                            Robot_2.free_TCP_movement()
+
+                            # Stage 1: Align smart conveyor
+                            Smart_Conv.render_exec(
+                                'Joint_1',
+                                -(element.coordination[1] - (OVERALL_PANEL_LENGTH / 2))
+                                + ((element.dimension[0] / 2) - PICK_OFFSET_FROM_L_CORNER_AFTER_PASS - (ROBOT_1_GRIPPER_LENGTH / 2))
+                                + (SMART_CONV_RANGE_OF_MOTION_J1 / 2),
+                            )
+
+                            # Stage 2: Compute conveyor zero pose
+                            Conv_Curr_Loc = (
+                                -(element.coordination[1] - (OVERALL_PANEL_LENGTH / 2))
+                                + (SMART_CONV_RANGE_OF_MOTION_J1 / 2)
+                            )
+
+                            # Stage 3: Robot_1 pre-place pose (above conveyor)
+                            Robot_1.plan(
+                                tcp_name="tool0",
+                                target_pose=[
+                                    2.3 + (element.coordination[0] - (OVERALL_PANEL_HEIGHT / 2)) + SMART_CONV_X_SHIFT,
+                                    0,
+                                    SMART_CONV_REST_ELEVATION + element.dimension[2] - PICK_OFFSET_FROM_W_CORNER + 0.3,
+                                ],
+                                target_orientation=[0, 1, 0, 0],
+                                update_world_needed=True,
+                            )
+                            Robot_1.render_exec(renderInstance=True, Show_Sphere=False)
+
+                            # Stage 4: Robot_1 place motion
+                            Robot_1.plan(
+                                tcp_name="tool0",
+                                target_pose=[
+                                    2.3 + (element.coordination[0] - (OVERALL_PANEL_HEIGHT / 2)) + SMART_CONV_X_SHIFT,
+                                    0,
+                                    SMART_CONV_REST_ELEVATION + element.dimension[2] - PICK_OFFSET_FROM_W_CORNER + 0.1,
+                                ],
+                                target_orientation=[0, 1, 0, 0],
+                                update_world_needed=True,
+                                removing_primitives=["Smart_Conveyor", "world/obstacles"],
+                                direct_pose_cost=PoseCostMetric.create_grasp_approach_metric(
+                                    offset_position=0.0, tstep_fraction=0.001, linear_axis=2
+                                ),
+                            )
+                            Robot_1.render_exec(renderInstance=True, Show_Sphere=False)
+
+                            # Stage 5: Release and enable gravity
+                            Robot_1.eef_detach(tool_name="tool0", detaching_object_name=element.name)
+                            test._stage.GetPrimAtPath(f"/world/obstacles/{element.name}") \
+                                .GetAttribute("physxRigidBody:disableGravity") \
+                                .Set(False)
+                            Smart_Conv.attach_object_to_conv(obj_name=element.name)
+
+                            # Stage 6: Return Robot_1 home
+                            Robot_1.move_to_home()
+
                         if element.orientation == "V":
                             Frame_LessThan_8ft_V_Element(element) 
+            
             ####
             #### Recursive LLM interaction to Generate a Tuple Pick Place Movement
             ####
