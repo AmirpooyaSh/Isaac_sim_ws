@@ -3442,6 +3442,8 @@ def main():
                             Robot_2.move_to_home(removing_primitives=["world/obstacles"])
                             Robot_1.move_to_home()
 
+                            Robot_1.free_TCP_movement()
+
                             # Conveyor Move
                             Smart_Conv.render_exec("Joint_1", (SMART_CONV_RANGE_OF_MOTION_J1/2)+(element.coordination[1]-(OVERALL_PANEL_LENGTH/2))+(2.3-L_Plate_X))
 

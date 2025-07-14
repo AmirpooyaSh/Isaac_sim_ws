@@ -2743,7 +2743,7 @@ def Pick_Long_Element_From_Mat_Supply(
     Create_Wooden_Element_For_Smart_Mat_Table(el_name=el_name, L=L, W=W, H=H)
     Robot_2.eef_attach(tool_name="tool0", attaching_object_name=el_name)
     print("Wooden Element Attached to Robot_2")
-z
+
     # Stage 5: Retract slightly in X
     Robot_2.plan(
         tcp_name="tool0",

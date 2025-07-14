@@ -1,14 +1,6 @@
 {
   "elements": [
     {
-      "name": "Top_Stud",
-      "type": "Top Plate",
-      "coordination": [0.02, 1.8288, 0.0508],
-      "dimension": [3.6576, 0.04, 0.1016],
-      "orientation": "H",
-      "is_placed": "Yes"
-    },
-    {
       "name": "LK_1",
       "type": "King Stud",
       "coordination": [1.2592, 0.72, 0.0508],
@@ -102,7 +94,7 @@
       "coordination": [0.4584, 1.2, 0.0508],
       "dimension": [0.92, 0.04, 0.1016],
       "orientation": "H",
-      "is_placed": "No"
+      "is_placed": "Yes"
     },
     {
       "name": "F_Stud",
@@ -143,6 +135,14 @@
       "dimension": [3.6576, 0.04, 0.1016],
       "orientation": "H",
       "is_placed": "Yes"
+    },
+    {
+      "name": "Top_Stud",
+      "type": "Top Plate",
+      "coordination": [0.02, 1.8288, 0.0508],
+      "dimension": [3.6576, 0.04, 0.1016],
+      "orientation": "H",
+      "is_placed": "No"
     }
   ]
 }
