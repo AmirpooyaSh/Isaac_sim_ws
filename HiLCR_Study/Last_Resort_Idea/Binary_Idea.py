@@ -3300,6 +3300,8 @@ def main():
         ################################
         ################################
 
+        Robot_1.free_TCP_movement()
+
         #Example usage:
         elems = load_elements("Design_Info_Test.json")
         for e in elems:
