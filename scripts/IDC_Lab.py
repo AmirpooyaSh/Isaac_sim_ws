@@ -1,4 +1,3 @@
-from curobo.wrap.reacher import motion_gen
 from isaacsim import SimulationApp
 
 simulation_app = SimulationApp({"headless": False}) # we can also run as headless.
@@ -13,6 +12,7 @@ from omni.physx.scripts import utils #It can be used to create Fixed Joints
 from omni.isaac.core.utils.stage import add_reference_to_stage
 from omni.isaac.core.robots import Robot
 
+from curobo.wrap.reacher import motion_gen
 # This is a CuRobo Library that Converts world_model to USD format for Isaac Sim
 from curobo.util.usd_helper import UsdHelper
 # This is a CuRobo Library to import Different Object Types to the world model
