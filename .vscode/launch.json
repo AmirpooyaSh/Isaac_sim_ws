@@ -6,34 +6,32 @@
     "configurations": [
         {
             "name": "Python: Current File",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
             "env": {
                 "RESOURCE_NAME": "IsaacSim"
             },
-            "python": "~/.local/share/ov/pkg/isaac-sim-4.2.0//kit/python/bin/python3",
-            "envFile": "~/.local/share/ov/pkg/isaac-sim-4.2.0//.vscode/.standalone_examples.env",
+            "python": "~/isaacsim-4.2//kit/python/bin/python3",
+            "envFile": "~/isaacsim-4.2//.vscode/.standalone_examples.env",
             "preLaunchTask": "setup_python_env"
         },
         {
             "name": "Python: Attach (windows-x86_64/linux-x86_64)",
-            "type": "python",
-            "request": "attach",
-            "port": 3000,
-            "host": "localhost"
+            "type": "debugpy",
+            "request": "attach"
         },
         {
             "name": "(Linux) isaac-sim",
             "type": "cppdbg",
             "request": "launch",
-            "program": "~/.local/share/ov/pkg/isaac-sim-4.2.0//kit/kit",
-            "args": ["~/.local/share/ov/pkg/isaac-sim-4.2.0//apps/omni.isaac.sim.kit",
-                "--ext-folder", "~/.local/share/ov/pkg/isaac-sim-4.2.0//exts",
-                "--ext-folder", "~/.local/share/ov/pkg/isaac-sim-4.2.0//apps"],
+            "program": "~/isaacsim-4.2//kit/kit",
+            "args": ["~/isaacsim-4.2//apps/omni.isaac.sim.kit",
+                "--ext-folder", "~/isaacsim-4.2//exts",
+                "--ext-folder", "~/isaacsim-4.2//apps"],
             "stopAtEntry": false,
-            "cwd": "~/.local/share/ov/pkg/isaac-sim-4.2.0/",
+            "cwd": "~/isaacsim-4.2/",
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
