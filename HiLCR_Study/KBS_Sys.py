@@ -5793,6 +5793,7 @@ def main():
         ################################
         ################################
 
+        Robot_1.free_TCP_movement()
 
         # Top Plate
         Pick_Long_Element_From_Mat_Supply("Top_Plate", 3.6576, 0.04, 0.1016)
