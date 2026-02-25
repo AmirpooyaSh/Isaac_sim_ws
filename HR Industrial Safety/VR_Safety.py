@@ -87,10 +87,42 @@ enable_extension("omni.isaac.surface_gripper")
 enable_extension("omni.kit.tool.measure")
 simulation_app.update()
 
-### VR Extension Imports:
-enable_extension("omni.services.facilities.base")
-enable_extension("omni.kit.xr.profile.tabletar")
-enable_extension("omni.kit.xr.profile.vr")
+import re
+def load_and_enable_from_file(path="extentions.txt"):
+    seen = set()
+    pat_call = re.compile(r'^enable_extension\s*\(\s*[\'"]([^\'"]+)[\'"]\s*\)\s*;?\s*$')
+    pat_name = re.compile(r'^([A-Za-z0-9._:-]+)\s*$')
+
+    with open(path, "r", encoding="utf-8") as f:
+        for raw in f:
+            line = raw.strip()
+            if not line or line.startswith("#") or line.startswith("```"):
+                continue
+
+            m = pat_call.match(line)
+            if m:
+                name = m.group(1).strip()
+            else:
+                m2 = pat_name.match(line)
+                if m2:
+                    name = m2.group(1)
+                else:
+                    print(f"Skipping unrecognized line: {line}")
+                    continue
+
+            if name in seen:
+                print(f"Skipping duplicate: {name}")
+                continue
+            seen.add(name)
+
+            try:
+                enable_extension(name)
+                print(f"Enabled: {name}")
+            except Exception as e:
+                print(f"Failed to enable {name}: {e}")
+load_and_enable_from_file("extentions_4.2ar"
+".txt")
+simulation_app.update()
 
 # check if rosmaster node is running
 # this is to prevent this sample from waiting indefinetly if roscore is not running
