@@ -120,7 +120,7 @@ def load_and_enable_from_file(path="extentions.txt"):
                 print(f"Enabled: {name}")
             except Exception as e:
                 print(f"Failed to enable {name}: {e}")
-load_and_enable_from_file("extentions_4.2ar"
+load_and_enable_from_file("extentions_4.2"
 ".txt")
 simulation_app.update()
 
@@ -773,7 +773,7 @@ class CuRoboRobot(object):
         if self._ROS_JS_robot_indicator == "IRB6620_R1":
             self._robot_cfg["kinematics"]["extra_collision_spheres"] = {"tool0": 1, "tool1": 1,}
         if self._ROS_JS_robot_indicator == "IRB6620_R2":
-            self._robot_cfg["kinematics"]["extra_collision_spheres"] = {"tool0": 100,}
+            self._robot_cfg["kinematics"]["extra_collision_spheres"] = {"tool0": 1,}
 
         # if self._ROS_JS_robot_indicator == "IRB6620_R1":
         #     self._robot_cfg["kinematics"]["extra_collision_spheres"] = {"tool0": 50, "tool1": 100,}
@@ -1095,6 +1095,8 @@ class CuRoboRobot(object):
             "/World/obstacles/Human_Worker",      
             # Other Robot's Prim Path Should also be Ignored !
             # This feature is to be developed (MPC)
+            # For VR
+            "/_xr_gui",
         ]
         # Add collision paths if empty_coll_world is True
         if Removing_Prim_Paths != None:
@@ -2256,36 +2258,36 @@ class RGBDCameraROS:
 
 test = WorldManager()
 Robot_1 = None
-Robot_1 = CuRoboRobot(working_world=test, 
-                R_Name="IRB6620_R1",
-                pose=[0,0,0.025],
-                input_tool="tool0", 
-                w_dir=INSTALLATION_DIRECTORY+"/Isaac_sim_ws/robot", 
-                r_conf_name="IRB6620_Config.yaml",
-                Gripper_List=[RobotGripper(RobName= "IRB6620_R1",
-                                           ParentLink= "Link_6",
-                                           TCP_Name= "T0",
-                                           C_Pose= [0.09 , -0.3, -0.29]),
-                                RobotGripper(RobName= "IRB6620_R1",
-                                             ParentLink= "Link_6",
-                                             TCP_Name= "T1",
-                                             C_Pose= [0.55, 0.2, 0])
-                                           ],
-                Cuda_Device= 1)
+# Robot_1 = CuRoboRobot(working_world=test, 
+#                 R_Name="IRB6620_R1",
+#                 pose=[0,0,0.025],
+#                 input_tool="tool0", 
+#                 w_dir=INSTALLATION_DIRECTORY+"/Isaac_sim_ws/robot", 
+#                 r_conf_name="IRB6620_Config.yaml",
+#                 Gripper_List=[RobotGripper(RobName= "IRB6620_R1",
+#                                            ParentLink= "Link_6",
+#                                            TCP_Name= "T0",
+#                                            C_Pose= [0.09 , -0.3, -0.29]),
+#                                 RobotGripper(RobName= "IRB6620_R1",
+#                                              ParentLink= "Link_6",
+#                                              TCP_Name= "T1",
+#                                              C_Pose= [0.55, 0.2, 0])
+#                                            ],
+#                 Cuda_Device= 1)
 
 Robot_2 = None
-# Robot_2 = CuRoboRobot(working_world=test,
-#                 R_Name="IRB6620_R2",
-#                 pose=[4.6, 0, 0.025],
-#                 input_tool="tool0",
-#                 w_dir=INSTALLATION_DIRECTORY+"/Isaac_sim_ws/robot_2",
-#                 r_conf_name="IRB6620_Config.yaml",
-#                 Gripper_List=[RobotGripper(RobName= "IRB6620_R2",
-#                                            ParentLink= "Link_6",
-#                                            TCP_Name="T0",
-#                                            C_Pose=[0.62, -0.13, -0.11]),
-#                                            ],
-#                 Cuda_Device= 0)
+Robot_2 = CuRoboRobot(working_world=test,
+                R_Name="IRB6620_R2",
+                pose=[4.6, 0, 0.025],
+                input_tool="tool0",
+                w_dir=INSTALLATION_DIRECTORY+"/Isaac_sim_ws/robot_2",
+                r_conf_name="IRB6620_Config.yaml",
+                Gripper_List=[RobotGripper(RobName= "IRB6620_R2",
+                                           ParentLink= "Link_6",
+                                           TCP_Name="T0",
+                                           C_Pose=[0.62, -0.13, -0.11]),
+                                           ],
+                Cuda_Device= 0)
 
 Smart_Conv = CuRoboConv(working_world=test,
                Conv_Name="Smart_Conveyor",
@@ -5830,7 +5832,26 @@ def main():
         ################################
         ################################
 
-        Robot_1.free_TCP_movement()
+        Robot_2.free_TCP_movement()
+
+        # Left King
+        Pick_8ft_Element_From_Sloped_Table("L_King_2", 2.4384, 0.04, 0.1016)
+        L_King_2_SS = Place_and_Hold_8ft_Element_On_Smart_Conveyor(1.2592, 3.1376, 2.4384, 0.1016)
+        #Nail_and_Release_Vertical_Element("L_King_2", 1.2592, PUSH_TO_NAIL_OFFSET, 2.4384, 0.1016, L_King_2_SS)
+        # Right King
+        Pick_8ft_Element_From_Sloped_Table("R_King_2", 2.4384, 0.04, 0.1016)
+        R_King_2_SS = Place_and_Hold_8ft_Element_On_Smart_Conveyor(1.2592, 2.2376, 2.4384, 0.1016)
+        #Nail_and_Release_Vertical_Element("R_King_2", 1.2592, PUSH_TO_NAIL_OFFSET, 2.4384, 0.1016, R_King_2_SS)
+        # Left Jack
+        Drag_Stud("L_Jack_2", [1.8, 0.04, 0.1016])
+        Pick_Short_Element_From_Mat_Supply("L_Jack_2", 1.8, 0.04, 0.1016)
+        L_Jack_2_SS = Drop_Short_Vertical_Element_With_Tangent_to_an_Element("L_Jack_2", 1.5784, 2.2776, 1.8, 0.1016, True)
+        #Nail_Vertical_Element_With_Tangent_to_an_Element(PUSH_TO_NAIL_OFFSET_TANGENT, [1.5784, 2.2776, 0], [1.8, 0.04, 0.1016], True, L_Jack_2_SS)
+        # Right Jack
+        Drag_Stud("R_Jack_2", [1.8, 0.04, 0.1016])
+        Pick_Short_Element_From_Mat_Supply("R_Jack_2", 1.8, 0.04, 0.1016)
+        R_Jack_2_SS = Drop_Short_Vertical_Element_With_Tangent_to_an_Element("R_Jack_2", 1.5784, 3.0976, 1.8, 0.1016, False)
+        #Nail_Vertical_Element_With_Tangent_to_an_Element(PUSH_TO_NAIL_OFFSET_TANGENT, [1.5784, 3.0976, 0], [1.8, 0.04, 0.1016], False, R_Jack_2_SS)
 
 if __name__ == "__main__":
     main()
