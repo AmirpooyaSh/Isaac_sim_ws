@@ -1,0 +1,1094 @@
+{
+  "agent": "L-A-I",
+  "status": "success",
+  "started_at_utc": "2026-07-12T02:44:13.622637+00:00",
+  "completed_at_utc": "2026-07-12T02:44:29.070164+00:00",
+  "duration_seconds": 15.447536,
+  "files": {
+    "material_input": "Material.json",
+    "ext_a_ii_input": "Ext_A_II_Output.json",
+    "ext_a_iii_input": "Ext_A_III_Output.json",
+    "configuration": "config.json",
+    "output": "L_A_I_Output.json",
+    "run_record": "L_A_I_Run_Record.json"
+  },
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "accepted",
+      "response_id": "resp_CI0aES0okYJbtT9s2mHkb8L4yRu5wYzRTHY_bamJkvnat6VpY-T932JOsJBfJ25edeVrkXOxGGkK5XWrKmiz0URhDwA81gTMWakxPptlRnRvsOSNnUjUUwlU0D2eVtQYOV_MntoNwTc94yInifZrMGPAziX-9cLq0JgQDYX5EJuGUuqy8tseBkhqxTBbNPd6w4HgvQXalABtKN_OTsDu6kBP4gjJx_xQ9FNc2c_YNZ0nJI0THW_ufGA5j1BosA48ZxLxvdnjeVWCXQtR5qDco7K2-pNcwJp2UGin0ByTc2yFw5o3Zg-50phOcyrOkzB-JIUecvLbVKXlz-_TvmHv5kaicJqwAh3_-hNSJWRS_8rAnQvsy7OKrLMzg0EKThGGwvK4teZvUs4ELQIwX7bpO5g9uSA1iO6ZBi7DSg6Yb7J-Ub3pdpSta9Wfp5KS1oClIsFnzusMziGP3ytDeYNRWg==",
+      "returned_model_identifier": "o3",
+      "response_status": "completed",
+      "duration_seconds": 15.424136,
+      "usage": {
+        "input_tokens": 9037,
+        "input_tokens_details": {
+          "cached_tokens": 0,
+          "audio_tokens": null,
+          "text_tokens": null
+        },
+        "output_tokens": 1599,
+        "output_tokens_details": {
+          "reasoning_tokens": 192,
+          "text_tokens": null
+        },
+        "total_tokens": 10636,
+        "cost": null
+      },
+      "tool_arguments": {
+        "SubSteps": [
+          {
+            "Element": "Vertical Stud",
+            "Steps": [
+              "Review wall layout marks on bottom and top plates for stud spacing",
+              "Measure required stud length between plates and mark cut line on lumber",
+              "Cut stud to length with power saw",
+              "Set stud on bottom plate layout mark and tip into place under top plate",
+              "Tap stud plumb and verify alignment with level",
+              "Fasten stud to plates with nails or screws through toe-nailing or metal connectors"
+            ]
+          },
+          {
+            "Element": "King Stud",
+            "Steps": [
+              "Confirm opening width on plans and transfer king stud locations to plates",
+              "Measure floor-to-plate height and cut king studs to full wall height",
+              "Stand each king stud against layout line flanking rough opening",
+              "Check plumb with level and adjust as needed",
+              "Secure king studs to bottom and top plates with nails or structural screws",
+              "Brace temporarily until adjoining members lock studs in place"
+            ]
+          },
+          {
+            "Element": "Lower Cripple Stud",
+            "Steps": [
+              "Measure distance from bottom plate to underside of window sill plate",
+              "Cut cripple stud pieces to measured length",
+              "Position cripples at marked on-center spacing below sill opening",
+              "Hold each cripple tight between bottom plate and sill plate",
+              "Nail or screw through plates into each cripple end",
+              "Verify top of sill remains level after fastening"
+            ]
+          },
+          {
+            "Element": "OSB Sheathing Plate",
+            "Steps": [
+              "Measure wall panel area and mark OSB panel cut lines to fit between framing edges and openings",
+              "Cut OSB sheets to size with circular saw, maintaining square edges",
+              "Erect scaffold or use ladders for safe access to wall height",
+              "Position first sheet flush with bottom plate and edge of framing",
+              "Hold panel tight, check for plumb and proper edge alignment",
+              "Fasten OSB to studs, plates, and blocking with specified nails or screws at required spacing, starting from center and working outward",
+              "Stagger vertical joints between courses and continue installing successive sheets",
+              "Recheck flatness and joint alignment, adding additional fasteners where needed"
+            ]
+          },
+          {
+            "Element": "Top Plate",
+            "Steps": [
+              "Lay out stud and opening locations on top plate stock using tape and pencil",
+              "Cut plates to wall length, including splices as needed",
+              "Set first top plate on edge along wall line and tack to stud tops",
+              "Install second (cap) plate overlapping joints for strength",
+              "Nail or screw plates to each stud end and to adjoining plates at corners and partitions",
+              "Verify straightness of plate line and correct any bows with blocking or bracing"
+            ]
+          },
+          {
+            "Element": "Jack Stud",
+            "Steps": [
+              "Measure required height from bottom plate to underside of header",
+              "Cut jack studs to length with square ends",
+              "Place each jack stud against king stud at opening sides",
+              "Align bottom with layout mark and ensure top meets header seat line",
+              "Nail jack studs to king studs and bottom plate, then toenail into header after placement",
+              "Confirm assembly is plumb and secure"
+            ]
+          },
+          {
+            "Element": "Bear Loading",
+            "Steps": [
+              "Check plan for header span and laminate requirements",
+              "Measure opening width and cut header members to length",
+              "Assemble multiple header plies with adhesive and nails or screws as specified",
+              "Lift header onto jack studs within opening using additional help or temporary support",
+              "Set header flush with top of jack studs and centered over opening",
+              "Nail or screw header to jack studs and add metal hangers or straps if required",
+              "Verify header is level and bearing fully on both jacks"
+            ]
+          },
+          {
+            "Element": "L/U Stud",
+            "Steps": [
+              "Locate position adjacent to first vertical stud per layout",
+              "Measure floor-to-plate height and cut utility stud to length",
+              "Stand stud in place providing space for service penetrations as detailed",
+              "Plumb stud with level and align faces flush with neighboring framing",
+              "Fasten stud to plates and add blocking or straps for lateral bracing as required",
+              "Bore service holes at designated heights for mechanical or electrical runs"
+            ]
+          },
+          {
+            "Element": "Lower Sill Plate",
+            "Steps": [
+              "Mark sill height on king studs according to window schedule",
+              "Cut sill plate to span between jack studs",
+              "Position sill on marked lines with crown up and faces flush",
+              "Tack sill to king or jack studs, then secure with nails or screws through end joints",
+              "Check sill for level across width of opening",
+              "Add temporary support or shims if adjustments are required"
+            ]
+          },
+          {
+            "Element": "Bottom Plate",
+            "Steps": [
+              "Snap chalk line on subfloor to establish wall location",
+              "Lay out stud and opening positions along bottom plate stock",
+              "Cut plates to required lengths including splice pieces",
+              "Position bottom plate on layout line and drill for anchor locations if needed",
+              "Fasten plate to floor framing or slab with nails, screws, or anchors per specification",
+              "Verify plate alignment and secure temporary braces until studs are installed"
+            ]
+          },
+          {
+            "Element": "Top Sill Plate",
+            "Steps": [
+              "Measure distance between king studs above window opening",
+              "Cut top sill plate to length ensuring square ends",
+              "Mark seat line on king studs at specified elevation",
+              "Set top sill on marks and hold flush with inner faces of studs",
+              "Nail or screw plate to king studs and to any top cripple studs above",
+              "Confirm plate is level and properly tied into surrounding framing"
+            ]
+          },
+          {
+            "Element": "Top Cripple Stud",
+            "Steps": [
+              "Determine distance from top sill or header to underside of top plate",
+              "Cut cripple studs to required length",
+              "Position cripples at on-center spacing above opening between header and top plate",
+              "Ensure each cripple is plumb and flush with wall face",
+              "Fasten cripples through top plate and header with nails or screws",
+              "Verify continuous load path by checking contact at both ends"
+            ]
+          }
+        ]
+      },
+      "formatted_output": {
+        "Sub-Steps": [
+          [
+            "Vertical Stud",
+            [
+              "Review wall layout marks on bottom and top plates for stud spacing",
+              "Measure required stud length between plates and mark cut line on lumber",
+              "Cut stud to length with power saw",
+              "Set stud on bottom plate layout mark and tip into place under top plate",
+              "Tap stud plumb and verify alignment with level",
+              "Fasten stud to plates with nails or screws through toe-nailing or metal connectors"
+            ]
+          ],
+          [
+            "King Stud",
+            [
+              "Confirm opening width on plans and transfer king stud locations to plates",
+              "Measure floor-to-plate height and cut king studs to full wall height",
+              "Stand each king stud against layout line flanking rough opening",
+              "Check plumb with level and adjust as needed",
+              "Secure king studs to bottom and top plates with nails or structural screws",
+              "Brace temporarily until adjoining members lock studs in place"
+            ]
+          ],
+          [
+            "Lower Cripple Stud",
+            [
+              "Measure distance from bottom plate to underside of window sill plate",
+              "Cut cripple stud pieces to measured length",
+              "Position cripples at marked on-center spacing below sill opening",
+              "Hold each cripple tight between bottom plate and sill plate",
+              "Nail or screw through plates into each cripple end",
+              "Verify top of sill remains level after fastening"
+            ]
+          ],
+          [
+            "OSB Sheathing Plate",
+            [
+              "Measure wall panel area and mark OSB panel cut lines to fit between framing edges and openings",
+              "Cut OSB sheets to size with circular saw, maintaining square edges",
+              "Erect scaffold or use ladders for safe access to wall height",
+              "Position first sheet flush with bottom plate and edge of framing",
+              "Hold panel tight, check for plumb and proper edge alignment",
+              "Fasten OSB to studs, plates, and blocking with specified nails or screws at required spacing, starting from center and working outward",
+              "Stagger vertical joints between courses and continue installing successive sheets",
+              "Recheck flatness and joint alignment, adding additional fasteners where needed"
+            ]
+          ],
+          [
+            "Top Plate",
+            [
+              "Lay out stud and opening locations on top plate stock using tape and pencil",
+              "Cut plates to wall length, including splices as needed",
+              "Set first top plate on edge along wall line and tack to stud tops",
+              "Install second (cap) plate overlapping joints for strength",
+              "Nail or screw plates to each stud end and to adjoining plates at corners and partitions",
+              "Verify straightness of plate line and correct any bows with blocking or bracing"
+            ]
+          ],
+          [
+            "Jack Stud",
+            [
+              "Measure required height from bottom plate to underside of header",
+              "Cut jack studs to length with square ends",
+              "Place each jack stud against king stud at opening sides",
+              "Align bottom with layout mark and ensure top meets header seat line",
+              "Nail jack studs to king studs and bottom plate, then toenail into header after placement",
+              "Confirm assembly is plumb and secure"
+            ]
+          ],
+          [
+            "Bear Loading",
+            [
+              "Check plan for header span and laminate requirements",
+              "Measure opening width and cut header members to length",
+              "Assemble multiple header plies with adhesive and nails or screws as specified",
+              "Lift header onto jack studs within opening using additional help or temporary support",
+              "Set header flush with top of jack studs and centered over opening",
+              "Nail or screw header to jack studs and add metal hangers or straps if required",
+              "Verify header is level and bearing fully on both jacks"
+            ]
+          ],
+          [
+            "L/U Stud",
+            [
+              "Locate position adjacent to first vertical stud per layout",
+              "Measure floor-to-plate height and cut utility stud to length",
+              "Stand stud in place providing space for service penetrations as detailed",
+              "Plumb stud with level and align faces flush with neighboring framing",
+              "Fasten stud to plates and add blocking or straps for lateral bracing as required",
+              "Bore service holes at designated heights for mechanical or electrical runs"
+            ]
+          ],
+          [
+            "Lower Sill Plate",
+            [
+              "Mark sill height on king studs according to window schedule",
+              "Cut sill plate to span between jack studs",
+              "Position sill on marked lines with crown up and faces flush",
+              "Tack sill to king or jack studs, then secure with nails or screws through end joints",
+              "Check sill for level across width of opening",
+              "Add temporary support or shims if adjustments are required"
+            ]
+          ],
+          [
+            "Bottom Plate",
+            [
+              "Snap chalk line on subfloor to establish wall location",
+              "Lay out stud and opening positions along bottom plate stock",
+              "Cut plates to required lengths including splice pieces",
+              "Position bottom plate on layout line and drill for anchor locations if needed",
+              "Fasten plate to floor framing or slab with nails, screws, or anchors per specification",
+              "Verify plate alignment and secure temporary braces until studs are installed"
+            ]
+          ],
+          [
+            "Top Sill Plate",
+            [
+              "Measure distance between king studs above window opening",
+              "Cut top sill plate to length ensuring square ends",
+              "Mark seat line on king studs at specified elevation",
+              "Set top sill on marks and hold flush with inner faces of studs",
+              "Nail or screw plate to king studs and to any top cripple studs above",
+              "Confirm plate is level and properly tied into surrounding framing"
+            ]
+          ],
+          [
+            "Top Cripple Stud",
+            [
+              "Determine distance from top sill or header to underside of top plate",
+              "Cut cripple studs to required length",
+              "Position cripples at on-center spacing above opening between header and top plate",
+              "Ensure each cripple is plumb and flush with wall face",
+              "Fasten cripples through top plate and header with nails or screws",
+              "Verify continuous load path by checking contact at both ends"
+            ]
+          ]
+        ]
+      }
+    }
+  ],
+  "input_hashes_sha256": {
+    "Material.json": "e15509048faf69c2432389254a6118c1fc1e8fec02e84a5ebe9bdd0a90cd8454",
+    "Ext_A_II_Output.json": "59d5378395ecafcefb05471e79200ca519cad05680fabf6bb086cbe72a76ee9c",
+    "Ext_A_III_Output.json": "631733c3fd22430b1765348edf25cbc845cdf167dbe05d3e621a9bed29f6b40f",
+    "config.json": "69d3a114fee6151784a5bbe7687b32074326e64e9471e9fd435ab60854984864"
+  },
+  "element_count": 12,
+  "expected_elements": [
+    "Vertical Stud",
+    "King Stud",
+    "Lower Cripple Stud",
+    "OSB Sheathing Plate",
+    "Top Plate",
+    "Jack Stud",
+    "Bear Loading",
+    "L/U Stud",
+    "Lower Sill Plate",
+    "Bottom Plate",
+    "Top Sill Plate",
+    "Top Cripple Stud"
+  ],
+  "grounded_inputs": [
+    {
+      "ElementDefinition": {
+        "Element": "Vertical Stud",
+        "Direction": [
+          "V"
+        ],
+        "Description": "Primary vertical framing stud extending from bottom to top plates."
+      },
+      "AssignedCrews": [
+        "Carpenter"
+      ],
+      "CrewTasks": {
+        "Carpenter": [
+          "Follow established safety rules and regulations and maintain a safe and clean environment.",
+          "Measure and mark cutting lines on materials, using a ruler, pencil, chalk, and marking gauge.",
+          "Assemble and fasten materials to make frameworks or props, using hand tools and wood screws, nails, dowel pins, or glue.",
+          "Study specifications in blueprints, sketches, or building plans to prepare project layout and determine dimensions and materials required.",
+          "Shape or cut materials to specified measurements, using hand tools, machines, or power saws.",
+          "Verify trueness of structure, using plumb bob and level.",
+          "Inspect ceiling or floor tile, wall coverings, siding, glass, or woodwork to detect broken or damaged structures.",
+          "Erect scaffolding or ladders for assembling structures above ground level.",
+          "Install structures or fixtures, such as windows, frames, floorings, trim, or hardware, using carpenters' hand or power tools.",
+          "Maintain records, document actions, and present written progress reports.",
+          "Remove damaged or defective parts or sections of structures and repair or replace, using hand tools.",
+          "Maintain job records and schedule work crew.",
+          "Anchor and brace forms and other structures in place, using nails, bolts, anchor rods, steel cables, planks, wedges, and timbers.",
+          "Bore boltholes in timber, masonry or concrete walls, using power drill.",
+          "Install rough door and window frames, subflooring, fixtures, or temporary supports in structures undergoing construction or repair.",
+          "Dig or direct digging of post holes and set poles to support structures.",
+          "Cover subfloors with building paper to keep out moisture and lay hardwood, parquet, or wood-strip-block floors by nailing floors to subfloor or cementing them to mastic or asphalt base.",
+          "Construct forms or chutes for pouring concrete.",
+          "Arrange for subcontractors to deal with special areas, such as heating or electrical wiring work.",
+          "Build or repair cabinets, doors, frameworks, floors, or other wooden fixtures used in buildings, using woodworking machines, carpenter's hand tools, or power tools.",
+          "Finish surfaces of woodwork or wallboard in houses or buildings, using paint, hand tools, or paneling.",
+          "Select and order lumber or other required materials.",
+          "Work with or remove hazardous material.",
+          "Fill cracks or other defects in plaster or plasterboard and sand patch, using patching plaster, trowel, and sanding tool.",
+          "Prepare cost estimates for clients or employers.",
+          "Perform minor plumbing, welding, or concrete mixing work.",
+          "Apply shock-absorbing, sound-deadening, or decorative paneling to ceilings or walls.",
+          "Examine structural timbers and supports to detect decay, and replace timbers as required, using hand tools, nuts, and bolts.",
+          "Build sleds from logs and timbers for use in hauling camp buildings and machinery through wooded areas.",
+          "Use drones for site surveying and to inspect hard-to-reach areas of a structure."
+        ]
+      }
+    },
+    {
+      "ElementDefinition": {
+        "Element": "King Stud",
+        "Direction": [
+          "V"
+        ],
+        "Description": "Full-height stud flanking window or door openings to carry loads (Same as Vertical Stud, but around opennings)."
+      },
+      "AssignedCrews": [
+        "Carpenter"
+      ],
+      "CrewTasks": {
+        "Carpenter": [
+          "Follow established safety rules and regulations and maintain a safe and clean environment.",
+          "Measure and mark cutting lines on materials, using a ruler, pencil, chalk, and marking gauge.",
+          "Assemble and fasten materials to make frameworks or props, using hand tools and wood screws, nails, dowel pins, or glue.",
+          "Study specifications in blueprints, sketches, or building plans to prepare project layout and determine dimensions and materials required.",
+          "Shape or cut materials to specified measurements, using hand tools, machines, or power saws.",
+          "Verify trueness of structure, using plumb bob and level.",
+          "Inspect ceiling or floor tile, wall coverings, siding, glass, or woodwork to detect broken or damaged structures.",
+          "Erect scaffolding or ladders for assembling structures above ground level.",
+          "Install structures or fixtures, such as windows, frames, floorings, trim, or hardware, using carpenters' hand or power tools.",
+          "Maintain records, document actions, and present written progress reports.",
+          "Remove damaged or defective parts or sections of structures and repair or replace, using hand tools.",
+          "Maintain job records and schedule work crew.",
+          "Anchor and brace forms and other structures in place, using nails, bolts, anchor rods, steel cables, planks, wedges, and timbers.",
+          "Bore boltholes in timber, masonry or concrete walls, using power drill.",
+          "Install rough door and window frames, subflooring, fixtures, or temporary supports in structures undergoing construction or repair.",
+          "Dig or direct digging of post holes and set poles to support structures.",
+          "Cover subfloors with building paper to keep out moisture and lay hardwood, parquet, or wood-strip-block floors by nailing floors to subfloor or cementing them to mastic or asphalt base.",
+          "Construct forms or chutes for pouring concrete.",
+          "Arrange for subcontractors to deal with special areas, such as heating or electrical wiring work.",
+          "Build or repair cabinets, doors, frameworks, floors, or other wooden fixtures used in buildings, using woodworking machines, carpenter's hand tools, or power tools.",
+          "Finish surfaces of woodwork or wallboard in houses or buildings, using paint, hand tools, or paneling.",
+          "Select and order lumber or other required materials.",
+          "Work with or remove hazardous material.",
+          "Fill cracks or other defects in plaster or plasterboard and sand patch, using patching plaster, trowel, and sanding tool.",
+          "Prepare cost estimates for clients or employers.",
+          "Perform minor plumbing, welding, or concrete mixing work.",
+          "Apply shock-absorbing, sound-deadening, or decorative paneling to ceilings or walls.",
+          "Examine structural timbers and supports to detect decay, and replace timbers as required, using hand tools, nuts, and bolts.",
+          "Build sleds from logs and timbers for use in hauling camp buildings and machinery through wooded areas.",
+          "Use drones for site surveying and to inspect hard-to-reach areas of a structure."
+        ]
+      }
+    },
+    {
+      "ElementDefinition": {
+        "Element": "Lower Cripple Stud",
+        "Direction": [
+          "V"
+        ],
+        "Description": "Short stud below a window opening that supports the bottom sill plate (If window)."
+      },
+      "AssignedCrews": [
+        "Carpenter"
+      ],
+      "CrewTasks": {
+        "Carpenter": [
+          "Follow established safety rules and regulations and maintain a safe and clean environment.",
+          "Measure and mark cutting lines on materials, using a ruler, pencil, chalk, and marking gauge.",
+          "Assemble and fasten materials to make frameworks or props, using hand tools and wood screws, nails, dowel pins, or glue.",
+          "Study specifications in blueprints, sketches, or building plans to prepare project layout and determine dimensions and materials required.",
+          "Shape or cut materials to specified measurements, using hand tools, machines, or power saws.",
+          "Verify trueness of structure, using plumb bob and level.",
+          "Inspect ceiling or floor tile, wall coverings, siding, glass, or woodwork to detect broken or damaged structures.",
+          "Erect scaffolding or ladders for assembling structures above ground level.",
+          "Install structures or fixtures, such as windows, frames, floorings, trim, or hardware, using carpenters' hand or power tools.",
+          "Maintain records, document actions, and present written progress reports.",
+          "Remove damaged or defective parts or sections of structures and repair or replace, using hand tools.",
+          "Maintain job records and schedule work crew.",
+          "Anchor and brace forms and other structures in place, using nails, bolts, anchor rods, steel cables, planks, wedges, and timbers.",
+          "Bore boltholes in timber, masonry or concrete walls, using power drill.",
+          "Install rough door and window frames, subflooring, fixtures, or temporary supports in structures undergoing construction or repair.",
+          "Dig or direct digging of post holes and set poles to support structures.",
+          "Cover subfloors with building paper to keep out moisture and lay hardwood, parquet, or wood-strip-block floors by nailing floors to subfloor or cementing them to mastic or asphalt base.",
+          "Construct forms or chutes for pouring concrete.",
+          "Arrange for subcontractors to deal with special areas, such as heating or electrical wiring work.",
+          "Build or repair cabinets, doors, frameworks, floors, or other wooden fixtures used in buildings, using woodworking machines, carpenter's hand tools, or power tools.",
+          "Finish surfaces of woodwork or wallboard in houses or buildings, using paint, hand tools, or paneling.",
+          "Select and order lumber or other required materials.",
+          "Work with or remove hazardous material.",
+          "Fill cracks or other defects in plaster or plasterboard and sand patch, using patching plaster, trowel, and sanding tool.",
+          "Prepare cost estimates for clients or employers.",
+          "Perform minor plumbing, welding, or concrete mixing work.",
+          "Apply shock-absorbing, sound-deadening, or decorative paneling to ceilings or walls.",
+          "Examine structural timbers and supports to detect decay, and replace timbers as required, using hand tools, nuts, and bolts.",
+          "Build sleds from logs and timbers for use in hauling camp buildings and machinery through wooded areas.",
+          "Use drones for site surveying and to inspect hard-to-reach areas of a structure."
+        ]
+      }
+    },
+    {
+      "ElementDefinition": {
+        "Element": "OSB Sheathing Plate",
+        "Direction": [
+          "V"
+        ],
+        "Description": "Oriented-strand-board panel fastened to the frame for sheathing and bracing."
+      },
+      "AssignedCrews": [
+        "Carpenter"
+      ],
+      "CrewTasks": {
+        "Carpenter": [
+          "Follow established safety rules and regulations and maintain a safe and clean environment.",
+          "Measure and mark cutting lines on materials, using a ruler, pencil, chalk, and marking gauge.",
+          "Assemble and fasten materials to make frameworks or props, using hand tools and wood screws, nails, dowel pins, or glue.",
+          "Study specifications in blueprints, sketches, or building plans to prepare project layout and determine dimensions and materials required.",
+          "Shape or cut materials to specified measurements, using hand tools, machines, or power saws.",
+          "Verify trueness of structure, using plumb bob and level.",
+          "Inspect ceiling or floor tile, wall coverings, siding, glass, or woodwork to detect broken or damaged structures.",
+          "Erect scaffolding or ladders for assembling structures above ground level.",
+          "Install structures or fixtures, such as windows, frames, floorings, trim, or hardware, using carpenters' hand or power tools.",
+          "Maintain records, document actions, and present written progress reports.",
+          "Remove damaged or defective parts or sections of structures and repair or replace, using hand tools.",
+          "Maintain job records and schedule work crew.",
+          "Anchor and brace forms and other structures in place, using nails, bolts, anchor rods, steel cables, planks, wedges, and timbers.",
+          "Bore boltholes in timber, masonry or concrete walls, using power drill.",
+          "Install rough door and window frames, subflooring, fixtures, or temporary supports in structures undergoing construction or repair.",
+          "Dig or direct digging of post holes and set poles to support structures.",
+          "Cover subfloors with building paper to keep out moisture and lay hardwood, parquet, or wood-strip-block floors by nailing floors to subfloor or cementing them to mastic or asphalt base.",
+          "Construct forms or chutes for pouring concrete.",
+          "Arrange for subcontractors to deal with special areas, such as heating or electrical wiring work.",
+          "Build or repair cabinets, doors, frameworks, floors, or other wooden fixtures used in buildings, using woodworking machines, carpenter's hand tools, or power tools.",
+          "Finish surfaces of woodwork or wallboard in houses or buildings, using paint, hand tools, or paneling.",
+          "Select and order lumber or other required materials.",
+          "Work with or remove hazardous material.",
+          "Fill cracks or other defects in plaster or plasterboard and sand patch, using patching plaster, trowel, and sanding tool.",
+          "Prepare cost estimates for clients or employers.",
+          "Perform minor plumbing, welding, or concrete mixing work.",
+          "Apply shock-absorbing, sound-deadening, or decorative paneling to ceilings or walls.",
+          "Examine structural timbers and supports to detect decay, and replace timbers as required, using hand tools, nuts, and bolts.",
+          "Build sleds from logs and timbers for use in hauling camp buildings and machinery through wooded areas.",
+          "Use drones for site surveying and to inspect hard-to-reach areas of a structure."
+        ]
+      }
+    },
+    {
+      "ElementDefinition": {
+        "Element": "Top Plate",
+        "Direction": [
+          "H"
+        ],
+        "Description": "Horizontal member capping the wall and tying the studs together."
+      },
+      "AssignedCrews": [
+        "Carpenter"
+      ],
+      "CrewTasks": {
+        "Carpenter": [
+          "Follow established safety rules and regulations and maintain a safe and clean environment.",
+          "Measure and mark cutting lines on materials, using a ruler, pencil, chalk, and marking gauge.",
+          "Assemble and fasten materials to make frameworks or props, using hand tools and wood screws, nails, dowel pins, or glue.",
+          "Study specifications in blueprints, sketches, or building plans to prepare project layout and determine dimensions and materials required.",
+          "Shape or cut materials to specified measurements, using hand tools, machines, or power saws.",
+          "Verify trueness of structure, using plumb bob and level.",
+          "Inspect ceiling or floor tile, wall coverings, siding, glass, or woodwork to detect broken or damaged structures.",
+          "Erect scaffolding or ladders for assembling structures above ground level.",
+          "Install structures or fixtures, such as windows, frames, floorings, trim, or hardware, using carpenters' hand or power tools.",
+          "Maintain records, document actions, and present written progress reports.",
+          "Remove damaged or defective parts or sections of structures and repair or replace, using hand tools.",
+          "Maintain job records and schedule work crew.",
+          "Anchor and brace forms and other structures in place, using nails, bolts, anchor rods, steel cables, planks, wedges, and timbers.",
+          "Bore boltholes in timber, masonry or concrete walls, using power drill.",
+          "Install rough door and window frames, subflooring, fixtures, or temporary supports in structures undergoing construction or repair.",
+          "Dig or direct digging of post holes and set poles to support structures.",
+          "Cover subfloors with building paper to keep out moisture and lay hardwood, parquet, or wood-strip-block floors by nailing floors to subfloor or cementing them to mastic or asphalt base.",
+          "Construct forms or chutes for pouring concrete.",
+          "Arrange for subcontractors to deal with special areas, such as heating or electrical wiring work.",
+          "Build or repair cabinets, doors, frameworks, floors, or other wooden fixtures used in buildings, using woodworking machines, carpenter's hand tools, or power tools.",
+          "Finish surfaces of woodwork or wallboard in houses or buildings, using paint, hand tools, or paneling.",
+          "Select and order lumber or other required materials.",
+          "Work with or remove hazardous material.",
+          "Fill cracks or other defects in plaster or plasterboard and sand patch, using patching plaster, trowel, and sanding tool.",
+          "Prepare cost estimates for clients or employers.",
+          "Perform minor plumbing, welding, or concrete mixing work.",
+          "Apply shock-absorbing, sound-deadening, or decorative paneling to ceilings or walls.",
+          "Examine structural timbers and supports to detect decay, and replace timbers as required, using hand tools, nuts, and bolts.",
+          "Build sleds from logs and timbers for use in hauling camp buildings and machinery through wooded areas.",
+          "Use drones for site surveying and to inspect hard-to-reach areas of a structure."
+        ]
+      }
+    },
+    {
+      "ElementDefinition": {
+        "Element": "Jack Stud",
+        "Direction": [
+          "V"
+        ],
+        "Description": "Shortened stud under the lef/right side of a kings supporting an opening (Shorter than kings length from the bottom plate to the header/bear loading)."
+      },
+      "AssignedCrews": [
+        "Carpenter"
+      ],
+      "CrewTasks": {
+        "Carpenter": [
+          "Follow established safety rules and regulations and maintain a safe and clean environment.",
+          "Measure and mark cutting lines on materials, using a ruler, pencil, chalk, and marking gauge.",
+          "Assemble and fasten materials to make frameworks or props, using hand tools and wood screws, nails, dowel pins, or glue.",
+          "Study specifications in blueprints, sketches, or building plans to prepare project layout and determine dimensions and materials required.",
+          "Shape or cut materials to specified measurements, using hand tools, machines, or power saws.",
+          "Verify trueness of structure, using plumb bob and level.",
+          "Inspect ceiling or floor tile, wall coverings, siding, glass, or woodwork to detect broken or damaged structures.",
+          "Erect scaffolding or ladders for assembling structures above ground level.",
+          "Install structures or fixtures, such as windows, frames, floorings, trim, or hardware, using carpenters' hand or power tools.",
+          "Maintain records, document actions, and present written progress reports.",
+          "Remove damaged or defective parts or sections of structures and repair or replace, using hand tools.",
+          "Maintain job records and schedule work crew.",
+          "Anchor and brace forms and other structures in place, using nails, bolts, anchor rods, steel cables, planks, wedges, and timbers.",
+          "Bore boltholes in timber, masonry or concrete walls, using power drill.",
+          "Install rough door and window frames, subflooring, fixtures, or temporary supports in structures undergoing construction or repair.",
+          "Dig or direct digging of post holes and set poles to support structures.",
+          "Cover subfloors with building paper to keep out moisture and lay hardwood, parquet, or wood-strip-block floors by nailing floors to subfloor or cementing them to mastic or asphalt base.",
+          "Construct forms or chutes for pouring concrete.",
+          "Arrange for subcontractors to deal with special areas, such as heating or electrical wiring work.",
+          "Build or repair cabinets, doors, frameworks, floors, or other wooden fixtures used in buildings, using woodworking machines, carpenter's hand tools, or power tools.",
+          "Finish surfaces of woodwork or wallboard in houses or buildings, using paint, hand tools, or paneling.",
+          "Select and order lumber or other required materials.",
+          "Work with or remove hazardous material.",
+          "Fill cracks or other defects in plaster or plasterboard and sand patch, using patching plaster, trowel, and sanding tool.",
+          "Prepare cost estimates for clients or employers.",
+          "Perform minor plumbing, welding, or concrete mixing work.",
+          "Apply shock-absorbing, sound-deadening, or decorative paneling to ceilings or walls.",
+          "Examine structural timbers and supports to detect decay, and replace timbers as required, using hand tools, nuts, and bolts.",
+          "Build sleds from logs and timbers for use in hauling camp buildings and machinery through wooded areas.",
+          "Use drones for site surveying and to inspect hard-to-reach areas of a structure."
+        ]
+      }
+    },
+    {
+      "ElementDefinition": {
+        "Element": "Bear Loading",
+        "Direction": [
+          "H"
+        ],
+        "Description": "Load-bearing blocking/header component distributing loads across an opening (Usually 2 elements with 2x10in cross section stacked)."
+      },
+      "AssignedCrews": [
+        "Carpenter"
+      ],
+      "CrewTasks": {
+        "Carpenter": [
+          "Follow established safety rules and regulations and maintain a safe and clean environment.",
+          "Measure and mark cutting lines on materials, using a ruler, pencil, chalk, and marking gauge.",
+          "Assemble and fasten materials to make frameworks or props, using hand tools and wood screws, nails, dowel pins, or glue.",
+          "Study specifications in blueprints, sketches, or building plans to prepare project layout and determine dimensions and materials required.",
+          "Shape or cut materials to specified measurements, using hand tools, machines, or power saws.",
+          "Verify trueness of structure, using plumb bob and level.",
+          "Inspect ceiling or floor tile, wall coverings, siding, glass, or woodwork to detect broken or damaged structures.",
+          "Erect scaffolding or ladders for assembling structures above ground level.",
+          "Install structures or fixtures, such as windows, frames, floorings, trim, or hardware, using carpenters' hand or power tools.",
+          "Maintain records, document actions, and present written progress reports.",
+          "Remove damaged or defective parts or sections of structures and repair or replace, using hand tools.",
+          "Maintain job records and schedule work crew.",
+          "Anchor and brace forms and other structures in place, using nails, bolts, anchor rods, steel cables, planks, wedges, and timbers.",
+          "Bore boltholes in timber, masonry or concrete walls, using power drill.",
+          "Install rough door and window frames, subflooring, fixtures, or temporary supports in structures undergoing construction or repair.",
+          "Dig or direct digging of post holes and set poles to support structures.",
+          "Cover subfloors with building paper to keep out moisture and lay hardwood, parquet, or wood-strip-block floors by nailing floors to subfloor or cementing them to mastic or asphalt base.",
+          "Construct forms or chutes for pouring concrete.",
+          "Arrange for subcontractors to deal with special areas, such as heating or electrical wiring work.",
+          "Build or repair cabinets, doors, frameworks, floors, or other wooden fixtures used in buildings, using woodworking machines, carpenter's hand tools, or power tools.",
+          "Finish surfaces of woodwork or wallboard in houses or buildings, using paint, hand tools, or paneling.",
+          "Select and order lumber or other required materials.",
+          "Work with or remove hazardous material.",
+          "Fill cracks or other defects in plaster or plasterboard and sand patch, using patching plaster, trowel, and sanding tool.",
+          "Prepare cost estimates for clients or employers.",
+          "Perform minor plumbing, welding, or concrete mixing work.",
+          "Apply shock-absorbing, sound-deadening, or decorative paneling to ceilings or walls.",
+          "Examine structural timbers and supports to detect decay, and replace timbers as required, using hand tools, nuts, and bolts.",
+          "Build sleds from logs and timbers for use in hauling camp buildings and machinery through wooded areas.",
+          "Use drones for site surveying and to inspect hard-to-reach areas of a structure."
+        ]
+      }
+    },
+    {
+      "ElementDefinition": {
+        "Element": "L/U Stud",
+        "Direction": [
+          "V"
+        ],
+        "Description": "Utility stud providing lateral bracing or service-run pathways (beside the first vertical stud)."
+      },
+      "AssignedCrews": [
+        "Carpenter"
+      ],
+      "CrewTasks": {
+        "Carpenter": [
+          "Follow established safety rules and regulations and maintain a safe and clean environment.",
+          "Measure and mark cutting lines on materials, using a ruler, pencil, chalk, and marking gauge.",
+          "Assemble and fasten materials to make frameworks or props, using hand tools and wood screws, nails, dowel pins, or glue.",
+          "Study specifications in blueprints, sketches, or building plans to prepare project layout and determine dimensions and materials required.",
+          "Shape or cut materials to specified measurements, using hand tools, machines, or power saws.",
+          "Verify trueness of structure, using plumb bob and level.",
+          "Inspect ceiling or floor tile, wall coverings, siding, glass, or woodwork to detect broken or damaged structures.",
+          "Erect scaffolding or ladders for assembling structures above ground level.",
+          "Install structures or fixtures, such as windows, frames, floorings, trim, or hardware, using carpenters' hand or power tools.",
+          "Maintain records, document actions, and present written progress reports.",
+          "Remove damaged or defective parts or sections of structures and repair or replace, using hand tools.",
+          "Maintain job records and schedule work crew.",
+          "Anchor and brace forms and other structures in place, using nails, bolts, anchor rods, steel cables, planks, wedges, and timbers.",
+          "Bore boltholes in timber, masonry or concrete walls, using power drill.",
+          "Install rough door and window frames, subflooring, fixtures, or temporary supports in structures undergoing construction or repair.",
+          "Dig or direct digging of post holes and set poles to support structures.",
+          "Cover subfloors with building paper to keep out moisture and lay hardwood, parquet, or wood-strip-block floors by nailing floors to subfloor or cementing them to mastic or asphalt base.",
+          "Construct forms or chutes for pouring concrete.",
+          "Arrange for subcontractors to deal with special areas, such as heating or electrical wiring work.",
+          "Build or repair cabinets, doors, frameworks, floors, or other wooden fixtures used in buildings, using woodworking machines, carpenter's hand tools, or power tools.",
+          "Finish surfaces of woodwork or wallboard in houses or buildings, using paint, hand tools, or paneling.",
+          "Select and order lumber or other required materials.",
+          "Work with or remove hazardous material.",
+          "Fill cracks or other defects in plaster or plasterboard and sand patch, using patching plaster, trowel, and sanding tool.",
+          "Prepare cost estimates for clients or employers.",
+          "Perform minor plumbing, welding, or concrete mixing work.",
+          "Apply shock-absorbing, sound-deadening, or decorative paneling to ceilings or walls.",
+          "Examine structural timbers and supports to detect decay, and replace timbers as required, using hand tools, nuts, and bolts.",
+          "Build sleds from logs and timbers for use in hauling camp buildings and machinery through wooded areas.",
+          "Use drones for site surveying and to inspect hard-to-reach areas of a structure."
+        ]
+      }
+    },
+    {
+      "ElementDefinition": {
+        "Element": "Lower Sill Plate",
+        "Direction": [
+          "H"
+        ],
+        "Description": "Horizontal plate forming the sill at the bottom of a opening (If window)."
+      },
+      "AssignedCrews": [
+        "Carpenter"
+      ],
+      "CrewTasks": {
+        "Carpenter": [
+          "Follow established safety rules and regulations and maintain a safe and clean environment.",
+          "Measure and mark cutting lines on materials, using a ruler, pencil, chalk, and marking gauge.",
+          "Assemble and fasten materials to make frameworks or props, using hand tools and wood screws, nails, dowel pins, or glue.",
+          "Study specifications in blueprints, sketches, or building plans to prepare project layout and determine dimensions and materials required.",
+          "Shape or cut materials to specified measurements, using hand tools, machines, or power saws.",
+          "Verify trueness of structure, using plumb bob and level.",
+          "Inspect ceiling or floor tile, wall coverings, siding, glass, or woodwork to detect broken or damaged structures.",
+          "Erect scaffolding or ladders for assembling structures above ground level.",
+          "Install structures or fixtures, such as windows, frames, floorings, trim, or hardware, using carpenters' hand or power tools.",
+          "Maintain records, document actions, and present written progress reports.",
+          "Remove damaged or defective parts or sections of structures and repair or replace, using hand tools.",
+          "Maintain job records and schedule work crew.",
+          "Anchor and brace forms and other structures in place, using nails, bolts, anchor rods, steel cables, planks, wedges, and timbers.",
+          "Bore boltholes in timber, masonry or concrete walls, using power drill.",
+          "Install rough door and window frames, subflooring, fixtures, or temporary supports in structures undergoing construction or repair.",
+          "Dig or direct digging of post holes and set poles to support structures.",
+          "Cover subfloors with building paper to keep out moisture and lay hardwood, parquet, or wood-strip-block floors by nailing floors to subfloor or cementing them to mastic or asphalt base.",
+          "Construct forms or chutes for pouring concrete.",
+          "Arrange for subcontractors to deal with special areas, such as heating or electrical wiring work.",
+          "Build or repair cabinets, doors, frameworks, floors, or other wooden fixtures used in buildings, using woodworking machines, carpenter's hand tools, or power tools.",
+          "Finish surfaces of woodwork or wallboard in houses or buildings, using paint, hand tools, or paneling.",
+          "Select and order lumber or other required materials.",
+          "Work with or remove hazardous material.",
+          "Fill cracks or other defects in plaster or plasterboard and sand patch, using patching plaster, trowel, and sanding tool.",
+          "Prepare cost estimates for clients or employers.",
+          "Perform minor plumbing, welding, or concrete mixing work.",
+          "Apply shock-absorbing, sound-deadening, or decorative paneling to ceilings or walls.",
+          "Examine structural timbers and supports to detect decay, and replace timbers as required, using hand tools, nuts, and bolts.",
+          "Build sleds from logs and timbers for use in hauling camp buildings and machinery through wooded areas.",
+          "Use drones for site surveying and to inspect hard-to-reach areas of a structure."
+        ]
+      }
+    },
+    {
+      "ElementDefinition": {
+        "Element": "Bottom Plate",
+        "Direction": [
+          "H"
+        ],
+        "Description": "Horizontal framing member anchored to the floor, forming the base of the wall."
+      },
+      "AssignedCrews": [
+        "Carpenter"
+      ],
+      "CrewTasks": {
+        "Carpenter": [
+          "Follow established safety rules and regulations and maintain a safe and clean environment.",
+          "Measure and mark cutting lines on materials, using a ruler, pencil, chalk, and marking gauge.",
+          "Assemble and fasten materials to make frameworks or props, using hand tools and wood screws, nails, dowel pins, or glue.",
+          "Study specifications in blueprints, sketches, or building plans to prepare project layout and determine dimensions and materials required.",
+          "Shape or cut materials to specified measurements, using hand tools, machines, or power saws.",
+          "Verify trueness of structure, using plumb bob and level.",
+          "Inspect ceiling or floor tile, wall coverings, siding, glass, or woodwork to detect broken or damaged structures.",
+          "Erect scaffolding or ladders for assembling structures above ground level.",
+          "Install structures or fixtures, such as windows, frames, floorings, trim, or hardware, using carpenters' hand or power tools.",
+          "Maintain records, document actions, and present written progress reports.",
+          "Remove damaged or defective parts or sections of structures and repair or replace, using hand tools.",
+          "Maintain job records and schedule work crew.",
+          "Anchor and brace forms and other structures in place, using nails, bolts, anchor rods, steel cables, planks, wedges, and timbers.",
+          "Bore boltholes in timber, masonry or concrete walls, using power drill.",
+          "Install rough door and window frames, subflooring, fixtures, or temporary supports in structures undergoing construction or repair.",
+          "Dig or direct digging of post holes and set poles to support structures.",
+          "Cover subfloors with building paper to keep out moisture and lay hardwood, parquet, or wood-strip-block floors by nailing floors to subfloor or cementing them to mastic or asphalt base.",
+          "Construct forms or chutes for pouring concrete.",
+          "Arrange for subcontractors to deal with special areas, such as heating or electrical wiring work.",
+          "Build or repair cabinets, doors, frameworks, floors, or other wooden fixtures used in buildings, using woodworking machines, carpenter's hand tools, or power tools.",
+          "Finish surfaces of woodwork or wallboard in houses or buildings, using paint, hand tools, or paneling.",
+          "Select and order lumber or other required materials.",
+          "Work with or remove hazardous material.",
+          "Fill cracks or other defects in plaster or plasterboard and sand patch, using patching plaster, trowel, and sanding tool.",
+          "Prepare cost estimates for clients or employers.",
+          "Perform minor plumbing, welding, or concrete mixing work.",
+          "Apply shock-absorbing, sound-deadening, or decorative paneling to ceilings or walls.",
+          "Examine structural timbers and supports to detect decay, and replace timbers as required, using hand tools, nuts, and bolts.",
+          "Build sleds from logs and timbers for use in hauling camp buildings and machinery through wooded areas.",
+          "Use drones for site surveying and to inspect hard-to-reach areas of a structure."
+        ]
+      }
+    },
+    {
+      "ElementDefinition": {
+        "Element": "Top Sill Plate",
+        "Direction": [
+          "H"
+        ],
+        "Description": "Horizontal plate forming the upper sill of a window opening, providing a bearing surface for top cripples and tying the frame together only if there is no Bear Loading required in the openning."
+      },
+      "AssignedCrews": [
+        "Carpenter"
+      ],
+      "CrewTasks": {
+        "Carpenter": [
+          "Follow established safety rules and regulations and maintain a safe and clean environment.",
+          "Measure and mark cutting lines on materials, using a ruler, pencil, chalk, and marking gauge.",
+          "Assemble and fasten materials to make frameworks or props, using hand tools and wood screws, nails, dowel pins, or glue.",
+          "Study specifications in blueprints, sketches, or building plans to prepare project layout and determine dimensions and materials required.",
+          "Shape or cut materials to specified measurements, using hand tools, machines, or power saws.",
+          "Verify trueness of structure, using plumb bob and level.",
+          "Inspect ceiling or floor tile, wall coverings, siding, glass, or woodwork to detect broken or damaged structures.",
+          "Erect scaffolding or ladders for assembling structures above ground level.",
+          "Install structures or fixtures, such as windows, frames, floorings, trim, or hardware, using carpenters' hand or power tools.",
+          "Maintain records, document actions, and present written progress reports.",
+          "Remove damaged or defective parts or sections of structures and repair or replace, using hand tools.",
+          "Maintain job records and schedule work crew.",
+          "Anchor and brace forms and other structures in place, using nails, bolts, anchor rods, steel cables, planks, wedges, and timbers.",
+          "Bore boltholes in timber, masonry or concrete walls, using power drill.",
+          "Install rough door and window frames, subflooring, fixtures, or temporary supports in structures undergoing construction or repair.",
+          "Dig or direct digging of post holes and set poles to support structures.",
+          "Cover subfloors with building paper to keep out moisture and lay hardwood, parquet, or wood-strip-block floors by nailing floors to subfloor or cementing them to mastic or asphalt base.",
+          "Construct forms or chutes for pouring concrete.",
+          "Arrange for subcontractors to deal with special areas, such as heating or electrical wiring work.",
+          "Build or repair cabinets, doors, frameworks, floors, or other wooden fixtures used in buildings, using woodworking machines, carpenter's hand tools, or power tools.",
+          "Finish surfaces of woodwork or wallboard in houses or buildings, using paint, hand tools, or paneling.",
+          "Select and order lumber or other required materials.",
+          "Work with or remove hazardous material.",
+          "Fill cracks or other defects in plaster or plasterboard and sand patch, using patching plaster, trowel, and sanding tool.",
+          "Prepare cost estimates for clients or employers.",
+          "Perform minor plumbing, welding, or concrete mixing work.",
+          "Apply shock-absorbing, sound-deadening, or decorative paneling to ceilings or walls.",
+          "Examine structural timbers and supports to detect decay, and replace timbers as required, using hand tools, nuts, and bolts.",
+          "Build sleds from logs and timbers for use in hauling camp buildings and machinery through wooded areas.",
+          "Use drones for site surveying and to inspect hard-to-reach areas of a structure."
+        ]
+      }
+    },
+    {
+      "ElementDefinition": {
+        "Element": "Top Cripple Stud",
+        "Direction": [
+          "V"
+        ],
+        "Description": "Short vertical stud positioned above a header (Top Sill Plate) only if there is no Bear Loading required in the openning."
+      },
+      "AssignedCrews": [
+        "Carpenter"
+      ],
+      "CrewTasks": {
+        "Carpenter": [
+          "Follow established safety rules and regulations and maintain a safe and clean environment.",
+          "Measure and mark cutting lines on materials, using a ruler, pencil, chalk, and marking gauge.",
+          "Assemble and fasten materials to make frameworks or props, using hand tools and wood screws, nails, dowel pins, or glue.",
+          "Study specifications in blueprints, sketches, or building plans to prepare project layout and determine dimensions and materials required.",
+          "Shape or cut materials to specified measurements, using hand tools, machines, or power saws.",
+          "Verify trueness of structure, using plumb bob and level.",
+          "Inspect ceiling or floor tile, wall coverings, siding, glass, or woodwork to detect broken or damaged structures.",
+          "Erect scaffolding or ladders for assembling structures above ground level.",
+          "Install structures or fixtures, such as windows, frames, floorings, trim, or hardware, using carpenters' hand or power tools.",
+          "Maintain records, document actions, and present written progress reports.",
+          "Remove damaged or defective parts or sections of structures and repair or replace, using hand tools.",
+          "Maintain job records and schedule work crew.",
+          "Anchor and brace forms and other structures in place, using nails, bolts, anchor rods, steel cables, planks, wedges, and timbers.",
+          "Bore boltholes in timber, masonry or concrete walls, using power drill.",
+          "Install rough door and window frames, subflooring, fixtures, or temporary supports in structures undergoing construction or repair.",
+          "Dig or direct digging of post holes and set poles to support structures.",
+          "Cover subfloors with building paper to keep out moisture and lay hardwood, parquet, or wood-strip-block floors by nailing floors to subfloor or cementing them to mastic or asphalt base.",
+          "Construct forms or chutes for pouring concrete.",
+          "Arrange for subcontractors to deal with special areas, such as heating or electrical wiring work.",
+          "Build or repair cabinets, doors, frameworks, floors, or other wooden fixtures used in buildings, using woodworking machines, carpenter's hand tools, or power tools.",
+          "Finish surfaces of woodwork or wallboard in houses or buildings, using paint, hand tools, or paneling.",
+          "Select and order lumber or other required materials.",
+          "Work with or remove hazardous material.",
+          "Fill cracks or other defects in plaster or plasterboard and sand patch, using patching plaster, trowel, and sanding tool.",
+          "Prepare cost estimates for clients or employers.",
+          "Perform minor plumbing, welding, or concrete mixing work.",
+          "Apply shock-absorbing, sound-deadening, or decorative paneling to ceilings or walls.",
+          "Examine structural timbers and supports to detect decay, and replace timbers as required, using hand tools, nuts, and bolts.",
+          "Build sleds from logs and timbers for use in hauling camp buildings and machinery through wooded areas.",
+          "Use drones for site surveying and to inspect hard-to-reach areas of a structure."
+        ]
+      }
+    }
+  ],
+  "configuration": {
+    "active_model_profile": "o3",
+    "requested_model_identifier": "o3",
+    "api_family": "Responses API",
+    "api_version": "v1",
+    "reasoning_effort": "high",
+    "temperature": null,
+    "top_p": null,
+    "max_output_tokens": 4096,
+    "sdk_max_retries": 2,
+    "validation_max_attempts": 3,
+    "parallel_tool_calls": false,
+    "strict_tool_schema": true,
+    "tool_choice": "submit_l_a_i_sub_steps"
+  },
+  "software": {
+    "python_version": "3.10.12",
+    "openai_python_version": "2.43.0"
+  },
+  "prompt_record": {
+    "system_prompt": "You are L-A-I in a construction knowledge-extraction pipeline.\n\nDecompose the installation of every supplied assembly element into an ordered\nlist of human-understandable Sub-Steps (Si), using:\n1. the Element Definition;\n2. the element's assigned crews from Ext-A-II; and\n3. the crew task descriptions from Ext-A-III.\n\nRules:\n- Return exactly one mapping for every supplied element.\n- Copy element names exactly.\n- Give every element at least one Sub-Step.\n- Write concise action phrases beginning with verbs.\n- Keep steps in practical installation order.\n- Adapt the crew-task knowledge to the specific element.\n- Include only installation-relevant actions.\n- Exclude estimating, scheduling, reporting, repair, and unrelated tasks.\n- Do not invent dimensions, coordinates, tools, fastener counts, or tolerances.\n- Do not include robotic commands or code.\n- Do not repeat equivalent steps for the same element.\n- Return only through the submit_l_a_i_sub_steps function.",
+    "system_prompt_sha256": "b1ced9e7a7ea01a0c76d21bc734f07cbaaa2c7bd3b8ce8c6d4da0a167d13e070",
+    "user_prompt": "Generate installation Sub-Steps for every element below.\n\nGrounded inputs:\n[\n  {\n    \"ElementDefinition\": {\n      \"Element\": \"Vertical Stud\",\n      \"Direction\": [\n        \"V\"\n      ],\n      \"Description\": \"Primary vertical framing stud extending from bottom to top plates.\"\n    },\n    \"AssignedCrews\": [\n      \"Carpenter\"\n    ],\n    \"CrewTasks\": {\n      \"Carpenter\": [\n        \"Follow established safety rules and regulations and maintain a safe and clean environment.\",\n        \"Measure and mark cutting lines on materials, using a ruler, pencil, chalk, and marking gauge.\",\n        \"Assemble and fasten materials to make frameworks or props, using hand tools and wood screws, nails, dowel pins, or glue.\",\n        \"Study specifications in blueprints, sketches, or building plans to prepare project layout and determine dimensions and materials required.\",\n        \"Shape or cut materials to specified measurements, using hand tools, machines, or power saws.\",\n        \"Verify trueness of structure, using plumb bob and level.\",\n        \"Inspect ceiling or floor tile, wall coverings, siding, glass, or woodwork to detect broken or damaged structures.\",\n        \"Erect scaffolding or ladders for assembling structures above ground level.\",\n        \"Install structures or fixtures, such as windows, frames, floorings, trim, or hardware, using carpenters' hand or power tools.\",\n        \"Maintain records, document actions, and present written progress reports.\",\n        \"Remove damaged or defective parts or sections of structures and repair or replace, using hand tools.\",\n        \"Maintain job records and schedule work crew.\",\n        \"Anchor and brace forms and other structures in place, using nails, bolts, anchor rods, steel cables, planks, wedges, and timbers.\",\n        \"Bore boltholes in timber, masonry or concrete walls, using power drill.\",\n        \"Install rough door and window frames, subflooring, fixtures, or temporary supports in structures undergoing construction or repair.\",\n        \"Dig or direct digging of post holes and set poles to support structures.\",\n        \"Cover subfloors with building paper to keep out moisture and lay hardwood, parquet, or wood-strip-block floors by nailing floors to subfloor or cementing them to mastic or asphalt base.\",\n        \"Construct forms or chutes for pouring concrete.\",\n        \"Arrange for subcontractors to deal with special areas, such as heating or electrical wiring work.\",\n        \"Build or repair cabinets, doors, frameworks, floors, or other wooden fixtures used in buildings, using woodworking machines, carpenter's hand tools, or power tools.\",\n        \"Finish surfaces of woodwork or wallboard in houses or buildings, using paint, hand tools, or paneling.\",\n        \"Select and order lumber or other required materials.\",\n        \"Work with or remove hazardous material.\",\n        \"Fill cracks or other defects in plaster or plasterboard and sand patch, using patching plaster, trowel, and sanding tool.\",\n        \"Prepare cost estimates for clients or employers.\",\n        \"Perform minor plumbing, welding, or concrete mixing work.\",\n        \"Apply shock-absorbing, sound-deadening, or decorative paneling to ceilings or walls.\",\n        \"Examine structural timbers and supports to detect decay, and replace timbers as required, using hand tools, nuts, and bolts.\",\n        \"Build sleds from logs and timbers for use in hauling camp buildings and machinery through wooded areas.\",\n        \"Use drones for site surveying and to inspect hard-to-reach areas of a structure.\"\n      ]\n    }\n  },\n  {\n    \"ElementDefinition\": {\n      \"Element\": \"King Stud\",\n      \"Direction\": [\n        \"V\"\n      ],\n      \"Description\": \"Full-height stud flanking window or door openings to carry loads (Same as Vertical Stud, but around opennings).\"\n    },\n    \"AssignedCrews\": [\n      \"Carpenter\"\n    ],\n    \"CrewTasks\": {\n      \"Carpenter\": [\n        \"Follow established safety rules and regulations and maintain a safe and clean environment.\",\n        \"Measure and mark cutting lines on materials, using a ruler, pencil, chalk, and marking gauge.\",\n        \"Assemble and fasten materials to make frameworks or props, using hand tools and wood screws, nails, dowel pins, or glue.\",\n        \"Study specifications in blueprints, sketches, or building plans to prepare project layout and determine dimensions and materials required.\",\n        \"Shape or cut materials to specified measurements, using hand tools, machines, or power saws.\",\n        \"Verify trueness of structure, using plumb bob and level.\",\n        \"Inspect ceiling or floor tile, wall coverings, siding, glass, or woodwork to detect broken or damaged structures.\",\n        \"Erect scaffolding or ladders for assembling structures above ground level.\",\n        \"Install structures or fixtures, such as windows, frames, floorings, trim, or hardware, using carpenters' hand or power tools.\",\n        \"Maintain records, document actions, and present written progress reports.\",\n        \"Remove damaged or defective parts or sections of structures and repair or replace, using hand tools.\",\n        \"Maintain job records and schedule work crew.\",\n        \"Anchor and brace forms and other structures in place, using nails, bolts, anchor rods, steel cables, planks, wedges, and timbers.\",\n        \"Bore boltholes in timber, masonry or concrete walls, using power drill.\",\n        \"Install rough door and window frames, subflooring, fixtures, or temporary supports in structures undergoing construction or repair.\",\n        \"Dig or direct digging of post holes and set poles to support structures.\",\n        \"Cover subfloors with building paper to keep out moisture and lay hardwood, parquet, or wood-strip-block floors by nailing floors to subfloor or cementing them to mastic or asphalt base.\",\n        \"Construct forms or chutes for pouring concrete.\",\n        \"Arrange for subcontractors to deal with special areas, such as heating or electrical wiring work.\",\n        \"Build or repair cabinets, doors, frameworks, floors, or other wooden fixtures used in buildings, using woodworking machines, carpenter's hand tools, or power tools.\",\n        \"Finish surfaces of woodwork or wallboard in houses or buildings, using paint, hand tools, or paneling.\",\n        \"Select and order lumber or other required materials.\",\n        \"Work with or remove hazardous material.\",\n        \"Fill cracks or other defects in plaster or plasterboard and sand patch, using patching plaster, trowel, and sanding tool.\",\n        \"Prepare cost estimates for clients or employers.\",\n        \"Perform minor plumbing, welding, or concrete mixing work.\",\n        \"Apply shock-absorbing, sound-deadening, or decorative paneling to ceilings or walls.\",\n        \"Examine structural timbers and supports to detect decay, and replace timbers as required, using hand tools, nuts, and bolts.\",\n        \"Build sleds from logs and timbers for use in hauling camp buildings and machinery through wooded areas.\",\n        \"Use drones for site surveying and to inspect hard-to-reach areas of a structure.\"\n      ]\n    }\n  },\n  {\n    \"ElementDefinition\": {\n      \"Element\": \"Lower Cripple Stud\",\n      \"Direction\": [\n        \"V\"\n      ],\n      \"Description\": \"Short stud below a window opening that supports the bottom sill plate (If window).\"\n    },\n    \"AssignedCrews\": [\n      \"Carpenter\"\n    ],\n    \"CrewTasks\": {\n      \"Carpenter\": [\n        \"Follow established safety rules and regulations and maintain a safe and clean environment.\",\n        \"Measure and mark cutting lines on materials, using a ruler, pencil, chalk, and marking gauge.\",\n        \"Assemble and fasten materials to make frameworks or props, using hand tools and wood screws, nails, dowel pins, or glue.\",\n        \"Study specifications in blueprints, sketches, or building plans to prepare project layout and determine dimensions and materials required.\",\n        \"Shape or cut materials to specified measurements, using hand tools, machines, or power saws.\",\n        \"Verify trueness of structure, using plumb bob and level.\",\n        \"Inspect ceiling or floor tile, wall coverings, siding, glass, or woodwork to detect broken or damaged structures.\",\n        \"Erect scaffolding or ladders for assembling structures above ground level.\",\n        \"Install structures or fixtures, such as windows, frames, floorings, trim, or hardware, using carpenters' hand or power tools.\",\n        \"Maintain records, document actions, and present written progress reports.\",\n        \"Remove damaged or defective parts or sections of structures and repair or replace, using hand tools.\",\n        \"Maintain job records and schedule work crew.\",\n        \"Anchor and brace forms and other structures in place, using nails, bolts, anchor rods, steel cables, planks, wedges, and timbers.\",\n        \"Bore boltholes in timber, masonry or concrete walls, using power drill.\",\n        \"Install rough door and window frames, subflooring, fixtures, or temporary supports in structures undergoing construction or repair.\",\n        \"Dig or direct digging of post holes and set poles to support structures.\",\n        \"Cover subfloors with building paper to keep out moisture and lay hardwood, parquet, or wood-strip-block floors by nailing floors to subfloor or cementing them to mastic or asphalt base.\",\n        \"Construct forms or chutes for pouring concrete.\",\n        \"Arrange for subcontractors to deal with special areas, such as heating or electrical wiring work.\",\n        \"Build or repair cabinets, doors, frameworks, floors, or other wooden fixtures used in buildings, using woodworking machines, carpenter's hand tools, or power tools.\",\n        \"Finish surfaces of woodwork or wallboard in houses or buildings, using paint, hand tools, or paneling.\",\n        \"Select and order lumber or other required materials.\",\n        \"Work with or remove hazardous material.\",\n        \"Fill cracks or other defects in plaster or plasterboard and sand patch, using patching plaster, trowel, and sanding tool.\",\n        \"Prepare cost estimates for clients or employers.\",\n        \"Perform minor plumbing, welding, or concrete mixing work.\",\n        \"Apply shock-absorbing, sound-deadening, or decorative paneling to ceilings or walls.\",\n        \"Examine structural timbers and supports to detect decay, and replace timbers as required, using hand tools, nuts, and bolts.\",\n        \"Build sleds from logs and timbers for use in hauling camp buildings and machinery through wooded areas.\",\n        \"Use drones for site surveying and to inspect hard-to-reach areas of a structure.\"\n      ]\n    }\n  },\n  {\n    \"ElementDefinition\": {\n      \"Element\": \"OSB Sheathing Plate\",\n      \"Direction\": [\n        \"V\"\n      ],\n      \"Description\": \"Oriented-strand-board panel fastened to the frame for sheathing and bracing.\"\n    },\n    \"AssignedCrews\": [\n      \"Carpenter\"\n    ],\n    \"CrewTasks\": {\n      \"Carpenter\": [\n        \"Follow established safety rules and regulations and maintain a safe and clean environment.\",\n        \"Measure and mark cutting lines on materials, using a ruler, pencil, chalk, and marking gauge.\",\n        \"Assemble and fasten materials to make frameworks or props, using hand tools and wood screws, nails, dowel pins, or glue.\",\n        \"Study specifications in blueprints, sketches, or building plans to prepare project layout and determine dimensions and materials required.\",\n        \"Shape or cut materials to specified measurements, using hand tools, machines, or power saws.\",\n        \"Verify trueness of structure, using plumb bob and level.\",\n        \"Inspect ceiling or floor tile, wall coverings, siding, glass, or woodwork to detect broken or damaged structures.\",\n        \"Erect scaffolding or ladders for assembling structures above ground level.\",\n        \"Install structures or fixtures, such as windows, frames, floorings, trim, or hardware, using carpenters' hand or power tools.\",\n        \"Maintain records, document actions, and present written progress reports.\",\n        \"Remove damaged or defective parts or sections of structures and repair or replace, using hand tools.\",\n        \"Maintain job records and schedule work crew.\",\n        \"Anchor and brace forms and other structures in place, using nails, bolts, anchor rods, steel cables, planks, wedges, and timbers.\",\n        \"Bore boltholes in timber, masonry or concrete walls, using power drill.\",\n        \"Install rough door and window frames, subflooring, fixtures, or temporary supports in structures undergoing construction or repair.\",\n        \"Dig or direct digging of post holes and set poles to support structures.\",\n        \"Cover subfloors with building paper to keep out moisture and lay hardwood, parquet, or wood-strip-block floors by nailing floors to subfloor or cementing them to mastic or asphalt base.\",\n        \"Construct forms or chutes for pouring concrete.\",\n        \"Arrange for subcontractors to deal with special areas, such as heating or electrical wiring work.\",\n        \"Build or repair cabinets, doors, frameworks, floors, or other wooden fixtures used in buildings, using woodworking machines, carpenter's hand tools, or power tools.\",\n        \"Finish surfaces of woodwork or wallboard in houses or buildings, using paint, hand tools, or paneling.\",\n        \"Select and order lumber or other required materials.\",\n        \"Work with or remove hazardous material.\",\n        \"Fill cracks or other defects in plaster or plasterboard and sand patch, using patching plaster, trowel, and sanding tool.\",\n        \"Prepare cost estimates for clients or employers.\",\n        \"Perform minor plumbing, welding, or concrete mixing work.\",\n        \"Apply shock-absorbing, sound-deadening, or decorative paneling to ceilings or walls.\",\n        \"Examine structural timbers and supports to detect decay, and replace timbers as required, using hand tools, nuts, and bolts.\",\n        \"Build sleds from logs and timbers for use in hauling camp buildings and machinery through wooded areas.\",\n        \"Use drones for site surveying and to inspect hard-to-reach areas of a structure.\"\n      ]\n    }\n  },\n  {\n    \"ElementDefinition\": {\n      \"Element\": \"Top Plate\",\n      \"Direction\": [\n        \"H\"\n      ],\n      \"Description\": \"Horizontal member capping the wall and tying the studs together.\"\n    },\n    \"AssignedCrews\": [\n      \"Carpenter\"\n    ],\n    \"CrewTasks\": {\n      \"Carpenter\": [\n        \"Follow established safety rules and regulations and maintain a safe and clean environment.\",\n        \"Measure and mark cutting lines on materials, using a ruler, pencil, chalk, and marking gauge.\",\n        \"Assemble and fasten materials to make frameworks or props, using hand tools and wood screws, nails, dowel pins, or glue.\",\n        \"Study specifications in blueprints, sketches, or building plans to prepare project layout and determine dimensions and materials required.\",\n        \"Shape or cut materials to specified measurements, using hand tools, machines, or power saws.\",\n        \"Verify trueness of structure, using plumb bob and level.\",\n        \"Inspect ceiling or floor tile, wall coverings, siding, glass, or woodwork to detect broken or damaged structures.\",\n        \"Erect scaffolding or ladders for assembling structures above ground level.\",\n        \"Install structures or fixtures, such as windows, frames, floorings, trim, or hardware, using carpenters' hand or power tools.\",\n        \"Maintain records, document actions, and present written progress reports.\",\n        \"Remove damaged or defective parts or sections of structures and repair or replace, using hand tools.\",\n        \"Maintain job records and schedule work crew.\",\n        \"Anchor and brace forms and other structures in place, using nails, bolts, anchor rods, steel cables, planks, wedges, and timbers.\",\n        \"Bore boltholes in timber, masonry or concrete walls, using power drill.\",\n        \"Install rough door and window frames, subflooring, fixtures, or temporary supports in structures undergoing construction or repair.\",\n        \"Dig or direct digging of post holes and set poles to support structures.\",\n        \"Cover subfloors with building paper to keep out moisture and lay hardwood, parquet, or wood-strip-block floors by nailing floors to subfloor or cementing them to mastic or asphalt base.\",\n        \"Construct forms or chutes for pouring concrete.\",\n        \"Arrange for subcontractors to deal with special areas, such as heating or electrical wiring work.\",\n        \"Build or repair cabinets, doors, frameworks, floors, or other wooden fixtures used in buildings, using woodworking machines, carpenter's hand tools, or power tools.\",\n        \"Finish surfaces of woodwork or wallboard in houses or buildings, using paint, hand tools, or paneling.\",\n        \"Select and order lumber or other required materials.\",\n        \"Work with or remove hazardous material.\",\n        \"Fill cracks or other defects in plaster or plasterboard and sand patch, using patching plaster, trowel, and sanding tool.\",\n        \"Prepare cost estimates for clients or employers.\",\n        \"Perform minor plumbing, welding, or concrete mixing work.\",\n        \"Apply shock-absorbing, sound-deadening, or decorative paneling to ceilings or walls.\",\n        \"Examine structural timbers and supports to detect decay, and replace timbers as required, using hand tools, nuts, and bolts.\",\n        \"Build sleds from logs and timbers for use in hauling camp buildings and machinery through wooded areas.\",\n        \"Use drones for site surveying and to inspect hard-to-reach areas of a structure.\"\n      ]\n    }\n  },\n  {\n    \"ElementDefinition\": {\n      \"Element\": \"Jack Stud\",\n      \"Direction\": [\n        \"V\"\n      ],\n      \"Description\": \"Shortened stud under the lef/right side of a kings supporting an opening (Shorter than kings length from the bottom plate to the header/bear loading).\"\n    },\n    \"AssignedCrews\": [\n      \"Carpenter\"\n    ],\n    \"CrewTasks\": {\n      \"Carpenter\": [\n        \"Follow established safety rules and regulations and maintain a safe and clean environment.\",\n        \"Measure and mark cutting lines on materials, using a ruler, pencil, chalk, and marking gauge.\",\n        \"Assemble and fasten materials to make frameworks or props, using hand tools and wood screws, nails, dowel pins, or glue.\",\n        \"Study specifications in blueprints, sketches, or building plans to prepare project layout and determine dimensions and materials required.\",\n        \"Shape or cut materials to specified measurements, using hand tools, machines, or power saws.\",\n        \"Verify trueness of structure, using plumb bob and level.\",\n        \"Inspect ceiling or floor tile, wall coverings, siding, glass, or woodwork to detect broken or damaged structures.\",\n        \"Erect scaffolding or ladders for assembling structures above ground level.\",\n        \"Install structures or fixtures, such as windows, frames, floorings, trim, or hardware, using carpenters' hand or power tools.\",\n        \"Maintain records, document actions, and present written progress reports.\",\n        \"Remove damaged or defective parts or sections of structures and repair or replace, using hand tools.\",\n        \"Maintain job records and schedule work crew.\",\n        \"Anchor and brace forms and other structures in place, using nails, bolts, anchor rods, steel cables, planks, wedges, and timbers.\",\n        \"Bore boltholes in timber, masonry or concrete walls, using power drill.\",\n        \"Install rough door and window frames, subflooring, fixtures, or temporary supports in structures undergoing construction or repair.\",\n        \"Dig or direct digging of post holes and set poles to support structures.\",\n        \"Cover subfloors with building paper to keep out moisture and lay hardwood, parquet, or wood-strip-block floors by nailing floors to subfloor or cementing them to mastic or asphalt base.\",\n        \"Construct forms or chutes for pouring concrete.\",\n        \"Arrange for subcontractors to deal with special areas, such as heating or electrical wiring work.\",\n        \"Build or repair cabinets, doors, frameworks, floors, or other wooden fixtures used in buildings, using woodworking machines, carpenter's hand tools, or power tools.\",\n        \"Finish surfaces of woodwork or wallboard in houses or buildings, using paint, hand tools, or paneling.\",\n        \"Select and order lumber or other required materials.\",\n        \"Work with or remove hazardous material.\",\n        \"Fill cracks or other defects in plaster or plasterboard and sand patch, using patching plaster, trowel, and sanding tool.\",\n        \"Prepare cost estimates for clients or employers.\",\n        \"Perform minor plumbing, welding, or concrete mixing work.\",\n        \"Apply shock-absorbing, sound-deadening, or decorative paneling to ceilings or walls.\",\n        \"Examine structural timbers and supports to detect decay, and replace timbers as required, using hand tools, nuts, and bolts.\",\n        \"Build sleds from logs and timbers for use in hauling camp buildings and machinery through wooded areas.\",\n        \"Use drones for site surveying and to inspect hard-to-reach areas of a structure.\"\n      ]\n    }\n  },\n  {\n    \"ElementDefinition\": {\n      \"Element\": \"Bear Loading\",\n      \"Direction\": [\n        \"H\"\n      ],\n      \"Description\": \"Load-bearing blocking/header component distributing loads across an opening (Usually 2 elements with 2x10in cross section stacked).\"\n    },\n    \"AssignedCrews\": [\n      \"Carpenter\"\n    ],\n    \"CrewTasks\": {\n      \"Carpenter\": [\n        \"Follow established safety rules and regulations and maintain a safe and clean environment.\",\n        \"Measure and mark cutting lines on materials, using a ruler, pencil, chalk, and marking gauge.\",\n        \"Assemble and fasten materials to make frameworks or props, using hand tools and wood screws, nails, dowel pins, or glue.\",\n        \"Study specifications in blueprints, sketches, or building plans to prepare project layout and determine dimensions and materials required.\",\n        \"Shape or cut materials to specified measurements, using hand tools, machines, or power saws.\",\n        \"Verify trueness of structure, using plumb bob and level.\",\n        \"Inspect ceiling or floor tile, wall coverings, siding, glass, or woodwork to detect broken or damaged structures.\",\n        \"Erect scaffolding or ladders for assembling structures above ground level.\",\n        \"Install structures or fixtures, such as windows, frames, floorings, trim, or hardware, using carpenters' hand or power tools.\",\n        \"Maintain records, document actions, and present written progress reports.\",\n        \"Remove damaged or defective parts or sections of structures and repair or replace, using hand tools.\",\n        \"Maintain job records and schedule work crew.\",\n        \"Anchor and brace forms and other structures in place, using nails, bolts, anchor rods, steel cables, planks, wedges, and timbers.\",\n        \"Bore boltholes in timber, masonry or concrete walls, using power drill.\",\n        \"Install rough door and window frames, subflooring, fixtures, or temporary supports in structures undergoing construction or repair.\",\n        \"Dig or direct digging of post holes and set poles to support structures.\",\n        \"Cover subfloors with building paper to keep out moisture and lay hardwood, parquet, or wood-strip-block floors by nailing floors to subfloor or cementing them to mastic or asphalt base.\",\n        \"Construct forms or chutes for pouring concrete.\",\n        \"Arrange for subcontractors to deal with special areas, such as heating or electrical wiring work.\",\n        \"Build or repair cabinets, doors, frameworks, floors, or other wooden fixtures used in buildings, using woodworking machines, carpenter's hand tools, or power tools.\",\n        \"Finish surfaces of woodwork or wallboard in houses or buildings, using paint, hand tools, or paneling.\",\n        \"Select and order lumber or other required materials.\",\n        \"Work with or remove hazardous material.\",\n        \"Fill cracks or other defects in plaster or plasterboard and sand patch, using patching plaster, trowel, and sanding tool.\",\n        \"Prepare cost estimates for clients or employers.\",\n        \"Perform minor plumbing, welding, or concrete mixing work.\",\n        \"Apply shock-absorbing, sound-deadening, or decorative paneling to ceilings or walls.\",\n        \"Examine structural timbers and supports to detect decay, and replace timbers as required, using hand tools, nuts, and bolts.\",\n        \"Build sleds from logs and timbers for use in hauling camp buildings and machinery through wooded areas.\",\n        \"Use drones for site surveying and to inspect hard-to-reach areas of a structure.\"\n      ]\n    }\n  },\n  {\n    \"ElementDefinition\": {\n      \"Element\": \"L/U Stud\",\n      \"Direction\": [\n        \"V\"\n      ],\n      \"Description\": \"Utility stud providing lateral bracing or service-run pathways (beside the first vertical stud).\"\n    },\n    \"AssignedCrews\": [\n      \"Carpenter\"\n    ],\n    \"CrewTasks\": {\n      \"Carpenter\": [\n        \"Follow established safety rules and regulations and maintain a safe and clean environment.\",\n        \"Measure and mark cutting lines on materials, using a ruler, pencil, chalk, and marking gauge.\",\n        \"Assemble and fasten materials to make frameworks or props, using hand tools and wood screws, nails, dowel pins, or glue.\",\n        \"Study specifications in blueprints, sketches, or building plans to prepare project layout and determine dimensions and materials required.\",\n        \"Shape or cut materials to specified measurements, using hand tools, machines, or power saws.\",\n        \"Verify trueness of structure, using plumb bob and level.\",\n        \"Inspect ceiling or floor tile, wall coverings, siding, glass, or woodwork to detect broken or damaged structures.\",\n        \"Erect scaffolding or ladders for assembling structures above ground level.\",\n        \"Install structures or fixtures, such as windows, frames, floorings, trim, or hardware, using carpenters' hand or power tools.\",\n        \"Maintain records, document actions, and present written progress reports.\",\n        \"Remove damaged or defective parts or sections of structures and repair or replace, using hand tools.\",\n        \"Maintain job records and schedule work crew.\",\n        \"Anchor and brace forms and other structures in place, using nails, bolts, anchor rods, steel cables, planks, wedges, and timbers.\",\n        \"Bore boltholes in timber, masonry or concrete walls, using power drill.\",\n        \"Install rough door and window frames, subflooring, fixtures, or temporary supports in structures undergoing construction or repair.\",\n        \"Dig or direct digging of post holes and set poles to support structures.\",\n        \"Cover subfloors with building paper to keep out moisture and lay hardwood, parquet, or wood-strip-block floors by nailing floors to subfloor or cementing them to mastic or asphalt base.\",\n        \"Construct forms or chutes for pouring concrete.\",\n        \"Arrange for subcontractors to deal with special areas, such as heating or electrical wiring work.\",\n        \"Build or repair cabinets, doors, frameworks, floors, or other wooden fixtures used in buildings, using woodworking machines, carpenter's hand tools, or power tools.\",\n        \"Finish surfaces of woodwork or wallboard in houses or buildings, using paint, hand tools, or paneling.\",\n        \"Select and order lumber or other required materials.\",\n        \"Work with or remove hazardous material.\",\n        \"Fill cracks or other defects in plaster or plasterboard and sand patch, using patching plaster, trowel, and sanding tool.\",\n        \"Prepare cost estimates for clients or employers.\",\n        \"Perform minor plumbing, welding, or concrete mixing work.\",\n        \"Apply shock-absorbing, sound-deadening, or decorative paneling to ceilings or walls.\",\n        \"Examine structural timbers and supports to detect decay, and replace timbers as required, using hand tools, nuts, and bolts.\",\n        \"Build sleds from logs and timbers for use in hauling camp buildings and machinery through wooded areas.\",\n        \"Use drones for site surveying and to inspect hard-to-reach areas of a structure.\"\n      ]\n    }\n  },\n  {\n    \"ElementDefinition\": {\n      \"Element\": \"Lower Sill Plate\",\n      \"Direction\": [\n        \"H\"\n      ],\n      \"Description\": \"Horizontal plate forming the sill at the bottom of a opening (If window).\"\n    },\n    \"AssignedCrews\": [\n      \"Carpenter\"\n    ],\n    \"CrewTasks\": {\n      \"Carpenter\": [\n        \"Follow established safety rules and regulations and maintain a safe and clean environment.\",\n        \"Measure and mark cutting lines on materials, using a ruler, pencil, chalk, and marking gauge.\",\n        \"Assemble and fasten materials to make frameworks or props, using hand tools and wood screws, nails, dowel pins, or glue.\",\n        \"Study specifications in blueprints, sketches, or building plans to prepare project layout and determine dimensions and materials required.\",\n        \"Shape or cut materials to specified measurements, using hand tools, machines, or power saws.\",\n        \"Verify trueness of structure, using plumb bob and level.\",\n        \"Inspect ceiling or floor tile, wall coverings, siding, glass, or woodwork to detect broken or damaged structures.\",\n        \"Erect scaffolding or ladders for assembling structures above ground level.\",\n        \"Install structures or fixtures, such as windows, frames, floorings, trim, or hardware, using carpenters' hand or power tools.\",\n        \"Maintain records, document actions, and present written progress reports.\",\n        \"Remove damaged or defective parts or sections of structures and repair or replace, using hand tools.\",\n        \"Maintain job records and schedule work crew.\",\n        \"Anchor and brace forms and other structures in place, using nails, bolts, anchor rods, steel cables, planks, wedges, and timbers.\",\n        \"Bore boltholes in timber, masonry or concrete walls, using power drill.\",\n        \"Install rough door and window frames, subflooring, fixtures, or temporary supports in structures undergoing construction or repair.\",\n        \"Dig or direct digging of post holes and set poles to support structures.\",\n        \"Cover subfloors with building paper to keep out moisture and lay hardwood, parquet, or wood-strip-block floors by nailing floors to subfloor or cementing them to mastic or asphalt base.\",\n        \"Construct forms or chutes for pouring concrete.\",\n        \"Arrange for subcontractors to deal with special areas, such as heating or electrical wiring work.\",\n        \"Build or repair cabinets, doors, frameworks, floors, or other wooden fixtures used in buildings, using woodworking machines, carpenter's hand tools, or power tools.\",\n        \"Finish surfaces of woodwork or wallboard in houses or buildings, using paint, hand tools, or paneling.\",\n        \"Select and order lumber or other required materials.\",\n        \"Work with or remove hazardous material.\",\n        \"Fill cracks or other defects in plaster or plasterboard and sand patch, using patching plaster, trowel, and sanding tool.\",\n        \"Prepare cost estimates for clients or employers.\",\n        \"Perform minor plumbing, welding, or concrete mixing work.\",\n        \"Apply shock-absorbing, sound-deadening, or decorative paneling to ceilings or walls.\",\n        \"Examine structural timbers and supports to detect decay, and replace timbers as required, using hand tools, nuts, and bolts.\",\n        \"Build sleds from logs and timbers for use in hauling camp buildings and machinery through wooded areas.\",\n        \"Use drones for site surveying and to inspect hard-to-reach areas of a structure.\"\n      ]\n    }\n  },\n  {\n    \"ElementDefinition\": {\n      \"Element\": \"Bottom Plate\",\n      \"Direction\": [\n        \"H\"\n      ],\n      \"Description\": \"Horizontal framing member anchored to the floor, forming the base of the wall.\"\n    },\n    \"AssignedCrews\": [\n      \"Carpenter\"\n    ],\n    \"CrewTasks\": {\n      \"Carpenter\": [\n        \"Follow established safety rules and regulations and maintain a safe and clean environment.\",\n        \"Measure and mark cutting lines on materials, using a ruler, pencil, chalk, and marking gauge.\",\n        \"Assemble and fasten materials to make frameworks or props, using hand tools and wood screws, nails, dowel pins, or glue.\",\n        \"Study specifications in blueprints, sketches, or building plans to prepare project layout and determine dimensions and materials required.\",\n        \"Shape or cut materials to specified measurements, using hand tools, machines, or power saws.\",\n        \"Verify trueness of structure, using plumb bob and level.\",\n        \"Inspect ceiling or floor tile, wall coverings, siding, glass, or woodwork to detect broken or damaged structures.\",\n        \"Erect scaffolding or ladders for assembling structures above ground level.\",\n        \"Install structures or fixtures, such as windows, frames, floorings, trim, or hardware, using carpenters' hand or power tools.\",\n        \"Maintain records, document actions, and present written progress reports.\",\n        \"Remove damaged or defective parts or sections of structures and repair or replace, using hand tools.\",\n        \"Maintain job records and schedule work crew.\",\n        \"Anchor and brace forms and other structures in place, using nails, bolts, anchor rods, steel cables, planks, wedges, and timbers.\",\n        \"Bore boltholes in timber, masonry or concrete walls, using power drill.\",\n        \"Install rough door and window frames, subflooring, fixtures, or temporary supports in structures undergoing construction or repair.\",\n        \"Dig or direct digging of post holes and set poles to support structures.\",\n        \"Cover subfloors with building paper to keep out moisture and lay hardwood, parquet, or wood-strip-block floors by nailing floors to subfloor or cementing them to mastic or asphalt base.\",\n        \"Construct forms or chutes for pouring concrete.\",\n        \"Arrange for subcontractors to deal with special areas, such as heating or electrical wiring work.\",\n        \"Build or repair cabinets, doors, frameworks, floors, or other wooden fixtures used in buildings, using woodworking machines, carpenter's hand tools, or power tools.\",\n        \"Finish surfaces of woodwork or wallboard in houses or buildings, using paint, hand tools, or paneling.\",\n        \"Select and order lumber or other required materials.\",\n        \"Work with or remove hazardous material.\",\n        \"Fill cracks or other defects in plaster or plasterboard and sand patch, using patching plaster, trowel, and sanding tool.\",\n        \"Prepare cost estimates for clients or employers.\",\n        \"Perform minor plumbing, welding, or concrete mixing work.\",\n        \"Apply shock-absorbing, sound-deadening, or decorative paneling to ceilings or walls.\",\n        \"Examine structural timbers and supports to detect decay, and replace timbers as required, using hand tools, nuts, and bolts.\",\n        \"Build sleds from logs and timbers for use in hauling camp buildings and machinery through wooded areas.\",\n        \"Use drones for site surveying and to inspect hard-to-reach areas of a structure.\"\n      ]\n    }\n  },\n  {\n    \"ElementDefinition\": {\n      \"Element\": \"Top Sill Plate\",\n      \"Direction\": [\n        \"H\"\n      ],\n      \"Description\": \"Horizontal plate forming the upper sill of a window opening, providing a bearing surface for top cripples and tying the frame together only if there is no Bear Loading required in the openning.\"\n    },\n    \"AssignedCrews\": [\n      \"Carpenter\"\n    ],\n    \"CrewTasks\": {\n      \"Carpenter\": [\n        \"Follow established safety rules and regulations and maintain a safe and clean environment.\",\n        \"Measure and mark cutting lines on materials, using a ruler, pencil, chalk, and marking gauge.\",\n        \"Assemble and fasten materials to make frameworks or props, using hand tools and wood screws, nails, dowel pins, or glue.\",\n        \"Study specifications in blueprints, sketches, or building plans to prepare project layout and determine dimensions and materials required.\",\n        \"Shape or cut materials to specified measurements, using hand tools, machines, or power saws.\",\n        \"Verify trueness of structure, using plumb bob and level.\",\n        \"Inspect ceiling or floor tile, wall coverings, siding, glass, or woodwork to detect broken or damaged structures.\",\n        \"Erect scaffolding or ladders for assembling structures above ground level.\",\n        \"Install structures or fixtures, such as windows, frames, floorings, trim, or hardware, using carpenters' hand or power tools.\",\n        \"Maintain records, document actions, and present written progress reports.\",\n        \"Remove damaged or defective parts or sections of structures and repair or replace, using hand tools.\",\n        \"Maintain job records and schedule work crew.\",\n        \"Anchor and brace forms and other structures in place, using nails, bolts, anchor rods, steel cables, planks, wedges, and timbers.\",\n        \"Bore boltholes in timber, masonry or concrete walls, using power drill.\",\n        \"Install rough door and window frames, subflooring, fixtures, or temporary supports in structures undergoing construction or repair.\",\n        \"Dig or direct digging of post holes and set poles to support structures.\",\n        \"Cover subfloors with building paper to keep out moisture and lay hardwood, parquet, or wood-strip-block floors by nailing floors to subfloor or cementing them to mastic or asphalt base.\",\n        \"Construct forms or chutes for pouring concrete.\",\n        \"Arrange for subcontractors to deal with special areas, such as heating or electrical wiring work.\",\n        \"Build or repair cabinets, doors, frameworks, floors, or other wooden fixtures used in buildings, using woodworking machines, carpenter's hand tools, or power tools.\",\n        \"Finish surfaces of woodwork or wallboard in houses or buildings, using paint, hand tools, or paneling.\",\n        \"Select and order lumber or other required materials.\",\n        \"Work with or remove hazardous material.\",\n        \"Fill cracks or other defects in plaster or plasterboard and sand patch, using patching plaster, trowel, and sanding tool.\",\n        \"Prepare cost estimates for clients or employers.\",\n        \"Perform minor plumbing, welding, or concrete mixing work.\",\n        \"Apply shock-absorbing, sound-deadening, or decorative paneling to ceilings or walls.\",\n        \"Examine structural timbers and supports to detect decay, and replace timbers as required, using hand tools, nuts, and bolts.\",\n        \"Build sleds from logs and timbers for use in hauling camp buildings and machinery through wooded areas.\",\n        \"Use drones for site surveying and to inspect hard-to-reach areas of a structure.\"\n      ]\n    }\n  },\n  {\n    \"ElementDefinition\": {\n      \"Element\": \"Top Cripple Stud\",\n      \"Direction\": [\n        \"V\"\n      ],\n      \"Description\": \"Short vertical stud positioned above a header (Top Sill Plate) only if there is no Bear Loading required in the openning.\"\n    },\n    \"AssignedCrews\": [\n      \"Carpenter\"\n    ],\n    \"CrewTasks\": {\n      \"Carpenter\": [\n        \"Follow established safety rules and regulations and maintain a safe and clean environment.\",\n        \"Measure and mark cutting lines on materials, using a ruler, pencil, chalk, and marking gauge.\",\n        \"Assemble and fasten materials to make frameworks or props, using hand tools and wood screws, nails, dowel pins, or glue.\",\n        \"Study specifications in blueprints, sketches, or building plans to prepare project layout and determine dimensions and materials required.\",\n        \"Shape or cut materials to specified measurements, using hand tools, machines, or power saws.\",\n        \"Verify trueness of structure, using plumb bob and level.\",\n        \"Inspect ceiling or floor tile, wall coverings, siding, glass, or woodwork to detect broken or damaged structures.\",\n        \"Erect scaffolding or ladders for assembling structures above ground level.\",\n        \"Install structures or fixtures, such as windows, frames, floorings, trim, or hardware, using carpenters' hand or power tools.\",\n        \"Maintain records, document actions, and present written progress reports.\",\n        \"Remove damaged or defective parts or sections of structures and repair or replace, using hand tools.\",\n        \"Maintain job records and schedule work crew.\",\n        \"Anchor and brace forms and other structures in place, using nails, bolts, anchor rods, steel cables, planks, wedges, and timbers.\",\n        \"Bore boltholes in timber, masonry or concrete walls, using power drill.\",\n        \"Install rough door and window frames, subflooring, fixtures, or temporary supports in structures undergoing construction or repair.\",\n        \"Dig or direct digging of post holes and set poles to support structures.\",\n        \"Cover subfloors with building paper to keep out moisture and lay hardwood, parquet, or wood-strip-block floors by nailing floors to subfloor or cementing them to mastic or asphalt base.\",\n        \"Construct forms or chutes for pouring concrete.\",\n        \"Arrange for subcontractors to deal with special areas, such as heating or electrical wiring work.\",\n        \"Build or repair cabinets, doors, frameworks, floors, or other wooden fixtures used in buildings, using woodworking machines, carpenter's hand tools, or power tools.\",\n        \"Finish surfaces of woodwork or wallboard in houses or buildings, using paint, hand tools, or paneling.\",\n        \"Select and order lumber or other required materials.\",\n        \"Work with or remove hazardous material.\",\n        \"Fill cracks or other defects in plaster or plasterboard and sand patch, using patching plaster, trowel, and sanding tool.\",\n        \"Prepare cost estimates for clients or employers.\",\n        \"Perform minor plumbing, welding, or concrete mixing work.\",\n        \"Apply shock-absorbing, sound-deadening, or decorative paneling to ceilings or walls.\",\n        \"Examine structural timbers and supports to detect decay, and replace timbers as required, using hand tools, nuts, and bolts.\",\n        \"Build sleds from logs and timbers for use in hauling camp buildings and machinery through wooded areas.\",\n        \"Use drones for site surveying and to inspect hard-to-reach areas of a structure.\"\n      ]\n    }\n  }\n]\n\nRequired element names:\n[\n  \"Vertical Stud\",\n  \"King Stud\",\n  \"Lower Cripple Stud\",\n  \"OSB Sheathing Plate\",\n  \"Top Plate\",\n  \"Jack Stud\",\n  \"Bear Loading\",\n  \"L/U Stud\",\n  \"Lower Sill Plate\",\n  \"Bottom Plate\",\n  \"Top Sill Plate\",\n  \"Top Cripple Stud\"\n]",
+    "user_prompt_sha256": "c32dfa64d7a0cddf6f61ad2185aec89f888e4dcb27dabb73ec5cc79dc2389dee"
+  },
+  "tool_schema": {
+    "type": "function",
+    "name": "submit_l_a_i_sub_steps",
+    "description": "Submit the ordered installation Sub-Steps for every element.",
+    "strict": true,
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "SubSteps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "Element": {
+                "type": "string"
+              },
+              "Steps": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "Element",
+              "Steps"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "SubSteps"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "final_output": {
+    "Sub-Steps": [
+      [
+        "Vertical Stud",
+        [
+          "Review wall layout marks on bottom and top plates for stud spacing",
+          "Measure required stud length between plates and mark cut line on lumber",
+          "Cut stud to length with power saw",
+          "Set stud on bottom plate layout mark and tip into place under top plate",
+          "Tap stud plumb and verify alignment with level",
+          "Fasten stud to plates with nails or screws through toe-nailing or metal connectors"
+        ]
+      ],
+      [
+        "King Stud",
+        [
+          "Confirm opening width on plans and transfer king stud locations to plates",
+          "Measure floor-to-plate height and cut king studs to full wall height",
+          "Stand each king stud against layout line flanking rough opening",
+          "Check plumb with level and adjust as needed",
+          "Secure king studs to bottom and top plates with nails or structural screws",
+          "Brace temporarily until adjoining members lock studs in place"
+        ]
+      ],
+      [
+        "Lower Cripple Stud",
+        [
+          "Measure distance from bottom plate to underside of window sill plate",
+          "Cut cripple stud pieces to measured length",
+          "Position cripples at marked on-center spacing below sill opening",
+          "Hold each cripple tight between bottom plate and sill plate",
+          "Nail or screw through plates into each cripple end",
+          "Verify top of sill remains level after fastening"
+        ]
+      ],
+      [
+        "OSB Sheathing Plate",
+        [
+          "Measure wall panel area and mark OSB panel cut lines to fit between framing edges and openings",
+          "Cut OSB sheets to size with circular saw, maintaining square edges",
+          "Erect scaffold or use ladders for safe access to wall height",
+          "Position first sheet flush with bottom plate and edge of framing",
+          "Hold panel tight, check for plumb and proper edge alignment",
+          "Fasten OSB to studs, plates, and blocking with specified nails or screws at required spacing, starting from center and working outward",
+          "Stagger vertical joints between courses and continue installing successive sheets",
+          "Recheck flatness and joint alignment, adding additional fasteners where needed"
+        ]
+      ],
+      [
+        "Top Plate",
+        [
+          "Lay out stud and opening locations on top plate stock using tape and pencil",
+          "Cut plates to wall length, including splices as needed",
+          "Set first top plate on edge along wall line and tack to stud tops",
+          "Install second (cap) plate overlapping joints for strength",
+          "Nail or screw plates to each stud end and to adjoining plates at corners and partitions",
+          "Verify straightness of plate line and correct any bows with blocking or bracing"
+        ]
+      ],
+      [
+        "Jack Stud",
+        [
+          "Measure required height from bottom plate to underside of header",
+          "Cut jack studs to length with square ends",
+          "Place each jack stud against king stud at opening sides",
+          "Align bottom with layout mark and ensure top meets header seat line",
+          "Nail jack studs to king studs and bottom plate, then toenail into header after placement",
+          "Confirm assembly is plumb and secure"
+        ]
+      ],
+      [
+        "Bear Loading",
+        [
+          "Check plan for header span and laminate requirements",
+          "Measure opening width and cut header members to length",
+          "Assemble multiple header plies with adhesive and nails or screws as specified",
+          "Lift header onto jack studs within opening using additional help or temporary support",
+          "Set header flush with top of jack studs and centered over opening",
+          "Nail or screw header to jack studs and add metal hangers or straps if required",
+          "Verify header is level and bearing fully on both jacks"
+        ]
+      ],
+      [
+        "L/U Stud",
+        [
+          "Locate position adjacent to first vertical stud per layout",
+          "Measure floor-to-plate height and cut utility stud to length",
+          "Stand stud in place providing space for service penetrations as detailed",
+          "Plumb stud with level and align faces flush with neighboring framing",
+          "Fasten stud to plates and add blocking or straps for lateral bracing as required",
+          "Bore service holes at designated heights for mechanical or electrical runs"
+        ]
+      ],
+      [
+        "Lower Sill Plate",
+        [
+          "Mark sill height on king studs according to window schedule",
+          "Cut sill plate to span between jack studs",
+          "Position sill on marked lines with crown up and faces flush",
+          "Tack sill to king or jack studs, then secure with nails or screws through end joints",
+          "Check sill for level across width of opening",
+          "Add temporary support or shims if adjustments are required"
+        ]
+      ],
+      [
+        "Bottom Plate",
+        [
+          "Snap chalk line on subfloor to establish wall location",
+          "Lay out stud and opening positions along bottom plate stock",
+          "Cut plates to required lengths including splice pieces",
+          "Position bottom plate on layout line and drill for anchor locations if needed",
+          "Fasten plate to floor framing or slab with nails, screws, or anchors per specification",
+          "Verify plate alignment and secure temporary braces until studs are installed"
+        ]
+      ],
+      [
+        "Top Sill Plate",
+        [
+          "Measure distance between king studs above window opening",
+          "Cut top sill plate to length ensuring square ends",
+          "Mark seat line on king studs at specified elevation",
+          "Set top sill on marks and hold flush with inner faces of studs",
+          "Nail or screw plate to king studs and to any top cripple studs above",
+          "Confirm plate is level and properly tied into surrounding framing"
+        ]
+      ],
+      [
+        "Top Cripple Stud",
+        [
+          "Determine distance from top sill or header to underside of top plate",
+          "Cut cripple studs to required length",
+          "Position cripples at on-center spacing above opening between header and top plate",
+          "Ensure each cripple is plumb and flush with wall face",
+          "Fasten cripples through top plate and header with nails or screws",
+          "Verify continuous load path by checking contact at both ends"
+        ]
+      ]
+    ]
+  }
+}

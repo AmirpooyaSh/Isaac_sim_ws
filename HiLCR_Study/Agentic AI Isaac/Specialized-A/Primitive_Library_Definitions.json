@@ -1,0 +1,11 @@
+{
+  "Robot_1": {
+    "tool0": "Gripper",
+    "tool1": "Suction_Cup",
+    "tool2": "Nail_Gun"
+  },
+  "Robot_2": {
+    "tool0": "Gripper",
+    "tool1": "Nail_Gun"
+  }
+}

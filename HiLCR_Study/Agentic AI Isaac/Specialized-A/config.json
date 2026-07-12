@@ -1,0 +1,30 @@
+{
+  "active_model_profile": "o3",
+  "api": {
+    "provider": "OpenAI",
+    "api_family": "Responses API",
+    "api_version": "v1",
+    "base_url": null,
+    "timeout_seconds": 180,
+    "sdk_max_retries": 2
+  },
+  "model_profiles": {
+    "o3": {
+      "identifier": "o3",
+      "supports_reasoning_effort": true,
+      "supports_sampling_controls": false,
+      "reasoning_effort": "high",
+      "temperature": null,
+      "top_p": null,
+      "max_output_tokens": 12000
+    }
+  },
+  "hlaf_generation": {
+    "max_tasks_per_call": 1,
+    "agent_max_output_tokens": 12000,
+    "validation_max_attempts": 3,
+    "co_a_validation_max_attempts": 5,
+    "fallback_to_auto_tool_choice": true,
+    "reuse_accepted_agent_blocks": true
+  }
+}

@@ -1,0 +1,100 @@
+{
+  "elements": [
+    {
+      "name": "Top_Stud",
+      "type": "Top Plate",
+      "coordination": [0.02, 1.8288, 0.06],
+      "dimension": [3.6576, 0.04, 0.1016]
+    },
+    {
+      "name": "F_Stud",
+      "type": "King Stud",
+      "coordination": [1.2592, 0.02, 0.0],
+      "dimension": [2.4384, 0.04, 0.1016]
+    },
+    {
+      "name": "L_U_Element_1",
+      "type": "L/U Stud",
+      "coordination": [1.2592, 0.0908, 0.02],
+      "dimension": [2.4384, 0.04, 0.1016]
+    },
+    {
+      "name": "R_Stud_2",
+      "type": "King Stud",
+      "coordination": [1.2592, 0.3248, 0.0],
+      "dimension": [2.4384, 0.04, 0.1016]
+    },
+    {
+      "name": "R_Stud_4",
+      "type": "King Stud",
+      "coordination": [1.2592, 0.6296, 0.0],
+      "dimension": [2.4384, 0.04, 0.1016]
+    },
+    {
+        "name": "R_Stud_6",
+        "type": "King Stud",
+        "coordination": [1.2592, 0.9344, 0.0],
+        "dimension": [2.4384, 0.04, 0.1016]
+    },
+    {
+        "name": "R_Stud_8",
+        "type": "King Stud",
+        "coordination": [1.2592, 1.2392, 0.0],
+        "dimension": [2.4384, 0.04, 0.1016]
+    },
+    {
+        "name": "R_Stud_10",
+        "type": "King Stud",
+        "coordination": [1.2592, 1.5440, 0.0],
+        "dimension": [2.4384, 0.04, 0.1016]
+    },
+    {
+        "name": "R_Stud_12",
+        "type": "King Stud",
+        "coordination": [1.2592, 1.8488, 0.0],
+        "dimension": [2.4384, 0.04, 0.1016]
+    },
+    {
+        "name": "R_Stud_14",
+        "type": "King Stud",
+        "coordination": [1.2592, 2.1536, 0.0],
+        "dimension": [2.4384, 0.04, 0.1016]
+    },
+    {
+        "name": "R_Stud_16",
+        "type": "King Stud",
+        "coordination": [1.2592, 2.4584, 0.0],
+        "dimension": [2.4384, 0.04, 0.1016]
+    },
+    {
+        "name": "R_Stud_18",
+        "type": "King Stud",
+        "coordination": [1.2592, 2.7632, 0.0],
+        "dimension": [2.4384, 0.04, 0.1016]
+    },
+    {
+        "name": "R_Stud_20",
+        "type": "King Stud",
+        "coordination": [1.2592, 3.0680, 0.0],
+        "dimension": [2.4384, 0.04, 0.1016]
+    },
+    {
+        "name": "R_Stud_22",
+        "type": "King Stud",
+        "coordination": [1.2592, 3.3728, 0.0],
+        "dimension": [2.4384, 0.04, 0.1016]
+    },
+    {
+      "name": "R_Stud_24",
+      "type": "King Stud",
+      "coordination": [1.2592, 3.6376, 0.0],
+      "dimension": [2.4384, 0.04, 0.1016]
+    },
+    {
+      "name": "Bot_Stud",
+      "type": "Bottom Plate",
+      "coordination": [2.4984, 1.8288, 0.06],
+      "dimension": [3.6576, 0.04, 0.1016]
+    }
+  ]
+}

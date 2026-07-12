@@ -1,0 +1,350 @@
+{
+  "agent": "Ext-A-III",
+  "retrieval_method": "OpenAI Responses API hosted web search",
+  "status": "success",
+  "started_at_utc": "2026-07-12T01:44:01.232266+00:00",
+  "completed_at_utc": "2026-07-12T01:45:01.025222+00:00",
+  "duration_seconds": 59.792965,
+  "files": {
+    "ext_a_i_input": "Ext_A_I_Output.json",
+    "ext_a_ii_input": "Ext_A_II_Output.json",
+    "configuration": "config.json",
+    "output": "Ext_A_III_Output.json",
+    "run_record": "Ext_A_III_Run_Record.json"
+  },
+  "web_searches": [
+    {
+      "crew_type": "Carpenter",
+      "status": "completed",
+      "response_id": "resp_3RL8OStovZG0_GT1JcSmlOmzQ_LEni-w7ijJb7-aMkHY2YdlJrLv2Rkr3AUMlUTg7f_0Uwm6CTU0TLnsZIZVHYlE0X9ofGfKrOAnVwPYp4K_zHqXPaVL75UBcIkhwl0zeInxXjdCr3nOhGv78vLjfMxa6bhYMGrnC4LzIyII3ViUqxkNLj7MqQs4ueBTfUaxU_TdcX3pHDq6ZOZc21RO_ir09cAEmdhfmSYGkZU9_KvAyfhi4qzARMwMKPRrN58_XbAugGrf_Nl0nkqo3xnwFGOkMhp0SaZFHsGiHeWcpjHpEhHBbWvZtVS5FjRjtkuMF83ZV0kDhgtF5BFCTV5IEtUi-B9y7KTUwEYcJ69PDTV0k5WRT5ugLHqs3QiA3UC6-8Y3ha6QMKK8TIG5GiSg91MWXD1AqdgLQjy2PQA2J8GSZBHT5R3fvJUJsGpoA1Twk7m7vmKd7p0jeyiP0tXbHA==",
+      "returned_model_identifier": "o3",
+      "duration_seconds": 55.099187,
+      "usage": {
+        "input_tokens": 10970,
+        "input_tokens_details": {
+          "cached_tokens": 0,
+          "audio_tokens": null,
+          "text_tokens": null
+        },
+        "output_tokens": 3098,
+        "output_tokens_details": {
+          "reasoning_tokens": 2240,
+          "text_tokens": null
+        },
+        "total_tokens": 14068,
+        "cost": null
+      },
+      "prompt": "You must use the web-search tool before answering.\n\nCrew type: Carpenter\n\nAssembly context from Ext-A-I:\n{\n  \"Structure\": \"Wall Panel\",\n  \"Material\": \"Wood\",\n  \"Confidence\": 0.93\n}\n\nSearch query scope:\n(site:onetonline.org OR site:onetcenter.org) \"Carpenter\" occupation tasks O*NET\n\nSearch only official O*NET pages for the occupation that most closely\nrepresents this crew type. Return up to 10 task statements that are\nrelevant to construction or assembly installation. Preserve the task wording\nexactly and identify the matched occupation title, O*NET-SOC code, and source\nURLs. Do not rely on non-O*NET websites.",
+      "prompt_sha256": "286e1b9c45946073e9c93344997a62f077d021f8291c83e6b3c9a402812c81a0",
+      "output_text": "Matched O*NET occupation  \n• Title: Carpenters  \n• O*NET-SOC Code: 47-2031.00  \n\nRelevant O*NET task statements (verbatim)\n\n1. Measure and mark cutting lines on materials, using a ruler, pencil, chalk, and marking gauge. ([onetonline.org](https://www.onetonline.org/search/task/choose/47-2031.00))  \n2. Assemble and fasten materials to make frameworks or props, using hand tools and wood screws, nails, dowel pins, or glue. ([onetonline.org](https://www.onetonline.org/search/task/choose/47-2031.00))  \n3. Study specifications in blueprints, sketches, or building plans to prepare project layout and determine dimensions and materials required. ([onetonline.org](https://www.onetonline.org/search/task/choose/47-2031.00))  \n4. Shape or cut materials to specified measurements, using hand tools, machines, or power saws. ([onetonline.org](https://www.onetonline.org/search/task/choose/47-2031.00))  \n5. Verify trueness of structure, using plumb bob and level. ([onetonline.org](https://www.onetonline.org/search/task/choose/47-2031.00))  \n6. Erect scaffolding or ladders for assembling structures above ground level. ([onetonline.org](https://www.onetonline.org/search/task/choose/47-2031.00))  \n7. Install structures or fixtures, such as windows, frames, floorings, trim, or hardware, using carpenters' hand or power tools. ([onetonline.org](https://www.onetonline.org/search/task/choose/47-2031.00))  \n8. Anchor and brace forms and other structures in place, using nails, bolts, anchor rods, steel cables, planks, wedges, and timbers. ([onetonline.org](https://www.onetonline.org/search/task/choose/47-2031.00))  \n9. Install rough door and window frames, subflooring, fixtures, or temporary supports in structures undergoing construction or repair. ([onetonline.org](https://www.onetonline.org/search/task/choose/47-2031.00))  \n10. Construct forms or chutes for pouring concrete. ([onetonline.org](https://www.onetonline.org/search/task/choose/47-2031.00))  \n\nSource URLs  \n1. https://www.onetonline.org/link/summary/47-2031.00  \n2. https://www.onetonline.org/search/task/choose/47-2031.00",
+      "sources": [
+        {
+          "type": "url",
+          "url": "https://www.onetonline.org/link/summary/47-2031.00"
+        },
+        {
+          "type": "url",
+          "url": "https://www.onetonline.org/"
+        },
+        {
+          "type": "url",
+          "url": "https://www.onetonline.org/search/task/choose/47-2031.00"
+        },
+        {
+          "type": "url",
+          "url": "https://www.onetonline.org/skills/zone/47-2031.00"
+        },
+        {
+          "type": "url",
+          "url": "https://www.onetonline.org/link/summary/47-3012.00"
+        },
+        {
+          "type": "url",
+          "url": "https://www.onetonline.org/search/task/"
+        },
+        {
+          "type": "url",
+          "url": "https://www.onetonline.org/link/localcert/47-2031.00"
+        },
+        {
+          "type": "url",
+          "url": "https://www.onetonline.org/link/summary/51-7011.00"
+        },
+        {
+          "type": "url",
+          "url": "https://www.onetonline.org/find/descriptor/browse/4.A"
+        },
+        {
+          "type": "url",
+          "url": "https://www.onetonline.org/link/result/47-2031.00"
+        },
+        {
+          "type": "url",
+          "url": "https://www.onetonline.org/link/details/47-2031.00"
+        },
+        {
+          "type": "url",
+          "url": "https://www.onetonline.org/link/summary/47-2031.00?redir=47-2031.06"
+        },
+        {
+          "type": "url",
+          "url": "https://www.onetonline.org/link/localtraining/47-2031.00"
+        },
+        {
+          "type": "url",
+          "url": "https://www.onetonline.org/link/table/details/tk/47-2031.00/Tasks_47-2031-00.xlsx?fmt=xlsx&s=IM&t=-10"
+        },
+        {
+          "type": "url",
+          "url": "https://www.onetonline.org/search/task/compare/47-2031.00?d=23430"
+        },
+        {
+          "type": "url",
+          "url": "https://www.onetonline.org/link/updates/47-2031.00"
+        }
+      ]
+    }
+  ],
+  "formatting_attempts": [
+    {
+      "attempt": 1,
+      "status": "accepted",
+      "response_id": "resp_AO356mwf9BBv5a52IyNS4k0qoDywFqBSU2sEDcaIHMp9xnzumEwZ895uf_13XQzb-1DClYT1TPDTVco003Anqy2YETu7h6PWXPmuICoOZXmfKI9sCCCC74wVCyKK2d44cFD2KHzyO5le9Y-DMHqj0sw3nhEf7LkMzYD7v21uqIFtU5WJ3D4VkF3Cmiz2WVhIaCATDRmuNA8bdLDW7u9V4Ucb67ixhoApuEnO-LGs3oF3uYkpGqFb03993laUOtrsmbC6n_5GJKQj5wpyG0FlQzgU1pOyno-jTOZetUZGL6TULKdKdhAgQ1bC6qWZiB5gsazmdBpO7Gj6pcRwElXBhYYXzAO6RE9uinFRbxwm_-Z3P2ynwZgwD4A_uqxRV_O_mcwgZeUax1nYlabe5m8ovFiJqhie5zN8pmpFEoB9m1_3E_JxqspTKkXu8TVXwSlBoX7x_YcGDA-HiZWwCpG9FQ==",
+      "returned_model_identifier": "o3",
+      "response_status": "completed",
+      "duration_seconds": 4.670628,
+      "usage": {
+        "input_tokens": 1490,
+        "input_tokens_details": {
+          "cached_tokens": 0,
+          "audio_tokens": null,
+          "text_tokens": null
+        },
+        "output_tokens": 465,
+        "output_tokens_details": {
+          "reasoning_tokens": 320,
+          "text_tokens": null
+        },
+        "total_tokens": 1955,
+        "cost": null
+      },
+      "tool_arguments": {
+        "Tasks": [
+          {
+            "CrewType": "Carpenter",
+            "TaskDescriptions": [
+              "Follow established safety rules and regulations and maintain a safe and clean environment.",
+              "Measure and mark cutting lines on materials, using a ruler, pencil, chalk, and marking gauge.",
+              "Assemble and fasten materials to make frameworks or props, using hand tools and wood screws, nails, dowel pins, or glue.",
+              "Study specifications in blueprints, sketches, or building plans to prepare project layout and determine dimensions and materials required.",
+              "Shape or cut materials to specified measurements, using hand tools, machines, or power saws.",
+              "Verify trueness of structure, using plumb bob and level.",
+              "Inspect ceiling or floor tile, wall coverings, siding, glass, or woodwork to detect broken or damaged structures.",
+              "Erect scaffolding or ladders for assembling structures above ground level.",
+              "Install structures or fixtures, such as windows, frames, floorings, trim, or hardware, using carpenters' hand or power tools.",
+              "Maintain records, document actions, and present written progress reports.",
+              "Remove damaged or defective parts or sections of structures and repair or replace, using hand tools.",
+              "Maintain job records and schedule work crew.",
+              "Anchor and brace forms and other structures in place, using nails, bolts, anchor rods, steel cables, planks, wedges, and timbers.",
+              "Bore boltholes in timber, masonry or concrete walls, using power drill.",
+              "Install rough door and window frames, subflooring, fixtures, or temporary supports in structures undergoing construction or repair.",
+              "Dig or direct digging of post holes and set poles to support structures.",
+              "Cover subfloors with building paper to keep out moisture and lay hardwood, parquet, or wood-strip-block floors by nailing floors to subfloor or cementing them to mastic or asphalt base.",
+              "Construct forms or chutes for pouring concrete.",
+              "Arrange for subcontractors to deal with special areas, such as heating or electrical wiring work.",
+              "Build or repair cabinets, doors, frameworks, floors, or other wooden fixtures used in buildings, using woodworking machines, carpenter's hand tools, or power tools.",
+              "Finish surfaces of woodwork or wallboard in houses or buildings, using paint, hand tools, or paneling.",
+              "Select and order lumber or other required materials.",
+              "Work with or remove hazardous material.",
+              "Fill cracks or other defects in plaster or plasterboard and sand patch, using patching plaster, trowel, and sanding tool.",
+              "Prepare cost estimates for clients or employers.",
+              "Perform minor plumbing, welding, or concrete mixing work.",
+              "Apply shock-absorbing, sound-deadening, or decorative paneling to ceilings or walls.",
+              "Examine structural timbers and supports to detect decay, and replace timbers as required, using hand tools, nuts, and bolts.",
+              "Build sleds from logs and timbers for use in hauling camp buildings and machinery through wooded areas.",
+              "Use drones for site surveying and to inspect hard-to-reach areas of a structure."
+            ]
+          }
+        ]
+      },
+      "formatted_output": {
+        "Tasks": [
+          [
+            "Carpenter",
+            [
+              "Follow established safety rules and regulations and maintain a safe and clean environment.",
+              "Measure and mark cutting lines on materials, using a ruler, pencil, chalk, and marking gauge.",
+              "Assemble and fasten materials to make frameworks or props, using hand tools and wood screws, nails, dowel pins, or glue.",
+              "Study specifications in blueprints, sketches, or building plans to prepare project layout and determine dimensions and materials required.",
+              "Shape or cut materials to specified measurements, using hand tools, machines, or power saws.",
+              "Verify trueness of structure, using plumb bob and level.",
+              "Inspect ceiling or floor tile, wall coverings, siding, glass, or woodwork to detect broken or damaged structures.",
+              "Erect scaffolding or ladders for assembling structures above ground level.",
+              "Install structures or fixtures, such as windows, frames, floorings, trim, or hardware, using carpenters' hand or power tools.",
+              "Maintain records, document actions, and present written progress reports.",
+              "Remove damaged or defective parts or sections of structures and repair or replace, using hand tools.",
+              "Maintain job records and schedule work crew.",
+              "Anchor and brace forms and other structures in place, using nails, bolts, anchor rods, steel cables, planks, wedges, and timbers.",
+              "Bore boltholes in timber, masonry or concrete walls, using power drill.",
+              "Install rough door and window frames, subflooring, fixtures, or temporary supports in structures undergoing construction or repair.",
+              "Dig or direct digging of post holes and set poles to support structures.",
+              "Cover subfloors with building paper to keep out moisture and lay hardwood, parquet, or wood-strip-block floors by nailing floors to subfloor or cementing them to mastic or asphalt base.",
+              "Construct forms or chutes for pouring concrete.",
+              "Arrange for subcontractors to deal with special areas, such as heating or electrical wiring work.",
+              "Build or repair cabinets, doors, frameworks, floors, or other wooden fixtures used in buildings, using woodworking machines, carpenter's hand tools, or power tools.",
+              "Finish surfaces of woodwork or wallboard in houses or buildings, using paint, hand tools, or paneling.",
+              "Select and order lumber or other required materials.",
+              "Work with or remove hazardous material.",
+              "Fill cracks or other defects in plaster or plasterboard and sand patch, using patching plaster, trowel, and sanding tool.",
+              "Prepare cost estimates for clients or employers.",
+              "Perform minor plumbing, welding, or concrete mixing work.",
+              "Apply shock-absorbing, sound-deadening, or decorative paneling to ceilings or walls.",
+              "Examine structural timbers and supports to detect decay, and replace timbers as required, using hand tools, nuts, and bolts.",
+              "Build sleds from logs and timbers for use in hauling camp buildings and machinery through wooded areas.",
+              "Use drones for site surveying and to inspect hard-to-reach areas of a structure."
+            ]
+          ]
+        ]
+      }
+    }
+  ],
+  "input_hashes_sha256": {
+    "Ext_A_I_Output.json": "f94be8b543cba0fe83059f1ef060b76c12a2792a162cf08e2187485d12208e4e",
+    "Ext_A_II_Output.json": "59d5378395ecafcefb05471e79200ca519cad05680fabf6bb086cbe72a76ee9c",
+    "config.json": "888d31d8933d81b74dde8fb36941a391a5ca9aa95bcd77b806c96484efb7a923"
+  },
+  "ext_a_i_input": {
+    "Structure": "Wall Panel",
+    "Material": "Wood",
+    "Confidence": 0.93
+  },
+  "crew_types": [
+    "Carpenter"
+  ],
+  "configuration": {
+    "active_model_profile": "o3",
+    "requested_model_identifier": "o3",
+    "api_family": "Responses API",
+    "api_version": "v1",
+    "reasoning_effort": "high",
+    "temperature": null,
+    "top_p": null,
+    "max_output_tokens": 4096,
+    "sdk_max_retries": 2,
+    "validation_max_attempts": 3,
+    "web_search_allowed_domains": [
+      "onetonline.org",
+      "onetcenter.org"
+    ],
+    "web_search_tool_type": "web_search_preview",
+    "web_search_tool_choice": "auto",
+    "web_search_max_attempts": 3,
+    "formatting_tool_choice": "submit_ext_a_iii_tasks",
+    "strict_function_schema": true
+  },
+  "software": {
+    "python_version": "3.10.12",
+    "openai_python_version": "2.43.0"
+  },
+  "prompts": {
+    "search_instructions": "You are the web-retrieval component of Ext-A-III.\n\nSearch only official O*NET websites for the crew type supplied by the user.\nIdentify the closest relevant O*NET occupation and retrieve task statements\nthat may apply during construction assembly installation.\n\nRequirements:\n- Use O*NET OnLine or the O*NET Resource Center only.\n- Report the matched occupation title and O*NET-SOC code.\n- Copy relevant O*NET task statements as written on the source page.\n- Do not invent or paraphrase task statements.\n- Prefer occupation-level Tasks over general work activities.\n- Include the source page URLs in the response.\n- If no defensible occupation or task is found, state that clearly.",
+    "search_instructions_sha256": "70f49394828f3e6cdf6aab9ba3312821550ee12f7a2632317a21cc01369e86f3",
+    "format_instructions": "You are Ext-A-III in a construction knowledge-extraction pipeline.\n\nUse the supplied Ext-A-I context, Ext-A-II crew types, and the web-search\nevidence retrieved from official O*NET websites.\n\nRequirements:\n- Return exactly one mapping for every supplied crew type.\n- Copy every crew type exactly as supplied.\n- Select only task statements supported by the retrieved O*NET evidence.\n- Keep the O*NET task wording unchanged.\n- Select tasks relevant to construction or assembly installation.\n- If a specific crew has no valid supported task, return [null] for that crew.\n- At least one crew must have at least one valid task description.\n- Return the result only through the submit_ext_a_iii_tasks tool.",
+    "format_instructions_sha256": "772811bf7e970a856f09470144f5e3c3b9133c1fd73d28721a6de4a4570f6f27"
+  },
+  "tool_schema": {
+    "type": "function",
+    "name": "submit_ext_a_iii_tasks",
+    "description": "Submit O*NET task descriptions associated with each supplied human crew type.",
+    "strict": true,
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "Tasks": {
+          "type": "array",
+          "description": "One task mapping for every supplied crew type.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "CrewType": {
+                "type": "string",
+                "description": "The exact crew type copied from Ext-A-II."
+              },
+              "TaskDescriptions": {
+                "type": "array",
+                "description": "Relevant O*NET task descriptions. Return a single null value when no valid task was found.",
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              }
+            },
+            "required": [
+              "CrewType",
+              "TaskDescriptions"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "Tasks"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "formatting_prompt": "Ext-A-I Output:\n{\n  \"Structure\": \"Wall Panel\",\n  \"Material\": \"Wood\",\n  \"Confidence\": 0.93\n}\n\nCrew Types from Ext-A-II:\n[\n  \"Carpenter\"\n]\n\nOfficial O*NET web-search evidence:\n{\n  \"Carpenter\": {\n    \"search_output\": \"Matched O*NET occupation  \\n• Title: Carpenters  \\n• O*NET-SOC Code: 47-2031.00  \\n\\nRelevant O*NET task statements (verbatim)\\n\\n1. Measure and mark cutting lines on materials, using a ruler, pencil, chalk, and marking gauge. ([onetonline.org](https://www.onetonline.org/search/task/choose/47-2031.00))  \\n2. Assemble and fasten materials to make frameworks or props, using hand tools and wood screws, nails, dowel pins, or glue. ([onetonline.org](https://www.onetonline.org/search/task/choose/47-2031.00))  \\n3. Study specifications in blueprints, sketches, or building plans to prepare project layout and determine dimensions and materials required. ([onetonline.org](https://www.onetonline.org/search/task/choose/47-2031.00))  \\n4. Shape or cut materials to specified measurements, using hand tools, machines, or power saws. ([onetonline.org](https://www.onetonline.org/search/task/choose/47-2031.00))  \\n5. Verify trueness of structure, using plumb bob and level. ([onetonline.org](https://www.onetonline.org/search/task/choose/47-2031.00))  \\n6. Erect scaffolding or ladders for assembling structures above ground level. ([onetonline.org](https://www.onetonline.org/search/task/choose/47-2031.00))  \\n7. Install structures or fixtures, such as windows, frames, floorings, trim, or hardware, using carpenters' hand or power tools. ([onetonline.org](https://www.onetonline.org/search/task/choose/47-2031.00))  \\n8. Anchor and brace forms and other structures in place, using nails, bolts, anchor rods, steel cables, planks, wedges, and timbers. ([onetonline.org](https://www.onetonline.org/search/task/choose/47-2031.00))  \\n9. Install rough door and window frames, subflooring, fixtures, or temporary supports in structures undergoing construction or repair. ([onetonline.org](https://www.onetonline.org/search/task/choose/47-2031.00))  \\n10. Construct forms or chutes for pouring concrete. ([onetonline.org](https://www.onetonline.org/search/task/choose/47-2031.00))  \\n\\nSource URLs  \\n1. https://www.onetonline.org/link/summary/47-2031.00  \\n2. https://www.onetonline.org/search/task/choose/47-2031.00\",\n    \"sources\": [\n      {\n        \"type\": \"url\",\n        \"url\": \"https://www.onetonline.org/link/summary/47-2031.00\"\n      },\n      {\n        \"type\": \"url\",\n        \"url\": \"https://www.onetonline.org/\"\n      },\n      {\n        \"type\": \"url\",\n        \"url\": \"https://www.onetonline.org/search/task/choose/47-2031.00\"\n      },\n      {\n        \"type\": \"url\",\n        \"url\": \"https://www.onetonline.org/skills/zone/47-2031.00\"\n      },\n      {\n        \"type\": \"url\",\n        \"url\": \"https://www.onetonline.org/link/summary/47-3012.00\"\n      },\n      {\n        \"type\": \"url\",\n        \"url\": \"https://www.onetonline.org/search/task/\"\n      },\n      {\n        \"type\": \"url\",\n        \"url\": \"https://www.onetonline.org/link/localcert/47-2031.00\"\n      },\n      {\n        \"type\": \"url\",\n        \"url\": \"https://www.onetonline.org/link/summary/51-7011.00\"\n      },\n      {\n        \"type\": \"url\",\n        \"url\": \"https://www.onetonline.org/find/descriptor/browse/4.A\"\n      },\n      {\n        \"type\": \"url\",\n        \"url\": \"https://www.onetonline.org/link/result/47-2031.00\"\n      },\n      {\n        \"type\": \"url\",\n        \"url\": \"https://www.onetonline.org/link/details/47-2031.00\"\n      },\n      {\n        \"type\": \"url\",\n        \"url\": \"https://www.onetonline.org/link/summary/47-2031.00?redir=47-2031.06\"\n      },\n      {\n        \"type\": \"url\",\n        \"url\": \"https://www.onetonline.org/link/localtraining/47-2031.00\"\n      },\n      {\n        \"type\": \"url\",\n        \"url\": \"https://www.onetonline.org/link/table/details/tk/47-2031.00/Tasks_47-2031-00.xlsx?fmt=xlsx&s=IM&t=-10\"\n      },\n      {\n        \"type\": \"url\",\n        \"url\": \"https://www.onetonline.org/search/task/compare/47-2031.00?d=23430\"\n      },\n      {\n        \"type\": \"url\",\n        \"url\": \"https://www.onetonline.org/link/updates/47-2031.00\"\n      }\n    ]\n  }\n}",
+  "formatting_prompt_sha256": "8294d86d6327b3d558396052dab01a407e17d1e29f9b2770656737f3e9bcaab6",
+  "final_output": {
+    "Tasks": [
+      [
+        "Carpenter",
+        [
+          "Follow established safety rules and regulations and maintain a safe and clean environment.",
+          "Measure and mark cutting lines on materials, using a ruler, pencil, chalk, and marking gauge.",
+          "Assemble and fasten materials to make frameworks or props, using hand tools and wood screws, nails, dowel pins, or glue.",
+          "Study specifications in blueprints, sketches, or building plans to prepare project layout and determine dimensions and materials required.",
+          "Shape or cut materials to specified measurements, using hand tools, machines, or power saws.",
+          "Verify trueness of structure, using plumb bob and level.",
+          "Inspect ceiling or floor tile, wall coverings, siding, glass, or woodwork to detect broken or damaged structures.",
+          "Erect scaffolding or ladders for assembling structures above ground level.",
+          "Install structures or fixtures, such as windows, frames, floorings, trim, or hardware, using carpenters' hand or power tools.",
+          "Maintain records, document actions, and present written progress reports.",
+          "Remove damaged or defective parts or sections of structures and repair or replace, using hand tools.",
+          "Maintain job records and schedule work crew.",
+          "Anchor and brace forms and other structures in place, using nails, bolts, anchor rods, steel cables, planks, wedges, and timbers.",
+          "Bore boltholes in timber, masonry or concrete walls, using power drill.",
+          "Install rough door and window frames, subflooring, fixtures, or temporary supports in structures undergoing construction or repair.",
+          "Dig or direct digging of post holes and set poles to support structures.",
+          "Cover subfloors with building paper to keep out moisture and lay hardwood, parquet, or wood-strip-block floors by nailing floors to subfloor or cementing them to mastic or asphalt base.",
+          "Construct forms or chutes for pouring concrete.",
+          "Arrange for subcontractors to deal with special areas, such as heating or electrical wiring work.",
+          "Build or repair cabinets, doors, frameworks, floors, or other wooden fixtures used in buildings, using woodworking machines, carpenter's hand tools, or power tools.",
+          "Finish surfaces of woodwork or wallboard in houses or buildings, using paint, hand tools, or paneling.",
+          "Select and order lumber or other required materials.",
+          "Work with or remove hazardous material.",
+          "Fill cracks or other defects in plaster or plasterboard and sand patch, using patching plaster, trowel, and sanding tool.",
+          "Prepare cost estimates for clients or employers.",
+          "Perform minor plumbing, welding, or concrete mixing work.",
+          "Apply shock-absorbing, sound-deadening, or decorative paneling to ceilings or walls.",
+          "Examine structural timbers and supports to detect decay, and replace timbers as required, using hand tools, nuts, and bolts.",
+          "Build sleds from logs and timbers for use in hauling camp buildings and machinery through wooded areas.",
+          "Use drones for site surveying and to inspect hard-to-reach areas of a structure."
+        ]
+      ]
+    ]
+  },
+  "post_run_update": {
+    "updated_at_utc": "2026-07-12T01:48:46.783649+00:00",
+    "reason": "Run record synchronized with the attached Ext_A_III_Output.json.",
+    "source_output_file": "Ext_A_III_Output.json",
+    "source_output_sha256": "631733c3fd22430b1765348edf25cbc845cdf167dbe05d3e621a9bed29f6b40f",
+    "original_response_metadata_preserved": true
+  }
+}

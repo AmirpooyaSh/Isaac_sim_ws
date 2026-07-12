@@ -1,0 +1,22 @@
+   • Install Top Plate (H) across the full wall length to establish the upper boundary.
+   • Proceed left-to-right through the wall panel bays:
+   •   • If the bay is a STANDARD wall segment (no opening):
+   •         – Install Vertical Stud (V).
+   •         – (Optional) If location calls for an L/U Stud, install it immediately after the first standard stud.
+   •   • If the bay is an OPENING zone (door or window):
+   •         – Install King Stud (left).
+   •         – Install King Stud (right).
+   •         – Install Jack Stud (left).
+   •         – Install Jack Stud (right).
+   •         – If the opening header is BEAR LOADING:
+   •               • Install Bear Loading plank 1 (H).
+   •               • Install Bear Loading plank 2 (H) stacked on plank 1.
+   •           Else (the header is TOP SILL PLATE):
+   •               • Install Top Sill Plate (H).
+   •               • Moving left-to-right, install Top Cripple Stud(s) (V) above the plate up to the Top Plate.
+   •         – If the opening type is WINDOW (not a full-height door):
+   •               • Install Lower Sill Plate (H).
+   •               • Moving left-to-right, install Lower Cripple Stud(s) (V) beneath the sill down to Bottom Plate level.
+   • Repeat the left-to-right bay sequence until the end of the wall panel is reached and all vertical elements are in place.
+   • Install Bottom Plate (H) across the wall once all studs, kings, jacks, headers/plates, and cripples are secured to lock everything together.
+   • Install OSB Sheathing Plates (V) from left-to-right over the completed frame to finish the wall panel.

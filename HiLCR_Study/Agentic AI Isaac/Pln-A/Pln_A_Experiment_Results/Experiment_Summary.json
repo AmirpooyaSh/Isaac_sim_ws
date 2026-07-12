@@ -1,0 +1,64 @@
+{
+  "agent": "Pln-A",
+  "experiment": "Three wall-panel cases with and without human trade knowledge",
+  "status": "success",
+  "started_at_utc": "2026-07-12T21:40:48.660569+00:00",
+  "completed_at_utc": "2026-07-12T21:49:23.844561+00:00",
+  "duration_seconds": 515.218186,
+  "model": "o3",
+  "base_url": "https://api.ai.it.ufl.edu",
+  "cases": {
+    "No_Open": {
+      "With_Knowledge": {
+        "status": "success",
+        "duration_seconds": 35.764738,
+        "output_directory": "No_Open/With_Knowledge",
+        "call_count": 49
+      },
+      "Without_Knowledge": {
+        "status": "success",
+        "duration_seconds": 48.34309,
+        "output_directory": "No_Open/Without_Knowledge",
+        "call_count": 48
+      }
+    },
+    "1_Door": {
+      "With_Knowledge": {
+        "status": "success",
+        "duration_seconds": 47.180584,
+        "output_directory": "1_Door/With_Knowledge",
+        "call_count": 57
+      },
+      "Without_Knowledge": {
+        "status": "success",
+        "duration_seconds": 59.175274,
+        "output_directory": "1_Door/Without_Knowledge",
+        "call_count": 56
+      }
+    },
+    "1_Door_1_Window": {
+      "With_Knowledge": {
+        "status": "success",
+        "duration_seconds": 159.10941,
+        "output_directory": "1_Door_1_Window/With_Knowledge",
+        "call_count": 69
+      },
+      "Without_Knowledge": {
+        "status": "success",
+        "duration_seconds": 165.608068,
+        "output_directory": "1_Door_1_Window/Without_Knowledge",
+        "call_count": 86
+      }
+    }
+  },
+  "successful_runs": 6,
+  "failed_runs": 0,
+  "total_runs": 6,
+  "shared_input_files_sha256": {
+    "KBS_Simplified_Codified.py": "f43e95da931f479d043935db24f00f33d9e18f0dd674929db8cf4d4b4529e110",
+    "Framing_Order.txt": "f015f26affd719966d1a884b0f719149003618464a977410aed5efefcd26ae41",
+    "Ext_A_II_Output.json": "59d5378395ecafcefb05471e79200ca519cad05680fabf6bb086cbe72a76ee9c",
+    "Ext_A_III_Output.json": "631733c3fd22430b1765348edf25cbc845cdf167dbe05d3e621a9bed29f6b40f"
+  },
+  "hlaf_function_count": 27
+}

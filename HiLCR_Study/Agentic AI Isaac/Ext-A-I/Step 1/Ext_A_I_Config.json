@@ -1,0 +1,63 @@
+{
+  "active_model_profile": "o3",
+  "api": {
+    "provider": "OpenAI",
+    "api_family": "Responses API",
+    "api_version": "v1",
+    "base_url": null,
+    "timeout_seconds": 120.0,
+    "sdk_max_retries": 2
+  },
+  "model_profiles": {
+    "o3": {
+      "identifier": "o3",
+      "supports_reasoning_effort": true,
+      "supports_sampling_controls": false,
+      "reasoning_effort": "high",
+      "temperature": null,
+      "top_p": null,
+      "max_output_tokens": 4096
+    },
+    "gpt-4o": {
+      "identifier": "gpt-4o-2024-08-06",
+      "supports_reasoning_effort": false,
+      "supports_sampling_controls": true,
+      "reasoning_effort": null,
+      "temperature": 0.0,
+      "top_p": null,
+      "max_output_tokens": 512
+    },
+    "gpt-4o-mini": {
+      "identifier": "gpt-4o-mini-2024-07-18",
+      "supports_reasoning_effort": false,
+      "supports_sampling_controls": true,
+      "reasoning_effort": null,
+      "temperature": 0.0,
+      "top_p": null,
+      "max_output_tokens": 512
+    }
+  },
+  "request": {
+    "store": false
+  },
+  "agent": {
+    "confidence_threshold": 0.8,
+    "validation_max_attempts": 3,
+    "validation_retry_delay_seconds": 1.0
+  },
+  "failure_handling": {
+    "default_validation_action": "stop",
+    "validation_actions": {
+      "incomplete_response": "retry",
+      "no_tool_call": "retry",
+      "multiple_tool_calls": "retry",
+      "wrong_tool_name": "retry",
+      "missing_tool_arguments": "retry",
+      "invalid_json_arguments": "retry",
+      "schema_validation_error": "retry",
+      "low_confidence": "retry"
+    },
+    "transport_failures": "The OpenAI SDK retries connection errors, timeouts, HTTP 408, 409, 429, and HTTP 5xx responses up to sdk_max_retries; the pipeline stops if those retries are exhausted.",
+    "terminal_action": "Stop the pipeline, write Ext_A_I_Failed.json and Ext_A_I_Run_Record.json, and return a nonzero exit code."
+  }
+}

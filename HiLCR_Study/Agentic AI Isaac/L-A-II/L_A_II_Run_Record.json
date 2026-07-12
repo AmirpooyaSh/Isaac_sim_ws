@@ -1,0 +1,2432 @@
+{
+  "agent": "L-A-II",
+  "status": "success",
+  "started_at_utc": "2026-07-12T19:16:35.651066+00:00",
+  "completed_at_utc": "2026-07-12T19:17:03.433211+00:00",
+  "duration_seconds": 27.782168,
+  "files": {
+    "l_a_i_input": "L_A_I_Output.json",
+    "primitive_definitions": "Primitive_Library_Definitions.json",
+    "primitive_poses": "Primitive_Library_Poses.json",
+    "primitive_relations": "Primitive_Library_Relations.json",
+    "agent_descriptions": "Agent_Description.json",
+    "configuration": "config.json",
+    "output": "L_A_II_Output.json",
+    "run_record": "L_A_II_Run_Record.json"
+  },
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "accepted",
+      "response_id": "resp__A9CZJwI6TP4llqWcfHD0xu1b29ndQ_wE-0uLBZv8ZXL5HaDneSEZpErtMqG3vGAKZCLswAGIk589cfXGEZDNtlOFSYefRCcwkij7CoRk5TO78HXC3kBcKfy85BD6S1Rd_Uf_ZXmx5x1IrAE3FAbge8a0sRz6D-KgxQG2Bfpp0ZQd9MC4KiXSfdYSHrE4BRtwA6Wxras8bOVF6YDSrodFGtgI6a4kEgBhYyUxGIYpI210ol-3X03zoEbh9BQHCo5cdyoGQWcy1NBq98t_rjcJS_FmZn9oMgDYaxyRj-R09WRMCDDV4VAe5_XCf9drzKIQnXcQZ3enpFtcfQupzLCYSyX-wmZfEPWcbVI6MrwJtomRPzdMIn250GtoI45uIrNRErSc_3GBUIILgTVK1NdiOOAXcpHUFdBY9dVm9MrAzLmN5UuNzOYMprhfy8KI-aQWaDwYYWhghQmUQdag771-w==",
+      "returned_model_identifier": "o3",
+      "response_status": "completed",
+      "duration_seconds": 27.757227,
+      "usage": {
+        "input_tokens": 2181,
+        "input_tokens_details": {
+          "cached_tokens": 0,
+          "audio_tokens": null,
+          "text_tokens": null
+        },
+        "output_tokens": 3913,
+        "output_tokens_details": {
+          "reasoning_tokens": 3264,
+          "text_tokens": null
+        },
+        "total_tokens": 6094,
+        "cost": null
+      },
+      "tool_arguments": {
+        "Selections": [
+          {
+            "Element": "Vertical Stud",
+            "SubStep": "Set stud on bottom plate layout mark and tip into place under top plate",
+            "Capability": "TransportAndPlace"
+          },
+          {
+            "Element": "Vertical Stud",
+            "SubStep": "Fasten stud to plates with nails or screws through toe-nailing or metal connectors",
+            "Capability": "Nail"
+          },
+          {
+            "Element": "King Stud",
+            "SubStep": "Stand each king stud against layout line flanking rough opening",
+            "Capability": "TransportAndPlace"
+          },
+          {
+            "Element": "King Stud",
+            "SubStep": "Secure king studs to bottom and top plates with nails or structural screws",
+            "Capability": "Nail"
+          },
+          {
+            "Element": "Lower Cripple Stud",
+            "SubStep": "Position cripples at marked on-center spacing below sill opening",
+            "Capability": "TransportAndPlace"
+          },
+          {
+            "Element": "OSB Sheathing Plate",
+            "SubStep": "Position first sheet flush with bottom plate and edge of framing",
+            "Capability": "TransportAndPlace"
+          },
+          {
+            "Element": "OSB Sheathing Plate",
+            "SubStep": "Fasten OSB to studs, plates, and blocking with specified nails or screws at required spacing, starting from center and working outward",
+            "Capability": "Nail"
+          },
+          {
+            "Element": "Top Plate",
+            "SubStep": "Install second (cap) plate overlapping joints for strength",
+            "Capability": "TransportAndPlace"
+          },
+          {
+            "Element": "Jack Stud",
+            "SubStep": "Place each jack stud against king stud at opening sides",
+            "Capability": "TransportAndPlace"
+          },
+          {
+            "Element": "Jack Stud",
+            "SubStep": "Nail jack studs to king studs and bottom plate, then toenail into header after placement",
+            "Capability": "Nail"
+          },
+          {
+            "Element": "Bear Loading",
+            "SubStep": "Lift header onto jack studs within opening using additional help or temporary support",
+            "Capability": "TransportAndPlace"
+          },
+          {
+            "Element": "Bear Loading",
+            "SubStep": "Nail or screw header to jack studs and add metal hangers or straps if required",
+            "Capability": "Nail"
+          },
+          {
+            "Element": "L/U Stud",
+            "SubStep": "Stand stud in place providing space for service penetrations as detailed",
+            "Capability": "TransportAndPlace"
+          },
+          {
+            "Element": "Lower Sill Plate",
+            "SubStep": "Position sill on marked lines with crown up and faces flush",
+            "Capability": "TransportAndPlace"
+          },
+          {
+            "Element": "Lower Sill Plate",
+            "SubStep": "Tack sill to king or jack studs, then secure with nails or screws through end joints",
+            "Capability": "Nail"
+          },
+          {
+            "Element": "Bottom Plate",
+            "SubStep": "Fasten plate to floor framing or slab with nails, screws, or anchors per specification",
+            "Capability": "Nail"
+          },
+          {
+            "Element": "Top Sill Plate",
+            "SubStep": "Set top sill on marks and hold flush with inner faces of studs",
+            "Capability": "TransportAndPlace"
+          },
+          {
+            "Element": "Top Sill Plate",
+            "SubStep": "Nail or screw plate to king studs and to any top cripple studs above",
+            "Capability": "Nail"
+          },
+          {
+            "Element": "Top Cripple Stud",
+            "SubStep": "Position cripples at on-center spacing above opening between header and top plate",
+            "Capability": "TransportAndPlace"
+          },
+          {
+            "Element": "Top Cripple Stud",
+            "SubStep": "Fasten cripples through top plate and header with nails or screws",
+            "Capability": "Nail"
+          }
+        ]
+      },
+      "validated_selections": [
+        {
+          "Element": "Vertical Stud",
+          "SubStep": "Set stud on bottom plate layout mark and tip into place under top plate",
+          "Capability": "TransportAndPlace"
+        },
+        {
+          "Element": "Vertical Stud",
+          "SubStep": "Fasten stud to plates with nails or screws through toe-nailing or metal connectors",
+          "Capability": "Nail"
+        },
+        {
+          "Element": "King Stud",
+          "SubStep": "Stand each king stud against layout line flanking rough opening",
+          "Capability": "TransportAndPlace"
+        },
+        {
+          "Element": "King Stud",
+          "SubStep": "Secure king studs to bottom and top plates with nails or structural screws",
+          "Capability": "Nail"
+        },
+        {
+          "Element": "Lower Cripple Stud",
+          "SubStep": "Position cripples at marked on-center spacing below sill opening",
+          "Capability": "TransportAndPlace"
+        },
+        {
+          "Element": "OSB Sheathing Plate",
+          "SubStep": "Position first sheet flush with bottom plate and edge of framing",
+          "Capability": "TransportAndPlace"
+        },
+        {
+          "Element": "OSB Sheathing Plate",
+          "SubStep": "Fasten OSB to studs, plates, and blocking with specified nails or screws at required spacing, starting from center and working outward",
+          "Capability": "Nail"
+        },
+        {
+          "Element": "Top Plate",
+          "SubStep": "Install second (cap) plate overlapping joints for strength",
+          "Capability": "TransportAndPlace"
+        },
+        {
+          "Element": "Jack Stud",
+          "SubStep": "Place each jack stud against king stud at opening sides",
+          "Capability": "TransportAndPlace"
+        },
+        {
+          "Element": "Jack Stud",
+          "SubStep": "Nail jack studs to king studs and bottom plate, then toenail into header after placement",
+          "Capability": "Nail"
+        },
+        {
+          "Element": "Bear Loading",
+          "SubStep": "Lift header onto jack studs within opening using additional help or temporary support",
+          "Capability": "TransportAndPlace"
+        },
+        {
+          "Element": "Bear Loading",
+          "SubStep": "Nail or screw header to jack studs and add metal hangers or straps if required",
+          "Capability": "Nail"
+        },
+        {
+          "Element": "L/U Stud",
+          "SubStep": "Stand stud in place providing space for service penetrations as detailed",
+          "Capability": "TransportAndPlace"
+        },
+        {
+          "Element": "Lower Sill Plate",
+          "SubStep": "Position sill on marked lines with crown up and faces flush",
+          "Capability": "TransportAndPlace"
+        },
+        {
+          "Element": "Lower Sill Plate",
+          "SubStep": "Tack sill to king or jack studs, then secure with nails or screws through end joints",
+          "Capability": "Nail"
+        },
+        {
+          "Element": "Bottom Plate",
+          "SubStep": "Fasten plate to floor framing or slab with nails, screws, or anchors per specification",
+          "Capability": "Nail"
+        },
+        {
+          "Element": "Top Sill Plate",
+          "SubStep": "Set top sill on marks and hold flush with inner faces of studs",
+          "Capability": "TransportAndPlace"
+        },
+        {
+          "Element": "Top Sill Plate",
+          "SubStep": "Nail or screw plate to king studs and to any top cripple studs above",
+          "Capability": "Nail"
+        },
+        {
+          "Element": "Top Cripple Stud",
+          "SubStep": "Position cripples at on-center spacing above opening between header and top plate",
+          "Capability": "TransportAndPlace"
+        },
+        {
+          "Element": "Top Cripple Stud",
+          "SubStep": "Fasten cripples through top plate and header with nails or screws",
+          "Capability": "Nail"
+        }
+      ]
+    }
+  ],
+  "input_hashes_sha256": {
+    "L_A_I_Output.json": "958957c36738ce8f49bd01e36a1ae50ea05f9d26a94ed1634291ecf7035808e1",
+    "Primitive_Library_Definitions.json": "9668e440ca9ea389cd97403ff96d1c2cfb3c8ecff91b51be1a0c9e4f6caea313",
+    "Primitive_Library_Poses.json": "e219d566469deca4704de0532ea45079b66f3905bae69946b82efc135bdf3cda",
+    "Primitive_Library_Relations.json": "6c616036f7a688cb3746b92ac314a9b66e2b2f9a6b3432c03c2b3bf54e68e74a",
+    "Agent_Description.json": "d91cdea3d6d5fdae134ec3b469c51b97408e482ddf8bf935d1665ce6cacf556a",
+    "config.json": "69d3a114fee6151784a5bbe7687b32074326e64e9471e9fd435ab60854984864"
+  },
+  "relation_element_map": {
+    "Vertical Stud": "Vertical_Stud",
+    "King Stud": "King_Stud",
+    "Lower Cripple Stud": "Lower_Cripple_Plate",
+    "OSB Sheathing Plate": "OSB_Sheathing_Plate",
+    "Top Plate": "Top_Plate",
+    "Jack Stud": "Jack_Stud",
+    "Bear Loading": "Load_Bearing",
+    "L/U Stud": "L_U_Stud",
+    "Lower Sill Plate": "Lower_Sill_Plate",
+    "Bottom Plate": "Bottom_Plate",
+    "Top Sill Plate": "Top_Sill_Plate",
+    "Top Cripple Stud": "Top_Cripple_Plate"
+  },
+  "available_capabilities": {
+    "Vertical Stud": {
+      "PickOnly": true,
+      "TransportAndPlace": true,
+      "TransportRequiresPass": false,
+      "Nail": true
+    },
+    "King Stud": {
+      "PickOnly": true,
+      "TransportAndPlace": true,
+      "TransportRequiresPass": false,
+      "Nail": true
+    },
+    "Lower Cripple Stud": {
+      "PickOnly": true,
+      "TransportAndPlace": true,
+      "TransportRequiresPass": false,
+      "Nail": false
+    },
+    "OSB Sheathing Plate": {
+      "PickOnly": true,
+      "TransportAndPlace": true,
+      "TransportRequiresPass": false,
+      "Nail": true
+    },
+    "Top Plate": {
+      "PickOnly": true,
+      "TransportAndPlace": true,
+      "TransportRequiresPass": true,
+      "Nail": false
+    },
+    "Jack Stud": {
+      "PickOnly": true,
+      "TransportAndPlace": true,
+      "TransportRequiresPass": false,
+      "Nail": true
+    },
+    "Bear Loading": {
+      "PickOnly": true,
+      "TransportAndPlace": true,
+      "TransportRequiresPass": false,
+      "Nail": true
+    },
+    "L/U Stud": {
+      "PickOnly": true,
+      "TransportAndPlace": true,
+      "TransportRequiresPass": true,
+      "Nail": false
+    },
+    "Lower Sill Plate": {
+      "PickOnly": true,
+      "TransportAndPlace": true,
+      "TransportRequiresPass": false,
+      "Nail": true
+    },
+    "Bottom Plate": {
+      "PickOnly": true,
+      "TransportAndPlace": true,
+      "TransportRequiresPass": false,
+      "Nail": true
+    },
+    "Top Sill Plate": {
+      "PickOnly": true,
+      "TransportAndPlace": true,
+      "TransportRequiresPass": true,
+      "Nail": true
+    },
+    "Top Cripple Stud": {
+      "PickOnly": true,
+      "TransportAndPlace": true,
+      "TransportRequiresPass": true,
+      "Nail": true
+    }
+  },
+  "agent_assignments": {
+    "Pick": "Simulation-Based Agent (Sb-A)",
+    "Place": "Parameter-Based Agent (Pb-A)",
+    "Nail": "Parameter-Based Agent (Pb-A)",
+    "Pass": "Collaborative Agent (Co-A)"
+  },
+  "configuration": {
+    "active_model_profile": "o3",
+    "requested_model_identifier": "o3",
+    "api_family": "Responses API",
+    "api_version": "v1",
+    "base_url": "https://api.ai.it.ufl.edu",
+    "reasoning_effort": "high",
+    "temperature": null,
+    "top_p": null,
+    "max_output_tokens": 4096,
+    "sdk_max_retries": 2,
+    "validation_max_attempts": 3,
+    "parallel_tool_calls": false,
+    "strict_tool_schema": true,
+    "tool_choice": "select_robotic_sub_steps"
+  },
+  "software": {
+    "python_version": "3.10.12",
+    "openai_python_version": "2.43.0"
+  },
+  "prompt_record": {
+    "system_prompt": "You are L-A-II in a construction robotic-planning pipeline.\n\nSelect only the L-A-I Sub-Steps that are directly executable using the\navailable robotic primitive capabilities supplied in the prompt.\n\nCapability meanings:\n- PickOnly: the Sub-Step explicitly requires only picking or grasping the\n  component, without placing it.\n- TransportAndPlace: the Sub-Step requires lifting, setting, standing,\n  positioning, placing, or installing the component. The application will\n  automatically expand this into Pick -> optional collaborative Pass -> Place.\n- Nail: the Sub-Step requires fastening with nails and a Nail primitive exists.\n\nRules:\n- Copy the Element and SubStep text exactly from the supplied L-A-I data.\n- Select only capabilities listed as available for that element.\n- Select at most one TransportAndPlace Sub-Step and one Nail Sub-Step for each\n  element.\n- Select PickOnly only when the Sub-Step explicitly describes picking without\n  placement.\n- A fastening Sub-Step may be selected as Nail when nailing is one of the\n  stated fastening methods and the element has a Nail capability.\n- Ignore planning, reviewing, measuring, marking, cutting, drilling, checking,\n  alignment-only, leveling-only, bracing, reporting, scheduling, estimating,\n  repair, gluing, and other unsupported work.\n- Do not select a Sub-Step merely because it mentions a tool; the physical\n  objective must match an available capability.\n- Do not invent elements, Sub-Steps, capabilities, robots, tools, poses, or\n  agents.\n- Return the selections only through the select_robotic_sub_steps function.",
+    "system_prompt_sha256": "6120f7b6f29264b329b4df3374156c4a2c68f36af20ce92dd37d3f3c06ce0044",
+    "user_prompt": "Select only robotically executable Sub-Steps from the data below.\n\n[\n  {\n    \"Element\": \"Vertical Stud\",\n    \"SubSteps\": [\n      \"Review wall layout marks on bottom and top plates for stud spacing\",\n      \"Measure required stud length between plates and mark cut line on lumber\",\n      \"Cut stud to length with power saw\",\n      \"Set stud on bottom plate layout mark and tip into place under top plate\",\n      \"Tap stud plumb and verify alignment with level\",\n      \"Fasten stud to plates with nails or screws through toe-nailing or metal connectors\"\n    ],\n    \"AvailableCapabilities\": {\n      \"PickOnly\": true,\n      \"TransportAndPlace\": true,\n      \"Nail\": true\n    }\n  },\n  {\n    \"Element\": \"King Stud\",\n    \"SubSteps\": [\n      \"Confirm opening width on plans and transfer king stud locations to plates\",\n      \"Measure floor-to-plate height and cut king studs to full wall height\",\n      \"Stand each king stud against layout line flanking rough opening\",\n      \"Check plumb with level and adjust as needed\",\n      \"Secure king studs to bottom and top plates with nails or structural screws\",\n      \"Brace temporarily until adjoining members lock studs in place\"\n    ],\n    \"AvailableCapabilities\": {\n      \"PickOnly\": true,\n      \"TransportAndPlace\": true,\n      \"Nail\": true\n    }\n  },\n  {\n    \"Element\": \"Lower Cripple Stud\",\n    \"SubSteps\": [\n      \"Measure distance from bottom plate to underside of window sill plate\",\n      \"Cut cripple stud pieces to measured length\",\n      \"Position cripples at marked on-center spacing below sill opening\",\n      \"Hold each cripple tight between bottom plate and sill plate\",\n      \"Nail or screw through plates into each cripple end\",\n      \"Verify top of sill remains level after fastening\"\n    ],\n    \"AvailableCapabilities\": {\n      \"PickOnly\": true,\n      \"TransportAndPlace\": true,\n      \"Nail\": false\n    }\n  },\n  {\n    \"Element\": \"OSB Sheathing Plate\",\n    \"SubSteps\": [\n      \"Measure wall panel area and mark OSB panel cut lines to fit between framing edges and openings\",\n      \"Cut OSB sheets to size with circular saw, maintaining square edges\",\n      \"Erect scaffold or use ladders for safe access to wall height\",\n      \"Position first sheet flush with bottom plate and edge of framing\",\n      \"Hold panel tight, check for plumb and proper edge alignment\",\n      \"Fasten OSB to studs, plates, and blocking with specified nails or screws at required spacing, starting from center and working outward\",\n      \"Stagger vertical joints between courses and continue installing successive sheets\",\n      \"Recheck flatness and joint alignment, adding additional fasteners where needed\"\n    ],\n    \"AvailableCapabilities\": {\n      \"PickOnly\": true,\n      \"TransportAndPlace\": true,\n      \"Nail\": true\n    }\n  },\n  {\n    \"Element\": \"Top Plate\",\n    \"SubSteps\": [\n      \"Lay out stud and opening locations on top plate stock using tape and pencil\",\n      \"Cut plates to wall length, including splices as needed\",\n      \"Set first top plate on edge along wall line and tack to stud tops\",\n      \"Install second (cap) plate overlapping joints for strength\",\n      \"Nail or screw plates to each stud end and to adjoining plates at corners and partitions\",\n      \"Verify straightness of plate line and correct any bows with blocking or bracing\"\n    ],\n    \"AvailableCapabilities\": {\n      \"PickOnly\": true,\n      \"TransportAndPlace\": true,\n      \"Nail\": false\n    }\n  },\n  {\n    \"Element\": \"Jack Stud\",\n    \"SubSteps\": [\n      \"Measure required height from bottom plate to underside of header\",\n      \"Cut jack studs to length with square ends\",\n      \"Place each jack stud against king stud at opening sides\",\n      \"Align bottom with layout mark and ensure top meets header seat line\",\n      \"Nail jack studs to king studs and bottom plate, then toenail into header after placement\",\n      \"Confirm assembly is plumb and secure\"\n    ],\n    \"AvailableCapabilities\": {\n      \"PickOnly\": true,\n      \"TransportAndPlace\": true,\n      \"Nail\": true\n    }\n  },\n  {\n    \"Element\": \"Bear Loading\",\n    \"SubSteps\": [\n      \"Check plan for header span and laminate requirements\",\n      \"Measure opening width and cut header members to length\",\n      \"Assemble multiple header plies with adhesive and nails or screws as specified\",\n      \"Lift header onto jack studs within opening using additional help or temporary support\",\n      \"Set header flush with top of jack studs and centered over opening\",\n      \"Nail or screw header to jack studs and add metal hangers or straps if required\",\n      \"Verify header is level and bearing fully on both jacks\"\n    ],\n    \"AvailableCapabilities\": {\n      \"PickOnly\": true,\n      \"TransportAndPlace\": true,\n      \"Nail\": true\n    }\n  },\n  {\n    \"Element\": \"L/U Stud\",\n    \"SubSteps\": [\n      \"Locate position adjacent to first vertical stud per layout\",\n      \"Measure floor-to-plate height and cut utility stud to length\",\n      \"Stand stud in place providing space for service penetrations as detailed\",\n      \"Plumb stud with level and align faces flush with neighboring framing\",\n      \"Fasten stud to plates and add blocking or straps for lateral bracing as required\",\n      \"Bore service holes at designated heights for mechanical or electrical runs\"\n    ],\n    \"AvailableCapabilities\": {\n      \"PickOnly\": true,\n      \"TransportAndPlace\": true,\n      \"Nail\": false\n    }\n  },\n  {\n    \"Element\": \"Lower Sill Plate\",\n    \"SubSteps\": [\n      \"Mark sill height on king studs according to window schedule\",\n      \"Cut sill plate to span between jack studs\",\n      \"Position sill on marked lines with crown up and faces flush\",\n      \"Tack sill to king or jack studs, then secure with nails or screws through end joints\",\n      \"Check sill for level across width of opening\",\n      \"Add temporary support or shims if adjustments are required\"\n    ],\n    \"AvailableCapabilities\": {\n      \"PickOnly\": true,\n      \"TransportAndPlace\": true,\n      \"Nail\": true\n    }\n  },\n  {\n    \"Element\": \"Bottom Plate\",\n    \"SubSteps\": [\n      \"Snap chalk line on subfloor to establish wall location\",\n      \"Lay out stud and opening positions along bottom plate stock\",\n      \"Cut plates to required lengths including splice pieces\",\n      \"Position bottom plate on layout line and drill for anchor locations if needed\",\n      \"Fasten plate to floor framing or slab with nails, screws, or anchors per specification\",\n      \"Verify plate alignment and secure temporary braces until studs are installed\"\n    ],\n    \"AvailableCapabilities\": {\n      \"PickOnly\": true,\n      \"TransportAndPlace\": true,\n      \"Nail\": true\n    }\n  },\n  {\n    \"Element\": \"Top Sill Plate\",\n    \"SubSteps\": [\n      \"Measure distance between king studs above window opening\",\n      \"Cut top sill plate to length ensuring square ends\",\n      \"Mark seat line on king studs at specified elevation\",\n      \"Set top sill on marks and hold flush with inner faces of studs\",\n      \"Nail or screw plate to king studs and to any top cripple studs above\",\n      \"Confirm plate is level and properly tied into surrounding framing\"\n    ],\n    \"AvailableCapabilities\": {\n      \"PickOnly\": true,\n      \"TransportAndPlace\": true,\n      \"Nail\": true\n    }\n  },\n  {\n    \"Element\": \"Top Cripple Stud\",\n    \"SubSteps\": [\n      \"Determine distance from top sill or header to underside of top plate\",\n      \"Cut cripple studs to required length\",\n      \"Position cripples at on-center spacing above opening between header and top plate\",\n      \"Ensure each cripple is plumb and flush with wall face\",\n      \"Fasten cripples through top plate and header with nails or screws\",\n      \"Verify continuous load path by checking contact at both ends\"\n    ],\n    \"AvailableCapabilities\": {\n      \"PickOnly\": true,\n      \"TransportAndPlace\": true,\n      \"Nail\": true\n    }\n  }\n]",
+    "user_prompt_sha256": "af768acf79e5a5684e1c6e736128ceaf877d1291e6762ee63fe669ca216da0f7"
+  },
+  "selection_tool_schema": {
+    "type": "function",
+    "name": "select_robotic_sub_steps",
+    "description": "Select only the L-A-I Sub-Steps that can be accomplished using the available robotic primitive capabilities.",
+    "strict": true,
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "Selections": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "Element": {
+                "type": "string",
+                "description": "Exact element name copied from L_A_I_Output.json."
+              },
+              "SubStep": {
+                "type": "string",
+                "description": "Exact Sub-Step text copied from L_A_I_Output.json."
+              },
+              "Capability": {
+                "type": "string",
+                "enum": [
+                  "PickOnly",
+                  "TransportAndPlace",
+                  "Nail"
+                ],
+                "description": "The primitive capability that can accomplish the selected Sub-Step."
+              }
+            },
+            "required": [
+              "Element",
+              "SubStep",
+              "Capability"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "Selections"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "selected_sub_steps": [
+    {
+      "Element": "Vertical Stud",
+      "SubStep": "Set stud on bottom plate layout mark and tip into place under top plate",
+      "Capability": "TransportAndPlace"
+    },
+    {
+      "Element": "Vertical Stud",
+      "SubStep": "Fasten stud to plates with nails or screws through toe-nailing or metal connectors",
+      "Capability": "Nail"
+    },
+    {
+      "Element": "King Stud",
+      "SubStep": "Stand each king stud against layout line flanking rough opening",
+      "Capability": "TransportAndPlace"
+    },
+    {
+      "Element": "King Stud",
+      "SubStep": "Secure king studs to bottom and top plates with nails or structural screws",
+      "Capability": "Nail"
+    },
+    {
+      "Element": "Lower Cripple Stud",
+      "SubStep": "Position cripples at marked on-center spacing below sill opening",
+      "Capability": "TransportAndPlace"
+    },
+    {
+      "Element": "OSB Sheathing Plate",
+      "SubStep": "Position first sheet flush with bottom plate and edge of framing",
+      "Capability": "TransportAndPlace"
+    },
+    {
+      "Element": "OSB Sheathing Plate",
+      "SubStep": "Fasten OSB to studs, plates, and blocking with specified nails or screws at required spacing, starting from center and working outward",
+      "Capability": "Nail"
+    },
+    {
+      "Element": "Top Plate",
+      "SubStep": "Install second (cap) plate overlapping joints for strength",
+      "Capability": "TransportAndPlace"
+    },
+    {
+      "Element": "Jack Stud",
+      "SubStep": "Place each jack stud against king stud at opening sides",
+      "Capability": "TransportAndPlace"
+    },
+    {
+      "Element": "Jack Stud",
+      "SubStep": "Nail jack studs to king studs and bottom plate, then toenail into header after placement",
+      "Capability": "Nail"
+    },
+    {
+      "Element": "Bear Loading",
+      "SubStep": "Lift header onto jack studs within opening using additional help or temporary support",
+      "Capability": "TransportAndPlace"
+    },
+    {
+      "Element": "Bear Loading",
+      "SubStep": "Nail or screw header to jack studs and add metal hangers or straps if required",
+      "Capability": "Nail"
+    },
+    {
+      "Element": "L/U Stud",
+      "SubStep": "Stand stud in place providing space for service penetrations as detailed",
+      "Capability": "TransportAndPlace"
+    },
+    {
+      "Element": "Lower Sill Plate",
+      "SubStep": "Position sill on marked lines with crown up and faces flush",
+      "Capability": "TransportAndPlace"
+    },
+    {
+      "Element": "Lower Sill Plate",
+      "SubStep": "Tack sill to king or jack studs, then secure with nails or screws through end joints",
+      "Capability": "Nail"
+    },
+    {
+      "Element": "Bottom Plate",
+      "SubStep": "Fasten plate to floor framing or slab with nails, screws, or anchors per specification",
+      "Capability": "Nail"
+    },
+    {
+      "Element": "Top Sill Plate",
+      "SubStep": "Set top sill on marks and hold flush with inner faces of studs",
+      "Capability": "TransportAndPlace"
+    },
+    {
+      "Element": "Top Sill Plate",
+      "SubStep": "Nail or screw plate to king studs and to any top cripple studs above",
+      "Capability": "Nail"
+    },
+    {
+      "Element": "Top Cripple Stud",
+      "SubStep": "Position cripples at on-center spacing above opening between header and top plate",
+      "Capability": "TransportAndPlace"
+    },
+    {
+      "Element": "Top Cripple Stud",
+      "SubStep": "Fasten cripples through top plate and header with nails or screws",
+      "Capability": "Nail"
+    }
+  ],
+  "ignored_sub_steps": [
+    [
+      "Vertical Stud",
+      "Review wall layout marks on bottom and top plates for stud spacing"
+    ],
+    [
+      "Vertical Stud",
+      "Measure required stud length between plates and mark cut line on lumber"
+    ],
+    [
+      "Vertical Stud",
+      "Cut stud to length with power saw"
+    ],
+    [
+      "Vertical Stud",
+      "Tap stud plumb and verify alignment with level"
+    ],
+    [
+      "King Stud",
+      "Confirm opening width on plans and transfer king stud locations to plates"
+    ],
+    [
+      "King Stud",
+      "Measure floor-to-plate height and cut king studs to full wall height"
+    ],
+    [
+      "King Stud",
+      "Check plumb with level and adjust as needed"
+    ],
+    [
+      "King Stud",
+      "Brace temporarily until adjoining members lock studs in place"
+    ],
+    [
+      "Lower Cripple Stud",
+      "Measure distance from bottom plate to underside of window sill plate"
+    ],
+    [
+      "Lower Cripple Stud",
+      "Cut cripple stud pieces to measured length"
+    ],
+    [
+      "Lower Cripple Stud",
+      "Hold each cripple tight between bottom plate and sill plate"
+    ],
+    [
+      "Lower Cripple Stud",
+      "Nail or screw through plates into each cripple end"
+    ],
+    [
+      "Lower Cripple Stud",
+      "Verify top of sill remains level after fastening"
+    ],
+    [
+      "OSB Sheathing Plate",
+      "Measure wall panel area and mark OSB panel cut lines to fit between framing edges and openings"
+    ],
+    [
+      "OSB Sheathing Plate",
+      "Cut OSB sheets to size with circular saw, maintaining square edges"
+    ],
+    [
+      "OSB Sheathing Plate",
+      "Erect scaffold or use ladders for safe access to wall height"
+    ],
+    [
+      "OSB Sheathing Plate",
+      "Hold panel tight, check for plumb and proper edge alignment"
+    ],
+    [
+      "OSB Sheathing Plate",
+      "Stagger vertical joints between courses and continue installing successive sheets"
+    ],
+    [
+      "OSB Sheathing Plate",
+      "Recheck flatness and joint alignment, adding additional fasteners where needed"
+    ],
+    [
+      "Top Plate",
+      "Lay out stud and opening locations on top plate stock using tape and pencil"
+    ],
+    [
+      "Top Plate",
+      "Cut plates to wall length, including splices as needed"
+    ],
+    [
+      "Top Plate",
+      "Set first top plate on edge along wall line and tack to stud tops"
+    ],
+    [
+      "Top Plate",
+      "Nail or screw plates to each stud end and to adjoining plates at corners and partitions"
+    ],
+    [
+      "Top Plate",
+      "Verify straightness of plate line and correct any bows with blocking or bracing"
+    ],
+    [
+      "Jack Stud",
+      "Measure required height from bottom plate to underside of header"
+    ],
+    [
+      "Jack Stud",
+      "Cut jack studs to length with square ends"
+    ],
+    [
+      "Jack Stud",
+      "Align bottom with layout mark and ensure top meets header seat line"
+    ],
+    [
+      "Jack Stud",
+      "Confirm assembly is plumb and secure"
+    ],
+    [
+      "Bear Loading",
+      "Check plan for header span and laminate requirements"
+    ],
+    [
+      "Bear Loading",
+      "Measure opening width and cut header members to length"
+    ],
+    [
+      "Bear Loading",
+      "Assemble multiple header plies with adhesive and nails or screws as specified"
+    ],
+    [
+      "Bear Loading",
+      "Set header flush with top of jack studs and centered over opening"
+    ],
+    [
+      "Bear Loading",
+      "Verify header is level and bearing fully on both jacks"
+    ],
+    [
+      "L/U Stud",
+      "Locate position adjacent to first vertical stud per layout"
+    ],
+    [
+      "L/U Stud",
+      "Measure floor-to-plate height and cut utility stud to length"
+    ],
+    [
+      "L/U Stud",
+      "Plumb stud with level and align faces flush with neighboring framing"
+    ],
+    [
+      "L/U Stud",
+      "Fasten stud to plates and add blocking or straps for lateral bracing as required"
+    ],
+    [
+      "L/U Stud",
+      "Bore service holes at designated heights for mechanical or electrical runs"
+    ],
+    [
+      "Lower Sill Plate",
+      "Mark sill height on king studs according to window schedule"
+    ],
+    [
+      "Lower Sill Plate",
+      "Cut sill plate to span between jack studs"
+    ],
+    [
+      "Lower Sill Plate",
+      "Check sill for level across width of opening"
+    ],
+    [
+      "Lower Sill Plate",
+      "Add temporary support or shims if adjustments are required"
+    ],
+    [
+      "Bottom Plate",
+      "Snap chalk line on subfloor to establish wall location"
+    ],
+    [
+      "Bottom Plate",
+      "Lay out stud and opening positions along bottom plate stock"
+    ],
+    [
+      "Bottom Plate",
+      "Cut plates to required lengths including splice pieces"
+    ],
+    [
+      "Bottom Plate",
+      "Position bottom plate on layout line and drill for anchor locations if needed"
+    ],
+    [
+      "Bottom Plate",
+      "Verify plate alignment and secure temporary braces until studs are installed"
+    ],
+    [
+      "Top Sill Plate",
+      "Measure distance between king studs above window opening"
+    ],
+    [
+      "Top Sill Plate",
+      "Cut top sill plate to length ensuring square ends"
+    ],
+    [
+      "Top Sill Plate",
+      "Mark seat line on king studs at specified elevation"
+    ],
+    [
+      "Top Sill Plate",
+      "Confirm plate is level and properly tied into surrounding framing"
+    ],
+    [
+      "Top Cripple Stud",
+      "Determine distance from top sill or header to underside of top plate"
+    ],
+    [
+      "Top Cripple Stud",
+      "Cut cripple studs to required length"
+    ],
+    [
+      "Top Cripple Stud",
+      "Ensure each cripple is plumb and flush with wall face"
+    ],
+    [
+      "Top Cripple Stud",
+      "Verify continuous load path by checking contact at both ends"
+    ]
+  ],
+  "final_output": {
+    "HLAF-Flows": [
+      {
+        "Element": "Vertical Stud",
+        "Sub-Step": "Set stud on bottom plate layout mark and tip into place under top plate",
+        "HLAF Flow": [
+          [
+            "Robot_2",
+            "Gripper",
+            "Vertical Stud",
+            {
+              "name": "Vertical_Stud_Pick_Pose",
+              "units": {
+                "position": "meter",
+                "element_dimensions": "meter"
+              },
+              "required_variables": [
+                "W"
+              ],
+              "position": {
+                "x": {
+                  "expression": "4.179000",
+                  "variables": []
+                },
+                "y": {
+                  "expression": "-2.422283 + (0.250000 * W)",
+                  "variables": [
+                    "W"
+                  ]
+                },
+                "z": {
+                  "expression": "1.048050 + (0.433013 * W)",
+                  "variables": [
+                    "W"
+                  ]
+                }
+              },
+              "orientation_quaternion": {
+                "w": 0.612354,
+                "x": 0.612354,
+                "y": 0.353553,
+                "z": 0.353553
+              }
+            },
+            "Simulation-Based Agent (Sb-A)"
+          ],
+          [
+            "Robot_2",
+            "Gripper",
+            "Vertical Stud",
+            {
+              "name": "Vertical_Stud_Place_Pose",
+              "units": {
+                "position": "meter",
+                "element_dimensions": "meter"
+              },
+              "required_variables": [
+                "H",
+                "L",
+                "X"
+              ],
+              "position": {
+                "x": {
+                  "expression": "X + (L / 2) + 0.962590",
+                  "variables": [
+                    "L",
+                    "X"
+                  ]
+                },
+                "y": {
+                  "expression": "0.500000",
+                  "variables": []
+                },
+                "z": {
+                  "expression": "H + 0.889360",
+                  "variables": [
+                    "H"
+                  ]
+                }
+              },
+              "orientation_quaternion": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.707107,
+                "z": 0.707107
+              }
+            },
+            "Parameter-Based Agent (Pb-A)"
+          ]
+        ]
+      },
+      {
+        "Element": "Vertical Stud",
+        "Sub-Step": "Fasten stud to plates with nails or screws through toe-nailing or metal connectors",
+        "HLAF Flow": [
+          [
+            "Robot_1",
+            "Nail_Gun",
+            "Vertical Stud",
+            {
+              "name": "Vertical_Stud_Nail_Pose",
+              "units": {
+                "position": "meter",
+                "element_dimensions": "meter"
+              },
+              "required_variables": [
+                "H"
+              ],
+              "position": {
+                "x": {
+                  "expression": "1.100000",
+                  "variables": []
+                },
+                "y": {
+                  "expression": "0.500000",
+                  "variables": []
+                },
+                "z": {
+                  "expression": "0.895460 + (0.300000 * H)",
+                  "variables": [
+                    "H"
+                  ]
+                }
+              },
+              "orientation_quaternion": {
+                "w": 0.0,
+                "x": 0.707107,
+                "y": 0.0,
+                "z": 0.707107
+              }
+            },
+            "Parameter-Based Agent (Pb-A)"
+          ]
+        ]
+      },
+      {
+        "Element": "King Stud",
+        "Sub-Step": "Stand each king stud against layout line flanking rough opening",
+        "HLAF Flow": [
+          [
+            "Robot_2",
+            "Gripper",
+            "King Stud",
+            {
+              "name": "King_Stud_Pick_Pose",
+              "units": {
+                "position": "meter",
+                "element_dimensions": "meter"
+              },
+              "required_variables": [
+                "W"
+              ],
+              "position": {
+                "x": {
+                  "expression": "4.179000",
+                  "variables": []
+                },
+                "y": {
+                  "expression": "-2.422283 + (0.250000 * W)",
+                  "variables": [
+                    "W"
+                  ]
+                },
+                "z": {
+                  "expression": "1.048050 + (0.433013 * W)",
+                  "variables": [
+                    "W"
+                  ]
+                }
+              },
+              "orientation_quaternion": {
+                "w": 0.612354,
+                "x": 0.612354,
+                "y": 0.353553,
+                "z": 0.353553
+              }
+            },
+            "Simulation-Based Agent (Sb-A)"
+          ],
+          [
+            "Robot_2",
+            "Gripper",
+            "King Stud",
+            {
+              "name": "King_Stud_Place_Pose",
+              "units": {
+                "position": "meter",
+                "element_dimensions": "meter"
+              },
+              "required_variables": [
+                "H",
+                "L",
+                "X"
+              ],
+              "position": {
+                "x": {
+                  "expression": "X + (L / 2) + 0.962590",
+                  "variables": [
+                    "L",
+                    "X"
+                  ]
+                },
+                "y": {
+                  "expression": "0.500000",
+                  "variables": []
+                },
+                "z": {
+                  "expression": "H + 0.889360",
+                  "variables": [
+                    "H"
+                  ]
+                }
+              },
+              "orientation_quaternion": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.707107,
+                "z": 0.707107
+              }
+            },
+            "Parameter-Based Agent (Pb-A)"
+          ]
+        ]
+      },
+      {
+        "Element": "King Stud",
+        "Sub-Step": "Secure king studs to bottom and top plates with nails or structural screws",
+        "HLAF Flow": [
+          [
+            "Robot_1",
+            "Nail_Gun",
+            "King Stud",
+            {
+              "name": "King_Stud_Nail_Pose",
+              "units": {
+                "position": "meter",
+                "element_dimensions": "meter"
+              },
+              "required_variables": [
+                "H"
+              ],
+              "position": {
+                "x": {
+                  "expression": "1.100000",
+                  "variables": []
+                },
+                "y": {
+                  "expression": "0.500000",
+                  "variables": []
+                },
+                "z": {
+                  "expression": "0.895460 + (0.300000 * H)",
+                  "variables": [
+                    "H"
+                  ]
+                }
+              },
+              "orientation_quaternion": {
+                "w": 0.0,
+                "x": 0.707107,
+                "y": 0.0,
+                "z": 0.707107
+              }
+            },
+            "Parameter-Based Agent (Pb-A)"
+          ]
+        ]
+      },
+      {
+        "Element": "Lower Cripple Stud",
+        "Sub-Step": "Position cripples at marked on-center spacing below sill opening",
+        "HLAF Flow": [
+          [
+            "Robot_2",
+            "Gripper",
+            "Lower Cripple Stud",
+            {
+              "name": "Lower_Cripple_Plate_Pick_Pose",
+              "units": {
+                "position": "meter",
+                "element_dimensions": "meter"
+              },
+              "required_variables": [
+                "W"
+              ],
+              "position": {
+                "x": {
+                  "expression": "6.450100",
+                  "variables": []
+                },
+                "y": {
+                  "expression": "0.782470",
+                  "variables": []
+                },
+                "z": {
+                  "expression": "0.803000 + (W / 2)",
+                  "variables": [
+                    "W"
+                  ]
+                }
+              },
+              "orientation_quaternion": {
+                "w": -0.707107,
+                "x": 0.0,
+                "y": -0.707107,
+                "z": 0.0
+              }
+            },
+            "Simulation-Based Agent (Sb-A)"
+          ],
+          [
+            "Robot_2",
+            "Gripper",
+            "Lower Cripple Stud",
+            {
+              "name": "Lower_Cripple_Plate_Place_Pose",
+              "units": {
+                "position": "meter",
+                "element_dimensions": "meter"
+              },
+              "required_variables": [
+                "H",
+                "L",
+                "X"
+              ],
+              "position": {
+                "x": {
+                  "expression": "X - (L / 2) + 1.182590",
+                  "variables": [
+                    "L",
+                    "X"
+                  ]
+                },
+                "y": {
+                  "expression": "0.000000",
+                  "variables": []
+                },
+                "z": {
+                  "expression": "H + 0.889360",
+                  "variables": [
+                    "H"
+                  ]
+                }
+              },
+              "orientation_quaternion": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": -0.707107,
+                "z": -0.707107
+              }
+            },
+            "Parameter-Based Agent (Pb-A)"
+          ]
+        ]
+      },
+      {
+        "Element": "OSB Sheathing Plate",
+        "Sub-Step": "Position first sheet flush with bottom plate and edge of framing",
+        "HLAF Flow": [
+          [
+            "Robot_1",
+            "Suction_Cup",
+            "OSB Sheathing Plate",
+            {
+              "name": "OSB_Sheathing_Plate_Pick_Pose",
+              "units": {
+                "position": "meter",
+                "element_dimensions": "meter"
+              },
+              "required_variables": [
+                "H"
+              ],
+              "position": {
+                "x": {
+                  "expression": "0.000000",
+                  "variables": []
+                },
+                "y": {
+                  "expression": "-1.500000",
+                  "variables": []
+                },
+                "z": {
+                  "expression": "H + 0.600000",
+                  "variables": [
+                    "H"
+                  ]
+                }
+              },
+              "orientation_quaternion": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.707107,
+                "z": 0.707107
+              }
+            },
+            "Simulation-Based Agent (Sb-A)"
+          ],
+          [
+            "Robot_1",
+            "Suction_Cup",
+            "OSB Sheathing Plate",
+            {
+              "name": "OSB_Sheathing_Plate_Place_Pose",
+              "units": {
+                "position": "meter",
+                "element_dimensions": "meter"
+              },
+              "required_variables": [
+                "X",
+                "Z"
+              ],
+              "position": {
+                "x": {
+                  "expression": "2.691790 - X",
+                  "variables": [
+                    "X"
+                  ]
+                },
+                "y": {
+                  "expression": "0.000000",
+                  "variables": []
+                },
+                "z": {
+                  "expression": "Z + 0.895460",
+                  "variables": [
+                    "Z"
+                  ]
+                }
+              },
+              "orientation_quaternion": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": -1.0
+              }
+            },
+            "Parameter-Based Agent (Pb-A)"
+          ]
+        ]
+      },
+      {
+        "Element": "OSB Sheathing Plate",
+        "Sub-Step": "Fasten OSB to studs, plates, and blocking with specified nails or screws at required spacing, starting from center and working outward",
+        "HLAF Flow": [
+          [
+            "Robot_1",
+            "Nail_Gun",
+            "OSB Sheathing Plate",
+            {
+              "name": "OSB_Sheathing_Plate_Nail_Pose",
+              "units": {
+                "position": "meter",
+                "element_dimensions": "meter"
+              },
+              "required_variables": [
+                "H",
+                "L"
+              ],
+              "position": {
+                "x": {
+                  "expression": "L + 1.152590",
+                  "variables": [
+                    "L"
+                  ]
+                },
+                "y": {
+                  "expression": "0.000000",
+                  "variables": []
+                },
+                "z": {
+                  "expression": "H + 1.047060",
+                  "variables": [
+                    "H"
+                  ]
+                }
+              },
+              "orientation_quaternion": {
+                "w": 0.0,
+                "x": 1.0,
+                "y": 0.0,
+                "z": 0.0
+              }
+            },
+            "Parameter-Based Agent (Pb-A)"
+          ]
+        ]
+      },
+      {
+        "Element": "Top Plate",
+        "Sub-Step": "Install second (cap) plate overlapping joints for strength",
+        "HLAF Flow": [
+          [
+            "Robot_2",
+            "Gripper",
+            "Top Plate",
+            {
+              "name": "Top_Plate_Pick_Pose",
+              "units": {
+                "position": "meter",
+                "element_dimensions": "meter"
+              },
+              "required_variables": [
+                "W"
+              ],
+              "position": {
+                "x": {
+                  "expression": "6.450100",
+                  "variables": []
+                },
+                "y": {
+                  "expression": "1.003400",
+                  "variables": []
+                },
+                "z": {
+                  "expression": "0.803000 + (W / 2)",
+                  "variables": [
+                    "W"
+                  ]
+                }
+              },
+              "orientation_quaternion": {
+                "w": 0.707107,
+                "x": 0.0,
+                "y": 0.707107,
+                "z": 0.0
+              }
+            },
+            "Simulation-Based Agent (Sb-A)"
+          ],
+          [
+            "Robot_2",
+            "Gripper",
+            "Top Plate",
+            {
+              "name": "Top_Plate_Pass_Pose",
+              "units": {
+                "position": "meter",
+                "element_dimensions": "meter"
+              },
+              "required_variables": [
+                "H",
+                "L"
+              ],
+              "position": {
+                "x": {
+                  "expression": "2.250000 + (L / 2)",
+                  "variables": [
+                    "L"
+                  ]
+                },
+                "y": {
+                  "expression": "-1.000000",
+                  "variables": []
+                },
+                "z": {
+                  "expression": "H + 0.850000",
+                  "variables": [
+                    "H"
+                  ]
+                }
+              },
+              "orientation_quaternion": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.707107,
+                "z": 0.707107
+              }
+            },
+            "Collaborative Agent (Co-A)"
+          ],
+          [
+            "Robot_1",
+            "Gripper",
+            "Top Plate",
+            {
+              "name": "Top_Plate_Pass_Pose",
+              "units": {
+                "position": "meter",
+                "element_dimensions": "meter"
+              },
+              "required_variables": [
+                "H",
+                "L"
+              ],
+              "position": {
+                "x": {
+                  "expression": "2.250000 + (L / 2)",
+                  "variables": [
+                    "L"
+                  ]
+                },
+                "y": {
+                  "expression": "-1.000000",
+                  "variables": []
+                },
+                "z": {
+                  "expression": "H + 0.850000",
+                  "variables": [
+                    "H"
+                  ]
+                }
+              },
+              "orientation_quaternion": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.707107,
+                "z": 0.707107
+              }
+            },
+            "Collaborative Agent (Co-A)"
+          ],
+          [
+            "Robot_1",
+            "Gripper",
+            "Top Plate",
+            {
+              "name": "Top_Plate_Place_Pose",
+              "units": {
+                "position": "meter",
+                "element_dimensions": "meter"
+              },
+              "required_variables": [
+                "H",
+                "X"
+              ],
+              "position": {
+                "x": {
+                  "expression": "X + 1.132590",
+                  "variables": [
+                    "X"
+                  ]
+                },
+                "y": {
+                  "expression": "0.000000",
+                  "variables": []
+                },
+                "z": {
+                  "expression": "H + 0.889360",
+                  "variables": [
+                    "H"
+                  ]
+                }
+              },
+              "orientation_quaternion": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 1.0,
+                "z": 0.0
+              }
+            },
+            "Parameter-Based Agent (Pb-A)"
+          ]
+        ]
+      },
+      {
+        "Element": "Jack Stud",
+        "Sub-Step": "Place each jack stud against king stud at opening sides",
+        "HLAF Flow": [
+          [
+            "Robot_2",
+            "Gripper",
+            "Jack Stud",
+            {
+              "name": "Jack_Stud_Pick_Pose",
+              "units": {
+                "position": "meter",
+                "element_dimensions": "meter"
+              },
+              "required_variables": [
+                "W"
+              ],
+              "position": {
+                "x": {
+                  "expression": "6.450100",
+                  "variables": []
+                },
+                "y": {
+                  "expression": "0.782470",
+                  "variables": []
+                },
+                "z": {
+                  "expression": "0.803000 + (W / 2)",
+                  "variables": [
+                    "W"
+                  ]
+                }
+              },
+              "orientation_quaternion": {
+                "w": -0.707107,
+                "x": 0.0,
+                "y": -0.707107,
+                "z": 0.0
+              }
+            },
+            "Simulation-Based Agent (Sb-A)"
+          ],
+          [
+            "Robot_2",
+            "Gripper",
+            "Jack Stud",
+            {
+              "name": "Jack_Stud_Place_Pose",
+              "units": {
+                "position": "meter",
+                "element_dimensions": "meter"
+              },
+              "required_variables": [
+                "H",
+                "L",
+                "X"
+              ],
+              "position": {
+                "x": {
+                  "expression": "X + (L / 2) + 1.082590",
+                  "variables": [
+                    "L",
+                    "X"
+                  ]
+                },
+                "y": {
+                  "expression": "0.500000",
+                  "variables": []
+                },
+                "z": {
+                  "expression": "H + 0.939360",
+                  "variables": [
+                    "H"
+                  ]
+                }
+              },
+              "orientation_quaternion": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": -0.707107,
+                "z": 0.707107
+              }
+            },
+            "Parameter-Based Agent (Pb-A)"
+          ]
+        ]
+      },
+      {
+        "Element": "Jack Stud",
+        "Sub-Step": "Nail jack studs to king studs and bottom plate, then toenail into header after placement",
+        "HLAF Flow": [
+          [
+            "Robot_1",
+            "Nail_Gun",
+            "Jack Stud",
+            {
+              "name": "Jack_Stud_Nail_Pose",
+              "units": {
+                "position": "meter",
+                "element_dimensions": "meter"
+              },
+              "required_variables": [
+                "L",
+                "X"
+              ],
+              "position": {
+                "x": {
+                  "expression": "X - (L / 2) + 1.193550",
+                  "variables": [
+                    "L",
+                    "X"
+                  ]
+                },
+                "y": {
+                  "expression": "0.586603",
+                  "variables": []
+                },
+                "z": {
+                  "expression": "0.945460",
+                  "variables": []
+                }
+              },
+              "orientation_quaternion": {
+                "w": 0.353553,
+                "x": -0.612354,
+                "y": 0.612354,
+                "z": 0.353553
+              }
+            },
+            "Parameter-Based Agent (Pb-A)"
+          ]
+        ]
+      },
+      {
+        "Element": "Bear Loading",
+        "Sub-Step": "Lift header onto jack studs within opening using additional help or temporary support",
+        "HLAF Flow": [
+          [
+            "Robot_1",
+            "Suction_Cup",
+            "Bear Loading",
+            {
+              "name": "Load_Bearing_Pick_Pose",
+              "units": {
+                "position": "meter",
+                "element_dimensions": "meter"
+              },
+              "required_variables": [],
+              "position": {
+                "x": {
+                  "expression": "-1.127000",
+                  "variables": []
+                },
+                "y": {
+                  "expression": "1.020000",
+                  "variables": []
+                },
+                "z": {
+                  "expression": "0.354000",
+                  "variables": []
+                }
+              },
+              "orientation_quaternion": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.707107,
+                "z": -0.707107
+              }
+            },
+            "Simulation-Based Agent (Sb-A)"
+          ],
+          [
+            "Robot_1",
+            "Suction_Cup",
+            "Bear Loading",
+            {
+              "name": "Load_Bearing_Place_Pose",
+              "units": {
+                "position": "meter",
+                "element_dimensions": "meter"
+              },
+              "required_variables": [
+                "W",
+                "X"
+              ],
+              "position": {
+                "x": {
+                  "expression": "X + 1.132590",
+                  "variables": [
+                    "X"
+                  ]
+                },
+                "y": {
+                  "expression": "0.000000",
+                  "variables": []
+                },
+                "z": {
+                  "expression": "W + 1.045460",
+                  "variables": [
+                    "W"
+                  ]
+                }
+              },
+              "orientation_quaternion": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.707107,
+                "z": 0.707107
+              }
+            },
+            "Parameter-Based Agent (Pb-A)"
+          ]
+        ]
+      },
+      {
+        "Element": "Bear Loading",
+        "Sub-Step": "Nail or screw header to jack studs and add metal hangers or straps if required",
+        "HLAF Flow": [
+          [
+            "Robot_1",
+            "Nail_Gun",
+            "Bear Loading",
+            {
+              "name": "Load_Bearing_Nail_Pose",
+              "units": {
+                "position": "meter",
+                "element_dimensions": "meter"
+              },
+              "required_variables": [
+                "H",
+                "W",
+                "X",
+                "Z"
+              ],
+              "position": {
+                "x": {
+                  "expression": "X + (0.200000 * H) + 1.132590",
+                  "variables": [
+                    "H",
+                    "X"
+                  ]
+                },
+                "y": {
+                  "expression": "0.429289 - (W / 2)",
+                  "variables": [
+                    "W"
+                  ]
+                },
+                "z": {
+                  "expression": "Z + 0.986491",
+                  "variables": [
+                    "Z"
+                  ]
+                }
+              },
+              "orientation_quaternion": {
+                "w": 0.27061,
+                "x": 0.27061,
+                "y": -0.653296,
+                "z": 0.653296
+              }
+            },
+            "Parameter-Based Agent (Pb-A)"
+          ]
+        ]
+      },
+      {
+        "Element": "L/U Stud",
+        "Sub-Step": "Stand stud in place providing space for service penetrations as detailed",
+        "HLAF Flow": [
+          [
+            "Robot_2",
+            "Gripper",
+            "L/U Stud",
+            {
+              "name": "L_U_Stud_Pick_Pose",
+              "units": {
+                "position": "meter",
+                "element_dimensions": "meter"
+              },
+              "required_variables": [
+                "W"
+              ],
+              "position": {
+                "x": {
+                  "expression": "4.179000",
+                  "variables": []
+                },
+                "y": {
+                  "expression": "-2.422283 + (0.250000 * W)",
+                  "variables": [
+                    "W"
+                  ]
+                },
+                "z": {
+                  "expression": "1.048050 + (0.433013 * W)",
+                  "variables": [
+                    "W"
+                  ]
+                }
+              },
+              "orientation_quaternion": {
+                "w": 0.612354,
+                "x": 0.612354,
+                "y": 0.353553,
+                "z": 0.353553
+              }
+            },
+            "Simulation-Based Agent (Sb-A)"
+          ],
+          [
+            "Robot_2",
+            "Gripper",
+            "L/U Stud",
+            {
+              "name": "L_U_Stud_Pass_Pose",
+              "units": {
+                "position": "meter",
+                "element_dimensions": "meter"
+              },
+              "required_variables": [
+                "H"
+              ],
+              "position": {
+                "x": {
+                  "expression": "2.816340 - (0.866025)",
+                  "variables": []
+                },
+                "y": {
+                  "expression": "1.244430 + (H / 2)",
+                  "variables": [
+                    "H"
+                  ]
+                },
+                "z": {
+                  "expression": "1.297380 + (0.500000)",
+                  "variables": []
+                }
+              },
+              "orientation_quaternion": {
+                "w": 0.0,
+                "x": 0.96593,
+                "y": 0.0,
+                "z": 0.25882
+              }
+            },
+            "Collaborative Agent (Co-A)"
+          ],
+          [
+            "Robot_1",
+            "Suction_Cup",
+            "L/U Stud",
+            {
+              "name": "L_U_Stud_Pass_Pose",
+              "units": {
+                "position": "meter",
+                "element_dimensions": "meter"
+              },
+              "required_variables": [
+                "H"
+              ],
+              "position": {
+                "x": {
+                  "expression": "2.816340 - (0.866025)",
+                  "variables": []
+                },
+                "y": {
+                  "expression": "1.244430 + (H / 2)",
+                  "variables": [
+                    "H"
+                  ]
+                },
+                "z": {
+                  "expression": "1.297380 + (0.500000)",
+                  "variables": []
+                }
+              },
+              "orientation_quaternion": {
+                "w": 0.0,
+                "x": 0.96593,
+                "y": 0.0,
+                "z": 0.25882
+              }
+            },
+            "Collaborative Agent (Co-A)"
+          ],
+          [
+            "Robot_1",
+            "Suction_Cup",
+            "L/U Stud",
+            {
+              "name": "L_U_Stud_Place_Pose",
+              "units": {
+                "position": "meter",
+                "element_dimensions": "meter"
+              },
+              "required_variables": [
+                "L",
+                "W",
+                "X",
+                "Z"
+              ],
+              "position": {
+                "x": {
+                  "expression": "3.650990 - X - (L / 2)",
+                  "variables": [
+                    "L",
+                    "X"
+                  ]
+                },
+                "y": {
+                  "expression": "0.000000",
+                  "variables": []
+                },
+                "z": {
+                  "expression": "0.895460 + Z + (W / 2)",
+                  "variables": [
+                    "W",
+                    "Z"
+                  ]
+                }
+              },
+              "orientation_quaternion": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 1.0,
+                "z": 0.0
+              }
+            },
+            "Parameter-Based Agent (Pb-A)"
+          ]
+        ]
+      },
+      {
+        "Element": "Lower Sill Plate",
+        "Sub-Step": "Position sill on marked lines with crown up and faces flush",
+        "HLAF Flow": [
+          [
+            "Robot_2",
+            "Gripper",
+            "Lower Sill Plate",
+            {
+              "name": "Lower_Sill_Plate_Pick_Pose",
+              "units": {
+                "position": "meter",
+                "element_dimensions": "meter"
+              },
+              "required_variables": [
+                "W"
+              ],
+              "position": {
+                "x": {
+                  "expression": "6.450100",
+                  "variables": []
+                },
+                "y": {
+                  "expression": "0.782470",
+                  "variables": []
+                },
+                "z": {
+                  "expression": "0.803000 + (W / 2)",
+                  "variables": [
+                    "W"
+                  ]
+                }
+              },
+              "orientation_quaternion": {
+                "w": -0.707107,
+                "x": 0.0,
+                "y": -0.707107,
+                "z": 0.0
+              }
+            },
+            "Simulation-Based Agent (Sb-A)"
+          ],
+          [
+            "Robot_2",
+            "Gripper",
+            "Lower Sill Plate",
+            {
+              "name": "Lower_Sill_Plate_Place_Pose",
+              "units": {
+                "position": "meter",
+                "element_dimensions": "meter"
+              },
+              "required_variables": [
+                "H",
+                "X"
+              ],
+              "position": {
+                "x": {
+                  "expression": "X + 1.132590",
+                  "variables": [
+                    "X"
+                  ]
+                },
+                "y": {
+                  "expression": "0.000000",
+                  "variables": []
+                },
+                "z": {
+                  "expression": "H + 1.189360",
+                  "variables": [
+                    "H"
+                  ]
+                }
+              },
+              "orientation_quaternion": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": -1.0,
+                "z": 0.0
+              }
+            },
+            "Parameter-Based Agent (Pb-A)"
+          ]
+        ]
+      },
+      {
+        "Element": "Lower Sill Plate",
+        "Sub-Step": "Tack sill to king or jack studs, then secure with nails or screws through end joints",
+        "HLAF Flow": [
+          [
+            "Robot_2",
+            "Nail_Gun",
+            "Lower Sill Plate",
+            {
+              "name": "Lower_Sill_Plate_Nail_Pose",
+              "units": {
+                "position": "meter",
+                "element_dimensions": "meter"
+              },
+              "required_variables": [
+                "H",
+                "W",
+                "X"
+              ],
+              "position": {
+                "x": {
+                  "expression": "X + 1.132590",
+                  "variables": [
+                    "X"
+                  ]
+                },
+                "y": {
+                  "expression": "-0.413397 + (1.500000 * W)",
+                  "variables": [
+                    "W"
+                  ]
+                },
+                "z": {
+                  "expression": "0.945460 + (0.300000 * H)",
+                  "variables": [
+                    "H"
+                  ]
+                }
+              },
+              "orientation_quaternion": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.353553,
+                "z": 0.612354
+              }
+            },
+            "Parameter-Based Agent (Pb-A)"
+          ]
+        ]
+      },
+      {
+        "Element": "Bottom Plate",
+        "Sub-Step": "Fasten plate to floor framing or slab with nails, screws, or anchors per specification",
+        "HLAF Flow": [
+          [
+            "Robot_2",
+            "Nail_Gun",
+            "Bottom Plate",
+            {
+              "name": "Bottom_Plate_Nail_Pose",
+              "units": {
+                "position": "meter",
+                "element_dimensions": "meter"
+              },
+              "required_variables": [
+                "H"
+              ],
+              "position": {
+                "x": {
+                  "expression": "3.690000",
+                  "variables": []
+                },
+                "y": {
+                  "expression": "0",
+                  "variables": []
+                },
+                "z": {
+                  "expression": "0.895460 + (0.300000 * H)",
+                  "variables": [
+                    "H"
+                  ]
+                }
+              },
+              "orientation_quaternion": {
+                "w": 0.0,
+                "x": 0.5,
+                "y": 0.5,
+                "z": 0.5
+              }
+            },
+            "Parameter-Based Agent (Pb-A)"
+          ]
+        ]
+      },
+      {
+        "Element": "Top Sill Plate",
+        "Sub-Step": "Set top sill on marks and hold flush with inner faces of studs",
+        "HLAF Flow": [
+          [
+            "Robot_2",
+            "Gripper",
+            "Top Sill Plate",
+            {
+              "name": "Top_Sill_Plate_Pick_Pose",
+              "units": {
+                "position": "meter",
+                "element_dimensions": "meter"
+              },
+              "required_variables": [
+                "W"
+              ],
+              "position": {
+                "x": {
+                  "expression": "6.450100",
+                  "variables": []
+                },
+                "y": {
+                  "expression": "0.782470",
+                  "variables": []
+                },
+                "z": {
+                  "expression": "0.803000 + (W / 2)",
+                  "variables": [
+                    "W"
+                  ]
+                }
+              },
+              "orientation_quaternion": {
+                "w": -0.707107,
+                "x": 0.0,
+                "y": -0.707107,
+                "z": 0.0
+              }
+            },
+            "Simulation-Based Agent (Sb-A)"
+          ],
+          [
+            "Robot_2",
+            "Gripper",
+            "Top Sill Plate",
+            {
+              "name": "Top_Sill_Plate_Pass_Pose",
+              "units": {
+                "position": "meter",
+                "element_dimensions": "meter"
+              },
+              "required_variables": [
+                "H"
+              ],
+              "position": {
+                "x": {
+                  "expression": "1.762200 - (H / 2)",
+                  "variables": [
+                    "H"
+                  ]
+                },
+                "y": {
+                  "expression": "-0.150000",
+                  "variables": []
+                },
+                "z": {
+                  "expression": "1.550000",
+                  "variables": []
+                }
+              },
+              "orientation_quaternion": {
+                "w": 0.0,
+                "x": 0.707107,
+                "y": 0.0,
+                "z": 0.707107
+              }
+            },
+            "Collaborative Agent (Co-A)"
+          ],
+          [
+            "Robot_1",
+            "Gripper",
+            "Top Sill Plate",
+            {
+              "name": "Top_Sill_Plate_Pass_Pose",
+              "units": {
+                "position": "meter",
+                "element_dimensions": "meter"
+              },
+              "required_variables": [
+                "H"
+              ],
+              "position": {
+                "x": {
+                  "expression": "1.762200 - (H / 2)",
+                  "variables": [
+                    "H"
+                  ]
+                },
+                "y": {
+                  "expression": "-0.150000",
+                  "variables": []
+                },
+                "z": {
+                  "expression": "1.550000",
+                  "variables": []
+                }
+              },
+              "orientation_quaternion": {
+                "w": 0.0,
+                "x": 0.707107,
+                "y": 0.0,
+                "z": 0.707107
+              }
+            },
+            "Collaborative Agent (Co-A)"
+          ],
+          [
+            "Robot_1",
+            "Gripper",
+            "Top Sill Plate",
+            {
+              "name": "Top_Sill_Plate_Place_Pose",
+              "units": {
+                "position": "meter",
+                "element_dimensions": "meter"
+              },
+              "required_variables": [
+                "H",
+                "X"
+              ],
+              "position": {
+                "x": {
+                  "expression": "X + 1.132590",
+                  "variables": [
+                    "X"
+                  ]
+                },
+                "y": {
+                  "expression": "0.000000",
+                  "variables": []
+                },
+                "z": {
+                  "expression": "H + 0.989360",
+                  "variables": [
+                    "H"
+                  ]
+                }
+              },
+              "orientation_quaternion": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 1.0,
+                "z": 0.0
+              }
+            },
+            "Parameter-Based Agent (Pb-A)"
+          ]
+        ]
+      },
+      {
+        "Element": "Top Sill Plate",
+        "Sub-Step": "Nail or screw plate to king studs and to any top cripple studs above",
+        "HLAF Flow": [
+          [
+            "Robot_1",
+            "Nail_Gun",
+            "Top Sill Plate",
+            {
+              "name": "Top_Sill_Plate_Nail_Pose",
+              "units": {
+                "position": "meter",
+                "element_dimensions": "meter"
+              },
+              "required_variables": [
+                "H",
+                "W",
+                "X"
+              ],
+              "position": {
+                "x": {
+                  "expression": "X + 1.132590",
+                  "variables": [
+                    "X"
+                  ]
+                },
+                "y": {
+                  "expression": "0.413397 - (W / 2)",
+                  "variables": [
+                    "W"
+                  ]
+                },
+                "z": {
+                  "expression": "0.945460 + (0.300000 * H)",
+                  "variables": [
+                    "H"
+                  ]
+                }
+              },
+              "orientation_quaternion": {
+                "w": 0.182999,
+                "x": -0.682994,
+                "y": 0.682994,
+                "z": 0.182999
+              }
+            },
+            "Parameter-Based Agent (Pb-A)"
+          ]
+        ]
+      },
+      {
+        "Element": "Top Cripple Stud",
+        "Sub-Step": "Position cripples at on-center spacing above opening between header and top plate",
+        "HLAF Flow": [
+          [
+            "Robot_2",
+            "Gripper",
+            "Top Cripple Stud",
+            {
+              "name": "Top_Cripple_Plate_Pick_Pose",
+              "units": {
+                "position": "meter",
+                "element_dimensions": "meter"
+              },
+              "required_variables": [
+                "W"
+              ],
+              "position": {
+                "x": {
+                  "expression": "6.450100",
+                  "variables": []
+                },
+                "y": {
+                  "expression": "0.782470",
+                  "variables": []
+                },
+                "z": {
+                  "expression": "0.803000 + (W / 2)",
+                  "variables": [
+                    "W"
+                  ]
+                }
+              },
+              "orientation_quaternion": {
+                "w": -0.707107,
+                "x": 0.0,
+                "y": -0.707107,
+                "z": 0.0
+              }
+            },
+            "Simulation-Based Agent (Sb-A)"
+          ],
+          [
+            "Robot_2",
+            "Gripper",
+            "Top Cripple Stud",
+            {
+              "name": "Top_Cripple_Plate_Pass_Pose",
+              "units": {
+                "position": "meter",
+                "element_dimensions": "meter"
+              },
+              "required_variables": [
+                "H"
+              ],
+              "position": {
+                "x": {
+                  "expression": "1.762200 - (H / 2)",
+                  "variables": [
+                    "H"
+                  ]
+                },
+                "y": {
+                  "expression": "-0.150000",
+                  "variables": []
+                },
+                "z": {
+                  "expression": "1.550000",
+                  "variables": []
+                }
+              },
+              "orientation_quaternion": {
+                "w": 0.0,
+                "x": 0.707107,
+                "y": 0.0,
+                "z": 0.707107
+              }
+            },
+            "Collaborative Agent (Co-A)"
+          ],
+          [
+            "Robot_1",
+            "Gripper",
+            "Top Cripple Stud",
+            {
+              "name": "Top_Cripple_Plate_Pass_Pose",
+              "units": {
+                "position": "meter",
+                "element_dimensions": "meter"
+              },
+              "required_variables": [
+                "H"
+              ],
+              "position": {
+                "x": {
+                  "expression": "1.762200 - (H / 2)",
+                  "variables": [
+                    "H"
+                  ]
+                },
+                "y": {
+                  "expression": "-0.150000",
+                  "variables": []
+                },
+                "z": {
+                  "expression": "1.550000",
+                  "variables": []
+                }
+              },
+              "orientation_quaternion": {
+                "w": 0.0,
+                "x": 0.707107,
+                "y": 0.0,
+                "z": 0.707107
+              }
+            },
+            "Collaborative Agent (Co-A)"
+          ],
+          [
+            "Robot_1",
+            "Gripper",
+            "Top Cripple Stud",
+            {
+              "name": "Top_Cripple_Plate_Place_Pose",
+              "units": {
+                "position": "meter",
+                "element_dimensions": "meter"
+              },
+              "required_variables": [
+                "H",
+                "L",
+                "X"
+              ],
+              "position": {
+                "x": {
+                  "expression": "X + (L / 2) + 0.932590",
+                  "variables": [
+                    "L",
+                    "X"
+                  ]
+                },
+                "y": {
+                  "expression": "0.500000",
+                  "variables": []
+                },
+                "z": {
+                  "expression": "H + 0.989360",
+                  "variables": [
+                    "H"
+                  ]
+                }
+              },
+              "orientation_quaternion": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": -0.707107,
+                "z": -0.707107
+              }
+            },
+            "Parameter-Based Agent (Pb-A)"
+          ]
+        ]
+      },
+      {
+        "Element": "Top Cripple Stud",
+        "Sub-Step": "Fasten cripples through top plate and header with nails or screws",
+        "HLAF Flow": [
+          [
+            "Robot_1",
+            "Nail_Gun",
+            "Top Cripple Stud",
+            {
+              "name": "Top_Cripple_Plate_Nail_Pose",
+              "units": {
+                "position": "meter",
+                "element_dimensions": "meter"
+              },
+              "required_variables": [
+                "H"
+              ],
+              "position": {
+                "x": {
+                  "expression": "1.100000",
+                  "variables": []
+                },
+                "y": {
+                  "expression": "0.500000",
+                  "variables": []
+                },
+                "z": {
+                  "expression": "0.895460 + (0.300000 * H)",
+                  "variables": [
+                    "H"
+                  ]
+                }
+              },
+              "orientation_quaternion": {
+                "w": 0.0,
+                "x": 0.707107,
+                "y": 0.0,
+                "z": 0.707107
+              }
+            },
+            "Parameter-Based Agent (Pb-A)"
+          ]
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,1096 @@
+{
+  "schema_version": "1.0",
+  "units": {
+    "position": "meter",
+    "element_dimensions": "meter"
+  },
+  "input_variables": {
+    "L": "element length",
+    "W": "element width",
+    "H": "element height",
+    "X": "element-center x coordinate",
+    "Y": "element-center y coordinate",
+    "Z": "element-center z coordinate"
+  },
+  "poses": {
+    "Top_Plate_Pick_Pose": {
+      "required_variables": [
+        "W"
+      ],
+      "position": {
+        "x": {
+          "expression": "6.450100",
+          "variables": []
+        },
+        "y": {
+          "expression": "1.003400",
+          "variables": []
+        },
+        "z": {
+          "expression": "0.803000 + (W / 2)",
+          "variables": [
+            "W"
+          ]
+        }
+      },
+      "orientation_quaternion": {
+        "w": 0.707107,
+        "x": 0.0,
+        "y": 0.707107,
+        "z": 0.0
+      }
+    },
+    "Top_Plate_Place_Pose": {
+      "required_variables": [
+        "H",
+        "X"
+      ],
+      "position": {
+        "x": {
+          "expression": "X + 1.132590",
+          "variables": [
+            "X"
+          ]
+        },
+        "y": {
+          "expression": "0.000000",
+          "variables": []
+        },
+        "z": {
+          "expression": "H + 0.889360",
+          "variables": [
+            "H"
+          ]
+        }
+      },
+      "orientation_quaternion": {
+        "w": 0.0,
+        "x": 0.0,
+        "y": 1.0,
+        "z": 0.0
+      }
+    },
+    "Top_Plate_Pass_Pose": {
+      "required_variables": [
+        "H",
+        "L"
+      ],
+      "position": {
+        "x": {
+          "expression": "2.250000 + (L / 2)",
+          "variables": [
+            "L"
+          ]
+        },
+        "y": {
+          "expression": "-1.000000",
+          "variables": []
+        },
+        "z": {
+          "expression": "H + 0.850000",
+          "variables": [
+            "H"
+          ]
+        }
+      },
+      "orientation_quaternion": {
+        "w": 0.0,
+        "x": 0.0,
+        "y": 0.707107,
+        "z": 0.707107
+      }
+    },
+    "Bottom_Plate_Pick_Pose": {
+      "required_variables": [
+        "W"
+      ],
+      "position": {
+        "x": {
+          "expression": "6.450100",
+          "variables": []
+        },
+        "y": {
+          "expression": "1.003400",
+          "variables": []
+        },
+        "z": {
+          "expression": "0.803000 + (W / 2)",
+          "variables": [
+            "W"
+          ]
+        }
+      },
+      "orientation_quaternion": {
+        "w": 0.707107,
+        "x": 0.0,
+        "y": 0.707107,
+        "z": 0.0
+      }
+    },
+    "Bottom_Plate_Place_Pose": {
+      "required_variables": [
+        "H",
+        "X"
+      ],
+      "position": {
+        "x": {
+          "expression": "X + 1.132590",
+          "variables": [
+            "X"
+          ]
+        },
+        "y": {
+          "expression": "0.000000",
+          "variables": []
+        },
+        "z": {
+          "expression": "H + 0.889360",
+          "variables": [
+            "H"
+          ]
+        }
+      },
+      "orientation_quaternion": {
+        "w": 0.0,
+        "x": 0.0,
+        "y": 1.0,
+        "z": 0.0
+      }
+    },
+    "Bottom_Plate_Nail_Pose": {
+      "required_variables": [
+        "H"
+      ],
+      "position": {
+        "x": {
+          "expression": "3.690000",
+          "variables": []
+        },
+        "y": {
+          "expression": "0",
+          "variables": []
+        },
+        "z": {
+          "expression": "0.895460 + (0.300000 * H)",
+          "variables": [
+            "H"
+          ]
+        }
+      },
+      "orientation_quaternion": {
+        "w": 0.0,
+        "x": 0.5,
+        "y": 0.5,
+        "z": 0.5
+      }
+    },
+    "Vertical_Stud_Pick_Pose": {
+      "required_variables": [
+        "W"
+      ],
+      "position": {
+        "x": {
+          "expression": "4.179000",
+          "variables": []
+        },
+        "y": {
+          "expression": "-2.422283 + (0.250000 * W)",
+          "variables": [
+            "W"
+          ]
+        },
+        "z": {
+          "expression": "1.048050 + (0.433013 * W)",
+          "variables": [
+            "W"
+          ]
+        }
+      },
+      "orientation_quaternion": {
+        "w": 0.612354,
+        "x": 0.612354,
+        "y": 0.353553,
+        "z": 0.353553
+      }
+    },
+    "Vertical_Stud_Place_Pose": {
+      "required_variables": [
+        "H",
+        "L",
+        "X"
+      ],
+      "position": {
+        "x": {
+          "expression": "X + (L / 2) + 0.962590",
+          "variables": [
+            "L",
+            "X"
+          ]
+        },
+        "y": {
+          "expression": "0.500000",
+          "variables": []
+        },
+        "z": {
+          "expression": "H + 0.889360",
+          "variables": [
+            "H"
+          ]
+        }
+      },
+      "orientation_quaternion": {
+        "w": 0.0,
+        "x": 0.0,
+        "y": 0.707107,
+        "z": 0.707107
+      }
+    },
+    "Vertical_Stud_Nail_Pose": {
+      "required_variables": [
+        "H"
+      ],
+      "position": {
+        "x": {
+          "expression": "1.100000",
+          "variables": []
+        },
+        "y": {
+          "expression": "0.500000",
+          "variables": []
+        },
+        "z": {
+          "expression": "0.895460 + (0.300000 * H)",
+          "variables": [
+            "H"
+          ]
+        }
+      },
+      "orientation_quaternion": {
+        "w": 0.0,
+        "x": 0.707107,
+        "y": 0.0,
+        "z": 0.707107
+      }
+    },
+    "King_Stud_Pick_Pose": {
+      "required_variables": [
+        "W"
+      ],
+      "position": {
+        "x": {
+          "expression": "4.179000",
+          "variables": []
+        },
+        "y": {
+          "expression": "-2.422283 + (0.250000 * W)",
+          "variables": [
+            "W"
+          ]
+        },
+        "z": {
+          "expression": "1.048050 + (0.433013 * W)",
+          "variables": [
+            "W"
+          ]
+        }
+      },
+      "orientation_quaternion": {
+        "w": 0.612354,
+        "x": 0.612354,
+        "y": 0.353553,
+        "z": 0.353553
+      }
+    },
+    "King_Stud_Place_Pose": {
+      "required_variables": [
+        "H",
+        "L",
+        "X"
+      ],
+      "position": {
+        "x": {
+          "expression": "X + (L / 2) + 0.962590",
+          "variables": [
+            "L",
+            "X"
+          ]
+        },
+        "y": {
+          "expression": "0.500000",
+          "variables": []
+        },
+        "z": {
+          "expression": "H + 0.889360",
+          "variables": [
+            "H"
+          ]
+        }
+      },
+      "orientation_quaternion": {
+        "w": 0.0,
+        "x": 0.0,
+        "y": 0.707107,
+        "z": 0.707107
+      }
+    },
+    "King_Stud_Nail_Pose": {
+      "required_variables": [
+        "H"
+      ],
+      "position": {
+        "x": {
+          "expression": "1.100000",
+          "variables": []
+        },
+        "y": {
+          "expression": "0.500000",
+          "variables": []
+        },
+        "z": {
+          "expression": "0.895460 + (0.300000 * H)",
+          "variables": [
+            "H"
+          ]
+        }
+      },
+      "orientation_quaternion": {
+        "w": 0.0,
+        "x": 0.707107,
+        "y": 0.0,
+        "z": 0.707107
+      }
+    },
+    "Jack_Stud_Pick_Pose": {
+      "required_variables": [
+        "W"
+      ],
+      "position": {
+        "x": {
+          "expression": "6.450100",
+          "variables": []
+        },
+        "y": {
+          "expression": "0.782470",
+          "variables": []
+        },
+        "z": {
+          "expression": "0.803000 + (W / 2)",
+          "variables": [
+            "W"
+          ]
+        }
+      },
+      "orientation_quaternion": {
+        "w": -0.707107,
+        "x": 0.0,
+        "y": -0.707107,
+        "z": 0.0
+      }
+    },
+    "Jack_Stud_Place_Pose": {
+      "required_variables": [
+        "H",
+        "L",
+        "X"
+      ],
+      "position": {
+        "x": {
+          "expression": "X + (L / 2) + 1.082590",
+          "variables": [
+            "L",
+            "X"
+          ]
+        },
+        "y": {
+          "expression": "0.500000",
+          "variables": []
+        },
+        "z": {
+          "expression": "H + 0.939360",
+          "variables": [
+            "H"
+          ]
+        }
+      },
+      "orientation_quaternion": {
+        "w": 0.0,
+        "x": 0.0,
+        "y": -0.707107,
+        "z": 0.707107
+      }
+    },
+    "Jack_Stud_Nail_Pose": {
+      "required_variables": [
+        "L",
+        "X"
+      ],
+      "position": {
+        "x": {
+          "expression": "X - (L / 2) + 1.193550",
+          "variables": [
+            "L",
+            "X"
+          ]
+        },
+        "y": {
+          "expression": "0.586603",
+          "variables": []
+        },
+        "z": {
+          "expression": "0.945460",
+          "variables": []
+        }
+      },
+      "orientation_quaternion": {
+        "w": 0.353553,
+        "x": -0.612354,
+        "y": 0.612354,
+        "z": 0.353553
+      }
+    },
+    "Top_Sill_Plate_Pick_Pose": {
+      "required_variables": [
+        "W"
+      ],
+      "position": {
+        "x": {
+          "expression": "6.450100",
+          "variables": []
+        },
+        "y": {
+          "expression": "0.782470",
+          "variables": []
+        },
+        "z": {
+          "expression": "0.803000 + (W / 2)",
+          "variables": [
+            "W"
+          ]
+        }
+      },
+      "orientation_quaternion": {
+        "w": -0.707107,
+        "x": 0.0,
+        "y": -0.707107,
+        "z": 0.0
+      }
+    },
+    "Top_Sill_Plate_Place_Pose": {
+      "required_variables": [
+        "H",
+        "X"
+      ],
+      "position": {
+        "x": {
+          "expression": "X + 1.132590",
+          "variables": [
+            "X"
+          ]
+        },
+        "y": {
+          "expression": "0.000000",
+          "variables": []
+        },
+        "z": {
+          "expression": "H + 0.989360",
+          "variables": [
+            "H"
+          ]
+        }
+      },
+      "orientation_quaternion": {
+        "w": 0.0,
+        "x": 0.0,
+        "y": 1.0,
+        "z": 0.0
+      }
+    },
+    "Top_Sill_Plate_Pass_Pose": {
+      "required_variables": [
+        "H"
+      ],
+      "position": {
+        "x": {
+          "expression": "1.762200 - (H / 2)",
+          "variables": [
+            "H"
+          ]
+        },
+        "y": {
+          "expression": "-0.150000",
+          "variables": []
+        },
+        "z": {
+          "expression": "1.550000",
+          "variables": []
+        }
+      },
+      "orientation_quaternion": {
+        "w": 0.0,
+        "x": 0.707107,
+        "y": 0.0,
+        "z": 0.707107
+      }
+    },
+    "Top_Sill_Plate_Nail_Pose": {
+      "required_variables": [
+        "H",
+        "W",
+        "X"
+      ],
+      "position": {
+        "x": {
+          "expression": "X + 1.132590",
+          "variables": [
+            "X"
+          ]
+        },
+        "y": {
+          "expression": "0.413397 - (W / 2)",
+          "variables": [
+            "W"
+          ]
+        },
+        "z": {
+          "expression": "0.945460 + (0.300000 * H)",
+          "variables": [
+            "H"
+          ]
+        }
+      },
+      "orientation_quaternion": {
+        "w": 0.182999,
+        "x": -0.682994,
+        "y": 0.682994,
+        "z": 0.182999
+      }
+    },
+    "Top_Cripple_Plate_Pick_Pose": {
+      "required_variables": [
+        "W"
+      ],
+      "position": {
+        "x": {
+          "expression": "6.450100",
+          "variables": []
+        },
+        "y": {
+          "expression": "0.782470",
+          "variables": []
+        },
+        "z": {
+          "expression": "0.803000 + (W / 2)",
+          "variables": [
+            "W"
+          ]
+        }
+      },
+      "orientation_quaternion": {
+        "w": -0.707107,
+        "x": 0.0,
+        "y": -0.707107,
+        "z": 0.0
+      }
+    },
+    "Top_Cripple_Plate_Place_Pose": {
+      "required_variables": [
+        "H",
+        "L",
+        "X"
+      ],
+      "position": {
+        "x": {
+          "expression": "X + (L / 2) + 0.932590",
+          "variables": [
+            "L",
+            "X"
+          ]
+        },
+        "y": {
+          "expression": "0.500000",
+          "variables": []
+        },
+        "z": {
+          "expression": "H + 0.989360",
+          "variables": [
+            "H"
+          ]
+        }
+      },
+      "orientation_quaternion": {
+        "w": 0.0,
+        "x": 0.0,
+        "y": -0.707107,
+        "z": -0.707107
+      }
+    },
+    "Top_Cripple_Plate_Pass_Pose": {
+      "required_variables": [
+        "H"
+      ],
+      "position": {
+        "x": {
+          "expression": "1.762200 - (H / 2)",
+          "variables": [
+            "H"
+          ]
+        },
+        "y": {
+          "expression": "-0.150000",
+          "variables": []
+        },
+        "z": {
+          "expression": "1.550000",
+          "variables": []
+        }
+      },
+      "orientation_quaternion": {
+        "w": 0.0,
+        "x": 0.707107,
+        "y": 0.0,
+        "z": 0.707107
+      }
+    },
+    "Top_Cripple_Plate_Nail_Pose": {
+      "required_variables": [
+        "H"
+      ],
+      "position": {
+        "x": {
+          "expression": "1.100000",
+          "variables": []
+        },
+        "y": {
+          "expression": "0.500000",
+          "variables": []
+        },
+        "z": {
+          "expression": "0.895460 + (0.300000 * H)",
+          "variables": [
+            "H"
+          ]
+        }
+      },
+      "orientation_quaternion": {
+        "w": 0.0,
+        "x": 0.707107,
+        "y": 0.0,
+        "z": 0.707107
+      }
+    },
+    "Lower_Cripple_Plate_Pick_Pose": {
+      "required_variables": [
+        "W"
+      ],
+      "position": {
+        "x": {
+          "expression": "6.450100",
+          "variables": []
+        },
+        "y": {
+          "expression": "0.782470",
+          "variables": []
+        },
+        "z": {
+          "expression": "0.803000 + (W / 2)",
+          "variables": [
+            "W"
+          ]
+        }
+      },
+      "orientation_quaternion": {
+        "w": -0.707107,
+        "x": 0.0,
+        "y": -0.707107,
+        "z": 0.0
+      }
+    },
+    "Lower_Cripple_Plate_Place_Pose": {
+      "required_variables": [
+        "H",
+        "L",
+        "X"
+      ],
+      "position": {
+        "x": {
+          "expression": "X - (L / 2) + 1.182590",
+          "variables": [
+            "L",
+            "X"
+          ]
+        },
+        "y": {
+          "expression": "0.000000",
+          "variables": []
+        },
+        "z": {
+          "expression": "H + 0.889360",
+          "variables": [
+            "H"
+          ]
+        }
+      },
+      "orientation_quaternion": {
+        "w": 0.0,
+        "x": 0.0,
+        "y": -0.707107,
+        "z": -0.707107
+      }
+    },
+    "Lower_Sill_Plate_Pick_Pose": {
+      "required_variables": [
+        "W"
+      ],
+      "position": {
+        "x": {
+          "expression": "6.450100",
+          "variables": []
+        },
+        "y": {
+          "expression": "0.782470",
+          "variables": []
+        },
+        "z": {
+          "expression": "0.803000 + (W / 2)",
+          "variables": [
+            "W"
+          ]
+        }
+      },
+      "orientation_quaternion": {
+        "w": -0.707107,
+        "x": 0.0,
+        "y": -0.707107,
+        "z": 0.0
+      }
+    },
+    "Lower_Sill_Plate_Place_Pose": {
+      "required_variables": [
+        "H",
+        "X"
+      ],
+      "position": {
+        "x": {
+          "expression": "X + 1.132590",
+          "variables": [
+            "X"
+          ]
+        },
+        "y": {
+          "expression": "0.000000",
+          "variables": []
+        },
+        "z": {
+          "expression": "H + 1.189360",
+          "variables": [
+            "H"
+          ]
+        }
+      },
+      "orientation_quaternion": {
+        "w": 0.0,
+        "x": 0.0,
+        "y": -1.0,
+        "z": 0.0
+      }
+    },
+    "Lower_Sill_Plate_Nail_Pose": {
+      "required_variables": [
+        "H",
+        "W",
+        "X"
+      ],
+      "position": {
+        "x": {
+          "expression": "X + 1.132590",
+          "variables": [
+            "X"
+          ]
+        },
+        "y": {
+          "expression": "-0.413397 + (1.500000 * W)",
+          "variables": [
+            "W"
+          ]
+        },
+        "z": {
+          "expression": "0.945460 + (0.300000 * H)",
+          "variables": [
+            "H"
+          ]
+        }
+      },
+      "orientation_quaternion": {
+        "w": 0.0,
+        "x": 0.0,
+        "y": 0.353553,
+        "z": 0.612354
+      }
+    },
+    "L_U_Stud_Pick_Pose": {
+      "required_variables": [
+        "W"
+      ],
+      "position": {
+        "x": {
+          "expression": "4.179000",
+          "variables": []
+        },
+        "y": {
+          "expression": "-2.422283 + (0.250000 * W)",
+          "variables": [
+            "W"
+          ]
+        },
+        "z": {
+          "expression": "1.048050 + (0.433013 * W)",
+          "variables": [
+            "W"
+          ]
+        }
+      },
+      "orientation_quaternion": {
+        "w": 0.612354,
+        "x": 0.612354,
+        "y": 0.353553,
+        "z": 0.353553
+      }
+    },
+    "L_U_Stud_Pass_Pose": {
+      "required_variables": [
+        "H"
+      ],
+      "position": {
+        "x": {
+          "expression": "2.816340 - (0.866025)",
+          "variables": []
+        },
+        "y": {
+          "expression": "1.244430 + (H / 2)",
+          "variables": [
+            "H"
+          ]
+        },
+        "z": {
+          "expression": "1.297380 + (0.500000)",
+          "variables": []
+        }
+      },
+      "orientation_quaternion": {
+        "w": 0.0,
+        "x": 0.96593,
+        "y": 0.0,
+        "z": 0.25882
+      }
+    },
+    "L_U_Stud_Place_Pose": {
+      "required_variables": [
+        "L",
+        "W",
+        "X",
+        "Z"
+      ],
+      "position": {
+        "x": {
+          "expression": "3.650990 - X - (L / 2)",
+          "variables": [
+            "L",
+            "X"
+          ]
+        },
+        "y": {
+          "expression": "0.000000",
+          "variables": []
+        },
+        "z": {
+          "expression": "0.895460 + Z + (W / 2)",
+          "variables": [
+            "W",
+            "Z"
+          ]
+        }
+      },
+      "orientation_quaternion": {
+        "w": 0.0,
+        "x": 0.0,
+        "y": 1.0,
+        "z": 0.0
+      }
+    },
+    "Load_Bearing_Pick_Pose": {
+      "required_variables": [],
+      "position": {
+        "x": {
+          "expression": "-1.127000",
+          "variables": []
+        },
+        "y": {
+          "expression": "1.020000",
+          "variables": []
+        },
+        "z": {
+          "expression": "0.354000",
+          "variables": []
+        }
+      },
+      "orientation_quaternion": {
+        "w": 0.0,
+        "x": 0.0,
+        "y": 0.707107,
+        "z": -0.707107
+      }
+    },
+    "Load_Bearing_Place_Pose": {
+      "required_variables": [
+        "W",
+        "X"
+      ],
+      "position": {
+        "x": {
+          "expression": "X + 1.132590",
+          "variables": [
+            "X"
+          ]
+        },
+        "y": {
+          "expression": "0.000000",
+          "variables": []
+        },
+        "z": {
+          "expression": "W + 1.045460",
+          "variables": [
+            "W"
+          ]
+        }
+      },
+      "orientation_quaternion": {
+        "w": 0.0,
+        "x": 0.0,
+        "y": 0.707107,
+        "z": 0.707107
+      }
+    },
+    "Load_Bearing_Nail_Pose": {
+      "required_variables": [
+        "H",
+        "W",
+        "X",
+        "Z"
+      ],
+      "position": {
+        "x": {
+          "expression": "X + (0.200000 * H) + 1.132590",
+          "variables": [
+            "H",
+            "X"
+          ]
+        },
+        "y": {
+          "expression": "0.429289 - (W / 2)",
+          "variables": [
+            "W"
+          ]
+        },
+        "z": {
+          "expression": "Z + 0.986491",
+          "variables": [
+            "Z"
+          ]
+        }
+      },
+      "orientation_quaternion": {
+        "w": 0.27061,
+        "x": 0.27061,
+        "y": -0.653296,
+        "z": 0.653296
+      }
+    },
+    "OSB_Sheathing_Plate_Pick_Pose": {
+      "required_variables": [
+        "H"
+      ],
+      "position": {
+        "x": {
+          "expression": "0.000000",
+          "variables": []
+        },
+        "y": {
+          "expression": "-1.500000",
+          "variables": []
+        },
+        "z": {
+          "expression": "H + 0.600000",
+          "variables": [
+            "H"
+          ]
+        }
+      },
+      "orientation_quaternion": {
+        "w": 0.0,
+        "x": 0.0,
+        "y": 0.707107,
+        "z": 0.707107
+      }
+    },
+    "OSB_Sheathing_Plate_Place_Pose": {
+      "required_variables": [
+        "X",
+        "Z"
+      ],
+      "position": {
+        "x": {
+          "expression": "2.691790 - X",
+          "variables": [
+            "X"
+          ]
+        },
+        "y": {
+          "expression": "0.000000",
+          "variables": []
+        },
+        "z": {
+          "expression": "Z + 0.895460",
+          "variables": [
+            "Z"
+          ]
+        }
+      },
+      "orientation_quaternion": {
+        "w": 0.0,
+        "x": 0.0,
+        "y": 0.0,
+        "z": -1.0
+      }
+    },
+    "OSB_Sheathing_Plate_Nail_Pose": {
+      "required_variables": [
+        "H",
+        "L"
+      ],
+      "position": {
+        "x": {
+          "expression": "L + 1.152590",
+          "variables": [
+            "L"
+          ]
+        },
+        "y": {
+          "expression": "0.000000",
+          "variables": []
+        },
+        "z": {
+          "expression": "H + 1.047060",
+          "variables": [
+            "H"
+          ]
+        }
+      },
+      "orientation_quaternion": {
+        "w": 0.0,
+        "x": 1.0,
+        "y": 0.0,
+        "z": 0.0
+      }
+    }
+  }
+}

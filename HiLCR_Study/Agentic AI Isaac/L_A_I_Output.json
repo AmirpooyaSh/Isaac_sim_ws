@@ -1,0 +1,139 @@
+{
+  "Sub-Steps": [
+    [
+      "Vertical Stud",
+      [
+        "Review wall layout marks on bottom and top plates for stud spacing",
+        "Measure required stud length between plates and mark cut line on lumber",
+        "Cut stud to length with power saw",
+        "Set stud on bottom plate layout mark and tip into place under top plate",
+        "Tap stud plumb and verify alignment with level",
+        "Fasten stud to plates with nails or screws through toe-nailing or metal connectors"
+      ]
+    ],
+    [
+      "King Stud",
+      [
+        "Confirm opening width on plans and transfer king stud locations to plates",
+        "Measure floor-to-plate height and cut king studs to full wall height",
+        "Stand each king stud against layout line flanking rough opening",
+        "Check plumb with level and adjust as needed",
+        "Secure king studs to bottom and top plates with nails or structural screws",
+        "Brace temporarily until adjoining members lock studs in place"
+      ]
+    ],
+    [
+      "Lower Cripple Stud",
+      [
+        "Measure distance from bottom plate to underside of window sill plate",
+        "Cut cripple stud pieces to measured length",
+        "Position cripples at marked on-center spacing below sill opening",
+        "Hold each cripple tight between bottom plate and sill plate",
+        "Nail or screw through plates into each cripple end",
+        "Verify top of sill remains level after fastening"
+      ]
+    ],
+    [
+      "OSB Sheathing Plate",
+      [
+        "Measure wall panel area and mark OSB panel cut lines to fit between framing edges and openings",
+        "Cut OSB sheets to size with circular saw, maintaining square edges",
+        "Erect scaffold or use ladders for safe access to wall height",
+        "Position first sheet flush with bottom plate and edge of framing",
+        "Hold panel tight, check for plumb and proper edge alignment",
+        "Fasten OSB to studs, plates, and blocking with specified nails or screws at required spacing, starting from center and working outward",
+        "Stagger vertical joints between courses and continue installing successive sheets",
+        "Recheck flatness and joint alignment, adding additional fasteners where needed"
+      ]
+    ],
+    [
+      "Top Plate",
+      [
+        "Lay out stud and opening locations on top plate stock using tape and pencil",
+        "Cut plates to wall length, including splices as needed",
+        "Set first top plate on edge along wall line and tack to stud tops",
+        "Install second (cap) plate overlapping joints for strength",
+        "Nail or screw plates to each stud end and to adjoining plates at corners and partitions",
+        "Verify straightness of plate line and correct any bows with blocking or bracing"
+      ]
+    ],
+    [
+      "Jack Stud",
+      [
+        "Measure required height from bottom plate to underside of header",
+        "Cut jack studs to length with square ends",
+        "Place each jack stud against king stud at opening sides",
+        "Align bottom with layout mark and ensure top meets header seat line",
+        "Nail jack studs to king studs and bottom plate, then toenail into header after placement",
+        "Confirm assembly is plumb and secure"
+      ]
+    ],
+    [
+      "Bear Loading",
+      [
+        "Check plan for header span and laminate requirements",
+        "Measure opening width and cut header members to length",
+        "Assemble multiple header plies with adhesive and nails or screws as specified",
+        "Lift header onto jack studs within opening using additional help or temporary support",
+        "Set header flush with top of jack studs and centered over opening",
+        "Nail or screw header to jack studs and add metal hangers or straps if required",
+        "Verify header is level and bearing fully on both jacks"
+      ]
+    ],
+    [
+      "L/U Stud",
+      [
+        "Locate position adjacent to first vertical stud per layout",
+        "Measure floor-to-plate height and cut utility stud to length",
+        "Stand stud in place providing space for service penetrations as detailed",
+        "Plumb stud with level and align faces flush with neighboring framing",
+        "Fasten stud to plates and add blocking or straps for lateral bracing as required",
+        "Bore service holes at designated heights for mechanical or electrical runs"
+      ]
+    ],
+    [
+      "Lower Sill Plate",
+      [
+        "Mark sill height on king studs according to window schedule",
+        "Cut sill plate to span between jack studs",
+        "Position sill on marked lines with crown up and faces flush",
+        "Tack sill to king or jack studs, then secure with nails or screws through end joints",
+        "Check sill for level across width of opening",
+        "Add temporary support or shims if adjustments are required"
+      ]
+    ],
+    [
+      "Bottom Plate",
+      [
+        "Snap chalk line on subfloor to establish wall location",
+        "Lay out stud and opening positions along bottom plate stock",
+        "Cut plates to required lengths including splice pieces",
+        "Position bottom plate on layout line and drill for anchor locations if needed",
+        "Fasten plate to floor framing or slab with nails, screws, or anchors per specification",
+        "Verify plate alignment and secure temporary braces until studs are installed"
+      ]
+    ],
+    [
+      "Top Sill Plate",
+      [
+        "Measure distance between king studs above window opening",
+        "Cut top sill plate to length ensuring square ends",
+        "Mark seat line on king studs at specified elevation",
+        "Set top sill on marks and hold flush with inner faces of studs",
+        "Nail or screw plate to king studs and to any top cripple studs above",
+        "Confirm plate is level and properly tied into surrounding framing"
+      ]
+    ],
+    [
+      "Top Cripple Stud",
+      [
+        "Determine distance from top sill or header to underside of top plate",
+        "Cut cripple studs to required length",
+        "Position cripples at on-center spacing above opening between header and top plate",
+        "Ensure each cripple is plumb and flush with wall face",
+        "Fasten cripples through top plate and header with nails or screws",
+        "Verify continuous load path by checking contact at both ends"
+      ]
+    ]
+  ]
+}

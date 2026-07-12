@@ -1,0 +1,5 @@
+{
+  "Simulation-Based Agent (Sb-A)": "Generation of HLAFs (H) corresponding to Sub-Step (Si) requires a recursive process of simulation-based trial, error evaluation, and adjustment such as picking, grasping, ...",
+  "Parameter-Based Agent (Pb-A)": "Generation of HLAFs (H) corresponding to Sub-step (Si) requires a parametric (based on architecturaldesign) procedure",
+  "Collaborative Agent (Co-A)": "Generation of HLAFs (H) corresponding to Sub-step (Si) requires a collaborative procedure"
+}

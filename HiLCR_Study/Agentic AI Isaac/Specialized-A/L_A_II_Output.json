@@ -1,0 +1,1686 @@
+{
+  "HLAF-Flows": [
+    {
+      "Element": "Vertical Stud",
+      "Sub-Step": "Set stud on bottom plate layout mark and tip into place under top plate",
+      "HLAF Flow": [
+        [
+          "Robot_2",
+          "Gripper",
+          "Vertical Stud",
+          {
+            "name": "Vertical_Stud_Pick_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "W"
+            ],
+            "position": {
+              "x": {
+                "expression": "4.179000",
+                "variables": []
+              },
+              "y": {
+                "expression": "-2.422283 + (0.250000 * W)",
+                "variables": [
+                  "W"
+                ]
+              },
+              "z": {
+                "expression": "1.048050 + (0.433013 * W)",
+                "variables": [
+                  "W"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.612354,
+              "x": 0.612354,
+              "y": 0.353553,
+              "z": 0.353553
+            }
+          },
+          "Simulation-Based Agent (Sb-A)"
+        ],
+        [
+          "Robot_2",
+          "Gripper",
+          "Vertical Stud",
+          {
+            "name": "Vertical_Stud_Place_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "H",
+              "L",
+              "X"
+            ],
+            "position": {
+              "x": {
+                "expression": "X + (L / 2) + 0.962590",
+                "variables": [
+                  "L",
+                  "X"
+                ]
+              },
+              "y": {
+                "expression": "0.500000",
+                "variables": []
+              },
+              "z": {
+                "expression": "H + 0.889360",
+                "variables": [
+                  "H"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.0,
+              "x": 0.0,
+              "y": 0.707107,
+              "z": 0.707107
+            }
+          },
+          "Parameter-Based Agent (Pb-A)"
+        ]
+      ]
+    },
+    {
+      "Element": "Vertical Stud",
+      "Sub-Step": "Fasten stud to plates with nails or screws through toe-nailing or metal connectors",
+      "HLAF Flow": [
+        [
+          "Robot_1",
+          "Nail_Gun",
+          "Vertical Stud",
+          {
+            "name": "Vertical_Stud_Nail_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "H"
+            ],
+            "position": {
+              "x": {
+                "expression": "1.100000",
+                "variables": []
+              },
+              "y": {
+                "expression": "0.500000",
+                "variables": []
+              },
+              "z": {
+                "expression": "0.895460 + (0.300000 * H)",
+                "variables": [
+                  "H"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.0,
+              "x": 0.707107,
+              "y": 0.0,
+              "z": 0.707107
+            }
+          },
+          "Parameter-Based Agent (Pb-A)"
+        ]
+      ]
+    },
+    {
+      "Element": "King Stud",
+      "Sub-Step": "Stand each king stud against layout line flanking rough opening",
+      "HLAF Flow": [
+        [
+          "Robot_2",
+          "Gripper",
+          "King Stud",
+          {
+            "name": "King_Stud_Pick_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "W"
+            ],
+            "position": {
+              "x": {
+                "expression": "4.179000",
+                "variables": []
+              },
+              "y": {
+                "expression": "-2.422283 + (0.250000 * W)",
+                "variables": [
+                  "W"
+                ]
+              },
+              "z": {
+                "expression": "1.048050 + (0.433013 * W)",
+                "variables": [
+                  "W"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.612354,
+              "x": 0.612354,
+              "y": 0.353553,
+              "z": 0.353553
+            }
+          },
+          "Simulation-Based Agent (Sb-A)"
+        ],
+        [
+          "Robot_2",
+          "Gripper",
+          "King Stud",
+          {
+            "name": "King_Stud_Place_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "H",
+              "L",
+              "X"
+            ],
+            "position": {
+              "x": {
+                "expression": "X + (L / 2) + 0.962590",
+                "variables": [
+                  "L",
+                  "X"
+                ]
+              },
+              "y": {
+                "expression": "0.500000",
+                "variables": []
+              },
+              "z": {
+                "expression": "H + 0.889360",
+                "variables": [
+                  "H"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.0,
+              "x": 0.0,
+              "y": 0.707107,
+              "z": 0.707107
+            }
+          },
+          "Parameter-Based Agent (Pb-A)"
+        ]
+      ]
+    },
+    {
+      "Element": "King Stud",
+      "Sub-Step": "Secure king studs to bottom and top plates with nails or structural screws",
+      "HLAF Flow": [
+        [
+          "Robot_1",
+          "Nail_Gun",
+          "King Stud",
+          {
+            "name": "King_Stud_Nail_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "H"
+            ],
+            "position": {
+              "x": {
+                "expression": "1.100000",
+                "variables": []
+              },
+              "y": {
+                "expression": "0.500000",
+                "variables": []
+              },
+              "z": {
+                "expression": "0.895460 + (0.300000 * H)",
+                "variables": [
+                  "H"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.0,
+              "x": 0.707107,
+              "y": 0.0,
+              "z": 0.707107
+            }
+          },
+          "Parameter-Based Agent (Pb-A)"
+        ]
+      ]
+    },
+    {
+      "Element": "Lower Cripple Stud",
+      "Sub-Step": "Position cripples at marked on-center spacing below sill opening",
+      "HLAF Flow": [
+        [
+          "Robot_2",
+          "Gripper",
+          "Lower Cripple Stud",
+          {
+            "name": "Lower_Cripple_Plate_Pick_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "W"
+            ],
+            "position": {
+              "x": {
+                "expression": "6.450100",
+                "variables": []
+              },
+              "y": {
+                "expression": "0.782470",
+                "variables": []
+              },
+              "z": {
+                "expression": "0.803000 + (W / 2)",
+                "variables": [
+                  "W"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": -0.707107,
+              "x": 0.0,
+              "y": -0.707107,
+              "z": 0.0
+            }
+          },
+          "Simulation-Based Agent (Sb-A)"
+        ],
+        [
+          "Robot_2",
+          "Gripper",
+          "Lower Cripple Stud",
+          {
+            "name": "Lower_Cripple_Plate_Place_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "H",
+              "L",
+              "X"
+            ],
+            "position": {
+              "x": {
+                "expression": "X - (L / 2) + 1.182590",
+                "variables": [
+                  "L",
+                  "X"
+                ]
+              },
+              "y": {
+                "expression": "0.000000",
+                "variables": []
+              },
+              "z": {
+                "expression": "H + 0.889360",
+                "variables": [
+                  "H"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.0,
+              "x": 0.0,
+              "y": -0.707107,
+              "z": -0.707107
+            }
+          },
+          "Parameter-Based Agent (Pb-A)"
+        ]
+      ]
+    },
+    {
+      "Element": "OSB Sheathing Plate",
+      "Sub-Step": "Position first sheet flush with bottom plate and edge of framing",
+      "HLAF Flow": [
+        [
+          "Robot_1",
+          "Suction_Cup",
+          "OSB Sheathing Plate",
+          {
+            "name": "OSB_Sheathing_Plate_Pick_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "H"
+            ],
+            "position": {
+              "x": {
+                "expression": "0.000000",
+                "variables": []
+              },
+              "y": {
+                "expression": "-1.500000",
+                "variables": []
+              },
+              "z": {
+                "expression": "H + 0.600000",
+                "variables": [
+                  "H"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.0,
+              "x": 0.0,
+              "y": 0.707107,
+              "z": 0.707107
+            }
+          },
+          "Simulation-Based Agent (Sb-A)"
+        ],
+        [
+          "Robot_1",
+          "Suction_Cup",
+          "OSB Sheathing Plate",
+          {
+            "name": "OSB_Sheathing_Plate_Place_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "X",
+              "Z"
+            ],
+            "position": {
+              "x": {
+                "expression": "2.691790 - X",
+                "variables": [
+                  "X"
+                ]
+              },
+              "y": {
+                "expression": "0.000000",
+                "variables": []
+              },
+              "z": {
+                "expression": "Z + 0.895460",
+                "variables": [
+                  "Z"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.0,
+              "x": 0.0,
+              "y": 0.0,
+              "z": -1.0
+            }
+          },
+          "Parameter-Based Agent (Pb-A)"
+        ]
+      ]
+    },
+    {
+      "Element": "OSB Sheathing Plate",
+      "Sub-Step": "Fasten OSB to studs, plates, and blocking with specified nails or screws at required spacing, starting from center and working outward",
+      "HLAF Flow": [
+        [
+          "Robot_1",
+          "Nail_Gun",
+          "OSB Sheathing Plate",
+          {
+            "name": "OSB_Sheathing_Plate_Nail_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "H",
+              "L"
+            ],
+            "position": {
+              "x": {
+                "expression": "L + 1.152590",
+                "variables": [
+                  "L"
+                ]
+              },
+              "y": {
+                "expression": "0.000000",
+                "variables": []
+              },
+              "z": {
+                "expression": "H + 1.047060",
+                "variables": [
+                  "H"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.0,
+              "x": 1.0,
+              "y": 0.0,
+              "z": 0.0
+            }
+          },
+          "Parameter-Based Agent (Pb-A)"
+        ]
+      ]
+    },
+    {
+      "Element": "Top Plate",
+      "Sub-Step": "Install second (cap) plate overlapping joints for strength",
+      "HLAF Flow": [
+        [
+          "Robot_2",
+          "Gripper",
+          "Top Plate",
+          {
+            "name": "Top_Plate_Pick_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "W"
+            ],
+            "position": {
+              "x": {
+                "expression": "6.450100",
+                "variables": []
+              },
+              "y": {
+                "expression": "1.003400",
+                "variables": []
+              },
+              "z": {
+                "expression": "0.803000 + (W / 2)",
+                "variables": [
+                  "W"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.707107,
+              "x": 0.0,
+              "y": 0.707107,
+              "z": 0.0
+            }
+          },
+          "Simulation-Based Agent (Sb-A)"
+        ],
+        [
+          "Robot_2",
+          "Gripper",
+          "Top Plate",
+          {
+            "name": "Top_Plate_Pass_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "H",
+              "L"
+            ],
+            "position": {
+              "x": {
+                "expression": "2.250000 + (L / 2)",
+                "variables": [
+                  "L"
+                ]
+              },
+              "y": {
+                "expression": "-1.000000",
+                "variables": []
+              },
+              "z": {
+                "expression": "H + 0.850000",
+                "variables": [
+                  "H"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.0,
+              "x": 0.0,
+              "y": 0.707107,
+              "z": 0.707107
+            }
+          },
+          "Collaborative Agent (Co-A)"
+        ],
+        [
+          "Robot_1",
+          "Gripper",
+          "Top Plate",
+          {
+            "name": "Top_Plate_Pass_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "H",
+              "L"
+            ],
+            "position": {
+              "x": {
+                "expression": "2.250000 + (L / 2)",
+                "variables": [
+                  "L"
+                ]
+              },
+              "y": {
+                "expression": "-1.000000",
+                "variables": []
+              },
+              "z": {
+                "expression": "H + 0.850000",
+                "variables": [
+                  "H"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.0,
+              "x": 0.0,
+              "y": 0.707107,
+              "z": 0.707107
+            }
+          },
+          "Collaborative Agent (Co-A)"
+        ],
+        [
+          "Robot_1",
+          "Gripper",
+          "Top Plate",
+          {
+            "name": "Top_Plate_Place_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "H",
+              "X"
+            ],
+            "position": {
+              "x": {
+                "expression": "X + 1.132590",
+                "variables": [
+                  "X"
+                ]
+              },
+              "y": {
+                "expression": "0.000000",
+                "variables": []
+              },
+              "z": {
+                "expression": "H + 0.889360",
+                "variables": [
+                  "H"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.0,
+              "x": 0.0,
+              "y": 1.0,
+              "z": 0.0
+            }
+          },
+          "Parameter-Based Agent (Pb-A)"
+        ]
+      ]
+    },
+    {
+      "Element": "Jack Stud",
+      "Sub-Step": "Place each jack stud against king stud at opening sides",
+      "HLAF Flow": [
+        [
+          "Robot_2",
+          "Gripper",
+          "Jack Stud",
+          {
+            "name": "Jack_Stud_Pick_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "W"
+            ],
+            "position": {
+              "x": {
+                "expression": "6.450100",
+                "variables": []
+              },
+              "y": {
+                "expression": "0.782470",
+                "variables": []
+              },
+              "z": {
+                "expression": "0.803000 + (W / 2)",
+                "variables": [
+                  "W"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": -0.707107,
+              "x": 0.0,
+              "y": -0.707107,
+              "z": 0.0
+            }
+          },
+          "Simulation-Based Agent (Sb-A)"
+        ],
+        [
+          "Robot_2",
+          "Gripper",
+          "Jack Stud",
+          {
+            "name": "Jack_Stud_Place_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "H",
+              "L",
+              "X"
+            ],
+            "position": {
+              "x": {
+                "expression": "X + (L / 2) + 1.082590",
+                "variables": [
+                  "L",
+                  "X"
+                ]
+              },
+              "y": {
+                "expression": "0.500000",
+                "variables": []
+              },
+              "z": {
+                "expression": "H + 0.939360",
+                "variables": [
+                  "H"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.0,
+              "x": 0.0,
+              "y": -0.707107,
+              "z": 0.707107
+            }
+          },
+          "Parameter-Based Agent (Pb-A)"
+        ]
+      ]
+    },
+    {
+      "Element": "Jack Stud",
+      "Sub-Step": "Nail jack studs to king studs and bottom plate, then toenail into header after placement",
+      "HLAF Flow": [
+        [
+          "Robot_1",
+          "Nail_Gun",
+          "Jack Stud",
+          {
+            "name": "Jack_Stud_Nail_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "L",
+              "X"
+            ],
+            "position": {
+              "x": {
+                "expression": "X - (L / 2) + 1.193550",
+                "variables": [
+                  "L",
+                  "X"
+                ]
+              },
+              "y": {
+                "expression": "0.586603",
+                "variables": []
+              },
+              "z": {
+                "expression": "0.945460",
+                "variables": []
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.353553,
+              "x": -0.612354,
+              "y": 0.612354,
+              "z": 0.353553
+            }
+          },
+          "Parameter-Based Agent (Pb-A)"
+        ]
+      ]
+    },
+    {
+      "Element": "Bear Loading",
+      "Sub-Step": "Lift header onto jack studs within opening using additional help or temporary support",
+      "HLAF Flow": [
+        [
+          "Robot_1",
+          "Suction_Cup",
+          "Bear Loading",
+          {
+            "name": "Load_Bearing_Pick_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [],
+            "position": {
+              "x": {
+                "expression": "-1.127000",
+                "variables": []
+              },
+              "y": {
+                "expression": "1.020000",
+                "variables": []
+              },
+              "z": {
+                "expression": "0.354000",
+                "variables": []
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.0,
+              "x": 0.0,
+              "y": 0.707107,
+              "z": -0.707107
+            }
+          },
+          "Simulation-Based Agent (Sb-A)"
+        ],
+        [
+          "Robot_1",
+          "Suction_Cup",
+          "Bear Loading",
+          {
+            "name": "Load_Bearing_Place_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "W",
+              "X"
+            ],
+            "position": {
+              "x": {
+                "expression": "X + 1.132590",
+                "variables": [
+                  "X"
+                ]
+              },
+              "y": {
+                "expression": "0.000000",
+                "variables": []
+              },
+              "z": {
+                "expression": "W + 1.045460",
+                "variables": [
+                  "W"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.0,
+              "x": 0.0,
+              "y": 0.707107,
+              "z": 0.707107
+            }
+          },
+          "Parameter-Based Agent (Pb-A)"
+        ]
+      ]
+    },
+    {
+      "Element": "Bear Loading",
+      "Sub-Step": "Nail or screw header to jack studs and add metal hangers or straps if required",
+      "HLAF Flow": [
+        [
+          "Robot_1",
+          "Nail_Gun",
+          "Bear Loading",
+          {
+            "name": "Load_Bearing_Nail_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "H",
+              "W",
+              "X",
+              "Z"
+            ],
+            "position": {
+              "x": {
+                "expression": "X + (0.200000 * H) + 1.132590",
+                "variables": [
+                  "H",
+                  "X"
+                ]
+              },
+              "y": {
+                "expression": "0.429289 - (W / 2)",
+                "variables": [
+                  "W"
+                ]
+              },
+              "z": {
+                "expression": "Z + 0.986491",
+                "variables": [
+                  "Z"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.27061,
+              "x": 0.27061,
+              "y": -0.653296,
+              "z": 0.653296
+            }
+          },
+          "Parameter-Based Agent (Pb-A)"
+        ]
+      ]
+    },
+    {
+      "Element": "L/U Stud",
+      "Sub-Step": "Stand stud in place providing space for service penetrations as detailed",
+      "HLAF Flow": [
+        [
+          "Robot_2",
+          "Gripper",
+          "L/U Stud",
+          {
+            "name": "L_U_Stud_Pick_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "W"
+            ],
+            "position": {
+              "x": {
+                "expression": "4.179000",
+                "variables": []
+              },
+              "y": {
+                "expression": "-2.422283 + (0.250000 * W)",
+                "variables": [
+                  "W"
+                ]
+              },
+              "z": {
+                "expression": "1.048050 + (0.433013 * W)",
+                "variables": [
+                  "W"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.612354,
+              "x": 0.612354,
+              "y": 0.353553,
+              "z": 0.353553
+            }
+          },
+          "Simulation-Based Agent (Sb-A)"
+        ],
+        [
+          "Robot_2",
+          "Gripper",
+          "L/U Stud",
+          {
+            "name": "L_U_Stud_Pass_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "H"
+            ],
+            "position": {
+              "x": {
+                "expression": "2.816340 - (0.866025)",
+                "variables": []
+              },
+              "y": {
+                "expression": "1.244430 + (H / 2)",
+                "variables": [
+                  "H"
+                ]
+              },
+              "z": {
+                "expression": "1.297380 + (0.500000)",
+                "variables": []
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.0,
+              "x": 0.96593,
+              "y": 0.0,
+              "z": 0.25882
+            }
+          },
+          "Collaborative Agent (Co-A)"
+        ],
+        [
+          "Robot_1",
+          "Suction_Cup",
+          "L/U Stud",
+          {
+            "name": "L_U_Stud_Pass_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "H"
+            ],
+            "position": {
+              "x": {
+                "expression": "2.816340 - (0.866025)",
+                "variables": []
+              },
+              "y": {
+                "expression": "1.244430 + (H / 2)",
+                "variables": [
+                  "H"
+                ]
+              },
+              "z": {
+                "expression": "1.297380 + (0.500000)",
+                "variables": []
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.0,
+              "x": 0.96593,
+              "y": 0.0,
+              "z": 0.25882
+            }
+          },
+          "Collaborative Agent (Co-A)"
+        ],
+        [
+          "Robot_1",
+          "Suction_Cup",
+          "L/U Stud",
+          {
+            "name": "L_U_Stud_Place_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "L",
+              "W",
+              "X",
+              "Z"
+            ],
+            "position": {
+              "x": {
+                "expression": "3.650990 - X - (L / 2)",
+                "variables": [
+                  "L",
+                  "X"
+                ]
+              },
+              "y": {
+                "expression": "0.000000",
+                "variables": []
+              },
+              "z": {
+                "expression": "0.895460 + Z + (W / 2)",
+                "variables": [
+                  "W",
+                  "Z"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.0,
+              "x": 0.0,
+              "y": 1.0,
+              "z": 0.0
+            }
+          },
+          "Parameter-Based Agent (Pb-A)"
+        ]
+      ]
+    },
+    {
+      "Element": "Lower Sill Plate",
+      "Sub-Step": "Position sill on marked lines with crown up and faces flush",
+      "HLAF Flow": [
+        [
+          "Robot_2",
+          "Gripper",
+          "Lower Sill Plate",
+          {
+            "name": "Lower_Sill_Plate_Pick_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "W"
+            ],
+            "position": {
+              "x": {
+                "expression": "6.450100",
+                "variables": []
+              },
+              "y": {
+                "expression": "0.782470",
+                "variables": []
+              },
+              "z": {
+                "expression": "0.803000 + (W / 2)",
+                "variables": [
+                  "W"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": -0.707107,
+              "x": 0.0,
+              "y": -0.707107,
+              "z": 0.0
+            }
+          },
+          "Simulation-Based Agent (Sb-A)"
+        ],
+        [
+          "Robot_2",
+          "Gripper",
+          "Lower Sill Plate",
+          {
+            "name": "Lower_Sill_Plate_Place_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "H",
+              "X"
+            ],
+            "position": {
+              "x": {
+                "expression": "X + 1.132590",
+                "variables": [
+                  "X"
+                ]
+              },
+              "y": {
+                "expression": "0.000000",
+                "variables": []
+              },
+              "z": {
+                "expression": "H + 1.189360",
+                "variables": [
+                  "H"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.0,
+              "x": 0.0,
+              "y": -1.0,
+              "z": 0.0
+            }
+          },
+          "Parameter-Based Agent (Pb-A)"
+        ]
+      ]
+    },
+    {
+      "Element": "Lower Sill Plate",
+      "Sub-Step": "Tack sill to king or jack studs, then secure with nails or screws through end joints",
+      "HLAF Flow": [
+        [
+          "Robot_2",
+          "Nail_Gun",
+          "Lower Sill Plate",
+          {
+            "name": "Lower_Sill_Plate_Nail_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "H",
+              "W",
+              "X"
+            ],
+            "position": {
+              "x": {
+                "expression": "X + 1.132590",
+                "variables": [
+                  "X"
+                ]
+              },
+              "y": {
+                "expression": "-0.413397 + (1.500000 * W)",
+                "variables": [
+                  "W"
+                ]
+              },
+              "z": {
+                "expression": "0.945460 + (0.300000 * H)",
+                "variables": [
+                  "H"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.0,
+              "x": 0.0,
+              "y": 0.353553,
+              "z": 0.612354
+            }
+          },
+          "Parameter-Based Agent (Pb-A)"
+        ]
+      ]
+    },
+    {
+      "Element": "Bottom Plate",
+      "Sub-Step": "Fasten plate to floor framing or slab with nails, screws, or anchors per specification",
+      "HLAF Flow": [
+        [
+          "Robot_2",
+          "Nail_Gun",
+          "Bottom Plate",
+          {
+            "name": "Bottom_Plate_Nail_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "H"
+            ],
+            "position": {
+              "x": {
+                "expression": "3.690000",
+                "variables": []
+              },
+              "y": {
+                "expression": "0",
+                "variables": []
+              },
+              "z": {
+                "expression": "0.895460 + (0.300000 * H)",
+                "variables": [
+                  "H"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.0,
+              "x": 0.5,
+              "y": 0.5,
+              "z": 0.5
+            }
+          },
+          "Parameter-Based Agent (Pb-A)"
+        ]
+      ]
+    },
+    {
+      "Element": "Top Sill Plate",
+      "Sub-Step": "Set top sill on marks and hold flush with inner faces of studs",
+      "HLAF Flow": [
+        [
+          "Robot_2",
+          "Gripper",
+          "Top Sill Plate",
+          {
+            "name": "Top_Sill_Plate_Pick_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "W"
+            ],
+            "position": {
+              "x": {
+                "expression": "6.450100",
+                "variables": []
+              },
+              "y": {
+                "expression": "0.782470",
+                "variables": []
+              },
+              "z": {
+                "expression": "0.803000 + (W / 2)",
+                "variables": [
+                  "W"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": -0.707107,
+              "x": 0.0,
+              "y": -0.707107,
+              "z": 0.0
+            }
+          },
+          "Simulation-Based Agent (Sb-A)"
+        ],
+        [
+          "Robot_2",
+          "Gripper",
+          "Top Sill Plate",
+          {
+            "name": "Top_Sill_Plate_Pass_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "H"
+            ],
+            "position": {
+              "x": {
+                "expression": "1.762200 - (H / 2)",
+                "variables": [
+                  "H"
+                ]
+              },
+              "y": {
+                "expression": "-0.150000",
+                "variables": []
+              },
+              "z": {
+                "expression": "1.550000",
+                "variables": []
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.0,
+              "x": 0.707107,
+              "y": 0.0,
+              "z": 0.707107
+            }
+          },
+          "Collaborative Agent (Co-A)"
+        ],
+        [
+          "Robot_1",
+          "Gripper",
+          "Top Sill Plate",
+          {
+            "name": "Top_Sill_Plate_Pass_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "H"
+            ],
+            "position": {
+              "x": {
+                "expression": "1.762200 - (H / 2)",
+                "variables": [
+                  "H"
+                ]
+              },
+              "y": {
+                "expression": "-0.150000",
+                "variables": []
+              },
+              "z": {
+                "expression": "1.550000",
+                "variables": []
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.0,
+              "x": 0.707107,
+              "y": 0.0,
+              "z": 0.707107
+            }
+          },
+          "Collaborative Agent (Co-A)"
+        ],
+        [
+          "Robot_1",
+          "Gripper",
+          "Top Sill Plate",
+          {
+            "name": "Top_Sill_Plate_Place_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "H",
+              "X"
+            ],
+            "position": {
+              "x": {
+                "expression": "X + 1.132590",
+                "variables": [
+                  "X"
+                ]
+              },
+              "y": {
+                "expression": "0.000000",
+                "variables": []
+              },
+              "z": {
+                "expression": "H + 0.989360",
+                "variables": [
+                  "H"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.0,
+              "x": 0.0,
+              "y": 1.0,
+              "z": 0.0
+            }
+          },
+          "Parameter-Based Agent (Pb-A)"
+        ]
+      ]
+    },
+    {
+      "Element": "Top Sill Plate",
+      "Sub-Step": "Nail or screw plate to king studs and to any top cripple studs above",
+      "HLAF Flow": [
+        [
+          "Robot_1",
+          "Nail_Gun",
+          "Top Sill Plate",
+          {
+            "name": "Top_Sill_Plate_Nail_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "H",
+              "W",
+              "X"
+            ],
+            "position": {
+              "x": {
+                "expression": "X + 1.132590",
+                "variables": [
+                  "X"
+                ]
+              },
+              "y": {
+                "expression": "0.413397 - (W / 2)",
+                "variables": [
+                  "W"
+                ]
+              },
+              "z": {
+                "expression": "0.945460 + (0.300000 * H)",
+                "variables": [
+                  "H"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.182999,
+              "x": -0.682994,
+              "y": 0.682994,
+              "z": 0.182999
+            }
+          },
+          "Parameter-Based Agent (Pb-A)"
+        ]
+      ]
+    },
+    {
+      "Element": "Top Cripple Stud",
+      "Sub-Step": "Position cripples at on-center spacing above opening between header and top plate",
+      "HLAF Flow": [
+        [
+          "Robot_2",
+          "Gripper",
+          "Top Cripple Stud",
+          {
+            "name": "Top_Cripple_Plate_Pick_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "W"
+            ],
+            "position": {
+              "x": {
+                "expression": "6.450100",
+                "variables": []
+              },
+              "y": {
+                "expression": "0.782470",
+                "variables": []
+              },
+              "z": {
+                "expression": "0.803000 + (W / 2)",
+                "variables": [
+                  "W"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": -0.707107,
+              "x": 0.0,
+              "y": -0.707107,
+              "z": 0.0
+            }
+          },
+          "Simulation-Based Agent (Sb-A)"
+        ],
+        [
+          "Robot_2",
+          "Gripper",
+          "Top Cripple Stud",
+          {
+            "name": "Top_Cripple_Plate_Pass_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "H"
+            ],
+            "position": {
+              "x": {
+                "expression": "1.762200 - (H / 2)",
+                "variables": [
+                  "H"
+                ]
+              },
+              "y": {
+                "expression": "-0.150000",
+                "variables": []
+              },
+              "z": {
+                "expression": "1.550000",
+                "variables": []
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.0,
+              "x": 0.707107,
+              "y": 0.0,
+              "z": 0.707107
+            }
+          },
+          "Collaborative Agent (Co-A)"
+        ],
+        [
+          "Robot_1",
+          "Gripper",
+          "Top Cripple Stud",
+          {
+            "name": "Top_Cripple_Plate_Pass_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "H"
+            ],
+            "position": {
+              "x": {
+                "expression": "1.762200 - (H / 2)",
+                "variables": [
+                  "H"
+                ]
+              },
+              "y": {
+                "expression": "-0.150000",
+                "variables": []
+              },
+              "z": {
+                "expression": "1.550000",
+                "variables": []
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.0,
+              "x": 0.707107,
+              "y": 0.0,
+              "z": 0.707107
+            }
+          },
+          "Collaborative Agent (Co-A)"
+        ],
+        [
+          "Robot_1",
+          "Gripper",
+          "Top Cripple Stud",
+          {
+            "name": "Top_Cripple_Plate_Place_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "H",
+              "L",
+              "X"
+            ],
+            "position": {
+              "x": {
+                "expression": "X + (L / 2) + 0.932590",
+                "variables": [
+                  "L",
+                  "X"
+                ]
+              },
+              "y": {
+                "expression": "0.500000",
+                "variables": []
+              },
+              "z": {
+                "expression": "H + 0.989360",
+                "variables": [
+                  "H"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.0,
+              "x": 0.0,
+              "y": -0.707107,
+              "z": -0.707107
+            }
+          },
+          "Parameter-Based Agent (Pb-A)"
+        ]
+      ]
+    },
+    {
+      "Element": "Top Cripple Stud",
+      "Sub-Step": "Fasten cripples through top plate and header with nails or screws",
+      "HLAF Flow": [
+        [
+          "Robot_1",
+          "Nail_Gun",
+          "Top Cripple Stud",
+          {
+            "name": "Top_Cripple_Plate_Nail_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "H"
+            ],
+            "position": {
+              "x": {
+                "expression": "1.100000",
+                "variables": []
+              },
+              "y": {
+                "expression": "0.500000",
+                "variables": []
+              },
+              "z": {
+                "expression": "0.895460 + (0.300000 * H)",
+                "variables": [
+                  "H"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.0,
+              "x": 0.707107,
+              "y": 0.0,
+              "z": 0.707107
+            }
+          },
+          "Parameter-Based Agent (Pb-A)"
+        ]
+      ]
+    }
+  ]
+}

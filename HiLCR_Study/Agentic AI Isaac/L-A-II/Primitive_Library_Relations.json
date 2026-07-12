@@ -1,0 +1,269 @@
+[
+  {
+    "title": "Singular",
+    "robot": "Robot_2",
+    "tool_id": "tool0",
+    "element": "Top_Plate",
+    "pose": "Top_Plate_Pick_Pose"
+  },
+  {
+    "title": "Singular",
+    "robot": "Robot_1",
+    "tool_id": "tool0",
+    "element": "Top_Plate",
+    "pose": "Top_Plate_Place_Pose"
+  },
+  {
+    "title": "Collaborative",
+    "robot_1": "Robot_2",
+    "tool_id_1": "tool0",
+    "robot_2": "Robot_1",
+    "tool_id_2": "tool0",
+    "element": "Top_Plate",
+    "pose": "Top_Plate_Pass_Pose"
+  },
+  {
+    "title": "Singular",
+    "robot": "Robot_2",
+    "tool_id": "tool0",
+    "element": "Bottom_Plate",
+    "pose": "Bottom_Plate_Pick_Pose"
+  },
+  {
+    "title": "Singular",
+    "robot": "Robot_2",
+    "tool_id": "tool0",
+    "element": "Bottom_Plate",
+    "pose": "Bottom_Plate_Place_Pose"
+  },
+  {
+    "title": "Singular",
+    "robot": "Robot_2",
+    "tool_id": "tool1",
+    "element": "Bottom_Plate",
+    "pose": "Bottom_Plate_Nail_Pose"
+  },
+  {
+    "title": "Singular",
+    "robot": "Robot_2",
+    "tool_id": "tool0",
+    "element": "Vertical_Stud",
+    "pose": "Vertical_Stud_Pick_Pose"
+  },
+  {
+    "title": "Singular",
+    "robot": "Robot_2",
+    "tool_id": "tool0",
+    "element": "Vertical_Stud",
+    "pose": "Vertical_Stud_Place_Pose"
+  },
+  {
+    "title": "Singular",
+    "robot": "Robot_1",
+    "tool_id": "tool2",
+    "element": "Vertical_Stud",
+    "pose": "Vertical_Stud_Nail_Pose"
+  },
+  {
+    "title": "Singular",
+    "robot": "Robot_2",
+    "tool_id": "tool0",
+    "element": "King_Stud",
+    "pose": "King_Stud_Pick_Pose"
+  },
+  {
+    "title": "Singular",
+    "robot": "Robot_2",
+    "tool_id": "tool0",
+    "element": "King_Stud",
+    "pose": "King_Stud_Place_Pose"
+  },
+  {
+    "title": "Singular",
+    "robot": "Robot_1",
+    "tool_id": "tool2",
+    "element": "King_Stud",
+    "pose": "King_Stud_Nail_Pose"
+  },
+  {
+    "title": "Singular",
+    "robot": "Robot_2",
+    "tool_id": "tool0",
+    "element": "Jack_Stud",
+    "pose": "Jack_Stud_Pick_Pose"
+  },
+  {
+    "title": "Singular",
+    "robot": "Robot_2",
+    "tool_id": "tool0",
+    "element": "Jack_Stud",
+    "pose": "Jack_Stud_Place_Pose"
+  },
+  {
+    "title": "Singular",
+    "robot": "Robot_1",
+    "tool_id": "tool2",
+    "element": "Jack_Stud",
+    "pose": "Jack_Stud_Nail_Pose"
+  },
+  {
+    "title": "Singular",
+    "robot": "Robot_2",
+    "tool_id": "tool0",
+    "element": "Top_Sill_Plate",
+    "pose": "Top_Sill_Plate_Pick_Pose"
+  },
+  {
+    "title": "Singular",
+    "robot": "Robot_1",
+    "tool_id": "tool0",
+    "element": "Top_Sill_Plate",
+    "pose": "Top_Sill_Plate_Place_Pose"
+  },
+  {
+    "title": "Collaborative",
+    "robot_1": "Robot_2",
+    "tool_id_1": "tool0",
+    "robot_2": "Robot_1",
+    "tool_id_2": "tool0",
+    "element": "Top_Sill_Plate",
+    "pose": "Top_Sill_Plate_Pass_Pose"
+  },
+  {
+    "title": "Singular",
+    "robot": "Robot_1",
+    "tool_id": "tool2",
+    "element": "Top_Sill_Plate",
+    "pose": "Top_Sill_Plate_Nail_Pose"
+  },
+  {
+    "title": "Singular",
+    "robot": "Robot_2",
+    "tool_id": "tool0",
+    "element": "Top_Cripple_Plate",
+    "pose": "Top_Cripple_Plate_Pick_Pose"
+  },
+  {
+    "title": "Singular",
+    "robot": "Robot_1",
+    "tool_id": "tool0",
+    "element": "Top_Cripple_Plate",
+    "pose": "Top_Cripple_Plate_Place_Pose"
+  },
+  {
+    "title": "Collaborative",
+    "robot_1": "Robot_2",
+    "tool_id_1": "tool0",
+    "robot_2": "Robot_1",
+    "tool_id_2": "tool0",
+    "element": "Top_Cripple_Plate",
+    "pose": "Top_Cripple_Plate_Pass_Pose"
+  },
+  {
+    "title": "Singular",
+    "robot": "Robot_1",
+    "tool_id": "tool2",
+    "element": "Top_Cripple_Plate",
+    "pose": "Top_Cripple_Plate_Nail_Pose"
+  },
+  {
+    "title": "Singular",
+    "robot": "Robot_2",
+    "tool_id": "tool0",
+    "element": "Lower_Cripple_Plate",
+    "pose": "Lower_Cripple_Plate_Pick_Pose"
+  },
+  {
+    "title": "Singular",
+    "robot": "Robot_2",
+    "tool_id": "tool0",
+    "element": "Lower_Cripple_Plate",
+    "pose": "Lower_Cripple_Plate_Place_Pose"
+  },
+  {
+    "title": "Singular",
+    "robot": "Robot_2",
+    "tool_id": "tool0",
+    "element": "Lower_Sill_Plate",
+    "pose": "Lower_Sill_Plate_Pick_Pose"
+  },
+  {
+    "title": "Singular",
+    "robot": "Robot_2",
+    "tool_id": "tool0",
+    "element": "Lower_Sill_Plate",
+    "pose": "Lower_Sill_Plate_Place_Pose"
+  },
+  {
+    "title": "Singular",
+    "robot": "Robot_2",
+    "tool_id": "tool1",
+    "element": "Lower_Sill_Plate",
+    "pose": "Lower_Sill_Plate_Nail_Pose"
+  },
+  {
+    "title": "Singular",
+    "robot": "Robot_2",
+    "tool_id": "tool0",
+    "element": "L_U_Stud",
+    "pose": "L_U_Stud_Pick_Pose"
+  },
+  {
+    "title": "Collaborative",
+    "robot_1": "Robot_2",
+    "tool_id_1": "tool0",
+    "robot_2": "Robot_1",
+    "tool_id_2": "tool1",
+    "element": "L_U_Stud",
+    "pose": "L_U_Stud_Pass_Pose"
+  },
+  {
+    "title": "Singular",
+    "robot": "Robot_1",
+    "tool_id": "tool1",
+    "element": "L_U_Stud",
+    "pose": "L_U_Stud_Place_Pose"
+  },
+  {
+    "title": "Singular",
+    "robot": "Robot_1",
+    "tool_id": "tool1",
+    "element": "Load_Bearing",
+    "pose": "Load_Bearing_Pick_Pose"
+  },
+  {
+    "title": "Singular",
+    "robot": "Robot_1",
+    "tool_id": "tool1",
+    "element": "Load_Bearing",
+    "pose": "Load_Bearing_Place_Pose"
+  },
+  {
+    "title": "Singular",
+    "robot": "Robot_1",
+    "tool_id": "tool2",
+    "element": "Load_Bearing",
+    "pose": "Load_Bearing_Nail_Pose"
+  },
+  {
+    "title": "Singular",
+    "robot": "Robot_1",
+    "tool_id": "tool1",
+    "element": "OSB_Sheathing_Plate",
+    "pose": "OSB_Sheathing_Plate_Pick_Pose"
+  },
+  {
+    "title": "Singular",
+    "robot": "Robot_1",
+    "tool_id": "tool1",
+    "element": "OSB_Sheathing_Plate",
+    "pose": "OSB_Sheathing_Plate_Place_Pose"
+  },
+  {
+    "title": "Singular",
+    "robot": "Robot_1",
+    "tool_id": "tool2",
+    "element": "OSB_Sheathing_Plate",
+    "pose": "OSB_Sheathing_Plate_Nail_Pose"
+  }
+]

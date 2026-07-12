@@ -1,0 +1,420 @@
+## Define Robot Tools
+Robot_1:
+tool0 = Gripper
+tool1 = Suction_Cup
+tool2 = Nail Gun
+Robot_2:
+tool0 = Gripper
+tool1 = Nail Gun
+
+# Define L W H and el_pose
+L, W, H (Length, Width, Height)
+el_pose = [X, Y, Z] (Center of the Element)
+
+############################
+############################
+### Global Parameters ######
+############################
+############################
+ev = np.sqrt(2) / 2
+
+# DIRECTORY OF INSTALLATION
+INSTALLATION_DIRECTORY: str = "/home/apshirazi"
+
+# Robotic Movement Accelaration
+MOTION_ACCELERAION_VALUE: float = 1.0
+STATION_SPEED: ABB.speeddata = ABB.v1000
+
+SMART_CONV_RANGE_OF_MOTION_J1: float = 4.55
+SMART_CONV_RANGE_OF_MOTION_J2: float = 0.5
+## Test: Reducing it by 10CM
+SMART_CONV_REST_ELEVATION: float = 0.89546
+SMART_CONV_MODEL_ON_GROUND_HEIGHT: float = 0.89546
+# This shift is required to satisfy the symmetry of the smart conveyor platform
+SMART_CONV_X_SHIFT: float = 0.09179
+
+# Smart Material Table ZEORO
+SMART_MAT_TABLE: list[float] = [6.444, 4.611, 0.803]
+STUD_TO_SAW_OFFSET: float = 0.12093
+
+# Offset Required to Pick Woods From the Table
+PICK_OFFSET_FROM_L_CORNER: float = 0.05
+PICK_OFFSET_FROM_L_CORNER_AFTER_PASS: float = 0.2
+PICK_OFFSET_FROM_W_CORNER: float = 0.0061
+
+#Elevation in which passing TPL is being done
+PASSING_ELEVATION: float = 0.85
+
+JACK_PLACEMENT_SIDE_DRAG: float = 0.05
+# This represents the angle in which Robot 1 will nail the Jacks to the Kings ! (20 To 45 is a good range)
+JACK_SIDE_NAILING_ANGLE: float = 30
+JACK_NAILING_OFFSET: float = 0.1
+
+SILL_NAILING_ANGLE: float = 30
+SILL_NAILING_OFFSET: float = 0.1
+
+BR_NAILING_ANGLE: float = 45
+BR_NAILING_OFFSET: float = 0.1
+
+# This Angle is For the L_U Pass Angle Between Robots 1 and 2
+L_U_PASS_ANGLE: float = 30
+
+# Smart Material Table's Maximum Length Capability
+SMART_MAT_TABLE_MAX_LENGTH: float = 3.6576
+
+
+#### SLOPED MATERIAL TABLE
+SLOPED_MAT_TABLE: list[float] = [4.009, -2.417, 1.045]
+SLOPED_MAT_TABLE_ANGLE: float = 30
+# The length offset for picking the wood from the sloped table
+PRE_PICK_OFFSET = 0.2
+
+#Nailing Push for 1st/Repetitive/King Nailing
+PUSH_TO_NAIL_OFFSET: float = 0.05
+
+#Nailing Push for JACK
+PUSH_TO_NAIL_OFFSET_TANGENT: float = 0.01
+
+SLOPED_TABLE_PICK_OFFSET_FROM_L_CORNER: float = 0.17
+SLOPED_TABLE_PICK_OFFSET_FROM_W_CORNER: float = 0.0061
+
+### Small Cut Table
+# Upon Reloating the Table, The Offset Should be Adjusted Accordingly
+SMALL_CUT_TABLE_SAW_POSE: list[float] = [1, 1, 0.5]
+
+# Sheathing Plate Table ( Used to Pick Sheathing Plates )
+SHEATHING_PLATE_TABLE_BOTTOM_CENTER: list[float] = [0, -1.2, 0.6]
+OFFSET_FROM_SHEATHING_PLATE_TABLE_BOT: float = 0.3
+
+# Bear Loading Pile Stand Information
+NUMBER_OF_HEADERS: int = 5
+# 2in x 10in 
+# 1 Meters Length Timbers Stacked !
+RAW_HEADER_DIMENSIONS: list[float] = [1, 0.0508, 0.254]
+HEADER_CENTER_COORINATION: list[float] = [-1, 1.5, 0.1]
+HEADER_PICK_OFFSET_L: float = 0.02
+
+# 0.5m Is a Suitable Value. Changing it might ruine the Whole Assembly Process
+NAILING_CONV_TARGET: float = 0.5
+
+# Variables That Should be Changed For Each Design (For Now)
+OVERALL_PANEL_LENGTH: float = SMART_MAT_TABLE_MAX_LENGTH
+OVERALL_PANEL_HEIGHT: float = 2.5184
+STUD_THICKNESS: float = 0.04
+STUD_HEIGHT: float = 0.1016
+
+############################
+############################
+### Global Parameters ######
+############################
+############################
+
+#TPL+
+<Robot_2, tool0, Top_Plate, Top_Plate_Pick_Pose>
+<Robot_1, tool0, Top_Plate, Top_Plate_Place_Pose>
+<Robot_2, tool0, Robot_1, tool0, Top_Plate, Top_Plate_Pass_Pose>
+
+Top_Plate_Pick_Pose: [
+            SMART_MAT_TABLE[0] + PICK_OFFSET_FROM_W_CORNER,
+            SMART_MAT_TABLE[1]
+            - SMART_MAT_TABLE_MAX_LENGTH
+            + PICK_OFFSET_FROM_L_CORNER,
+            SMART_MAT_TABLE[2] + (W / 2),
+            0, ev, 0, ev
+        ]
+*Top_Plate_Place_Pose: [
+            2.3 + (X - (OVERALL_PANEL_HEIGHT / 2)) + SMART_CONV_X_SHIFT,
+            0,
+            SMART_CONV_REST_ELEVATION + H - PICK_OFFSET_FROM_W_CORNER,
+            0, 1, 0, 0
+        ]
+Top_Plate_Pass_Pose: [
+            2.3 + (L / 2) - PICK_OFFSET_FROM_L_CORNER,
+            -1,
+            PASSING_ELEVATION + H,
+            0, ev, ev, 0
+        ]
+
+#BPL+
+<Robot_2, tool0, Bottom_Plate, Bottom_Plate_Pick_Pose>
+<Robot_2, tool0, Bottom_Plate, Bottom_Plate_Place_Pose>
+<Robot_2, tool1, Bottom_Plate, Bottom_Plate_Nail_Pose>
+
+Bottom_Plate_Pick_Pose: [
+            SMART_MAT_TABLE[0] + PICK_OFFSET_FROM_W_CORNER,
+            SMART_MAT_TABLE[1]
+            - SMART_MAT_TABLE_MAX_LENGTH
+            + PICK_OFFSET_FROM_L_CORNER,
+            SMART_MAT_TABLE[2] + (W / 2),
+            0, ev, 0, ev
+        ]
+Bottom_Plate_Place_Pose: [
+            2.3+(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT,
+            0,
+            SMART_CONV_REST_ELEVATION+H-PICK_OFFSET_FROM_W_CORNER,
+            0, 1, 0, 0
+        ]
+**Bottom_Plate_Nail_Pose: [
+            3.69,
+            NAILING_CONV_TARGET,
+            SMART_CONV_REST_ELEVATION+H-(0.7*H),
+            0.5, 0.5, 0.5, 0.
+        ]
+
+#Repetitive+
+<Robot_2, tool0, Vertical_Stud, Vertical_Stud_Pick_Pose>
+<Robot_2, tool0, Vertical_Stud, Vertical_Stud_Place_Pose>
+<Robot_1, tool2, Vertical_Stud, Vertical_Stud_Nail_Pose>
+
+Vertical_Stud_Pick_Pose: [
+            SLOPED_MAT_TABLE[0] + SLOPED_TABLE_PICK_OFFSET_FROM_L_CORNER,
+            (SLOPED_MAT_TABLE[1] - ((np.sqrt(W**2 + H**2)/2) * np.cos((np.radians(SLOPED_MAT_TABLE_ANGLE)) + np.arcsin((W / 2) / (np.sqrt(W**2 + H**2)/2))))) + (((H / 2) - PICK_OFFSET_FROM_W_CORNER) * np.cos(np.radians(SLOPED_MAT_TABLE_ANGLE))),
+            (SLOPED_MAT_TABLE[2] + ((np.sqrt(W**2 + H**2)/2) * np.sin(np.radians(SLOPED_MAT_TABLE_ANGLE) + np.arcsin((W / 2) / (np.sqrt(W**2 + H**2)/2))))) - (((H / 2) - PICK_OFFSET_FROM_W_CORNER) * np.sin(np.radians(SLOPED_MAT_TABLE_ANGLE))),
+            0.866*ev, 0.5*ev, 0.5*ev, 0.866*ev
+        ]
+Vertical_Stud_Place_Pose: [
+            2.3
+            + (X - (OVERALL_PANEL_HEIGHT / 2))
+            + SMART_CONV_X_SHIFT
+            + ((L / 2) - SLOPED_TABLE_PICK_OFFSET_FROM_L_CORNER),
+            NAILING_CONV_TARGET,
+            SMART_CONV_REST_ELEVATION + H - PICK_OFFSET_FROM_W_CORNER,
+            0, ev, ev, 0
+        ]
+Vertical_Stud_Nail_Pose: [
+            1.1,
+            NAILING_CONV_TARGET,
+            SMART_CONV_REST_ELEVATION + H - (0.7 * H),
+            ev, 0, ev, 0
+        ]
+
+
+#King Stud+
+<Robot_2, tool0, King_Stud, King_Stud_Pick_Pose>
+<Robot_2, tool0, King_Stud, King_Stud_Place_Pose>
+<Robot_1, tool2, King_Stud, King_Stud_Nail_Pose>
+
+King_Stud_Pick_Pose: [
+            SLOPED_MAT_TABLE[0] + SLOPED_TABLE_PICK_OFFSET_FROM_L_CORNER,
+            (SLOPED_MAT_TABLE[1] - ((np.sqrt(W**2 + H**2)/2) * np.cos((np.radians(SLOPED_MAT_TABLE_ANGLE)) + np.arcsin((W / 2) / (np.sqrt(W**2 + H**2)/2))))) + (((H / 2) - PICK_OFFSET_FROM_W_CORNER) * np.cos(np.radians(SLOPED_MAT_TABLE_ANGLE))),
+            (SLOPED_MAT_TABLE[2] + ((np.sqrt(W**2 + H**2)/2) * np.sin(np.radians(SLOPED_MAT_TABLE_ANGLE) + np.arcsin((W / 2) / (np.sqrt(W**2 + H**2)/2))))) - (((H / 2) - PICK_OFFSET_FROM_W_CORNER) * np.sin(np.radians(SLOPED_MAT_TABLE_ANGLE))),
+            0.866*ev, 0.5*ev, 0.5*ev, 0.866*ev
+        ]
+King_Stud_Place_Pose: [
+            2.3
+            + (X - (OVERALL_PANEL_HEIGHT / 2))
+            + SMART_CONV_X_SHIFT
+            + ((L / 2) - SLOPED_TABLE_PICK_OFFSET_FROM_L_CORNER),
+            NAILING_CONV_TARGET,
+            SMART_CONV_REST_ELEVATION + H - PICK_OFFSET_FROM_W_CORNER,
+            0, ev, ev, 0
+        ]
+King_Stud_Nail_Pose: [
+            1.1,
+            NAILING_CONV_TARGET,
+            SMART_CONV_REST_ELEVATION + H - (0.7 * H),
+            ev, 0, ev, 0
+        ]
+
+#JCK+
+<Robot_2, tool0, Jack_Stud, Jack_Stud_Pick_Pose>
+<Robot_2, tool0, Jack_Stud, Jack_Stud_Place_Pose>
+<Robot_1, tool2, Jack_Stud, Jack_Stud_Nail_Pose>
+
+Jack_Stud_Pick_Pose: [
+            SMART_MAT_TABLE[0]+PICK_OFFSET_FROM_W_CORNER,
+            SMART_MAT_TABLE[1]-SMART_MAT_TABLE_MAX_LENGTH-STUD_TO_SAW_OFFSET-PICK_OFFSET_FROM_L_CORNER,
+            SMART_MAT_TABLE[2]+(W/2),
+            0, -ev, 0, -ev
+        ]
+Jack_Stud_Place_Pose: [
+            2.3
+            + (X - (OVERALL_PANEL_HEIGHT / 2))
+            + SMART_CONV_X_SHIFT
+            + ((L / 2) - PICK_OFFSET_FROM_L_CORNER),
+            NAILING_CONV_TARGET,
+            SMART_CONV_REST_ELEVATION + H - PICK_OFFSET_FROM_W_CORNER + 0.05,
+            0, -ev, ev, 0
+        ]
+*Jack_Stud_Nail_Pose: [
+            2.3 + (el_pose[0] - (OVERALL_PANEL_HEIGHT / 2)) + SMART_CONV_X_SHIFT - (L / 2) + 0.06096,
+            NAILING_CONV_TARGET + (JACK_NAILING_OFFSET * np.cos(np.radians(JACK_SIDE_NAILING_ANGLE))),
+            (SMART_CONV_REST_ELEVATION + (JACK_NAILING_OFFSET * np.sin(np.radians(JACK_SIDE_NAILING_ANGLE)))),
+            -0.866*ev, 0.866*ev, 0.5*ev, 0.5*ev
+        ]
+
+#TSP+
+<Robot_2, tool0, Top_Sill_Plate, Top_Sill_Plate_Pick_Pose>
+<Robot_1, tool0, Top_Sill_Plate, Top_Sill_Plate_Place_Pose>
+<Robot_2, tool0, Robot_1, tool0, Top_Sill_Plate, Top_Sill_Plate_Pass_Pose>
+<Robot_1, tool2, Top_Sill_Plate, Top_Sill_Plate_Nail_Pose>
+
+Top_Sill_Plate_Pick_Pose: [
+            SMART_MAT_TABLE[0]+PICK_OFFSET_FROM_W_CORNER,
+            SMART_MAT_TABLE[1]-SMART_MAT_TABLE_MAX_LENGTH-STUD_TO_SAW_OFFSET-PICK_OFFSET_FROM_L_CORNER,
+            SMART_MAT_TABLE[2]+(W/2),
+            0, -ev, 0, -ev
+        ]
+*Top_Sill_Plate_Place_Pose: [
+            2.3 + (el_pose[0] - (OVERALL_PANEL_HEIGHT / 2)) + SMART_CONV_X_SHIFT,
+            0,
+            SMART_CONV_REST_ELEVATION + H - PICK_OFFSET_FROM_W_CORNER + 0.1,
+            0, 1, 0, 0
+]
+        Top_Sill_Plate_Pass_Pose: [
+            2.05 + 2 * PICK_OFFSET_FROM_W_CORNER - (H / 2) - 0.3,
+            PICK_OFFSET_FROM_L_CORNER - (PICK_OFFSET_FROM_L_CORNER_AFTER_PASS),
+            1.55,
+            ev, 0, ev, 0
+        ]
+Top_Sill_Plate_Nail_Pose: [
+            2.3+(el_pose[0]-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT,
+            NAILING_CONV_TARGET+((SILL_NAILING_OFFSET*np.cos(np.radians(SILL_NAILING_ANGLE))+(W/2))*(-1)),
+            SMART_CONV_REST_ELEVATION+(H*0.3)+((SILL_NAILING_OFFSET)*np.sin(np.radians(SILL_NAILING_ANGLE))),
+            -0.9659*ev, 0.9659*ev, 0.2588*ev, 0.2588*ev
+        ]
+   
+#TCP+
+<Robot_2, tool0, Top_Cripple_Plate, Top_Cripple_Plate_Pick_Pose>
+<Robot_1, tool0, Top_Cripple_Plate, Top_Cripple_Plate_Place_Pose>
+<Robot_2, tool0, Robot_1, tool0, Top_Cripple_Plate, Top_Cripple_Plate_Pass_Pose>
+<Robot_1, tool2, Top_Cripple_Plate, Top_Cripple_Plate_Nail_Pose>
+
+Top_Cripple_Plate_Pick_Pose: [
+            SMART_MAT_TABLE[0]+PICK_OFFSET_FROM_W_CORNER,
+            SMART_MAT_TABLE[1]-SMART_MAT_TABLE_MAX_LENGTH-STUD_TO_SAW_OFFSET-PICK_OFFSET_FROM_L_CORNER,
+            SMART_MAT_TABLE[2]+(W/2),
+            0, -ev, 0, -ev
+        ]
+Top_Cripple_Plate_Place_Pose: [
+            2.3+(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT-(PICK_OFFSET_FROM_L_CORNER_AFTER_PASS-(L/2)),
+            NAILING_CONV_TARGET,
+            SMART_CONV_REST_ELEVATION+H-PICK_OFFSET_FROM_W_CORNER+0.1,
+            0, -ev, -ev, 0
+]
+        Top_Cripple_Plate_Pass_Pose: [
+            2.05 + 2 * PICK_OFFSET_FROM_W_CORNER - (H / 2) - 0.3,
+            PICK_OFFSET_FROM_L_CORNER - (PICK_OFFSET_FROM_L_CORNER_AFTER_PASS),
+            1.55,
+            ev, 0, ev, 0
+        ]
+Top_Cripple_Plate_Nail_Pose: [
+            1.1,
+            NAILING_CONV_TARGET,
+            SMART_CONV_REST_ELEVATION + H - (0.7 * H),
+            ev, 0, ev, 0
+        ]
+
+#LCP+
+<Robot_2, tool0, Lower_Cripple_Plate, Lower_Cripple_Plate_Pick_Pose>
+<Robot_2, tool0, Lower_Cripple_Plate, Lower_Cripple_Plate_Place_Pose>
+
+Lower_Cripple_Plate_Pick_Pose: [
+            SMART_MAT_TABLE[0]+PICK_OFFSET_FROM_W_CORNER,
+            SMART_MAT_TABLE[1]-SMART_MAT_TABLE_MAX_LENGTH-STUD_TO_SAW_OFFSET-PICK_OFFSET_FROM_L_CORNER,
+            SMART_MAT_TABLE[2]+(W/2),
+            0, -ev, 0, -ev
+        ]
+Lower_Cripple_Plate_Place_Pose: [
+            2.3+(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT-((L/2)-PICK_OFFSET_FROM_L_CORNER),
+            0,
+            SMART_CONV_REST_ELEVATION+H-PICK_OFFSET_FROM_W_CORNER,
+            0, -ev, -ev, 0
+        ]
+
+#LSP+
+<Robot_2, tool0, Lower_Sill_Plate, Lower_Sill_Plate_Pick_Pose>
+<Robot_2, tool0, Lower_Sill_Plate, Lower_Sill_Plate_Place_Pose>
+<Robot_2, tool1, Lower_Sill_Plate, Lower_Sill_Plate_Nail_Pose>
+
+Lower_Sill_Plate_Pick_Pose: [
+            SMART_MAT_TABLE[0]+PICK_OFFSET_FROM_W_CORNER,
+            SMART_MAT_TABLE[1]-SMART_MAT_TABLE_MAX_LENGTH-STUD_TO_SAW_OFFSET-PICK_OFFSET_FROM_L_CORNER,
+            SMART_MAT_TABLE[2]+(W/2),
+            0, -ev, 0, -ev
+        ]
+Lower_Sill_Plate_Place_Pose: [
+            2.3+(el_pose[0]-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT,
+            0,
+            SMART_CONV_REST_ELEVATION+H-PICK_OFFSET_FROM_W_CORNER+0.3,
+            0, -1, 0, 0
+        ]
+Lower_Sill_Plate_Nail_Pose: [
+            2.3+(el_pose[0]-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT,
+            -NAILING_CONV_TARGET+((SILL_NAILING_OFFSET*np.cos(np.radians(SILL_NAILING_ANGLE))+(el_dims[1]*(3/2)))),
+            SMART_CONV_REST_ELEVATION+(el_dims[2]*0.3)+((SILL_NAILING_OFFSET)*np.sin(np.radians(SILL_NAILING_ANGLE))),
+            0, 0.5*ev, 0.866*ev, 0
+        ]
+
+#L/U Stud+
+<Robot_2, tool0, L_U_Stud, L_U_Stud_Pick_Pose>
+<Robot_2, tool0, Robot_1, tool1, L_U_Stud, L_U_Stud_Pass_Pose>
+<Robot_1, tool1, L_U_Stud, L_U_Stud_Place_Pose>
+
+L_U_Stud_Pick_Pose: [
+            SLOPED_MAT_TABLE[0] + SLOPED_TABLE_PICK_OFFSET_FROM_L_CORNER,
+            (SLOPED_MAT_TABLE[1] - ((np.sqrt(W**2 + H**2)/2) * np.cos((np.radians(SLOPED_MAT_TABLE_ANGLE)) + np.arcsin((W / 2) / (np.sqrt(W**2 + H**2)/2))))) + (((H / 2) - PICK_OFFSET_FROM_W_CORNER) * np.cos(np.radians(SLOPED_MAT_TABLE_ANGLE))),
+            (SLOPED_MAT_TABLE[2] + ((np.sqrt(W**2 + H**2)/2) * np.sin(np.radians(SLOPED_MAT_TABLE_ANGLE) + np.arcsin((W / 2) / (np.sqrt(W**2 + H**2)/2))))) - (((H / 2) - PICK_OFFSET_FROM_W_CORNER) * np.sin(np.radians(SLOPED_MAT_TABLE_ANGLE))),
+            0.866*ev, 0.5*ev, 0.5*ev, 0.866*ev
+        ]
+L_U_Stud_Pass_Pose: [
+            2.81634-(np.cos(np.radians(L_U_PASS_ANGLE))),
+            1.25053-PICK_OFFSET_FROM_W_CORNER+H/2,
+            1.35738+(np.sin(np.radians(L_U_PASS_ANGLE)))-0.06,
+            0.96593, 0, 0.25882, 0
+        ]
+L_U_Stud_Place_Pose: [
+            2.3-(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT-(L/2),
+            0,
+            SMART_CONV_REST_ELEVATION+Z+(W/2),
+            0, 1, 0, 0
+        ]
+
+#BL+
+<Robot_1, tool1, Load_Bearing, Load_Bearing_Pick_Pose>
+<Robot_1, tool1, Load_Bearing, Load_Bearing_Place_Pose>
+<Robot_1, tool2, Load_Bearing, Load_Bearing_Nail_Pose>
+
+Load_Bearing_Pick_Pose: [
+            HEADER_CENTER_COORINATION[0]+(-RAW_HEADER_DIMENSIONS[2])/2,
+            HEADER_CENTER_COORINATION[1]-(RAW_HEADER_DIMENSIONS[0]/2)+HEADER_PICK_OFFSET_L,
+            HEADER_CENTER_COORINATION[2]+NUMBER_OF_HEADERS*RAW_HEADER_DIMENSIONS[1],
+            0, ev, -ev, 0
+        ]
+Load_Bearing_Place_Pose: [
+            2.3+(X-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT,
+            0,
+            SMART_CONV_REST_ELEVATION+W+0.15,
+            0, ev, ev, 0
+        ]
+*Load_Bearing_Nail_Pose: [
+            2.3+(el_pose[0]-(OVERALL_PANEL_HEIGHT/2))+SMART_CONV_X_SHIFT+0.2*H,
+            NAILING_CONV_TARGET+((BR_NAILING_OFFSET*np.cos(np.radians(BR_NAILING_ANGLE))+(W/2))*(-1)),
+            SMART_CONV_REST_ELEVATION+(el_pose[2])+((BR_NAILING_OFFSET)*np.sin(np.radians(BR_NAILING_ANGLE)))+STUD_HEIGHT*0.2,
+            0.3827*ev, -0.9239*ev, 0.9239*ev, 0.3827*ev
+        ]
+
+#OSB+
+<Robot_1, tool1, OSB_Sheathing_Plate, OSB_Sheathing_Plate_Pick_Pose>
+<Robot_1, tool1, OSB_Sheathing_Plate, OSB_Sheathing_Plate_Place_Pose>
+<Robot_1, tool2, OSB_Sheathing_Plate, OSB_Sheathing_Plate_Nail_Pose>
+
+OSB_Sheathing_Plate_Pick_Pose: [
+            SHEATHING_PLATE_TABLE_BOTTOM_CENTER[0],
+            SHEATHING_PLATE_TABLE_BOTTOM_CENTER[1]-(OFFSET_FROM_SHEATHING_PLATE_TABLE_BOT),
+            SHEATHING_PLATE_TABLE_BOTTOM_CENTER[2]+H,
+            0, ev, ev, 0
+        ]
+*OSB_Sheathing_Plate_Place_Pose: [
+            2.3 - (X) + OFFSET_FROM_SHEATHING_PLATE_TABLE_BOT + SMART_CONV_X_SHIFT,
+            0,
+            SMART_CONV_REST_ELEVATION + Z,
+            0, 0, -1, 0
+        ]
+*OSB_Sheathing_Plate_Nail_Pose: [
+            2.3 - (OVERALL_PANEL_HEIGHT/2)+(STUD_THICKNESS/2) + SMART_CONV_X_SHIFT + (L),
+            0,
+            SMART_CONV_REST_ELEVATION+STUD_HEIGHT+H+0.05,
+            1, 0, 0, 0
+        ]
+____________________________________________________________________________

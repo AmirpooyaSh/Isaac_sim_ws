@@ -1,0 +1,2961 @@
+{
+  "generator": "o3 Multi-Agent HLAF Generator",
+  "status": "success",
+  "started_at_utc": "2026-07-12T20:20:13.834043+00:00",
+  "completed_at_utc": "2026-07-12T20:20:59.633883+00:00",
+  "duration_seconds": 45.799849,
+  "files": {
+    "hlaf_flow_input": "L_A_II_Output.json",
+    "primitive_definitions": "Primitive_Library_Definitions.json",
+    "configuration": "config.json",
+    "output": "AI_Generated_HLAFs.py",
+    "run_record": "AI_HLAF_Generation_Run_Record.json"
+  },
+  "agents": {
+    "Sb-A": {
+      "instructions": "You are Sb-A-II, the Simulation-Based HLAF Generation Agent.\n\nThe recursive pose-correction stage Sb-A-I has already completed. Every Pick\npose supplied to you is the final validated TCP pose.\n\nFor each assigned Pick block, generate exactly this behavior:\n1. Call <robot>.plan with the supplied tool id, position, and quaternion.\n2. Call <robot>.render_exec().\n3. Call <robot>.eef_attach with the supplied runtime robot name, tool id, and\n   element_object_name.\n4. Call <robot>.move_to_home().\n\nThe robot controllers expose only these relevant low-level functions:\n\nplan(\n    tcp_name: str,\n    target_pose: np.array,\n    target_orientation: np.array\n)\n\nrender_exec(\n    renderInstance: bool = True,\n    Show_Sphere: Optional[bool] = True,\n    is_synchronizer: bool = False\n)\n\nmove_to_home(\n    if_show_spheres: bool = False,\n    Customized_JS: List[float] = [0, -0.5, 0.5, 0, 0, 0],\n    removing_primitives=[]\n)\n\neef_attach(\n    r_name: str,\n    tool_name: str,\n    attaching_object_name: str\n)\n\neef_detach(\n    r_name: str,\n    tool_name: str,\n    detaching_object_name: str\n)\n\nRules shared by all agents:\n- Generate Python statements only; do not generate imports, functions, classes,\n  Markdown, prose, placeholders, or ellipses.\n- Use only the controller variable, tool id, runtime robot name, pose\n  expressions, quaternion, and element_object_name supplied in each task.\n- Every low-level call must be invoked as a method of the supplied controller\n  variable, such as robot_2.plan(...) or robot_2.eef_detach(...). Never emit\n  plan(...), render_exec(...), move_to_home(...), eef_attach(...), or\n  eef_detach(...) as bare functions.\n- Quaternion arrays must use [w, x, y, z] order.\n- Call render_exec immediately after each plan.\n- Pass only tcp_name, target_pose, and target_orientation to plan.\n- Use np.array([...], dtype=float) for both pose and orientation.\n- Do not invent or change pose expressions.\n- move_to_home performs its own execution; never follow it with render_exec.\n\nReturn every requested block through submit_hlaf_code_blocks.",
+      "instructions_sha256": "84885956665b62fabc115416523d3386fbe44aebe901975aa342c83001a0cce2",
+      "prompt": "Generate all code blocks assigned to Sb-A.\n\nReturn one block for every task and copy each block_id exactly.\n\n[\n  {\n    \"block_id\": \"flow_001_procedure_001_sb_a\",\n    \"action\": \"Pick\",\n    \"flow_index\": 1,\n    \"procedure_indexes\": [\n      1\n    ],\n    \"element\": \"Vertical Stud\",\n    \"sub_step\": \"Set stud on bottom plate layout mark and tip into place under top plate\",\n    \"robot\": \"Robot_2\",\n    \"controller_variable\": \"robot_2\",\n    \"runtime_robot_name\": \"IRB6620_R2\",\n    \"tool_name\": \"Gripper\",\n    \"tool_id\": \"tool0\",\n    \"pose\": {\n      \"name\": \"Vertical_Stud_Pick_Pose\",\n      \"units\": {\n        \"position\": \"meter\",\n        \"element_dimensions\": \"meter\"\n      },\n      \"required_variables\": [\n        \"W\"\n      ],\n      \"position\": {\n        \"x\": {\n          \"expression\": \"4.179000\",\n          \"variables\": []\n        },\n        \"y\": {\n          \"expression\": \"-2.422283 + (0.250000 * W)\",\n          \"variables\": [\n            \"W\"\n          ]\n        },\n        \"z\": {\n          \"expression\": \"1.048050 + (0.433013 * W)\",\n          \"variables\": [\n            \"W\"\n          ]\n        }\n      },\n      \"orientation_quaternion\": {\n        \"w\": 0.612354,\n        \"x\": 0.612354,\n        \"y\": 0.353553,\n        \"z\": 0.353553\n      }\n    }\n  }\n]\n\n--- NEXT BATCH ---\n\nGenerate all code blocks assigned to Sb-A.\n\nReturn one block for every task and copy each block_id exactly.\n\n[\n  {\n    \"block_id\": \"flow_003_procedure_001_sb_a\",\n    \"action\": \"Pick\",\n    \"flow_index\": 3,\n    \"procedure_indexes\": [\n      1\n    ],\n    \"element\": \"King Stud\",\n    \"sub_step\": \"Stand each king stud against layout line flanking rough opening\",\n    \"robot\": \"Robot_2\",\n    \"controller_variable\": \"robot_2\",\n    \"runtime_robot_name\": \"IRB6620_R2\",\n    \"tool_name\": \"Gripper\",\n    \"tool_id\": \"tool0\",\n    \"pose\": {\n      \"name\": \"King_Stud_Pick_Pose\",\n      \"units\": {\n        \"position\": \"meter\",\n        \"element_dimensions\": \"meter\"\n      },\n      \"required_variables\": [\n        \"W\"\n      ],\n      \"position\": {\n        \"x\": {\n          \"expression\": \"4.179000\",\n          \"variables\": []\n        },\n        \"y\": {\n          \"expression\": \"-2.422283 + (0.250000 * W)\",\n          \"variables\": [\n            \"W\"\n          ]\n        },\n        \"z\": {\n          \"expression\": \"1.048050 + (0.433013 * W)\",\n          \"variables\": [\n            \"W\"\n          ]\n        }\n      },\n      \"orientation_quaternion\": {\n        \"w\": 0.612354,\n        \"x\": 0.612354,\n        \"y\": 0.353553,\n        \"z\": 0.353553\n      }\n    }\n  }\n]\n\n--- NEXT BATCH ---\n\nGenerate all code blocks assigned to Sb-A.\n\nReturn one block for every task and copy each block_id exactly.\n\n[\n  {\n    \"block_id\": \"flow_005_procedure_001_sb_a\",\n    \"action\": \"Pick\",\n    \"flow_index\": 5,\n    \"procedure_indexes\": [\n      1\n    ],\n    \"element\": \"Lower Cripple Stud\",\n    \"sub_step\": \"Position cripples at marked on-center spacing below sill opening\",\n    \"robot\": \"Robot_2\",\n    \"controller_variable\": \"robot_2\",\n    \"runtime_robot_name\": \"IRB6620_R2\",\n    \"tool_name\": \"Gripper\",\n    \"tool_id\": \"tool0\",\n    \"pose\": {\n      \"name\": \"Lower_Cripple_Plate_Pick_Pose\",\n      \"units\": {\n        \"position\": \"meter\",\n        \"element_dimensions\": \"meter\"\n      },\n      \"required_variables\": [\n        \"W\"\n      ],\n      \"position\": {\n        \"x\": {\n          \"expression\": \"6.450100\",\n          \"variables\": []\n        },\n        \"y\": {\n          \"expression\": \"0.782470\",\n          \"variables\": []\n        },\n        \"z\": {\n          \"expression\": \"0.803000 + (W / 2)\",\n          \"variables\": [\n            \"W\"\n          ]\n        }\n      },\n      \"orientation_quaternion\": {\n        \"w\": -0.707107,\n        \"x\": 0.0,\n        \"y\": -0.707107,\n        \"z\": 0.0\n      }\n    }\n  }\n]\n\n--- NEXT BATCH ---\n\nGenerate all code blocks assigned to Sb-A.\n\nReturn one block for every task and copy each block_id exactly.\n\n[\n  {\n    \"block_id\": \"flow_006_procedure_001_sb_a\",\n    \"action\": \"Pick\",\n    \"flow_index\": 6,\n    \"procedure_indexes\": [\n      1\n    ],\n    \"element\": \"OSB Sheathing Plate\",\n    \"sub_step\": \"Position first sheet flush with bottom plate and edge of framing\",\n    \"robot\": \"Robot_1\",\n    \"controller_variable\": \"robot_1\",\n    \"runtime_robot_name\": \"IRB6620_R1\",\n    \"tool_name\": \"Suction_Cup\",\n    \"tool_id\": \"tool1\",\n    \"pose\": {\n      \"name\": \"OSB_Sheathing_Plate_Pick_Pose\",\n      \"units\": {\n        \"position\": \"meter\",\n        \"element_dimensions\": \"meter\"\n      },\n      \"required_variables\": [\n        \"H\"\n      ],\n      \"position\": {\n        \"x\": {\n          \"expression\": \"0.000000\",\n          \"variables\": []\n        },\n        \"y\": {\n          \"expression\": \"-1.500000\",\n          \"variables\": []\n        },\n        \"z\": {\n          \"expression\": \"H + 0.600000\",\n          \"variables\": [\n            \"H\"\n          ]\n        }\n      },\n      \"orientation_quaternion\": {\n        \"w\": 0.0,\n        \"x\": 0.0,\n        \"y\": 0.707107,\n        \"z\": 0.707107\n      }\n    }\n  }\n]\n\n--- NEXT BATCH ---\n\nGenerate all code blocks assigned to Sb-A.\n\nReturn one block for every task and copy each block_id exactly.\n\n[\n  {\n    \"block_id\": \"flow_008_procedure_001_sb_a\",\n    \"action\": \"Pick\",\n    \"flow_index\": 8,\n    \"procedure_indexes\": [\n      1\n    ],\n    \"element\": \"Top Plate\",\n    \"sub_step\": \"Install second (cap) plate overlapping joints for strength\",\n    \"robot\": \"Robot_2\",\n    \"controller_variable\": \"robot_2\",\n    \"runtime_robot_name\": \"IRB6620_R2\",\n    \"tool_name\": \"Gripper\",\n    \"tool_id\": \"tool0\",\n    \"pose\": {\n      \"name\": \"Top_Plate_Pick_Pose\",\n      \"units\": {\n        \"position\": \"meter\",\n        \"element_dimensions\": \"meter\"\n      },\n      \"required_variables\": [\n        \"W\"\n      ],\n      \"position\": {\n        \"x\": {\n          \"expression\": \"6.450100\",\n          \"variables\": []\n        },\n        \"y\": {\n          \"expression\": \"1.003400\",\n          \"variables\": []\n        },\n        \"z\": {\n          \"expression\": \"0.803000 + (W / 2)\",\n          \"variables\": [\n            \"W\"\n          ]\n        }\n      },\n      \"orientation_quaternion\": {\n        \"w\": 0.707107,\n        \"x\": 0.0,\n        \"y\": 0.707107,\n        \"z\": 0.0\n      }\n    }\n  }\n]\n\n--- NEXT BATCH ---\n\nGenerate all code blocks assigned to Sb-A.\n\nReturn one block for every task and copy each block_id exactly.\n\n[\n  {\n    \"block_id\": \"flow_009_procedure_001_sb_a\",\n    \"action\": \"Pick\",\n    \"flow_index\": 9,\n    \"procedure_indexes\": [\n      1\n    ],\n    \"element\": \"Jack Stud\",\n    \"sub_step\": \"Place each jack stud against king stud at opening sides\",\n    \"robot\": \"Robot_2\",\n    \"controller_variable\": \"robot_2\",\n    \"runtime_robot_name\": \"IRB6620_R2\",\n    \"tool_name\": \"Gripper\",\n    \"tool_id\": \"tool0\",\n    \"pose\": {\n      \"name\": \"Jack_Stud_Pick_Pose\",\n      \"units\": {\n        \"position\": \"meter\",\n        \"element_dimensions\": \"meter\"\n      },\n      \"required_variables\": [\n        \"W\"\n      ],\n      \"position\": {\n        \"x\": {\n          \"expression\": \"6.450100\",\n          \"variables\": []\n        },\n        \"y\": {\n          \"expression\": \"0.782470\",\n          \"variables\": []\n        },\n        \"z\": {\n          \"expression\": \"0.803000 + (W / 2)\",\n          \"variables\": [\n            \"W\"\n          ]\n        }\n      },\n      \"orientation_quaternion\": {\n        \"w\": -0.707107,\n        \"x\": 0.0,\n        \"y\": -0.707107,\n        \"z\": 0.0\n      }\n    }\n  }\n]\n\n--- NEXT BATCH ---\n\nGenerate all code blocks assigned to Sb-A.\n\nReturn one block for every task and copy each block_id exactly.\n\n[\n  {\n    \"block_id\": \"flow_011_procedure_001_sb_a\",\n    \"action\": \"Pick\",\n    \"flow_index\": 11,\n    \"procedure_indexes\": [\n      1\n    ],\n    \"element\": \"Bear Loading\",\n    \"sub_step\": \"Lift header onto jack studs within opening using additional help or temporary support\",\n    \"robot\": \"Robot_1\",\n    \"controller_variable\": \"robot_1\",\n    \"runtime_robot_name\": \"IRB6620_R1\",\n    \"tool_name\": \"Suction_Cup\",\n    \"tool_id\": \"tool1\",\n    \"pose\": {\n      \"name\": \"Load_Bearing_Pick_Pose\",\n      \"units\": {\n        \"position\": \"meter\",\n        \"element_dimensions\": \"meter\"\n      },\n      \"required_variables\": [],\n      \"position\": {\n        \"x\": {\n          \"expression\": \"-1.127000\",\n          \"variables\": []\n        },\n        \"y\": {\n          \"expression\": \"1.020000\",\n          \"variables\": []\n        },\n        \"z\": {\n          \"expression\": \"0.354000\",\n          \"variables\": []\n        }\n      },\n      \"orientation_quaternion\": {\n        \"w\": 0.0,\n        \"x\": 0.0,\n        \"y\": 0.707107,\n        \"z\": -0.707107\n      }\n    }\n  }\n]\n\n--- NEXT BATCH ---\n\nGenerate all code blocks assigned to Sb-A.\n\nReturn one block for every task and copy each block_id exactly.\n\n[\n  {\n    \"block_id\": \"flow_013_procedure_001_sb_a\",\n    \"action\": \"Pick\",\n    \"flow_index\": 13,\n    \"procedure_indexes\": [\n      1\n    ],\n    \"element\": \"L/U Stud\",\n    \"sub_step\": \"Stand stud in place providing space for service penetrations as detailed\",\n    \"robot\": \"Robot_2\",\n    \"controller_variable\": \"robot_2\",\n    \"runtime_robot_name\": \"IRB6620_R2\",\n    \"tool_name\": \"Gripper\",\n    \"tool_id\": \"tool0\",\n    \"pose\": {\n      \"name\": \"L_U_Stud_Pick_Pose\",\n      \"units\": {\n        \"position\": \"meter\",\n        \"element_dimensions\": \"meter\"\n      },\n      \"required_variables\": [\n        \"W\"\n      ],\n      \"position\": {\n        \"x\": {\n          \"expression\": \"4.179000\",\n          \"variables\": []\n        },\n        \"y\": {\n          \"expression\": \"-2.422283 + (0.250000 * W)\",\n          \"variables\": [\n            \"W\"\n          ]\n        },\n        \"z\": {\n          \"expression\": \"1.048050 + (0.433013 * W)\",\n          \"variables\": [\n            \"W\"\n          ]\n        }\n      },\n      \"orientation_quaternion\": {\n        \"w\": 0.612354,\n        \"x\": 0.612354,\n        \"y\": 0.353553,\n        \"z\": 0.353553\n      }\n    }\n  }\n]\n\n--- NEXT BATCH ---\n\nGenerate all code blocks assigned to Sb-A.\n\nReturn one block for every task and copy each block_id exactly.\n\n[\n  {\n    \"block_id\": \"flow_014_procedure_001_sb_a\",\n    \"action\": \"Pick\",\n    \"flow_index\": 14,\n    \"procedure_indexes\": [\n      1\n    ],\n    \"element\": \"Lower Sill Plate\",\n    \"sub_step\": \"Position sill on marked lines with crown up and faces flush\",\n    \"robot\": \"Robot_2\",\n    \"controller_variable\": \"robot_2\",\n    \"runtime_robot_name\": \"IRB6620_R2\",\n    \"tool_name\": \"Gripper\",\n    \"tool_id\": \"tool0\",\n    \"pose\": {\n      \"name\": \"Lower_Sill_Plate_Pick_Pose\",\n      \"units\": {\n        \"position\": \"meter\",\n        \"element_dimensions\": \"meter\"\n      },\n      \"required_variables\": [\n        \"W\"\n      ],\n      \"position\": {\n        \"x\": {\n          \"expression\": \"6.450100\",\n          \"variables\": []\n        },\n        \"y\": {\n          \"expression\": \"0.782470\",\n          \"variables\": []\n        },\n        \"z\": {\n          \"expression\": \"0.803000 + (W / 2)\",\n          \"variables\": [\n            \"W\"\n          ]\n        }\n      },\n      \"orientation_quaternion\": {\n        \"w\": -0.707107,\n        \"x\": 0.0,\n        \"y\": -0.707107,\n        \"z\": 0.0\n      }\n    }\n  }\n]\n\n--- NEXT BATCH ---\n\nGenerate all code blocks assigned to Sb-A.\n\nReturn one block for every task and copy each block_id exactly.\n\n[\n  {\n    \"block_id\": \"flow_017_procedure_001_sb_a\",\n    \"action\": \"Pick\",\n    \"flow_index\": 17,\n    \"procedure_indexes\": [\n      1\n    ],\n    \"element\": \"Top Sill Plate\",\n    \"sub_step\": \"Set top sill on marks and hold flush with inner faces of studs\",\n    \"robot\": \"Robot_2\",\n    \"controller_variable\": \"robot_2\",\n    \"runtime_robot_name\": \"IRB6620_R2\",\n    \"tool_name\": \"Gripper\",\n    \"tool_id\": \"tool0\",\n    \"pose\": {\n      \"name\": \"Top_Sill_Plate_Pick_Pose\",\n      \"units\": {\n        \"position\": \"meter\",\n        \"element_dimensions\": \"meter\"\n      },\n      \"required_variables\": [\n        \"W\"\n      ],\n      \"position\": {\n        \"x\": {\n          \"expression\": \"6.450100\",\n          \"variables\": []\n        },\n        \"y\": {\n          \"expression\": \"0.782470\",\n          \"variables\": []\n        },\n        \"z\": {\n          \"expression\": \"0.803000 + (W / 2)\",\n          \"variables\": [\n            \"W\"\n          ]\n        }\n      },\n      \"orientation_quaternion\": {\n        \"w\": -0.707107,\n        \"x\": 0.0,\n        \"y\": -0.707107,\n        \"z\": 0.0\n      }\n    }\n  }\n]\n\n--- NEXT BATCH ---\n\nGenerate all code blocks assigned to Sb-A.\n\nReturn one block for every task and copy each block_id exactly.\n\n[\n  {\n    \"block_id\": \"flow_019_procedure_001_sb_a\",\n    \"action\": \"Pick\",\n    \"flow_index\": 19,\n    \"procedure_indexes\": [\n      1\n    ],\n    \"element\": \"Top Cripple Stud\",\n    \"sub_step\": \"Position cripples at on-center spacing above opening between header and top plate\",\n    \"robot\": \"Robot_2\",\n    \"controller_variable\": \"robot_2\",\n    \"runtime_robot_name\": \"IRB6620_R2\",\n    \"tool_name\": \"Gripper\",\n    \"tool_id\": \"tool0\",\n    \"pose\": {\n      \"name\": \"Top_Cripple_Plate_Pick_Pose\",\n      \"units\": {\n        \"position\": \"meter\",\n        \"element_dimensions\": \"meter\"\n      },\n      \"required_variables\": [\n        \"W\"\n      ],\n      \"position\": {\n        \"x\": {\n          \"expression\": \"6.450100\",\n          \"variables\": []\n        },\n        \"y\": {\n          \"expression\": \"0.782470\",\n          \"variables\": []\n        },\n        \"z\": {\n          \"expression\": \"0.803000 + (W / 2)\",\n          \"variables\": [\n            \"W\"\n          ]\n        }\n      },\n      \"orientation_quaternion\": {\n        \"w\": -0.707107,\n        \"x\": 0.0,\n        \"y\": -0.707107,\n        \"z\": 0.0\n      }\n    }\n  }\n]",
+      "prompt_sha256": "6bf82e00951698becf427aa8550784e78f7f9a6e34a73c9ed7bf80830789fcf5",
+      "tasks": [
+        {
+          "block_id": "flow_001_procedure_001_sb_a",
+          "action": "Pick",
+          "flow_index": 1,
+          "procedure_indexes": [
+            1
+          ],
+          "element": "Vertical Stud",
+          "sub_step": "Set stud on bottom plate layout mark and tip into place under top plate",
+          "robot": "Robot_2",
+          "controller_variable": "robot_2",
+          "runtime_robot_name": "IRB6620_R2",
+          "tool_name": "Gripper",
+          "tool_id": "tool0",
+          "pose": {
+            "name": "Vertical_Stud_Pick_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "W"
+            ],
+            "position": {
+              "x": {
+                "expression": "4.179000",
+                "variables": []
+              },
+              "y": {
+                "expression": "-2.422283 + (0.250000 * W)",
+                "variables": [
+                  "W"
+                ]
+              },
+              "z": {
+                "expression": "1.048050 + (0.433013 * W)",
+                "variables": [
+                  "W"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.612354,
+              "x": 0.612354,
+              "y": 0.353553,
+              "z": 0.353553
+            }
+          }
+        },
+        {
+          "block_id": "flow_003_procedure_001_sb_a",
+          "action": "Pick",
+          "flow_index": 3,
+          "procedure_indexes": [
+            1
+          ],
+          "element": "King Stud",
+          "sub_step": "Stand each king stud against layout line flanking rough opening",
+          "robot": "Robot_2",
+          "controller_variable": "robot_2",
+          "runtime_robot_name": "IRB6620_R2",
+          "tool_name": "Gripper",
+          "tool_id": "tool0",
+          "pose": {
+            "name": "King_Stud_Pick_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "W"
+            ],
+            "position": {
+              "x": {
+                "expression": "4.179000",
+                "variables": []
+              },
+              "y": {
+                "expression": "-2.422283 + (0.250000 * W)",
+                "variables": [
+                  "W"
+                ]
+              },
+              "z": {
+                "expression": "1.048050 + (0.433013 * W)",
+                "variables": [
+                  "W"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.612354,
+              "x": 0.612354,
+              "y": 0.353553,
+              "z": 0.353553
+            }
+          }
+        },
+        {
+          "block_id": "flow_005_procedure_001_sb_a",
+          "action": "Pick",
+          "flow_index": 5,
+          "procedure_indexes": [
+            1
+          ],
+          "element": "Lower Cripple Stud",
+          "sub_step": "Position cripples at marked on-center spacing below sill opening",
+          "robot": "Robot_2",
+          "controller_variable": "robot_2",
+          "runtime_robot_name": "IRB6620_R2",
+          "tool_name": "Gripper",
+          "tool_id": "tool0",
+          "pose": {
+            "name": "Lower_Cripple_Plate_Pick_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "W"
+            ],
+            "position": {
+              "x": {
+                "expression": "6.450100",
+                "variables": []
+              },
+              "y": {
+                "expression": "0.782470",
+                "variables": []
+              },
+              "z": {
+                "expression": "0.803000 + (W / 2)",
+                "variables": [
+                  "W"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": -0.707107,
+              "x": 0.0,
+              "y": -0.707107,
+              "z": 0.0
+            }
+          }
+        },
+        {
+          "block_id": "flow_006_procedure_001_sb_a",
+          "action": "Pick",
+          "flow_index": 6,
+          "procedure_indexes": [
+            1
+          ],
+          "element": "OSB Sheathing Plate",
+          "sub_step": "Position first sheet flush with bottom plate and edge of framing",
+          "robot": "Robot_1",
+          "controller_variable": "robot_1",
+          "runtime_robot_name": "IRB6620_R1",
+          "tool_name": "Suction_Cup",
+          "tool_id": "tool1",
+          "pose": {
+            "name": "OSB_Sheathing_Plate_Pick_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "H"
+            ],
+            "position": {
+              "x": {
+                "expression": "0.000000",
+                "variables": []
+              },
+              "y": {
+                "expression": "-1.500000",
+                "variables": []
+              },
+              "z": {
+                "expression": "H + 0.600000",
+                "variables": [
+                  "H"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.0,
+              "x": 0.0,
+              "y": 0.707107,
+              "z": 0.707107
+            }
+          }
+        },
+        {
+          "block_id": "flow_008_procedure_001_sb_a",
+          "action": "Pick",
+          "flow_index": 8,
+          "procedure_indexes": [
+            1
+          ],
+          "element": "Top Plate",
+          "sub_step": "Install second (cap) plate overlapping joints for strength",
+          "robot": "Robot_2",
+          "controller_variable": "robot_2",
+          "runtime_robot_name": "IRB6620_R2",
+          "tool_name": "Gripper",
+          "tool_id": "tool0",
+          "pose": {
+            "name": "Top_Plate_Pick_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "W"
+            ],
+            "position": {
+              "x": {
+                "expression": "6.450100",
+                "variables": []
+              },
+              "y": {
+                "expression": "1.003400",
+                "variables": []
+              },
+              "z": {
+                "expression": "0.803000 + (W / 2)",
+                "variables": [
+                  "W"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.707107,
+              "x": 0.0,
+              "y": 0.707107,
+              "z": 0.0
+            }
+          }
+        },
+        {
+          "block_id": "flow_009_procedure_001_sb_a",
+          "action": "Pick",
+          "flow_index": 9,
+          "procedure_indexes": [
+            1
+          ],
+          "element": "Jack Stud",
+          "sub_step": "Place each jack stud against king stud at opening sides",
+          "robot": "Robot_2",
+          "controller_variable": "robot_2",
+          "runtime_robot_name": "IRB6620_R2",
+          "tool_name": "Gripper",
+          "tool_id": "tool0",
+          "pose": {
+            "name": "Jack_Stud_Pick_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "W"
+            ],
+            "position": {
+              "x": {
+                "expression": "6.450100",
+                "variables": []
+              },
+              "y": {
+                "expression": "0.782470",
+                "variables": []
+              },
+              "z": {
+                "expression": "0.803000 + (W / 2)",
+                "variables": [
+                  "W"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": -0.707107,
+              "x": 0.0,
+              "y": -0.707107,
+              "z": 0.0
+            }
+          }
+        },
+        {
+          "block_id": "flow_011_procedure_001_sb_a",
+          "action": "Pick",
+          "flow_index": 11,
+          "procedure_indexes": [
+            1
+          ],
+          "element": "Bear Loading",
+          "sub_step": "Lift header onto jack studs within opening using additional help or temporary support",
+          "robot": "Robot_1",
+          "controller_variable": "robot_1",
+          "runtime_robot_name": "IRB6620_R1",
+          "tool_name": "Suction_Cup",
+          "tool_id": "tool1",
+          "pose": {
+            "name": "Load_Bearing_Pick_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [],
+            "position": {
+              "x": {
+                "expression": "-1.127000",
+                "variables": []
+              },
+              "y": {
+                "expression": "1.020000",
+                "variables": []
+              },
+              "z": {
+                "expression": "0.354000",
+                "variables": []
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.0,
+              "x": 0.0,
+              "y": 0.707107,
+              "z": -0.707107
+            }
+          }
+        },
+        {
+          "block_id": "flow_013_procedure_001_sb_a",
+          "action": "Pick",
+          "flow_index": 13,
+          "procedure_indexes": [
+            1
+          ],
+          "element": "L/U Stud",
+          "sub_step": "Stand stud in place providing space for service penetrations as detailed",
+          "robot": "Robot_2",
+          "controller_variable": "robot_2",
+          "runtime_robot_name": "IRB6620_R2",
+          "tool_name": "Gripper",
+          "tool_id": "tool0",
+          "pose": {
+            "name": "L_U_Stud_Pick_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "W"
+            ],
+            "position": {
+              "x": {
+                "expression": "4.179000",
+                "variables": []
+              },
+              "y": {
+                "expression": "-2.422283 + (0.250000 * W)",
+                "variables": [
+                  "W"
+                ]
+              },
+              "z": {
+                "expression": "1.048050 + (0.433013 * W)",
+                "variables": [
+                  "W"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.612354,
+              "x": 0.612354,
+              "y": 0.353553,
+              "z": 0.353553
+            }
+          }
+        },
+        {
+          "block_id": "flow_014_procedure_001_sb_a",
+          "action": "Pick",
+          "flow_index": 14,
+          "procedure_indexes": [
+            1
+          ],
+          "element": "Lower Sill Plate",
+          "sub_step": "Position sill on marked lines with crown up and faces flush",
+          "robot": "Robot_2",
+          "controller_variable": "robot_2",
+          "runtime_robot_name": "IRB6620_R2",
+          "tool_name": "Gripper",
+          "tool_id": "tool0",
+          "pose": {
+            "name": "Lower_Sill_Plate_Pick_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "W"
+            ],
+            "position": {
+              "x": {
+                "expression": "6.450100",
+                "variables": []
+              },
+              "y": {
+                "expression": "0.782470",
+                "variables": []
+              },
+              "z": {
+                "expression": "0.803000 + (W / 2)",
+                "variables": [
+                  "W"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": -0.707107,
+              "x": 0.0,
+              "y": -0.707107,
+              "z": 0.0
+            }
+          }
+        },
+        {
+          "block_id": "flow_017_procedure_001_sb_a",
+          "action": "Pick",
+          "flow_index": 17,
+          "procedure_indexes": [
+            1
+          ],
+          "element": "Top Sill Plate",
+          "sub_step": "Set top sill on marks and hold flush with inner faces of studs",
+          "robot": "Robot_2",
+          "controller_variable": "robot_2",
+          "runtime_robot_name": "IRB6620_R2",
+          "tool_name": "Gripper",
+          "tool_id": "tool0",
+          "pose": {
+            "name": "Top_Sill_Plate_Pick_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "W"
+            ],
+            "position": {
+              "x": {
+                "expression": "6.450100",
+                "variables": []
+              },
+              "y": {
+                "expression": "0.782470",
+                "variables": []
+              },
+              "z": {
+                "expression": "0.803000 + (W / 2)",
+                "variables": [
+                  "W"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": -0.707107,
+              "x": 0.0,
+              "y": -0.707107,
+              "z": 0.0
+            }
+          }
+        },
+        {
+          "block_id": "flow_019_procedure_001_sb_a",
+          "action": "Pick",
+          "flow_index": 19,
+          "procedure_indexes": [
+            1
+          ],
+          "element": "Top Cripple Stud",
+          "sub_step": "Position cripples at on-center spacing above opening between header and top plate",
+          "robot": "Robot_2",
+          "controller_variable": "robot_2",
+          "runtime_robot_name": "IRB6620_R2",
+          "tool_name": "Gripper",
+          "tool_id": "tool0",
+          "pose": {
+            "name": "Top_Cripple_Plate_Pick_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "W"
+            ],
+            "position": {
+              "x": {
+                "expression": "6.450100",
+                "variables": []
+              },
+              "y": {
+                "expression": "0.782470",
+                "variables": []
+              },
+              "z": {
+                "expression": "0.803000 + (W / 2)",
+                "variables": [
+                  "W"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": -0.707107,
+              "x": 0.0,
+              "y": -0.707107,
+              "z": 0.0
+            }
+          }
+        }
+      ],
+      "attempts": [
+        {
+          "status": "reused_from_previous_run",
+          "block_ids": [
+            "flow_001_procedure_001_sb_a",
+            "flow_003_procedure_001_sb_a",
+            "flow_005_procedure_001_sb_a",
+            "flow_006_procedure_001_sb_a",
+            "flow_008_procedure_001_sb_a",
+            "flow_009_procedure_001_sb_a",
+            "flow_011_procedure_001_sb_a",
+            "flow_013_procedure_001_sb_a",
+            "flow_014_procedure_001_sb_a",
+            "flow_017_procedure_001_sb_a",
+            "flow_019_procedure_001_sb_a"
+          ]
+        }
+      ],
+      "generated_blocks": {
+        "flow_006_procedure_001_sb_a": [
+          "robot_1.plan('tool1', np.array([0.0, -1.5, H + 0.6], dtype=float), np.array([0.0, 0.0, 0.707107, 0.707107], dtype=float))",
+          "robot_1.render_exec()",
+          "robot_1.eef_attach('IRB6620_R1', 'tool1', 'OSB Sheathing Plate')",
+          "robot_1.move_to_home()"
+        ],
+        "flow_013_procedure_001_sb_a": [
+          "robot_2.plan(\"tool0\", np.array([4.179000, -2.422283 + (0.250000 * W), 1.048050 + (0.433013 * W)], dtype=float), np.array([0.612354, 0.612354, 0.353553, 0.353553], dtype=float))",
+          "robot_2.render_exec()",
+          "robot_2.eef_attach(\"IRB6620_R2\", \"tool0\", \"L/U Stud\")",
+          "robot_2.move_to_home()"
+        ],
+        "flow_011_procedure_001_sb_a": [
+          "robot_1.plan(\"tool1\", np.array([-1.127, 1.02, 0.354], dtype=float), np.array([0.0, 0.0, 0.707107, -0.707107], dtype=float))",
+          "robot_1.render_exec()",
+          "robot_1.eef_attach(\"IRB6620_R1\", \"tool1\", \"Bear Loading\")",
+          "robot_1.move_to_home()"
+        ],
+        "flow_001_procedure_001_sb_a": [
+          "robot_2.plan(\"tool0\", np.array([4.179000, -2.422283 + (0.250000 * W), 1.048050 + (0.433013 * W)], dtype=float), np.array([0.612354, 0.612354, 0.353553, 0.353553], dtype=float))",
+          "robot_2.render_exec()",
+          "robot_2.eef_attach(\"IRB6620_R2\", \"tool0\", \"Vertical Stud\")",
+          "robot_2.move_to_home()"
+        ],
+        "flow_005_procedure_001_sb_a": [
+          "robot_2.plan('tool0', np.array([6.450100, 0.782470, 0.803000 + (W / 2)], dtype=float), np.array([-0.707107, 0.0, -0.707107, 0.0], dtype=float))",
+          "robot_2.render_exec()",
+          "robot_2.eef_attach('IRB6620_R2', 'tool0', 'Lower Cripple Stud')",
+          "robot_2.move_to_home()"
+        ],
+        "flow_008_procedure_001_sb_a": [
+          "robot_2.plan(\"tool0\", np.array([6.450100, 1.003400, 0.803000 + (W / 2)], dtype=float), np.array([0.707107, 0.0, 0.707107, 0.0], dtype=float))",
+          "robot_2.render_exec()",
+          "robot_2.eef_attach(\"IRB6620_R2\", \"tool0\", \"Top Plate\")",
+          "robot_2.move_to_home()"
+        ],
+        "flow_014_procedure_001_sb_a": [
+          "robot_2.plan(\"tool0\", np.array([6.450100, 0.782470, 0.803000 + (W / 2)], dtype=float), np.array([-0.707107, 0.0, -0.707107, 0.0], dtype=float))",
+          "robot_2.render_exec()",
+          "robot_2.eef_attach(\"IRB6620_R2\", \"tool0\", \"Lower Sill Plate\")",
+          "robot_2.move_to_home()"
+        ],
+        "flow_017_procedure_001_sb_a": [
+          "robot_2.plan('tool0', np.array([6.450100, 0.782470, 0.803000 + (W / 2)], dtype=float), np.array([-0.707107, 0.0, -0.707107, 0.0], dtype=float))",
+          "robot_2.render_exec()",
+          "robot_2.eef_attach('IRB6620_R2', 'tool0', 'Top Sill Plate')",
+          "robot_2.move_to_home()"
+        ],
+        "flow_009_procedure_001_sb_a": [
+          "robot_2.plan(\"tool0\", np.array([6.450100, 0.782470, 0.803000 + (W / 2)], dtype=float), np.array([-0.707107, 0.0, -0.707107, 0.0], dtype=float))",
+          "robot_2.render_exec()",
+          "robot_2.eef_attach(\"IRB6620_R2\", \"tool0\", \"Jack Stud\")",
+          "robot_2.move_to_home()"
+        ],
+        "flow_019_procedure_001_sb_a": [
+          "robot_2.plan('tool0', np.array([6.450100, 0.782470, 0.803000 + (W / 2)], dtype=float), np.array([-0.707107, 0.0, -0.707107, 0.0], dtype=float))",
+          "robot_2.render_exec()",
+          "robot_2.eef_attach('IRB6620_R2', 'tool0', 'Top Cripple Stud')",
+          "robot_2.move_to_home()"
+        ],
+        "flow_003_procedure_001_sb_a": [
+          "robot_2.plan(\"tool0\", np.array([4.179000, -2.422283 + (0.250000 * W), 1.048050 + (0.433013 * W)], dtype=float), np.array([0.612354, 0.612354, 0.353553, 0.353553], dtype=float))",
+          "robot_2.render_exec()",
+          "robot_2.eef_attach(\"IRB6620_R2\", \"tool0\", \"King Stud\")",
+          "robot_2.move_to_home()"
+        ]
+      }
+    },
+    "Pb-A": {
+      "instructions": "You are Pb-A, the Parameter-Based HLAF Generation Agent.\n\nYou receive Place and Nail procedures.\n\nFor each Place block:\n1. plan to the supplied pose;\n2. render_exec;\n3. eef_detach the element using the supplied runtime robot name and tool id;\n4. move_to_home.\n\nFor each Nail block:\n1. plan to the supplied nail pose;\n2. render_exec;\n3. move_to_home.\n\nDo not call eef_attach or eef_detach for Nail because those functions represent\ngrasp attachment and placement release, not nail-gun activation.\n\nThe robot controllers expose only these relevant low-level functions:\n\nplan(\n    tcp_name: str,\n    target_pose: np.array,\n    target_orientation: np.array\n)\n\nrender_exec(\n    renderInstance: bool = True,\n    Show_Sphere: Optional[bool] = True,\n    is_synchronizer: bool = False\n)\n\nmove_to_home(\n    if_show_spheres: bool = False,\n    Customized_JS: List[float] = [0, -0.5, 0.5, 0, 0, 0],\n    removing_primitives=[]\n)\n\neef_attach(\n    r_name: str,\n    tool_name: str,\n    attaching_object_name: str\n)\n\neef_detach(\n    r_name: str,\n    tool_name: str,\n    detaching_object_name: str\n)\n\nRules shared by all agents:\n- Generate Python statements only; do not generate imports, functions, classes,\n  Markdown, prose, placeholders, or ellipses.\n- Use only the controller variable, tool id, runtime robot name, pose\n  expressions, quaternion, and element_object_name supplied in each task.\n- Every low-level call must be invoked as a method of the supplied controller\n  variable, such as robot_2.plan(...) or robot_2.eef_detach(...). Never emit\n  plan(...), render_exec(...), move_to_home(...), eef_attach(...), or\n  eef_detach(...) as bare functions.\n- Quaternion arrays must use [w, x, y, z] order.\n- Call render_exec immediately after each plan.\n- Pass only tcp_name, target_pose, and target_orientation to plan.\n- Use np.array([...], dtype=float) for both pose and orientation.\n- Do not invent or change pose expressions.\n- move_to_home performs its own execution; never follow it with render_exec.\n\nReturn every requested block through submit_hlaf_code_blocks.",
+      "instructions_sha256": "6439fc488ddb12760fde7b3834ad2afdb0fa42b3abb6ff4094c2f62b447af502",
+      "prompt": "Generate all code blocks assigned to Pb-A.\n\nReturn one block for every task and copy each block_id exactly.\n\n[\n  {\n    \"block_id\": \"flow_001_procedure_002_pb_a\",\n    \"action\": \"Place\",\n    \"flow_index\": 1,\n    \"procedure_indexes\": [\n      2\n    ],\n    \"element\": \"Vertical Stud\",\n    \"sub_step\": \"Set stud on bottom plate layout mark and tip into place under top plate\",\n    \"robot\": \"Robot_2\",\n    \"controller_variable\": \"robot_2\",\n    \"runtime_robot_name\": \"IRB6620_R2\",\n    \"tool_name\": \"Gripper\",\n    \"tool_id\": \"tool0\",\n    \"pose\": {\n      \"name\": \"Vertical_Stud_Place_Pose\",\n      \"units\": {\n        \"position\": \"meter\",\n        \"element_dimensions\": \"meter\"\n      },\n      \"required_variables\": [\n        \"H\",\n        \"L\",\n        \"X\"\n      ],\n      \"position\": {\n        \"x\": {\n          \"expression\": \"X + (L / 2) + 0.962590\",\n          \"variables\": [\n            \"L\",\n            \"X\"\n          ]\n        },\n        \"y\": {\n          \"expression\": \"0.500000\",\n          \"variables\": []\n        },\n        \"z\": {\n          \"expression\": \"H + 0.889360\",\n          \"variables\": [\n            \"H\"\n          ]\n        }\n      },\n      \"orientation_quaternion\": {\n        \"w\": 0.0,\n        \"x\": 0.0,\n        \"y\": 0.707107,\n        \"z\": 0.707107\n      }\n    }\n  }\n]\n\n--- NEXT BATCH ---\n\nGenerate all code blocks assigned to Pb-A.\n\nReturn one block for every task and copy each block_id exactly.\n\n[\n  {\n    \"block_id\": \"flow_002_procedure_001_pb_a\",\n    \"action\": \"Nail\",\n    \"flow_index\": 2,\n    \"procedure_indexes\": [\n      1\n    ],\n    \"element\": \"Vertical Stud\",\n    \"sub_step\": \"Fasten stud to plates with nails or screws through toe-nailing or metal connectors\",\n    \"robot\": \"Robot_1\",\n    \"controller_variable\": \"robot_1\",\n    \"runtime_robot_name\": \"IRB6620_R1\",\n    \"tool_name\": \"Nail_Gun\",\n    \"tool_id\": \"tool2\",\n    \"pose\": {\n      \"name\": \"Vertical_Stud_Nail_Pose\",\n      \"units\": {\n        \"position\": \"meter\",\n        \"element_dimensions\": \"meter\"\n      },\n      \"required_variables\": [\n        \"H\"\n      ],\n      \"position\": {\n        \"x\": {\n          \"expression\": \"1.100000\",\n          \"variables\": []\n        },\n        \"y\": {\n          \"expression\": \"0.500000\",\n          \"variables\": []\n        },\n        \"z\": {\n          \"expression\": \"0.895460 + (0.300000 * H)\",\n          \"variables\": [\n            \"H\"\n          ]\n        }\n      },\n      \"orientation_quaternion\": {\n        \"w\": 0.0,\n        \"x\": 0.707107,\n        \"y\": 0.0,\n        \"z\": 0.707107\n      }\n    }\n  }\n]\n\n--- NEXT BATCH ---\n\nGenerate all code blocks assigned to Pb-A.\n\nReturn one block for every task and copy each block_id exactly.\n\n[\n  {\n    \"block_id\": \"flow_003_procedure_002_pb_a\",\n    \"action\": \"Place\",\n    \"flow_index\": 3,\n    \"procedure_indexes\": [\n      2\n    ],\n    \"element\": \"King Stud\",\n    \"sub_step\": \"Stand each king stud against layout line flanking rough opening\",\n    \"robot\": \"Robot_2\",\n    \"controller_variable\": \"robot_2\",\n    \"runtime_robot_name\": \"IRB6620_R2\",\n    \"tool_name\": \"Gripper\",\n    \"tool_id\": \"tool0\",\n    \"pose\": {\n      \"name\": \"King_Stud_Place_Pose\",\n      \"units\": {\n        \"position\": \"meter\",\n        \"element_dimensions\": \"meter\"\n      },\n      \"required_variables\": [\n        \"H\",\n        \"L\",\n        \"X\"\n      ],\n      \"position\": {\n        \"x\": {\n          \"expression\": \"X + (L / 2) + 0.962590\",\n          \"variables\": [\n            \"L\",\n            \"X\"\n          ]\n        },\n        \"y\": {\n          \"expression\": \"0.500000\",\n          \"variables\": []\n        },\n        \"z\": {\n          \"expression\": \"H + 0.889360\",\n          \"variables\": [\n            \"H\"\n          ]\n        }\n      },\n      \"orientation_quaternion\": {\n        \"w\": 0.0,\n        \"x\": 0.0,\n        \"y\": 0.707107,\n        \"z\": 0.707107\n      }\n    }\n  }\n]\n\n--- NEXT BATCH ---\n\nGenerate all code blocks assigned to Pb-A.\n\nReturn one block for every task and copy each block_id exactly.\n\n[\n  {\n    \"block_id\": \"flow_004_procedure_001_pb_a\",\n    \"action\": \"Nail\",\n    \"flow_index\": 4,\n    \"procedure_indexes\": [\n      1\n    ],\n    \"element\": \"King Stud\",\n    \"sub_step\": \"Secure king studs to bottom and top plates with nails or structural screws\",\n    \"robot\": \"Robot_1\",\n    \"controller_variable\": \"robot_1\",\n    \"runtime_robot_name\": \"IRB6620_R1\",\n    \"tool_name\": \"Nail_Gun\",\n    \"tool_id\": \"tool2\",\n    \"pose\": {\n      \"name\": \"King_Stud_Nail_Pose\",\n      \"units\": {\n        \"position\": \"meter\",\n        \"element_dimensions\": \"meter\"\n      },\n      \"required_variables\": [\n        \"H\"\n      ],\n      \"position\": {\n        \"x\": {\n          \"expression\": \"1.100000\",\n          \"variables\": []\n        },\n        \"y\": {\n          \"expression\": \"0.500000\",\n          \"variables\": []\n        },\n        \"z\": {\n          \"expression\": \"0.895460 + (0.300000 * H)\",\n          \"variables\": [\n            \"H\"\n          ]\n        }\n      },\n      \"orientation_quaternion\": {\n        \"w\": 0.0,\n        \"x\": 0.707107,\n        \"y\": 0.0,\n        \"z\": 0.707107\n      }\n    }\n  }\n]\n\n--- NEXT BATCH ---\n\nGenerate all code blocks assigned to Pb-A.\n\nReturn one block for every task and copy each block_id exactly.\n\n[\n  {\n    \"block_id\": \"flow_005_procedure_002_pb_a\",\n    \"action\": \"Place\",\n    \"flow_index\": 5,\n    \"procedure_indexes\": [\n      2\n    ],\n    \"element\": \"Lower Cripple Stud\",\n    \"sub_step\": \"Position cripples at marked on-center spacing below sill opening\",\n    \"robot\": \"Robot_2\",\n    \"controller_variable\": \"robot_2\",\n    \"runtime_robot_name\": \"IRB6620_R2\",\n    \"tool_name\": \"Gripper\",\n    \"tool_id\": \"tool0\",\n    \"pose\": {\n      \"name\": \"Lower_Cripple_Plate_Place_Pose\",\n      \"units\": {\n        \"position\": \"meter\",\n        \"element_dimensions\": \"meter\"\n      },\n      \"required_variables\": [\n        \"H\",\n        \"L\",\n        \"X\"\n      ],\n      \"position\": {\n        \"x\": {\n          \"expression\": \"X - (L / 2) + 1.182590\",\n          \"variables\": [\n            \"L\",\n            \"X\"\n          ]\n        },\n        \"y\": {\n          \"expression\": \"0.000000\",\n          \"variables\": []\n        },\n        \"z\": {\n          \"expression\": \"H + 0.889360\",\n          \"variables\": [\n            \"H\"\n          ]\n        }\n      },\n      \"orientation_quaternion\": {\n        \"w\": 0.0,\n        \"x\": 0.0,\n        \"y\": -0.707107,\n        \"z\": -0.707107\n      }\n    }\n  }\n]\n\n--- NEXT BATCH ---\n\nGenerate all code blocks assigned to Pb-A.\n\nReturn one block for every task and copy each block_id exactly.\n\n[\n  {\n    \"block_id\": \"flow_006_procedure_002_pb_a\",\n    \"action\": \"Place\",\n    \"flow_index\": 6,\n    \"procedure_indexes\": [\n      2\n    ],\n    \"element\": \"OSB Sheathing Plate\",\n    \"sub_step\": \"Position first sheet flush with bottom plate and edge of framing\",\n    \"robot\": \"Robot_1\",\n    \"controller_variable\": \"robot_1\",\n    \"runtime_robot_name\": \"IRB6620_R1\",\n    \"tool_name\": \"Suction_Cup\",\n    \"tool_id\": \"tool1\",\n    \"pose\": {\n      \"name\": \"OSB_Sheathing_Plate_Place_Pose\",\n      \"units\": {\n        \"position\": \"meter\",\n        \"element_dimensions\": \"meter\"\n      },\n      \"required_variables\": [\n        \"X\",\n        \"Z\"\n      ],\n      \"position\": {\n        \"x\": {\n          \"expression\": \"2.691790 - X\",\n          \"variables\": [\n            \"X\"\n          ]\n        },\n        \"y\": {\n          \"expression\": \"0.000000\",\n          \"variables\": []\n        },\n        \"z\": {\n          \"expression\": \"Z + 0.895460\",\n          \"variables\": [\n            \"Z\"\n          ]\n        }\n      },\n      \"orientation_quaternion\": {\n        \"w\": 0.0,\n        \"x\": 0.0,\n        \"y\": 0.0,\n        \"z\": -1.0\n      }\n    }\n  }\n]\n\n--- NEXT BATCH ---\n\nGenerate all code blocks assigned to Pb-A.\n\nReturn one block for every task and copy each block_id exactly.\n\n[\n  {\n    \"block_id\": \"flow_007_procedure_001_pb_a\",\n    \"action\": \"Nail\",\n    \"flow_index\": 7,\n    \"procedure_indexes\": [\n      1\n    ],\n    \"element\": \"OSB Sheathing Plate\",\n    \"sub_step\": \"Fasten OSB to studs, plates, and blocking with specified nails or screws at required spacing, starting from center and working outward\",\n    \"robot\": \"Robot_1\",\n    \"controller_variable\": \"robot_1\",\n    \"runtime_robot_name\": \"IRB6620_R1\",\n    \"tool_name\": \"Nail_Gun\",\n    \"tool_id\": \"tool2\",\n    \"pose\": {\n      \"name\": \"OSB_Sheathing_Plate_Nail_Pose\",\n      \"units\": {\n        \"position\": \"meter\",\n        \"element_dimensions\": \"meter\"\n      },\n      \"required_variables\": [\n        \"H\",\n        \"L\"\n      ],\n      \"position\": {\n        \"x\": {\n          \"expression\": \"L + 1.152590\",\n          \"variables\": [\n            \"L\"\n          ]\n        },\n        \"y\": {\n          \"expression\": \"0.000000\",\n          \"variables\": []\n        },\n        \"z\": {\n          \"expression\": \"H + 1.047060\",\n          \"variables\": [\n            \"H\"\n          ]\n        }\n      },\n      \"orientation_quaternion\": {\n        \"w\": 0.0,\n        \"x\": 1.0,\n        \"y\": 0.0,\n        \"z\": 0.0\n      }\n    }\n  }\n]\n\n--- NEXT BATCH ---\n\nGenerate all code blocks assigned to Pb-A.\n\nReturn one block for every task and copy each block_id exactly.\n\n[\n  {\n    \"block_id\": \"flow_008_procedure_004_pb_a\",\n    \"action\": \"Place\",\n    \"flow_index\": 8,\n    \"procedure_indexes\": [\n      4\n    ],\n    \"element\": \"Top Plate\",\n    \"sub_step\": \"Install second (cap) plate overlapping joints for strength\",\n    \"robot\": \"Robot_1\",\n    \"controller_variable\": \"robot_1\",\n    \"runtime_robot_name\": \"IRB6620_R1\",\n    \"tool_name\": \"Gripper\",\n    \"tool_id\": \"tool0\",\n    \"pose\": {\n      \"name\": \"Top_Plate_Place_Pose\",\n      \"units\": {\n        \"position\": \"meter\",\n        \"element_dimensions\": \"meter\"\n      },\n      \"required_variables\": [\n        \"H\",\n        \"X\"\n      ],\n      \"position\": {\n        \"x\": {\n          \"expression\": \"X + 1.132590\",\n          \"variables\": [\n            \"X\"\n          ]\n        },\n        \"y\": {\n          \"expression\": \"0.000000\",\n          \"variables\": []\n        },\n        \"z\": {\n          \"expression\": \"H + 0.889360\",\n          \"variables\": [\n            \"H\"\n          ]\n        }\n      },\n      \"orientation_quaternion\": {\n        \"w\": 0.0,\n        \"x\": 0.0,\n        \"y\": 1.0,\n        \"z\": 0.0\n      }\n    }\n  }\n]\n\n--- NEXT BATCH ---\n\nGenerate all code blocks assigned to Pb-A.\n\nReturn one block for every task and copy each block_id exactly.\n\n[\n  {\n    \"block_id\": \"flow_009_procedure_002_pb_a\",\n    \"action\": \"Place\",\n    \"flow_index\": 9,\n    \"procedure_indexes\": [\n      2\n    ],\n    \"element\": \"Jack Stud\",\n    \"sub_step\": \"Place each jack stud against king stud at opening sides\",\n    \"robot\": \"Robot_2\",\n    \"controller_variable\": \"robot_2\",\n    \"runtime_robot_name\": \"IRB6620_R2\",\n    \"tool_name\": \"Gripper\",\n    \"tool_id\": \"tool0\",\n    \"pose\": {\n      \"name\": \"Jack_Stud_Place_Pose\",\n      \"units\": {\n        \"position\": \"meter\",\n        \"element_dimensions\": \"meter\"\n      },\n      \"required_variables\": [\n        \"H\",\n        \"L\",\n        \"X\"\n      ],\n      \"position\": {\n        \"x\": {\n          \"expression\": \"X + (L / 2) + 1.082590\",\n          \"variables\": [\n            \"L\",\n            \"X\"\n          ]\n        },\n        \"y\": {\n          \"expression\": \"0.500000\",\n          \"variables\": []\n        },\n        \"z\": {\n          \"expression\": \"H + 0.939360\",\n          \"variables\": [\n            \"H\"\n          ]\n        }\n      },\n      \"orientation_quaternion\": {\n        \"w\": 0.0,\n        \"x\": 0.0,\n        \"y\": -0.707107,\n        \"z\": 0.707107\n      }\n    }\n  }\n]\n\n--- NEXT BATCH ---\n\nGenerate all code blocks assigned to Pb-A.\n\nReturn one block for every task and copy each block_id exactly.\n\n[\n  {\n    \"block_id\": \"flow_010_procedure_001_pb_a\",\n    \"action\": \"Nail\",\n    \"flow_index\": 10,\n    \"procedure_indexes\": [\n      1\n    ],\n    \"element\": \"Jack Stud\",\n    \"sub_step\": \"Nail jack studs to king studs and bottom plate, then toenail into header after placement\",\n    \"robot\": \"Robot_1\",\n    \"controller_variable\": \"robot_1\",\n    \"runtime_robot_name\": \"IRB6620_R1\",\n    \"tool_name\": \"Nail_Gun\",\n    \"tool_id\": \"tool2\",\n    \"pose\": {\n      \"name\": \"Jack_Stud_Nail_Pose\",\n      \"units\": {\n        \"position\": \"meter\",\n        \"element_dimensions\": \"meter\"\n      },\n      \"required_variables\": [\n        \"L\",\n        \"X\"\n      ],\n      \"position\": {\n        \"x\": {\n          \"expression\": \"X - (L / 2) + 1.193550\",\n          \"variables\": [\n            \"L\",\n            \"X\"\n          ]\n        },\n        \"y\": {\n          \"expression\": \"0.586603\",\n          \"variables\": []\n        },\n        \"z\": {\n          \"expression\": \"0.945460\",\n          \"variables\": []\n        }\n      },\n      \"orientation_quaternion\": {\n        \"w\": 0.353553,\n        \"x\": -0.612354,\n        \"y\": 0.612354,\n        \"z\": 0.353553\n      }\n    }\n  }\n]\n\n--- NEXT BATCH ---\n\nGenerate all code blocks assigned to Pb-A.\n\nReturn one block for every task and copy each block_id exactly.\n\n[\n  {\n    \"block_id\": \"flow_011_procedure_002_pb_a\",\n    \"action\": \"Place\",\n    \"flow_index\": 11,\n    \"procedure_indexes\": [\n      2\n    ],\n    \"element\": \"Bear Loading\",\n    \"sub_step\": \"Lift header onto jack studs within opening using additional help or temporary support\",\n    \"robot\": \"Robot_1\",\n    \"controller_variable\": \"robot_1\",\n    \"runtime_robot_name\": \"IRB6620_R1\",\n    \"tool_name\": \"Suction_Cup\",\n    \"tool_id\": \"tool1\",\n    \"pose\": {\n      \"name\": \"Load_Bearing_Place_Pose\",\n      \"units\": {\n        \"position\": \"meter\",\n        \"element_dimensions\": \"meter\"\n      },\n      \"required_variables\": [\n        \"W\",\n        \"X\"\n      ],\n      \"position\": {\n        \"x\": {\n          \"expression\": \"X + 1.132590\",\n          \"variables\": [\n            \"X\"\n          ]\n        },\n        \"y\": {\n          \"expression\": \"0.000000\",\n          \"variables\": []\n        },\n        \"z\": {\n          \"expression\": \"W + 1.045460\",\n          \"variables\": [\n            \"W\"\n          ]\n        }\n      },\n      \"orientation_quaternion\": {\n        \"w\": 0.0,\n        \"x\": 0.0,\n        \"y\": 0.707107,\n        \"z\": 0.707107\n      }\n    }\n  }\n]\n\n--- NEXT BATCH ---\n\nGenerate all code blocks assigned to Pb-A.\n\nReturn one block for every task and copy each block_id exactly.\n\n[\n  {\n    \"block_id\": \"flow_012_procedure_001_pb_a\",\n    \"action\": \"Nail\",\n    \"flow_index\": 12,\n    \"procedure_indexes\": [\n      1\n    ],\n    \"element\": \"Bear Loading\",\n    \"sub_step\": \"Nail or screw header to jack studs and add metal hangers or straps if required\",\n    \"robot\": \"Robot_1\",\n    \"controller_variable\": \"robot_1\",\n    \"runtime_robot_name\": \"IRB6620_R1\",\n    \"tool_name\": \"Nail_Gun\",\n    \"tool_id\": \"tool2\",\n    \"pose\": {\n      \"name\": \"Load_Bearing_Nail_Pose\",\n      \"units\": {\n        \"position\": \"meter\",\n        \"element_dimensions\": \"meter\"\n      },\n      \"required_variables\": [\n        \"H\",\n        \"W\",\n        \"X\",\n        \"Z\"\n      ],\n      \"position\": {\n        \"x\": {\n          \"expression\": \"X + (0.200000 * H) + 1.132590\",\n          \"variables\": [\n            \"H\",\n            \"X\"\n          ]\n        },\n        \"y\": {\n          \"expression\": \"0.429289 - (W / 2)\",\n          \"variables\": [\n            \"W\"\n          ]\n        },\n        \"z\": {\n          \"expression\": \"Z + 0.986491\",\n          \"variables\": [\n            \"Z\"\n          ]\n        }\n      },\n      \"orientation_quaternion\": {\n        \"w\": 0.27061,\n        \"x\": 0.27061,\n        \"y\": -0.653296,\n        \"z\": 0.653296\n      }\n    }\n  }\n]\n\n--- NEXT BATCH ---\n\nGenerate all code blocks assigned to Pb-A.\n\nReturn one block for every task and copy each block_id exactly.\n\n[\n  {\n    \"block_id\": \"flow_013_procedure_004_pb_a\",\n    \"action\": \"Place\",\n    \"flow_index\": 13,\n    \"procedure_indexes\": [\n      4\n    ],\n    \"element\": \"L/U Stud\",\n    \"sub_step\": \"Stand stud in place providing space for service penetrations as detailed\",\n    \"robot\": \"Robot_1\",\n    \"controller_variable\": \"robot_1\",\n    \"runtime_robot_name\": \"IRB6620_R1\",\n    \"tool_name\": \"Suction_Cup\",\n    \"tool_id\": \"tool1\",\n    \"pose\": {\n      \"name\": \"L_U_Stud_Place_Pose\",\n      \"units\": {\n        \"position\": \"meter\",\n        \"element_dimensions\": \"meter\"\n      },\n      \"required_variables\": [\n        \"L\",\n        \"W\",\n        \"X\",\n        \"Z\"\n      ],\n      \"position\": {\n        \"x\": {\n          \"expression\": \"3.650990 - X - (L / 2)\",\n          \"variables\": [\n            \"L\",\n            \"X\"\n          ]\n        },\n        \"y\": {\n          \"expression\": \"0.000000\",\n          \"variables\": []\n        },\n        \"z\": {\n          \"expression\": \"0.895460 + Z + (W / 2)\",\n          \"variables\": [\n            \"W\",\n            \"Z\"\n          ]\n        }\n      },\n      \"orientation_quaternion\": {\n        \"w\": 0.0,\n        \"x\": 0.0,\n        \"y\": 1.0,\n        \"z\": 0.0\n      }\n    }\n  }\n]\n\n--- NEXT BATCH ---\n\nGenerate all code blocks assigned to Pb-A.\n\nReturn one block for every task and copy each block_id exactly.\n\n[\n  {\n    \"block_id\": \"flow_014_procedure_002_pb_a\",\n    \"action\": \"Place\",\n    \"flow_index\": 14,\n    \"procedure_indexes\": [\n      2\n    ],\n    \"element\": \"Lower Sill Plate\",\n    \"sub_step\": \"Position sill on marked lines with crown up and faces flush\",\n    \"robot\": \"Robot_2\",\n    \"controller_variable\": \"robot_2\",\n    \"runtime_robot_name\": \"IRB6620_R2\",\n    \"tool_name\": \"Gripper\",\n    \"tool_id\": \"tool0\",\n    \"pose\": {\n      \"name\": \"Lower_Sill_Plate_Place_Pose\",\n      \"units\": {\n        \"position\": \"meter\",\n        \"element_dimensions\": \"meter\"\n      },\n      \"required_variables\": [\n        \"H\",\n        \"X\"\n      ],\n      \"position\": {\n        \"x\": {\n          \"expression\": \"X + 1.132590\",\n          \"variables\": [\n            \"X\"\n          ]\n        },\n        \"y\": {\n          \"expression\": \"0.000000\",\n          \"variables\": []\n        },\n        \"z\": {\n          \"expression\": \"H + 1.189360\",\n          \"variables\": [\n            \"H\"\n          ]\n        }\n      },\n      \"orientation_quaternion\": {\n        \"w\": 0.0,\n        \"x\": 0.0,\n        \"y\": -1.0,\n        \"z\": 0.0\n      }\n    }\n  }\n]\n\n--- NEXT BATCH ---\n\nGenerate all code blocks assigned to Pb-A.\n\nReturn one block for every task and copy each block_id exactly.\n\n[\n  {\n    \"block_id\": \"flow_015_procedure_001_pb_a\",\n    \"action\": \"Nail\",\n    \"flow_index\": 15,\n    \"procedure_indexes\": [\n      1\n    ],\n    \"element\": \"Lower Sill Plate\",\n    \"sub_step\": \"Tack sill to king or jack studs, then secure with nails or screws through end joints\",\n    \"robot\": \"Robot_2\",\n    \"controller_variable\": \"robot_2\",\n    \"runtime_robot_name\": \"IRB6620_R2\",\n    \"tool_name\": \"Nail_Gun\",\n    \"tool_id\": \"tool1\",\n    \"pose\": {\n      \"name\": \"Lower_Sill_Plate_Nail_Pose\",\n      \"units\": {\n        \"position\": \"meter\",\n        \"element_dimensions\": \"meter\"\n      },\n      \"required_variables\": [\n        \"H\",\n        \"W\",\n        \"X\"\n      ],\n      \"position\": {\n        \"x\": {\n          \"expression\": \"X + 1.132590\",\n          \"variables\": [\n            \"X\"\n          ]\n        },\n        \"y\": {\n          \"expression\": \"-0.413397 + (1.500000 * W)\",\n          \"variables\": [\n            \"W\"\n          ]\n        },\n        \"z\": {\n          \"expression\": \"0.945460 + (0.300000 * H)\",\n          \"variables\": [\n            \"H\"\n          ]\n        }\n      },\n      \"orientation_quaternion\": {\n        \"w\": 0.0,\n        \"x\": 0.0,\n        \"y\": 0.353553,\n        \"z\": 0.612354\n      }\n    }\n  }\n]\n\n--- NEXT BATCH ---\n\nGenerate all code blocks assigned to Pb-A.\n\nReturn one block for every task and copy each block_id exactly.\n\n[\n  {\n    \"block_id\": \"flow_016_procedure_001_pb_a\",\n    \"action\": \"Nail\",\n    \"flow_index\": 16,\n    \"procedure_indexes\": [\n      1\n    ],\n    \"element\": \"Bottom Plate\",\n    \"sub_step\": \"Fasten plate to floor framing or slab with nails, screws, or anchors per specification\",\n    \"robot\": \"Robot_2\",\n    \"controller_variable\": \"robot_2\",\n    \"runtime_robot_name\": \"IRB6620_R2\",\n    \"tool_name\": \"Nail_Gun\",\n    \"tool_id\": \"tool1\",\n    \"pose\": {\n      \"name\": \"Bottom_Plate_Nail_Pose\",\n      \"units\": {\n        \"position\": \"meter\",\n        \"element_dimensions\": \"meter\"\n      },\n      \"required_variables\": [\n        \"H\"\n      ],\n      \"position\": {\n        \"x\": {\n          \"expression\": \"3.690000\",\n          \"variables\": []\n        },\n        \"y\": {\n          \"expression\": \"0\",\n          \"variables\": []\n        },\n        \"z\": {\n          \"expression\": \"0.895460 + (0.300000 * H)\",\n          \"variables\": [\n            \"H\"\n          ]\n        }\n      },\n      \"orientation_quaternion\": {\n        \"w\": 0.0,\n        \"x\": 0.5,\n        \"y\": 0.5,\n        \"z\": 0.5\n      }\n    }\n  }\n]\n\n--- NEXT BATCH ---\n\nGenerate all code blocks assigned to Pb-A.\n\nReturn one block for every task and copy each block_id exactly.\n\n[\n  {\n    \"block_id\": \"flow_017_procedure_004_pb_a\",\n    \"action\": \"Place\",\n    \"flow_index\": 17,\n    \"procedure_indexes\": [\n      4\n    ],\n    \"element\": \"Top Sill Plate\",\n    \"sub_step\": \"Set top sill on marks and hold flush with inner faces of studs\",\n    \"robot\": \"Robot_1\",\n    \"controller_variable\": \"robot_1\",\n    \"runtime_robot_name\": \"IRB6620_R1\",\n    \"tool_name\": \"Gripper\",\n    \"tool_id\": \"tool0\",\n    \"pose\": {\n      \"name\": \"Top_Sill_Plate_Place_Pose\",\n      \"units\": {\n        \"position\": \"meter\",\n        \"element_dimensions\": \"meter\"\n      },\n      \"required_variables\": [\n        \"H\",\n        \"X\"\n      ],\n      \"position\": {\n        \"x\": {\n          \"expression\": \"X + 1.132590\",\n          \"variables\": [\n            \"X\"\n          ]\n        },\n        \"y\": {\n          \"expression\": \"0.000000\",\n          \"variables\": []\n        },\n        \"z\": {\n          \"expression\": \"H + 0.989360\",\n          \"variables\": [\n            \"H\"\n          ]\n        }\n      },\n      \"orientation_quaternion\": {\n        \"w\": 0.0,\n        \"x\": 0.0,\n        \"y\": 1.0,\n        \"z\": 0.0\n      }\n    }\n  }\n]\n\n--- NEXT BATCH ---\n\nGenerate all code blocks assigned to Pb-A.\n\nReturn one block for every task and copy each block_id exactly.\n\n[\n  {\n    \"block_id\": \"flow_018_procedure_001_pb_a\",\n    \"action\": \"Nail\",\n    \"flow_index\": 18,\n    \"procedure_indexes\": [\n      1\n    ],\n    \"element\": \"Top Sill Plate\",\n    \"sub_step\": \"Nail or screw plate to king studs and to any top cripple studs above\",\n    \"robot\": \"Robot_1\",\n    \"controller_variable\": \"robot_1\",\n    \"runtime_robot_name\": \"IRB6620_R1\",\n    \"tool_name\": \"Nail_Gun\",\n    \"tool_id\": \"tool2\",\n    \"pose\": {\n      \"name\": \"Top_Sill_Plate_Nail_Pose\",\n      \"units\": {\n        \"position\": \"meter\",\n        \"element_dimensions\": \"meter\"\n      },\n      \"required_variables\": [\n        \"H\",\n        \"W\",\n        \"X\"\n      ],\n      \"position\": {\n        \"x\": {\n          \"expression\": \"X + 1.132590\",\n          \"variables\": [\n            \"X\"\n          ]\n        },\n        \"y\": {\n          \"expression\": \"0.413397 - (W / 2)\",\n          \"variables\": [\n            \"W\"\n          ]\n        },\n        \"z\": {\n          \"expression\": \"0.945460 + (0.300000 * H)\",\n          \"variables\": [\n            \"H\"\n          ]\n        }\n      },\n      \"orientation_quaternion\": {\n        \"w\": 0.182999,\n        \"x\": -0.682994,\n        \"y\": 0.682994,\n        \"z\": 0.182999\n      }\n    }\n  }\n]\n\n--- NEXT BATCH ---\n\nGenerate all code blocks assigned to Pb-A.\n\nReturn one block for every task and copy each block_id exactly.\n\n[\n  {\n    \"block_id\": \"flow_019_procedure_004_pb_a\",\n    \"action\": \"Place\",\n    \"flow_index\": 19,\n    \"procedure_indexes\": [\n      4\n    ],\n    \"element\": \"Top Cripple Stud\",\n    \"sub_step\": \"Position cripples at on-center spacing above opening between header and top plate\",\n    \"robot\": \"Robot_1\",\n    \"controller_variable\": \"robot_1\",\n    \"runtime_robot_name\": \"IRB6620_R1\",\n    \"tool_name\": \"Gripper\",\n    \"tool_id\": \"tool0\",\n    \"pose\": {\n      \"name\": \"Top_Cripple_Plate_Place_Pose\",\n      \"units\": {\n        \"position\": \"meter\",\n        \"element_dimensions\": \"meter\"\n      },\n      \"required_variables\": [\n        \"H\",\n        \"L\",\n        \"X\"\n      ],\n      \"position\": {\n        \"x\": {\n          \"expression\": \"X + (L / 2) + 0.932590\",\n          \"variables\": [\n            \"L\",\n            \"X\"\n          ]\n        },\n        \"y\": {\n          \"expression\": \"0.500000\",\n          \"variables\": []\n        },\n        \"z\": {\n          \"expression\": \"H + 0.989360\",\n          \"variables\": [\n            \"H\"\n          ]\n        }\n      },\n      \"orientation_quaternion\": {\n        \"w\": 0.0,\n        \"x\": 0.0,\n        \"y\": -0.707107,\n        \"z\": -0.707107\n      }\n    }\n  }\n]\n\n--- NEXT BATCH ---\n\nGenerate all code blocks assigned to Pb-A.\n\nReturn one block for every task and copy each block_id exactly.\n\n[\n  {\n    \"block_id\": \"flow_020_procedure_001_pb_a\",\n    \"action\": \"Nail\",\n    \"flow_index\": 20,\n    \"procedure_indexes\": [\n      1\n    ],\n    \"element\": \"Top Cripple Stud\",\n    \"sub_step\": \"Fasten cripples through top plate and header with nails or screws\",\n    \"robot\": \"Robot_1\",\n    \"controller_variable\": \"robot_1\",\n    \"runtime_robot_name\": \"IRB6620_R1\",\n    \"tool_name\": \"Nail_Gun\",\n    \"tool_id\": \"tool2\",\n    \"pose\": {\n      \"name\": \"Top_Cripple_Plate_Nail_Pose\",\n      \"units\": {\n        \"position\": \"meter\",\n        \"element_dimensions\": \"meter\"\n      },\n      \"required_variables\": [\n        \"H\"\n      ],\n      \"position\": {\n        \"x\": {\n          \"expression\": \"1.100000\",\n          \"variables\": []\n        },\n        \"y\": {\n          \"expression\": \"0.500000\",\n          \"variables\": []\n        },\n        \"z\": {\n          \"expression\": \"0.895460 + (0.300000 * H)\",\n          \"variables\": [\n            \"H\"\n          ]\n        }\n      },\n      \"orientation_quaternion\": {\n        \"w\": 0.0,\n        \"x\": 0.707107,\n        \"y\": 0.0,\n        \"z\": 0.707107\n      }\n    }\n  }\n]",
+      "prompt_sha256": "955f8f6a2b0eadeece6cb308f7cc0c3ea7777719c4738562401b0df872fe3e71",
+      "tasks": [
+        {
+          "block_id": "flow_001_procedure_002_pb_a",
+          "action": "Place",
+          "flow_index": 1,
+          "procedure_indexes": [
+            2
+          ],
+          "element": "Vertical Stud",
+          "sub_step": "Set stud on bottom plate layout mark and tip into place under top plate",
+          "robot": "Robot_2",
+          "controller_variable": "robot_2",
+          "runtime_robot_name": "IRB6620_R2",
+          "tool_name": "Gripper",
+          "tool_id": "tool0",
+          "pose": {
+            "name": "Vertical_Stud_Place_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "H",
+              "L",
+              "X"
+            ],
+            "position": {
+              "x": {
+                "expression": "X + (L / 2) + 0.962590",
+                "variables": [
+                  "L",
+                  "X"
+                ]
+              },
+              "y": {
+                "expression": "0.500000",
+                "variables": []
+              },
+              "z": {
+                "expression": "H + 0.889360",
+                "variables": [
+                  "H"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.0,
+              "x": 0.0,
+              "y": 0.707107,
+              "z": 0.707107
+            }
+          }
+        },
+        {
+          "block_id": "flow_002_procedure_001_pb_a",
+          "action": "Nail",
+          "flow_index": 2,
+          "procedure_indexes": [
+            1
+          ],
+          "element": "Vertical Stud",
+          "sub_step": "Fasten stud to plates with nails or screws through toe-nailing or metal connectors",
+          "robot": "Robot_1",
+          "controller_variable": "robot_1",
+          "runtime_robot_name": "IRB6620_R1",
+          "tool_name": "Nail_Gun",
+          "tool_id": "tool2",
+          "pose": {
+            "name": "Vertical_Stud_Nail_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "H"
+            ],
+            "position": {
+              "x": {
+                "expression": "1.100000",
+                "variables": []
+              },
+              "y": {
+                "expression": "0.500000",
+                "variables": []
+              },
+              "z": {
+                "expression": "0.895460 + (0.300000 * H)",
+                "variables": [
+                  "H"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.0,
+              "x": 0.707107,
+              "y": 0.0,
+              "z": 0.707107
+            }
+          }
+        },
+        {
+          "block_id": "flow_003_procedure_002_pb_a",
+          "action": "Place",
+          "flow_index": 3,
+          "procedure_indexes": [
+            2
+          ],
+          "element": "King Stud",
+          "sub_step": "Stand each king stud against layout line flanking rough opening",
+          "robot": "Robot_2",
+          "controller_variable": "robot_2",
+          "runtime_robot_name": "IRB6620_R2",
+          "tool_name": "Gripper",
+          "tool_id": "tool0",
+          "pose": {
+            "name": "King_Stud_Place_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "H",
+              "L",
+              "X"
+            ],
+            "position": {
+              "x": {
+                "expression": "X + (L / 2) + 0.962590",
+                "variables": [
+                  "L",
+                  "X"
+                ]
+              },
+              "y": {
+                "expression": "0.500000",
+                "variables": []
+              },
+              "z": {
+                "expression": "H + 0.889360",
+                "variables": [
+                  "H"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.0,
+              "x": 0.0,
+              "y": 0.707107,
+              "z": 0.707107
+            }
+          }
+        },
+        {
+          "block_id": "flow_004_procedure_001_pb_a",
+          "action": "Nail",
+          "flow_index": 4,
+          "procedure_indexes": [
+            1
+          ],
+          "element": "King Stud",
+          "sub_step": "Secure king studs to bottom and top plates with nails or structural screws",
+          "robot": "Robot_1",
+          "controller_variable": "robot_1",
+          "runtime_robot_name": "IRB6620_R1",
+          "tool_name": "Nail_Gun",
+          "tool_id": "tool2",
+          "pose": {
+            "name": "King_Stud_Nail_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "H"
+            ],
+            "position": {
+              "x": {
+                "expression": "1.100000",
+                "variables": []
+              },
+              "y": {
+                "expression": "0.500000",
+                "variables": []
+              },
+              "z": {
+                "expression": "0.895460 + (0.300000 * H)",
+                "variables": [
+                  "H"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.0,
+              "x": 0.707107,
+              "y": 0.0,
+              "z": 0.707107
+            }
+          }
+        },
+        {
+          "block_id": "flow_005_procedure_002_pb_a",
+          "action": "Place",
+          "flow_index": 5,
+          "procedure_indexes": [
+            2
+          ],
+          "element": "Lower Cripple Stud",
+          "sub_step": "Position cripples at marked on-center spacing below sill opening",
+          "robot": "Robot_2",
+          "controller_variable": "robot_2",
+          "runtime_robot_name": "IRB6620_R2",
+          "tool_name": "Gripper",
+          "tool_id": "tool0",
+          "pose": {
+            "name": "Lower_Cripple_Plate_Place_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "H",
+              "L",
+              "X"
+            ],
+            "position": {
+              "x": {
+                "expression": "X - (L / 2) + 1.182590",
+                "variables": [
+                  "L",
+                  "X"
+                ]
+              },
+              "y": {
+                "expression": "0.000000",
+                "variables": []
+              },
+              "z": {
+                "expression": "H + 0.889360",
+                "variables": [
+                  "H"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.0,
+              "x": 0.0,
+              "y": -0.707107,
+              "z": -0.707107
+            }
+          }
+        },
+        {
+          "block_id": "flow_006_procedure_002_pb_a",
+          "action": "Place",
+          "flow_index": 6,
+          "procedure_indexes": [
+            2
+          ],
+          "element": "OSB Sheathing Plate",
+          "sub_step": "Position first sheet flush with bottom plate and edge of framing",
+          "robot": "Robot_1",
+          "controller_variable": "robot_1",
+          "runtime_robot_name": "IRB6620_R1",
+          "tool_name": "Suction_Cup",
+          "tool_id": "tool1",
+          "pose": {
+            "name": "OSB_Sheathing_Plate_Place_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "X",
+              "Z"
+            ],
+            "position": {
+              "x": {
+                "expression": "2.691790 - X",
+                "variables": [
+                  "X"
+                ]
+              },
+              "y": {
+                "expression": "0.000000",
+                "variables": []
+              },
+              "z": {
+                "expression": "Z + 0.895460",
+                "variables": [
+                  "Z"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.0,
+              "x": 0.0,
+              "y": 0.0,
+              "z": -1.0
+            }
+          }
+        },
+        {
+          "block_id": "flow_007_procedure_001_pb_a",
+          "action": "Nail",
+          "flow_index": 7,
+          "procedure_indexes": [
+            1
+          ],
+          "element": "OSB Sheathing Plate",
+          "sub_step": "Fasten OSB to studs, plates, and blocking with specified nails or screws at required spacing, starting from center and working outward",
+          "robot": "Robot_1",
+          "controller_variable": "robot_1",
+          "runtime_robot_name": "IRB6620_R1",
+          "tool_name": "Nail_Gun",
+          "tool_id": "tool2",
+          "pose": {
+            "name": "OSB_Sheathing_Plate_Nail_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "H",
+              "L"
+            ],
+            "position": {
+              "x": {
+                "expression": "L + 1.152590",
+                "variables": [
+                  "L"
+                ]
+              },
+              "y": {
+                "expression": "0.000000",
+                "variables": []
+              },
+              "z": {
+                "expression": "H + 1.047060",
+                "variables": [
+                  "H"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.0,
+              "x": 1.0,
+              "y": 0.0,
+              "z": 0.0
+            }
+          }
+        },
+        {
+          "block_id": "flow_008_procedure_004_pb_a",
+          "action": "Place",
+          "flow_index": 8,
+          "procedure_indexes": [
+            4
+          ],
+          "element": "Top Plate",
+          "sub_step": "Install second (cap) plate overlapping joints for strength",
+          "robot": "Robot_1",
+          "controller_variable": "robot_1",
+          "runtime_robot_name": "IRB6620_R1",
+          "tool_name": "Gripper",
+          "tool_id": "tool0",
+          "pose": {
+            "name": "Top_Plate_Place_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "H",
+              "X"
+            ],
+            "position": {
+              "x": {
+                "expression": "X + 1.132590",
+                "variables": [
+                  "X"
+                ]
+              },
+              "y": {
+                "expression": "0.000000",
+                "variables": []
+              },
+              "z": {
+                "expression": "H + 0.889360",
+                "variables": [
+                  "H"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.0,
+              "x": 0.0,
+              "y": 1.0,
+              "z": 0.0
+            }
+          }
+        },
+        {
+          "block_id": "flow_009_procedure_002_pb_a",
+          "action": "Place",
+          "flow_index": 9,
+          "procedure_indexes": [
+            2
+          ],
+          "element": "Jack Stud",
+          "sub_step": "Place each jack stud against king stud at opening sides",
+          "robot": "Robot_2",
+          "controller_variable": "robot_2",
+          "runtime_robot_name": "IRB6620_R2",
+          "tool_name": "Gripper",
+          "tool_id": "tool0",
+          "pose": {
+            "name": "Jack_Stud_Place_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "H",
+              "L",
+              "X"
+            ],
+            "position": {
+              "x": {
+                "expression": "X + (L / 2) + 1.082590",
+                "variables": [
+                  "L",
+                  "X"
+                ]
+              },
+              "y": {
+                "expression": "0.500000",
+                "variables": []
+              },
+              "z": {
+                "expression": "H + 0.939360",
+                "variables": [
+                  "H"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.0,
+              "x": 0.0,
+              "y": -0.707107,
+              "z": 0.707107
+            }
+          }
+        },
+        {
+          "block_id": "flow_010_procedure_001_pb_a",
+          "action": "Nail",
+          "flow_index": 10,
+          "procedure_indexes": [
+            1
+          ],
+          "element": "Jack Stud",
+          "sub_step": "Nail jack studs to king studs and bottom plate, then toenail into header after placement",
+          "robot": "Robot_1",
+          "controller_variable": "robot_1",
+          "runtime_robot_name": "IRB6620_R1",
+          "tool_name": "Nail_Gun",
+          "tool_id": "tool2",
+          "pose": {
+            "name": "Jack_Stud_Nail_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "L",
+              "X"
+            ],
+            "position": {
+              "x": {
+                "expression": "X - (L / 2) + 1.193550",
+                "variables": [
+                  "L",
+                  "X"
+                ]
+              },
+              "y": {
+                "expression": "0.586603",
+                "variables": []
+              },
+              "z": {
+                "expression": "0.945460",
+                "variables": []
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.353553,
+              "x": -0.612354,
+              "y": 0.612354,
+              "z": 0.353553
+            }
+          }
+        },
+        {
+          "block_id": "flow_011_procedure_002_pb_a",
+          "action": "Place",
+          "flow_index": 11,
+          "procedure_indexes": [
+            2
+          ],
+          "element": "Bear Loading",
+          "sub_step": "Lift header onto jack studs within opening using additional help or temporary support",
+          "robot": "Robot_1",
+          "controller_variable": "robot_1",
+          "runtime_robot_name": "IRB6620_R1",
+          "tool_name": "Suction_Cup",
+          "tool_id": "tool1",
+          "pose": {
+            "name": "Load_Bearing_Place_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "W",
+              "X"
+            ],
+            "position": {
+              "x": {
+                "expression": "X + 1.132590",
+                "variables": [
+                  "X"
+                ]
+              },
+              "y": {
+                "expression": "0.000000",
+                "variables": []
+              },
+              "z": {
+                "expression": "W + 1.045460",
+                "variables": [
+                  "W"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.0,
+              "x": 0.0,
+              "y": 0.707107,
+              "z": 0.707107
+            }
+          }
+        },
+        {
+          "block_id": "flow_012_procedure_001_pb_a",
+          "action": "Nail",
+          "flow_index": 12,
+          "procedure_indexes": [
+            1
+          ],
+          "element": "Bear Loading",
+          "sub_step": "Nail or screw header to jack studs and add metal hangers or straps if required",
+          "robot": "Robot_1",
+          "controller_variable": "robot_1",
+          "runtime_robot_name": "IRB6620_R1",
+          "tool_name": "Nail_Gun",
+          "tool_id": "tool2",
+          "pose": {
+            "name": "Load_Bearing_Nail_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "H",
+              "W",
+              "X",
+              "Z"
+            ],
+            "position": {
+              "x": {
+                "expression": "X + (0.200000 * H) + 1.132590",
+                "variables": [
+                  "H",
+                  "X"
+                ]
+              },
+              "y": {
+                "expression": "0.429289 - (W / 2)",
+                "variables": [
+                  "W"
+                ]
+              },
+              "z": {
+                "expression": "Z + 0.986491",
+                "variables": [
+                  "Z"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.27061,
+              "x": 0.27061,
+              "y": -0.653296,
+              "z": 0.653296
+            }
+          }
+        },
+        {
+          "block_id": "flow_013_procedure_004_pb_a",
+          "action": "Place",
+          "flow_index": 13,
+          "procedure_indexes": [
+            4
+          ],
+          "element": "L/U Stud",
+          "sub_step": "Stand stud in place providing space for service penetrations as detailed",
+          "robot": "Robot_1",
+          "controller_variable": "robot_1",
+          "runtime_robot_name": "IRB6620_R1",
+          "tool_name": "Suction_Cup",
+          "tool_id": "tool1",
+          "pose": {
+            "name": "L_U_Stud_Place_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "L",
+              "W",
+              "X",
+              "Z"
+            ],
+            "position": {
+              "x": {
+                "expression": "3.650990 - X - (L / 2)",
+                "variables": [
+                  "L",
+                  "X"
+                ]
+              },
+              "y": {
+                "expression": "0.000000",
+                "variables": []
+              },
+              "z": {
+                "expression": "0.895460 + Z + (W / 2)",
+                "variables": [
+                  "W",
+                  "Z"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.0,
+              "x": 0.0,
+              "y": 1.0,
+              "z": 0.0
+            }
+          }
+        },
+        {
+          "block_id": "flow_014_procedure_002_pb_a",
+          "action": "Place",
+          "flow_index": 14,
+          "procedure_indexes": [
+            2
+          ],
+          "element": "Lower Sill Plate",
+          "sub_step": "Position sill on marked lines with crown up and faces flush",
+          "robot": "Robot_2",
+          "controller_variable": "robot_2",
+          "runtime_robot_name": "IRB6620_R2",
+          "tool_name": "Gripper",
+          "tool_id": "tool0",
+          "pose": {
+            "name": "Lower_Sill_Plate_Place_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "H",
+              "X"
+            ],
+            "position": {
+              "x": {
+                "expression": "X + 1.132590",
+                "variables": [
+                  "X"
+                ]
+              },
+              "y": {
+                "expression": "0.000000",
+                "variables": []
+              },
+              "z": {
+                "expression": "H + 1.189360",
+                "variables": [
+                  "H"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.0,
+              "x": 0.0,
+              "y": -1.0,
+              "z": 0.0
+            }
+          }
+        },
+        {
+          "block_id": "flow_015_procedure_001_pb_a",
+          "action": "Nail",
+          "flow_index": 15,
+          "procedure_indexes": [
+            1
+          ],
+          "element": "Lower Sill Plate",
+          "sub_step": "Tack sill to king or jack studs, then secure with nails or screws through end joints",
+          "robot": "Robot_2",
+          "controller_variable": "robot_2",
+          "runtime_robot_name": "IRB6620_R2",
+          "tool_name": "Nail_Gun",
+          "tool_id": "tool1",
+          "pose": {
+            "name": "Lower_Sill_Plate_Nail_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "H",
+              "W",
+              "X"
+            ],
+            "position": {
+              "x": {
+                "expression": "X + 1.132590",
+                "variables": [
+                  "X"
+                ]
+              },
+              "y": {
+                "expression": "-0.413397 + (1.500000 * W)",
+                "variables": [
+                  "W"
+                ]
+              },
+              "z": {
+                "expression": "0.945460 + (0.300000 * H)",
+                "variables": [
+                  "H"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.0,
+              "x": 0.0,
+              "y": 0.353553,
+              "z": 0.612354
+            }
+          }
+        },
+        {
+          "block_id": "flow_016_procedure_001_pb_a",
+          "action": "Nail",
+          "flow_index": 16,
+          "procedure_indexes": [
+            1
+          ],
+          "element": "Bottom Plate",
+          "sub_step": "Fasten plate to floor framing or slab with nails, screws, or anchors per specification",
+          "robot": "Robot_2",
+          "controller_variable": "robot_2",
+          "runtime_robot_name": "IRB6620_R2",
+          "tool_name": "Nail_Gun",
+          "tool_id": "tool1",
+          "pose": {
+            "name": "Bottom_Plate_Nail_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "H"
+            ],
+            "position": {
+              "x": {
+                "expression": "3.690000",
+                "variables": []
+              },
+              "y": {
+                "expression": "0",
+                "variables": []
+              },
+              "z": {
+                "expression": "0.895460 + (0.300000 * H)",
+                "variables": [
+                  "H"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.0,
+              "x": 0.5,
+              "y": 0.5,
+              "z": 0.5
+            }
+          }
+        },
+        {
+          "block_id": "flow_017_procedure_004_pb_a",
+          "action": "Place",
+          "flow_index": 17,
+          "procedure_indexes": [
+            4
+          ],
+          "element": "Top Sill Plate",
+          "sub_step": "Set top sill on marks and hold flush with inner faces of studs",
+          "robot": "Robot_1",
+          "controller_variable": "robot_1",
+          "runtime_robot_name": "IRB6620_R1",
+          "tool_name": "Gripper",
+          "tool_id": "tool0",
+          "pose": {
+            "name": "Top_Sill_Plate_Place_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "H",
+              "X"
+            ],
+            "position": {
+              "x": {
+                "expression": "X + 1.132590",
+                "variables": [
+                  "X"
+                ]
+              },
+              "y": {
+                "expression": "0.000000",
+                "variables": []
+              },
+              "z": {
+                "expression": "H + 0.989360",
+                "variables": [
+                  "H"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.0,
+              "x": 0.0,
+              "y": 1.0,
+              "z": 0.0
+            }
+          }
+        },
+        {
+          "block_id": "flow_018_procedure_001_pb_a",
+          "action": "Nail",
+          "flow_index": 18,
+          "procedure_indexes": [
+            1
+          ],
+          "element": "Top Sill Plate",
+          "sub_step": "Nail or screw plate to king studs and to any top cripple studs above",
+          "robot": "Robot_1",
+          "controller_variable": "robot_1",
+          "runtime_robot_name": "IRB6620_R1",
+          "tool_name": "Nail_Gun",
+          "tool_id": "tool2",
+          "pose": {
+            "name": "Top_Sill_Plate_Nail_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "H",
+              "W",
+              "X"
+            ],
+            "position": {
+              "x": {
+                "expression": "X + 1.132590",
+                "variables": [
+                  "X"
+                ]
+              },
+              "y": {
+                "expression": "0.413397 - (W / 2)",
+                "variables": [
+                  "W"
+                ]
+              },
+              "z": {
+                "expression": "0.945460 + (0.300000 * H)",
+                "variables": [
+                  "H"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.182999,
+              "x": -0.682994,
+              "y": 0.682994,
+              "z": 0.182999
+            }
+          }
+        },
+        {
+          "block_id": "flow_019_procedure_004_pb_a",
+          "action": "Place",
+          "flow_index": 19,
+          "procedure_indexes": [
+            4
+          ],
+          "element": "Top Cripple Stud",
+          "sub_step": "Position cripples at on-center spacing above opening between header and top plate",
+          "robot": "Robot_1",
+          "controller_variable": "robot_1",
+          "runtime_robot_name": "IRB6620_R1",
+          "tool_name": "Gripper",
+          "tool_id": "tool0",
+          "pose": {
+            "name": "Top_Cripple_Plate_Place_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "H",
+              "L",
+              "X"
+            ],
+            "position": {
+              "x": {
+                "expression": "X + (L / 2) + 0.932590",
+                "variables": [
+                  "L",
+                  "X"
+                ]
+              },
+              "y": {
+                "expression": "0.500000",
+                "variables": []
+              },
+              "z": {
+                "expression": "H + 0.989360",
+                "variables": [
+                  "H"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.0,
+              "x": 0.0,
+              "y": -0.707107,
+              "z": -0.707107
+            }
+          }
+        },
+        {
+          "block_id": "flow_020_procedure_001_pb_a",
+          "action": "Nail",
+          "flow_index": 20,
+          "procedure_indexes": [
+            1
+          ],
+          "element": "Top Cripple Stud",
+          "sub_step": "Fasten cripples through top plate and header with nails or screws",
+          "robot": "Robot_1",
+          "controller_variable": "robot_1",
+          "runtime_robot_name": "IRB6620_R1",
+          "tool_name": "Nail_Gun",
+          "tool_id": "tool2",
+          "pose": {
+            "name": "Top_Cripple_Plate_Nail_Pose",
+            "units": {
+              "position": "meter",
+              "element_dimensions": "meter"
+            },
+            "required_variables": [
+              "H"
+            ],
+            "position": {
+              "x": {
+                "expression": "1.100000",
+                "variables": []
+              },
+              "y": {
+                "expression": "0.500000",
+                "variables": []
+              },
+              "z": {
+                "expression": "0.895460 + (0.300000 * H)",
+                "variables": [
+                  "H"
+                ]
+              }
+            },
+            "orientation_quaternion": {
+              "w": 0.0,
+              "x": 0.707107,
+              "y": 0.0,
+              "z": 0.707107
+            }
+          }
+        }
+      ],
+      "attempts": [
+        {
+          "status": "reused_from_previous_run",
+          "block_ids": [
+            "flow_001_procedure_002_pb_a",
+            "flow_002_procedure_001_pb_a",
+            "flow_003_procedure_002_pb_a",
+            "flow_004_procedure_001_pb_a",
+            "flow_005_procedure_002_pb_a",
+            "flow_006_procedure_002_pb_a",
+            "flow_007_procedure_001_pb_a",
+            "flow_008_procedure_004_pb_a",
+            "flow_009_procedure_002_pb_a",
+            "flow_010_procedure_001_pb_a",
+            "flow_011_procedure_002_pb_a",
+            "flow_012_procedure_001_pb_a",
+            "flow_013_procedure_004_pb_a",
+            "flow_014_procedure_002_pb_a",
+            "flow_015_procedure_001_pb_a",
+            "flow_016_procedure_001_pb_a",
+            "flow_017_procedure_004_pb_a",
+            "flow_018_procedure_001_pb_a",
+            "flow_019_procedure_004_pb_a",
+            "flow_020_procedure_001_pb_a"
+          ]
+        }
+      ],
+      "generated_blocks": {
+        "flow_002_procedure_001_pb_a": [
+          "robot_1.plan(\"tool2\", np.array([1.100000, 0.500000, 0.895460 + (0.300000 * H)], dtype=float), np.array([0.0, 0.707107, 0.0, 0.707107], dtype=float))",
+          "robot_1.render_exec()",
+          "robot_1.move_to_home()"
+        ],
+        "flow_013_procedure_004_pb_a": [
+          "robot_1.plan('tool1', np.array([3.650990 - X - (L / 2), 0.0, 0.895460 + Z + (W / 2)], dtype=float), np.array([0.0, 0.0, 1.0, 0.0], dtype=float))",
+          "robot_1.render_exec()",
+          "robot_1.eef_detach('IRB6620_R1', 'tool1', 'L/U Stud')",
+          "robot_1.move_to_home()"
+        ],
+        "flow_001_procedure_002_pb_a": [
+          "robot_2.plan(\"tool0\", np.array([X + (L / 2) + 0.962590, 0.500000, H + 0.889360], dtype=float), np.array([0.0, 0.0, 0.707107, 0.707107], dtype=float))",
+          "robot_2.render_exec()",
+          "robot_2.eef_detach(\"IRB6620_R2\", \"tool0\", \"Vertical Stud\")",
+          "robot_2.move_to_home()"
+        ],
+        "flow_007_procedure_001_pb_a": [
+          "robot_1.plan(\"tool2\", np.array([L + 1.152590, 0.0, H + 1.047060], dtype=float), np.array([0.0, 1.0, 0.0, 0.0], dtype=float))",
+          "robot_1.render_exec()",
+          "robot_1.move_to_home()"
+        ],
+        "flow_016_procedure_001_pb_a": [
+          "robot_2.plan('tool1', np.array([3.690000, 0, 0.895460 + (0.300000 * H)], dtype=float), np.array([0.0, 0.5, 0.5, 0.5], dtype=float))",
+          "robot_2.render_exec()",
+          "robot_2.move_to_home()"
+        ],
+        "flow_018_procedure_001_pb_a": [
+          "robot_1.plan(\"tool2\", np.array([X + 1.132590, 0.413397 - (W / 2), 0.945460 + (0.300000 * H)], dtype=float), np.array([0.182999, -0.682994, 0.682994, 0.182999], dtype=float))",
+          "robot_1.render_exec()",
+          "robot_1.move_to_home()"
+        ],
+        "flow_005_procedure_002_pb_a": [
+          "robot_2.plan(\"tool0\", np.array([X - (L / 2) + 1.182590, 0.0, H + 0.889360], dtype=float), np.array([0.0, 0.0, -0.707107, -0.707107], dtype=float))",
+          "robot_2.render_exec()",
+          "robot_2.eef_detach(\"IRB6620_R2\", \"tool0\", \"Lower Cripple Stud\")",
+          "robot_2.move_to_home()"
+        ],
+        "flow_020_procedure_001_pb_a": [
+          "robot_1.plan('tool2', np.array([1.100000, 0.500000, 0.895460 + (0.300000 * H)], dtype=float), np.array([0.0, 0.707107, 0.0, 0.707107], dtype=float))",
+          "robot_1.render_exec()",
+          "robot_1.move_to_home()"
+        ],
+        "flow_015_procedure_001_pb_a": [
+          "robot_2.plan(\"tool1\", np.array([X + 1.132590, -0.413397 + (1.500000 * W), 0.945460 + (0.300000 * H)], dtype=float), np.array([0.0, 0.0, 0.353553, 0.612354], dtype=float))",
+          "robot_2.render_exec()",
+          "robot_2.move_to_home()"
+        ],
+        "flow_010_procedure_001_pb_a": [
+          "robot_1.plan(\"tool2\", np.array([X - (L / 2) + 1.193550, 0.586603, 0.945460], dtype=float), np.array([0.353553, -0.612354, 0.612354, 0.353553], dtype=float))",
+          "robot_1.render_exec(renderInstance=True, Show_Sphere=True, is_synchronizer=False)",
+          "robot_1.move_to_home(if_show_spheres=False, Customized_JS=[0, -0.5, 0.5, 0, 0, 0], removing_primitives=[])"
+        ],
+        "flow_019_procedure_004_pb_a": [
+          "robot_1.plan(\"Gripper\", np.array([X + (L / 2) + 0.932590, 0.5, H + 0.989360], dtype=float), np.array([0.0, 0.0, -0.707107, -0.707107], dtype=float))",
+          "robot_1.render_exec()",
+          "robot_1.eef_detach(\"IRB6620_R1\", \"tool0\", \"Top Cripple Stud\")",
+          "robot_1.move_to_home()"
+        ],
+        "flow_017_procedure_004_pb_a": [
+          "robot_1.plan(\"tool0\", np.array([X + 1.132590, 0.0, H + 0.989360], dtype=float), np.array([0.0, 0.0, 1.0, 0.0], dtype=float))",
+          "robot_1.render_exec()",
+          "robot_1.eef_detach(\"IRB6620_R1\", \"tool0\", \"Top Sill Plate\")",
+          "robot_1.move_to_home()"
+        ],
+        "flow_006_procedure_002_pb_a": [
+          "robot_1.plan('Suction_Cup', np.array([2.691790 - X, 0.0, Z + 0.895460], dtype=float), np.array([0.0, 0.0, 0.0, -1.0], dtype=float))",
+          "robot_1.render_exec(True, True, False)",
+          "robot_1.eef_detach('IRB6620_R1', 'tool1', 'OSB Sheathing Plate')",
+          "robot_1.move_to_home(False, [0, -0.5, 0.5, 0, 0, 0], [])"
+        ],
+        "flow_012_procedure_001_pb_a": [
+          "robot_1.plan(\"tool2\", np.array([X + (0.200000 * H) + 1.132590, 0.429289 - (W / 2), Z + 0.986491], dtype=float), np.array([0.27061, 0.27061, -0.653296, 0.653296], dtype=float))",
+          "robot_1.render_exec()",
+          "robot_1.move_to_home()"
+        ],
+        "flow_009_procedure_002_pb_a": [
+          "target_pose = np.array([X + (L / 2) + 1.082590, 0.500000, H + 0.939360], dtype=float)",
+          "target_orientation = np.array([0.0, 0.0, -0.707107, 0.707107], dtype=float)",
+          "robot_2.plan(\"tool0\", target_pose, target_orientation)",
+          "robot_2.render_exec()",
+          "robot_2.eef_detach(\"IRB6620_R2\", \"tool0\", \"Jack Stud\")",
+          "robot_2.move_to_home()"
+        ],
+        "flow_014_procedure_002_pb_a": [
+          "robot_2.plan(tcp_name=\"Gripper\", target_pose=np.array([X + 1.132590, 0.0, H + 1.189360], dtype=float), target_orientation=np.array([0.0, 0.0, -1.0, 0.0], dtype=float))",
+          "robot_2.render_exec()",
+          "robot_2.eef_detach(r_name=\"IRB6620_R2\", tool_name=\"tool0\", detaching_object_name=\"Lower Sill Plate\")",
+          "robot_2.move_to_home()"
+        ],
+        "flow_003_procedure_002_pb_a": [
+          "robot_2.plan(\"Gripper\", np.array([X + (L / 2) + 0.962590, 0.500000, H + 0.889360], dtype=float), np.array([0.0, 0.0, 0.707107, 0.707107], dtype=float))",
+          "robot_2.render_exec()",
+          "robot_2.eef_detach(\"IRB6620_R2\", \"tool0\", \"King Stud\")",
+          "robot_2.move_to_home()"
+        ],
+        "flow_004_procedure_001_pb_a": [
+          "robot_1.plan(\"tool2\", np.array([1.100000, 0.500000, 0.895460 + (0.300000 * H)], dtype=float), np.array([0.0, 0.707107, 0.0, 0.707107], dtype=float))",
+          "robot_1.render_exec()",
+          "robot_1.move_to_home()"
+        ],
+        "flow_011_procedure_002_pb_a": [
+          "robot_1.plan(\"tool1\", np.array([X + 1.132590, 0.0, W + 1.045460], dtype=float), np.array([0.0, 0.0, 0.707107, 0.707107], dtype=float))",
+          "robot_1.render_exec()",
+          "robot_1.eef_detach(\"IRB6620_R1\", \"tool1\", \"Bear Loading\")",
+          "robot_1.move_to_home()"
+        ],
+        "flow_008_procedure_004_pb_a": [
+          "robot_1.plan('tool0', np.array([X + 1.132590, 0.0, H + 0.889360], dtype=float), np.array([0.0, 0.0, 1.0, 0.0], dtype=float))",
+          "robot_1.render_exec()",
+          "robot_1.eef_detach(r_name='IRB6620_R1', tool_name='tool0', detaching_object_name='Top Plate')",
+          "robot_1.move_to_home()"
+        ]
+      }
+    },
+    "Co-A": {
+      "instructions": "You are Co-A, the Collaborative HLAF Generation Agent.\n\nEach assigned task contains a giver and receiver at the same Pass pose.\n\nFor every collaborative block, follow this exact structural pattern:\n\n<giver_controller>.plan(...)\n<receiver_controller>.plan(...)\n\nwith ThreadPoolExecutor(max_workers=2) as executor:\n    giver_exec = executor.submit(\n        <giver_controller>.render_exec,\n        is_synchronizer=False,\n    )\n    receiver_exec = executor.submit(\n        <receiver_controller>.render_exec,\n        is_synchronizer=True,\n    )\n    giver_exec.result()\n    receiver_exec.result()\n\n<receiver_controller>.eef_attach(...)\n<giver_controller>.eef_detach(...)\n\nwith ThreadPoolExecutor(max_workers=2) as executor:\n    giver_home = executor.submit(\n        <giver_controller>.move_to_home\n    )\n    receiver_home = executor.submit(\n        <receiver_controller>.move_to_home\n    )\n    giver_home.result()\n    receiver_home.result()\n\nAdditional Co-A rules:\n- Use ThreadPoolExecutor exactly as shown; do not prefix it with a module name.\n- Do not call executor.shutdown(). The context manager performs shutdown.\n- Do not replace ThreadPoolExecutor with another concurrency mechanism.\n- Attach the receiver before detaching the giver.\n\nUse the local temporary names:\n    giver_exec\n    receiver_exec\n    giver_home\n    receiver_home\n    executor\n\nThe robot controllers expose only these relevant low-level functions:\n\nplan(\n    tcp_name: str,\n    target_pose: np.array,\n    target_orientation: np.array\n)\n\nrender_exec(\n    renderInstance: bool = True,\n    Show_Sphere: Optional[bool] = True,\n    is_synchronizer: bool = False\n)\n\nmove_to_home(\n    if_show_spheres: bool = False,\n    Customized_JS: List[float] = [0, -0.5, 0.5, 0, 0, 0],\n    removing_primitives=[]\n)\n\neef_attach(\n    r_name: str,\n    tool_name: str,\n    attaching_object_name: str\n)\n\neef_detach(\n    r_name: str,\n    tool_name: str,\n    detaching_object_name: str\n)\n\nRules shared by all agents:\n- Generate Python statements only; do not generate imports, functions, classes,\n  Markdown, prose, placeholders, or ellipses.\n- Use only the controller variable, tool id, runtime robot name, pose\n  expressions, quaternion, and element_object_name supplied in each task.\n- Every low-level call must be invoked as a method of the supplied controller\n  variable, such as robot_2.plan(...) or robot_2.eef_detach(...). Never emit\n  plan(...), render_exec(...), move_to_home(...), eef_attach(...), or\n  eef_detach(...) as bare functions.\n- Quaternion arrays must use [w, x, y, z] order.\n- Call render_exec immediately after each plan.\n- Pass only tcp_name, target_pose, and target_orientation to plan.\n- Use np.array([...], dtype=float) for both pose and orientation.\n- Do not invent or change pose expressions.\n- move_to_home performs its own execution; never follow it with render_exec.\n\nReturn every requested block through submit_hlaf_code_blocks.",
+      "instructions_sha256": "2b3ae08405c20c2aa6e03f6337f4043cdd70d5e6fcd17a75604562542a718d09",
+      "prompt": "Generate all code blocks assigned to Co-A.\n\nReturn one block for every task and copy each block_id exactly.\n\n[\n  {\n    \"block_id\": \"flow_008_procedures_002_003_co_a\",\n    \"action\": \"Pass\",\n    \"flow_index\": 8,\n    \"procedure_indexes\": [\n      2,\n      3\n    ],\n    \"element\": \"Top Plate\",\n    \"sub_step\": \"Install second (cap) plate overlapping joints for strength\",\n    \"giver\": {\n      \"robot\": \"Robot_2\",\n      \"controller_variable\": \"robot_2\",\n      \"runtime_robot_name\": \"IRB6620_R2\",\n      \"tool_name\": \"Gripper\",\n      \"tool_id\": \"tool0\",\n      \"element\": \"Top Plate\",\n      \"pose\": {\n        \"name\": \"Top_Plate_Pass_Pose\",\n        \"units\": {\n          \"position\": \"meter\",\n          \"element_dimensions\": \"meter\"\n        },\n        \"required_variables\": [\n          \"H\",\n          \"L\"\n        ],\n        \"position\": {\n          \"x\": {\n            \"expression\": \"2.250000 + (L / 2)\",\n            \"variables\": [\n              \"L\"\n            ]\n          },\n          \"y\": {\n            \"expression\": \"-1.000000\",\n            \"variables\": []\n          },\n          \"z\": {\n            \"expression\": \"H + 0.850000\",\n            \"variables\": [\n              \"H\"\n            ]\n          }\n        },\n        \"orientation_quaternion\": {\n          \"w\": 0.0,\n          \"x\": 0.0,\n          \"y\": 0.707107,\n          \"z\": 0.707107\n        }\n      }\n    },\n    \"receiver\": {\n      \"robot\": \"Robot_1\",\n      \"controller_variable\": \"robot_1\",\n      \"runtime_robot_name\": \"IRB6620_R1\",\n      \"tool_name\": \"Gripper\",\n      \"tool_id\": \"tool0\",\n      \"element\": \"Top Plate\",\n      \"pose\": {\n        \"name\": \"Top_Plate_Pass_Pose\",\n        \"units\": {\n          \"position\": \"meter\",\n          \"element_dimensions\": \"meter\"\n        },\n        \"required_variables\": [\n          \"H\",\n          \"L\"\n        ],\n        \"position\": {\n          \"x\": {\n            \"expression\": \"2.250000 + (L / 2)\",\n            \"variables\": [\n              \"L\"\n            ]\n          },\n          \"y\": {\n            \"expression\": \"-1.000000\",\n            \"variables\": []\n          },\n          \"z\": {\n            \"expression\": \"H + 0.850000\",\n            \"variables\": [\n              \"H\"\n            ]\n          }\n        },\n        \"orientation_quaternion\": {\n          \"w\": 0.0,\n          \"x\": 0.0,\n          \"y\": 0.707107,\n          \"z\": 0.707107\n        }\n      }\n    }\n  }\n]\n\n--- NEXT BATCH ---\n\nGenerate all code blocks assigned to Co-A.\n\nReturn one block for every task and copy each block_id exactly.\n\n[\n  {\n    \"block_id\": \"flow_013_procedures_002_003_co_a\",\n    \"action\": \"Pass\",\n    \"flow_index\": 13,\n    \"procedure_indexes\": [\n      2,\n      3\n    ],\n    \"element\": \"L/U Stud\",\n    \"sub_step\": \"Stand stud in place providing space for service penetrations as detailed\",\n    \"giver\": {\n      \"robot\": \"Robot_2\",\n      \"controller_variable\": \"robot_2\",\n      \"runtime_robot_name\": \"IRB6620_R2\",\n      \"tool_name\": \"Gripper\",\n      \"tool_id\": \"tool0\",\n      \"element\": \"L/U Stud\",\n      \"pose\": {\n        \"name\": \"L_U_Stud_Pass_Pose\",\n        \"units\": {\n          \"position\": \"meter\",\n          \"element_dimensions\": \"meter\"\n        },\n        \"required_variables\": [\n          \"H\"\n        ],\n        \"position\": {\n          \"x\": {\n            \"expression\": \"2.816340 - (0.866025)\",\n            \"variables\": []\n          },\n          \"y\": {\n            \"expression\": \"1.244430 + (H / 2)\",\n            \"variables\": [\n              \"H\"\n            ]\n          },\n          \"z\": {\n            \"expression\": \"1.297380 + (0.500000)\",\n            \"variables\": []\n          }\n        },\n        \"orientation_quaternion\": {\n          \"w\": 0.0,\n          \"x\": 0.96593,\n          \"y\": 0.0,\n          \"z\": 0.25882\n        }\n      }\n    },\n    \"receiver\": {\n      \"robot\": \"Robot_1\",\n      \"controller_variable\": \"robot_1\",\n      \"runtime_robot_name\": \"IRB6620_R1\",\n      \"tool_name\": \"Suction_Cup\",\n      \"tool_id\": \"tool1\",\n      \"element\": \"L/U Stud\",\n      \"pose\": {\n        \"name\": \"L_U_Stud_Pass_Pose\",\n        \"units\": {\n          \"position\": \"meter\",\n          \"element_dimensions\": \"meter\"\n        },\n        \"required_variables\": [\n          \"H\"\n        ],\n        \"position\": {\n          \"x\": {\n            \"expression\": \"2.816340 - (0.866025)\",\n            \"variables\": []\n          },\n          \"y\": {\n            \"expression\": \"1.244430 + (H / 2)\",\n            \"variables\": [\n              \"H\"\n            ]\n          },\n          \"z\": {\n            \"expression\": \"1.297380 + (0.500000)\",\n            \"variables\": []\n          }\n        },\n        \"orientation_quaternion\": {\n          \"w\": 0.0,\n          \"x\": 0.96593,\n          \"y\": 0.0,\n          \"z\": 0.25882\n        }\n      }\n    }\n  }\n]\n\n--- NEXT BATCH ---\n\nGenerate all code blocks assigned to Co-A.\n\nReturn one block for every task and copy each block_id exactly.\n\n[\n  {\n    \"block_id\": \"flow_017_procedures_002_003_co_a\",\n    \"action\": \"Pass\",\n    \"flow_index\": 17,\n    \"procedure_indexes\": [\n      2,\n      3\n    ],\n    \"element\": \"Top Sill Plate\",\n    \"sub_step\": \"Set top sill on marks and hold flush with inner faces of studs\",\n    \"giver\": {\n      \"robot\": \"Robot_2\",\n      \"controller_variable\": \"robot_2\",\n      \"runtime_robot_name\": \"IRB6620_R2\",\n      \"tool_name\": \"Gripper\",\n      \"tool_id\": \"tool0\",\n      \"element\": \"Top Sill Plate\",\n      \"pose\": {\n        \"name\": \"Top_Sill_Plate_Pass_Pose\",\n        \"units\": {\n          \"position\": \"meter\",\n          \"element_dimensions\": \"meter\"\n        },\n        \"required_variables\": [\n          \"H\"\n        ],\n        \"position\": {\n          \"x\": {\n            \"expression\": \"1.762200 - (H / 2)\",\n            \"variables\": [\n              \"H\"\n            ]\n          },\n          \"y\": {\n            \"expression\": \"-0.150000\",\n            \"variables\": []\n          },\n          \"z\": {\n            \"expression\": \"1.550000\",\n            \"variables\": []\n          }\n        },\n        \"orientation_quaternion\": {\n          \"w\": 0.0,\n          \"x\": 0.707107,\n          \"y\": 0.0,\n          \"z\": 0.707107\n        }\n      }\n    },\n    \"receiver\": {\n      \"robot\": \"Robot_1\",\n      \"controller_variable\": \"robot_1\",\n      \"runtime_robot_name\": \"IRB6620_R1\",\n      \"tool_name\": \"Gripper\",\n      \"tool_id\": \"tool0\",\n      \"element\": \"Top Sill Plate\",\n      \"pose\": {\n        \"name\": \"Top_Sill_Plate_Pass_Pose\",\n        \"units\": {\n          \"position\": \"meter\",\n          \"element_dimensions\": \"meter\"\n        },\n        \"required_variables\": [\n          \"H\"\n        ],\n        \"position\": {\n          \"x\": {\n            \"expression\": \"1.762200 - (H / 2)\",\n            \"variables\": [\n              \"H\"\n            ]\n          },\n          \"y\": {\n            \"expression\": \"-0.150000\",\n            \"variables\": []\n          },\n          \"z\": {\n            \"expression\": \"1.550000\",\n            \"variables\": []\n          }\n        },\n        \"orientation_quaternion\": {\n          \"w\": 0.0,\n          \"x\": 0.707107,\n          \"y\": 0.0,\n          \"z\": 0.707107\n        }\n      }\n    }\n  }\n]\n\n--- NEXT BATCH ---\n\nGenerate all code blocks assigned to Co-A.\n\nReturn one block for every task and copy each block_id exactly.\n\n[\n  {\n    \"block_id\": \"flow_019_procedures_002_003_co_a\",\n    \"action\": \"Pass\",\n    \"flow_index\": 19,\n    \"procedure_indexes\": [\n      2,\n      3\n    ],\n    \"element\": \"Top Cripple Stud\",\n    \"sub_step\": \"Position cripples at on-center spacing above opening between header and top plate\",\n    \"giver\": {\n      \"robot\": \"Robot_2\",\n      \"controller_variable\": \"robot_2\",\n      \"runtime_robot_name\": \"IRB6620_R2\",\n      \"tool_name\": \"Gripper\",\n      \"tool_id\": \"tool0\",\n      \"element\": \"Top Cripple Stud\",\n      \"pose\": {\n        \"name\": \"Top_Cripple_Plate_Pass_Pose\",\n        \"units\": {\n          \"position\": \"meter\",\n          \"element_dimensions\": \"meter\"\n        },\n        \"required_variables\": [\n          \"H\"\n        ],\n        \"position\": {\n          \"x\": {\n            \"expression\": \"1.762200 - (H / 2)\",\n            \"variables\": [\n              \"H\"\n            ]\n          },\n          \"y\": {\n            \"expression\": \"-0.150000\",\n            \"variables\": []\n          },\n          \"z\": {\n            \"expression\": \"1.550000\",\n            \"variables\": []\n          }\n        },\n        \"orientation_quaternion\": {\n          \"w\": 0.0,\n          \"x\": 0.707107,\n          \"y\": 0.0,\n          \"z\": 0.707107\n        }\n      }\n    },\n    \"receiver\": {\n      \"robot\": \"Robot_1\",\n      \"controller_variable\": \"robot_1\",\n      \"runtime_robot_name\": \"IRB6620_R1\",\n      \"tool_name\": \"Gripper\",\n      \"tool_id\": \"tool0\",\n      \"element\": \"Top Cripple Stud\",\n      \"pose\": {\n        \"name\": \"Top_Cripple_Plate_Pass_Pose\",\n        \"units\": {\n          \"position\": \"meter\",\n          \"element_dimensions\": \"meter\"\n        },\n        \"required_variables\": [\n          \"H\"\n        ],\n        \"position\": {\n          \"x\": {\n            \"expression\": \"1.762200 - (H / 2)\",\n            \"variables\": [\n              \"H\"\n            ]\n          },\n          \"y\": {\n            \"expression\": \"-0.150000\",\n            \"variables\": []\n          },\n          \"z\": {\n            \"expression\": \"1.550000\",\n            \"variables\": []\n          }\n        },\n        \"orientation_quaternion\": {\n          \"w\": 0.0,\n          \"x\": 0.707107,\n          \"y\": 0.0,\n          \"z\": 0.707107\n        }\n      }\n    }\n  }\n]",
+      "prompt_sha256": "6f7e4472d162c526a9bd088030b178245580147774c173a24ca27661ce64d956",
+      "tasks": [
+        {
+          "block_id": "flow_008_procedures_002_003_co_a",
+          "action": "Pass",
+          "flow_index": 8,
+          "procedure_indexes": [
+            2,
+            3
+          ],
+          "element": "Top Plate",
+          "sub_step": "Install second (cap) plate overlapping joints for strength",
+          "giver": {
+            "robot": "Robot_2",
+            "controller_variable": "robot_2",
+            "runtime_robot_name": "IRB6620_R2",
+            "tool_name": "Gripper",
+            "tool_id": "tool0",
+            "element": "Top Plate",
+            "pose": {
+              "name": "Top_Plate_Pass_Pose",
+              "units": {
+                "position": "meter",
+                "element_dimensions": "meter"
+              },
+              "required_variables": [
+                "H",
+                "L"
+              ],
+              "position": {
+                "x": {
+                  "expression": "2.250000 + (L / 2)",
+                  "variables": [
+                    "L"
+                  ]
+                },
+                "y": {
+                  "expression": "-1.000000",
+                  "variables": []
+                },
+                "z": {
+                  "expression": "H + 0.850000",
+                  "variables": [
+                    "H"
+                  ]
+                }
+              },
+              "orientation_quaternion": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.707107,
+                "z": 0.707107
+              }
+            }
+          },
+          "receiver": {
+            "robot": "Robot_1",
+            "controller_variable": "robot_1",
+            "runtime_robot_name": "IRB6620_R1",
+            "tool_name": "Gripper",
+            "tool_id": "tool0",
+            "element": "Top Plate",
+            "pose": {
+              "name": "Top_Plate_Pass_Pose",
+              "units": {
+                "position": "meter",
+                "element_dimensions": "meter"
+              },
+              "required_variables": [
+                "H",
+                "L"
+              ],
+              "position": {
+                "x": {
+                  "expression": "2.250000 + (L / 2)",
+                  "variables": [
+                    "L"
+                  ]
+                },
+                "y": {
+                  "expression": "-1.000000",
+                  "variables": []
+                },
+                "z": {
+                  "expression": "H + 0.850000",
+                  "variables": [
+                    "H"
+                  ]
+                }
+              },
+              "orientation_quaternion": {
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.707107,
+                "z": 0.707107
+              }
+            }
+          }
+        },
+        {
+          "block_id": "flow_013_procedures_002_003_co_a",
+          "action": "Pass",
+          "flow_index": 13,
+          "procedure_indexes": [
+            2,
+            3
+          ],
+          "element": "L/U Stud",
+          "sub_step": "Stand stud in place providing space for service penetrations as detailed",
+          "giver": {
+            "robot": "Robot_2",
+            "controller_variable": "robot_2",
+            "runtime_robot_name": "IRB6620_R2",
+            "tool_name": "Gripper",
+            "tool_id": "tool0",
+            "element": "L/U Stud",
+            "pose": {
+              "name": "L_U_Stud_Pass_Pose",
+              "units": {
+                "position": "meter",
+                "element_dimensions": "meter"
+              },
+              "required_variables": [
+                "H"
+              ],
+              "position": {
+                "x": {
+                  "expression": "2.816340 - (0.866025)",
+                  "variables": []
+                },
+                "y": {
+                  "expression": "1.244430 + (H / 2)",
+                  "variables": [
+                    "H"
+                  ]
+                },
+                "z": {
+                  "expression": "1.297380 + (0.500000)",
+                  "variables": []
+                }
+              },
+              "orientation_quaternion": {
+                "w": 0.0,
+                "x": 0.96593,
+                "y": 0.0,
+                "z": 0.25882
+              }
+            }
+          },
+          "receiver": {
+            "robot": "Robot_1",
+            "controller_variable": "robot_1",
+            "runtime_robot_name": "IRB6620_R1",
+            "tool_name": "Suction_Cup",
+            "tool_id": "tool1",
+            "element": "L/U Stud",
+            "pose": {
+              "name": "L_U_Stud_Pass_Pose",
+              "units": {
+                "position": "meter",
+                "element_dimensions": "meter"
+              },
+              "required_variables": [
+                "H"
+              ],
+              "position": {
+                "x": {
+                  "expression": "2.816340 - (0.866025)",
+                  "variables": []
+                },
+                "y": {
+                  "expression": "1.244430 + (H / 2)",
+                  "variables": [
+                    "H"
+                  ]
+                },
+                "z": {
+                  "expression": "1.297380 + (0.500000)",
+                  "variables": []
+                }
+              },
+              "orientation_quaternion": {
+                "w": 0.0,
+                "x": 0.96593,
+                "y": 0.0,
+                "z": 0.25882
+              }
+            }
+          }
+        },
+        {
+          "block_id": "flow_017_procedures_002_003_co_a",
+          "action": "Pass",
+          "flow_index": 17,
+          "procedure_indexes": [
+            2,
+            3
+          ],
+          "element": "Top Sill Plate",
+          "sub_step": "Set top sill on marks and hold flush with inner faces of studs",
+          "giver": {
+            "robot": "Robot_2",
+            "controller_variable": "robot_2",
+            "runtime_robot_name": "IRB6620_R2",
+            "tool_name": "Gripper",
+            "tool_id": "tool0",
+            "element": "Top Sill Plate",
+            "pose": {
+              "name": "Top_Sill_Plate_Pass_Pose",
+              "units": {
+                "position": "meter",
+                "element_dimensions": "meter"
+              },
+              "required_variables": [
+                "H"
+              ],
+              "position": {
+                "x": {
+                  "expression": "1.762200 - (H / 2)",
+                  "variables": [
+                    "H"
+                  ]
+                },
+                "y": {
+                  "expression": "-0.150000",
+                  "variables": []
+                },
+                "z": {
+                  "expression": "1.550000",
+                  "variables": []
+                }
+              },
+              "orientation_quaternion": {
+                "w": 0.0,
+                "x": 0.707107,
+                "y": 0.0,
+                "z": 0.707107
+              }
+            }
+          },
+          "receiver": {
+            "robot": "Robot_1",
+            "controller_variable": "robot_1",
+            "runtime_robot_name": "IRB6620_R1",
+            "tool_name": "Gripper",
+            "tool_id": "tool0",
+            "element": "Top Sill Plate",
+            "pose": {
+              "name": "Top_Sill_Plate_Pass_Pose",
+              "units": {
+                "position": "meter",
+                "element_dimensions": "meter"
+              },
+              "required_variables": [
+                "H"
+              ],
+              "position": {
+                "x": {
+                  "expression": "1.762200 - (H / 2)",
+                  "variables": [
+                    "H"
+                  ]
+                },
+                "y": {
+                  "expression": "-0.150000",
+                  "variables": []
+                },
+                "z": {
+                  "expression": "1.550000",
+                  "variables": []
+                }
+              },
+              "orientation_quaternion": {
+                "w": 0.0,
+                "x": 0.707107,
+                "y": 0.0,
+                "z": 0.707107
+              }
+            }
+          }
+        },
+        {
+          "block_id": "flow_019_procedures_002_003_co_a",
+          "action": "Pass",
+          "flow_index": 19,
+          "procedure_indexes": [
+            2,
+            3
+          ],
+          "element": "Top Cripple Stud",
+          "sub_step": "Position cripples at on-center spacing above opening between header and top plate",
+          "giver": {
+            "robot": "Robot_2",
+            "controller_variable": "robot_2",
+            "runtime_robot_name": "IRB6620_R2",
+            "tool_name": "Gripper",
+            "tool_id": "tool0",
+            "element": "Top Cripple Stud",
+            "pose": {
+              "name": "Top_Cripple_Plate_Pass_Pose",
+              "units": {
+                "position": "meter",
+                "element_dimensions": "meter"
+              },
+              "required_variables": [
+                "H"
+              ],
+              "position": {
+                "x": {
+                  "expression": "1.762200 - (H / 2)",
+                  "variables": [
+                    "H"
+                  ]
+                },
+                "y": {
+                  "expression": "-0.150000",
+                  "variables": []
+                },
+                "z": {
+                  "expression": "1.550000",
+                  "variables": []
+                }
+              },
+              "orientation_quaternion": {
+                "w": 0.0,
+                "x": 0.707107,
+                "y": 0.0,
+                "z": 0.707107
+              }
+            }
+          },
+          "receiver": {
+            "robot": "Robot_1",
+            "controller_variable": "robot_1",
+            "runtime_robot_name": "IRB6620_R1",
+            "tool_name": "Gripper",
+            "tool_id": "tool0",
+            "element": "Top Cripple Stud",
+            "pose": {
+              "name": "Top_Cripple_Plate_Pass_Pose",
+              "units": {
+                "position": "meter",
+                "element_dimensions": "meter"
+              },
+              "required_variables": [
+                "H"
+              ],
+              "position": {
+                "x": {
+                  "expression": "1.762200 - (H / 2)",
+                  "variables": [
+                    "H"
+                  ]
+                },
+                "y": {
+                  "expression": "-0.150000",
+                  "variables": []
+                },
+                "z": {
+                  "expression": "1.550000",
+                  "variables": []
+                }
+              },
+              "orientation_quaternion": {
+                "w": 0.0,
+                "x": 0.707107,
+                "y": 0.0,
+                "z": 0.707107
+              }
+            }
+          }
+        }
+      ],
+      "attempts": [
+        {
+          "batch": 1,
+          "batch_count": 4,
+          "block_ids": [
+            "flow_008_procedures_002_003_co_a"
+          ],
+          "attempt": 1,
+          "status": "accepted",
+          "tool_choice_mode": "forced_function",
+          "response_id": "resp_E-ZX3ZgVZgHl8Bp4I1SY50J0fa0Y3LNh9Hm3M069BVz1dOQ4VIWclTDX_2_aX9EXS_HDUqY3zXElToG6DRNZCwM5gSPC-USZUaWig2X6ii_AgidyWlhqAjetzjdqkeOoDXJRuIozLvDCtKvGnllKReSd-P-c49MhzqFj_MP8uL2cW3SjrcqCJwSBVj1LCHNCel8PuwyVuXgGCvr2UMaC_qsfNvqzD5h7Hm8xmgXsZKQIKbROR5Y5TBTH2t5PawfyKnigd2lGgSKkkzHLfg7qFtw2VYBgHKkOp8iqe3mDuQ8H83MS3lj1-Kzk5nwcLDe3OzL4DbyKBHJjkdjPmKhdhsJWfhMtxDin49UnPchsl8418qkhI5xil31qdpZDDptojoxSDvbWWCLTl8sb8omTjDb888IY71qgXZX56WfZyfd8pE50IBjsf3WbwoHlalS0v1HV7H0jZKu2co130tTKmw==",
+          "returned_model_identifier": "o3",
+          "response_status": "completed",
+          "duration_seconds": 9.850298,
+          "usage": {
+            "input_tokens": 1391,
+            "input_tokens_details": {
+              "cached_tokens": 0,
+              "audio_tokens": null,
+              "text_tokens": null
+            },
+            "output_tokens": 1815,
+            "output_tokens_details": {
+              "reasoning_tokens": 1408,
+              "text_tokens": null
+            },
+            "total_tokens": 3206,
+            "cost": null
+          },
+          "blocks": {
+            "flow_008_procedures_002_003_co_a": [
+              "robot_2.plan(tcp_name='tool0', target_pose=np.array([2.250000 + (L / 2), -1.000000, H + 0.850000], dtype=float), target_orientation=np.array([0.0, 0.0, 0.707107, 0.707107], dtype=float))",
+              "robot_1.plan(tcp_name='tool0', target_pose=np.array([2.250000 + (L / 2), -1.000000, H + 0.850000], dtype=float), target_orientation=np.array([0.0, 0.0, 0.707107, 0.707107], dtype=float))",
+              "with ThreadPoolExecutor(max_workers=2) as executor:",
+              "    giver_exec = executor.submit(",
+              "        robot_2.render_exec,",
+              "        is_synchronizer=False,",
+              "    )",
+              "    receiver_exec = executor.submit(",
+              "        robot_1.render_exec,",
+              "        is_synchronizer=True,",
+              "    )",
+              "    giver_exec.result()",
+              "    receiver_exec.result()",
+              "robot_1.eef_attach('IRB6620_R1', 'Gripper', 'Top Plate')",
+              "robot_2.eef_detach('IRB6620_R2', 'Gripper', 'Top Plate')",
+              "with ThreadPoolExecutor(max_workers=2) as executor:",
+              "    giver_home = executor.submit(",
+              "        robot_2.move_to_home",
+              "    )",
+              "    receiver_home = executor.submit(",
+              "        robot_1.move_to_home",
+              "    )",
+              "    giver_home.result()",
+              "    receiver_home.result()"
+            ]
+          }
+        },
+        {
+          "batch": 2,
+          "batch_count": 4,
+          "block_ids": [
+            "flow_013_procedures_002_003_co_a"
+          ],
+          "attempt": 1,
+          "status": "accepted",
+          "tool_choice_mode": "forced_function",
+          "response_id": "resp_Wuk-adQEtrw3EfEW81E1Uqg3k_TSAROPX0jA0If_xgY6nHwxVoanrNanE6U3YJoGC_0b7bIPX_yPuap_Je5Df7d-2fz51Vql32s_3pqfclasWgN0IhEAKo5hKxD5e7fSik643yP5Y4IK--46FKkBtz5CHlYUFIQVMLe0VVed9qa6POefZ1sbOzge8qaRosdmwGyKT7QPv-GKUZiNVY-x_iENdfMe9V0CZTB5Ywt5wj2mPHCqUjEYqafGbIuDdwu7HlMvAigwDMvYOS44U6Ky_U8gIxOyWgw3ZUpaX2-qCE20gsT-8fUUwhFELGcstUe5Ag5Ttu1H8teoUWVPLdgwK-kC3VvNPQZuiPxOFr7TrokmPCgV8hfOsKiKdKhXE4Lg7zkmzKBqjABC1mWUh-AxplK4QeW2uU9FFughplJl7c6x2htq9wbv5a7LklSF1kZRoW7ehoHC-aJbIxbx1tc0dQ==",
+          "returned_model_identifier": "o3",
+          "response_status": "completed",
+          "duration_seconds": 12.558643,
+          "usage": {
+            "input_tokens": 1398,
+            "input_tokens_details": {
+              "cached_tokens": 0,
+              "audio_tokens": null,
+              "text_tokens": null
+            },
+            "output_tokens": 2262,
+            "output_tokens_details": {
+              "reasoning_tokens": 1856,
+              "text_tokens": null
+            },
+            "total_tokens": 3660,
+            "cost": null
+          },
+          "blocks": {
+            "flow_013_procedures_002_003_co_a": [
+              "robot_2.plan(\"tool0\", np.array([2.816340 - (0.866025), 1.244430 + (H / 2), 1.297380 + (0.500000)], dtype=float), np.array([0.0, 0.96593, 0.0, 0.25882], dtype=float))",
+              "robot_1.plan(\"tool1\", np.array([2.816340 - (0.866025), 1.244430 + (H / 2), 1.297380 + (0.500000)], dtype=float), np.array([0.0, 0.96593, 0.0, 0.25882], dtype=float))",
+              "with ThreadPoolExecutor(max_workers=2) as executor:",
+              "    giver_exec = executor.submit(",
+              "        robot_2.render_exec,",
+              "        is_synchronizer=False,",
+              "    )",
+              "    receiver_exec = executor.submit(",
+              "        robot_1.render_exec,",
+              "        is_synchronizer=True,",
+              "    )",
+              "    giver_exec.result()",
+              "    receiver_exec.result()",
+              "robot_1.eef_attach(\"IRB6620_R1\", \"Suction_Cup\", \"L/U Stud\")",
+              "robot_2.eef_detach(\"IRB6620_R2\", \"Gripper\", \"L/U Stud\")",
+              "with ThreadPoolExecutor(max_workers=2) as executor:",
+              "    giver_home = executor.submit(",
+              "        robot_2.move_to_home",
+              "    )",
+              "    receiver_home = executor.submit(",
+              "        robot_1.move_to_home",
+              "    )",
+              "    giver_home.result()",
+              "    receiver_home.result()"
+            ]
+          }
+        },
+        {
+          "batch": 3,
+          "batch_count": 4,
+          "block_ids": [
+            "flow_017_procedures_002_003_co_a"
+          ],
+          "attempt": 1,
+          "status": "accepted",
+          "tool_choice_mode": "forced_function",
+          "response_id": "resp_OO_0hIZqUN_MRrZLuyGUqLZJd_tax3zwSWdkYifVjsgRGTeGbcyphE7-vWyWKw1axFbsJ421Fp1mvjXILaQyqE5IJBQEQD54TZDB-AQW6fVp_8D9FINedC-JWGGKLprAwd8ZjB9VUMbwlczwBehlSzUNLua6J0ej8yGC3sEzDK3-JCwowL-LDU_PmenchjkUcozcNUi5FwNlqxiwtSt4DQiQv4Mti-aFFLbIEgjxKVJmvE-eesZVm2IM04HKfHx7fiycrMUy9trlBXpvEvUpDkCFoX6hhgg7NC2OUqWgEXwTA_rzDyuYQa3W3UzNAAOO5KmZvO1QFEOJNRj_S90jso2N_jsOZ3lX4WOYOtNMggV_YIzNXBqmBDfRpM7XXmaIGlsu_B2JHBHyibNyz7-4fXlpTffxwMKUqBsfwPbO67vJyGIqOg0MGeVo1Jy1WTGaMAdzVGyZ78zK7N5mNHp-nw==",
+          "returned_model_identifier": "o3",
+          "response_status": "completed",
+          "duration_seconds": 11.376731,
+          "usage": {
+            "input_tokens": 1378,
+            "input_tokens_details": {
+              "cached_tokens": 0,
+              "audio_tokens": null,
+              "text_tokens": null
+            },
+            "output_tokens": 2041,
+            "output_tokens_details": {
+              "reasoning_tokens": 1600,
+              "text_tokens": null
+            },
+            "total_tokens": 3419,
+            "cost": null
+          },
+          "blocks": {
+            "flow_017_procedures_002_003_co_a": [
+              "robot_2.plan(\"tool0\", np.array([1.762200 - (H / 2), -0.150000, 1.550000], dtype=float), np.array([0.0, 0.707107, 0.0, 0.707107], dtype=float))",
+              "robot_1.plan(\"tool0\", np.array([1.762200 - (H / 2), -0.150000, 1.550000], dtype=float), np.array([0.0, 0.707107, 0.0, 0.707107], dtype=float))",
+              "with ThreadPoolExecutor(max_workers=2) as executor:",
+              "    giver_exec = executor.submit(",
+              "        robot_2.render_exec,",
+              "        is_synchronizer=False,",
+              "    )",
+              "    receiver_exec = executor.submit(",
+              "        robot_1.render_exec,",
+              "        is_synchronizer=True,",
+              "    )",
+              "    giver_exec.result()",
+              "    receiver_exec.result()",
+              "robot_1.eef_attach(\"IRB6620_R1\", \"Gripper\", \"Top Sill Plate\")",
+              "robot_2.eef_detach(\"IRB6620_R2\", \"Gripper\", \"Top Sill Plate\")",
+              "with ThreadPoolExecutor(max_workers=2) as executor:",
+              "    giver_home = executor.submit(",
+              "        robot_2.move_to_home",
+              "    )",
+              "    receiver_home = executor.submit(",
+              "        robot_1.move_to_home",
+              "    )",
+              "    giver_home.result()",
+              "    receiver_home.result()"
+            ]
+          }
+        },
+        {
+          "batch": 4,
+          "batch_count": 4,
+          "block_ids": [
+            "flow_019_procedures_002_003_co_a"
+          ],
+          "attempt": 1,
+          "status": "accepted",
+          "tool_choice_mode": "forced_function",
+          "response_id": "resp_KdO_1jEmevVXnxI6cutqNr2o-kQs9hhGWG1ZiRXJzoLjhiYm-XfTh4-F44dOEkEIlyEpmDIj8opmoej5cqKkajkmJJKFhphWmMjav3h9uFOuwyBDI7QJ9oz4PPF-_hbJWdWD12Ylvlm8MPQP-y-m_qzMKpgMCeVlwgT6tsg7-6cVEvLgpYVSaxcEF0PWNhpiRvYsPMSA31jMU-7X7VuWPkg8_rrpwzSnMuuwQLew4UjZtppNlK1JtXECYxupFL7hJ9XdP1v4qJcLzoc8hnmJMEhamqVjXPZbBxYw5t3CMxwJ3FTXOvBNp_AofwDE608tYsz09L4Z8bWRx8J0SQEXjGnV7-IUDXDlCGxwXj_uzerZk9ultK3A-DJkpJKb3e3xi1ihucWwKXHuimuiYGtLRlYB3lEPhGWk8DZq8mXCuDbQ_tmpd2wk5a60sMqLeEAotdm_XBK7PofZrfpiHGyjGA==",
+          "returned_model_identifier": "o3",
+          "response_status": "completed",
+          "duration_seconds": 11.982963,
+          "usage": {
+            "input_tokens": 1381,
+            "input_tokens_details": {
+              "cached_tokens": 0,
+              "audio_tokens": null,
+              "text_tokens": null
+            },
+            "output_tokens": 2512,
+            "output_tokens_details": {
+              "reasoning_tokens": 2112,
+              "text_tokens": null
+            },
+            "total_tokens": 3893,
+            "cost": null
+          },
+          "blocks": {
+            "flow_019_procedures_002_003_co_a": [
+              "robot_2.plan(\"tool0\", np.array([1.762200 - (H / 2), -0.150000, 1.550000], dtype=float), np.array([0.0, 0.707107, 0.0, 0.707107], dtype=float))",
+              "robot_1.plan(\"tool0\", np.array([1.762200 - (H / 2), -0.150000, 1.550000], dtype=float), np.array([0.0, 0.707107, 0.0, 0.707107], dtype=float))",
+              "with ThreadPoolExecutor(max_workers=2) as executor:",
+              "    giver_exec = executor.submit(",
+              "        robot_2.render_exec,",
+              "        is_synchronizer=False,",
+              "    )",
+              "    receiver_exec = executor.submit(",
+              "        robot_1.render_exec,",
+              "        is_synchronizer=True,",
+              "    )",
+              "    giver_exec.result()",
+              "    receiver_exec.result()",
+              "robot_1.eef_attach(\"IRB6620_R1\", \"tool0\", \"Top Cripple Stud\")",
+              "robot_2.eef_detach(\"IRB6620_R2\", \"tool0\", \"Top Cripple Stud\")",
+              "with ThreadPoolExecutor(max_workers=2) as executor:",
+              "    giver_home = executor.submit(",
+              "        robot_2.move_to_home",
+              "    )",
+              "    receiver_home = executor.submit(",
+              "        robot_1.move_to_home",
+              "    )",
+              "    giver_home.result()",
+              "    receiver_home.result()"
+            ]
+          }
+        }
+      ],
+      "generated_blocks": {
+        "flow_008_procedures_002_003_co_a": [
+          "robot_2.plan(tcp_name='tool0', target_pose=np.array([2.250000 + (L / 2), -1.000000, H + 0.850000], dtype=float), target_orientation=np.array([0.0, 0.0, 0.707107, 0.707107], dtype=float))",
+          "robot_1.plan(tcp_name='tool0', target_pose=np.array([2.250000 + (L / 2), -1.000000, H + 0.850000], dtype=float), target_orientation=np.array([0.0, 0.0, 0.707107, 0.707107], dtype=float))",
+          "with ThreadPoolExecutor(max_workers=2) as executor:",
+          "    giver_exec = executor.submit(",
+          "        robot_2.render_exec,",
+          "        is_synchronizer=False,",
+          "    )",
+          "    receiver_exec = executor.submit(",
+          "        robot_1.render_exec,",
+          "        is_synchronizer=True,",
+          "    )",
+          "    giver_exec.result()",
+          "    receiver_exec.result()",
+          "robot_1.eef_attach('IRB6620_R1', 'Gripper', 'Top Plate')",
+          "robot_2.eef_detach('IRB6620_R2', 'Gripper', 'Top Plate')",
+          "with ThreadPoolExecutor(max_workers=2) as executor:",
+          "    giver_home = executor.submit(",
+          "        robot_2.move_to_home",
+          "    )",
+          "    receiver_home = executor.submit(",
+          "        robot_1.move_to_home",
+          "    )",
+          "    giver_home.result()",
+          "    receiver_home.result()"
+        ],
+        "flow_013_procedures_002_003_co_a": [
+          "robot_2.plan(\"tool0\", np.array([2.816340 - (0.866025), 1.244430 + (H / 2), 1.297380 + (0.500000)], dtype=float), np.array([0.0, 0.96593, 0.0, 0.25882], dtype=float))",
+          "robot_1.plan(\"tool1\", np.array([2.816340 - (0.866025), 1.244430 + (H / 2), 1.297380 + (0.500000)], dtype=float), np.array([0.0, 0.96593, 0.0, 0.25882], dtype=float))",
+          "with ThreadPoolExecutor(max_workers=2) as executor:",
+          "    giver_exec = executor.submit(",
+          "        robot_2.render_exec,",
+          "        is_synchronizer=False,",
+          "    )",
+          "    receiver_exec = executor.submit(",
+          "        robot_1.render_exec,",
+          "        is_synchronizer=True,",
+          "    )",
+          "    giver_exec.result()",
+          "    receiver_exec.result()",
+          "robot_1.eef_attach(\"IRB6620_R1\", \"Suction_Cup\", \"L/U Stud\")",
+          "robot_2.eef_detach(\"IRB6620_R2\", \"Gripper\", \"L/U Stud\")",
+          "with ThreadPoolExecutor(max_workers=2) as executor:",
+          "    giver_home = executor.submit(",
+          "        robot_2.move_to_home",
+          "    )",
+          "    receiver_home = executor.submit(",
+          "        robot_1.move_to_home",
+          "    )",
+          "    giver_home.result()",
+          "    receiver_home.result()"
+        ],
+        "flow_017_procedures_002_003_co_a": [
+          "robot_2.plan(\"tool0\", np.array([1.762200 - (H / 2), -0.150000, 1.550000], dtype=float), np.array([0.0, 0.707107, 0.0, 0.707107], dtype=float))",
+          "robot_1.plan(\"tool0\", np.array([1.762200 - (H / 2), -0.150000, 1.550000], dtype=float), np.array([0.0, 0.707107, 0.0, 0.707107], dtype=float))",
+          "with ThreadPoolExecutor(max_workers=2) as executor:",
+          "    giver_exec = executor.submit(",
+          "        robot_2.render_exec,",
+          "        is_synchronizer=False,",
+          "    )",
+          "    receiver_exec = executor.submit(",
+          "        robot_1.render_exec,",
+          "        is_synchronizer=True,",
+          "    )",
+          "    giver_exec.result()",
+          "    receiver_exec.result()",
+          "robot_1.eef_attach(\"IRB6620_R1\", \"Gripper\", \"Top Sill Plate\")",
+          "robot_2.eef_detach(\"IRB6620_R2\", \"Gripper\", \"Top Sill Plate\")",
+          "with ThreadPoolExecutor(max_workers=2) as executor:",
+          "    giver_home = executor.submit(",
+          "        robot_2.move_to_home",
+          "    )",
+          "    receiver_home = executor.submit(",
+          "        robot_1.move_to_home",
+          "    )",
+          "    giver_home.result()",
+          "    receiver_home.result()"
+        ],
+        "flow_019_procedures_002_003_co_a": [
+          "robot_2.plan(\"tool0\", np.array([1.762200 - (H / 2), -0.150000, 1.550000], dtype=float), np.array([0.0, 0.707107, 0.0, 0.707107], dtype=float))",
+          "robot_1.plan(\"tool0\", np.array([1.762200 - (H / 2), -0.150000, 1.550000], dtype=float), np.array([0.0, 0.707107, 0.0, 0.707107], dtype=float))",
+          "with ThreadPoolExecutor(max_workers=2) as executor:",
+          "    giver_exec = executor.submit(",
+          "        robot_2.render_exec,",
+          "        is_synchronizer=False,",
+          "    )",
+          "    receiver_exec = executor.submit(",
+          "        robot_1.render_exec,",
+          "        is_synchronizer=True,",
+          "    )",
+          "    giver_exec.result()",
+          "    receiver_exec.result()",
+          "robot_1.eef_attach(\"IRB6620_R1\", \"tool0\", \"Top Cripple Stud\")",
+          "robot_2.eef_detach(\"IRB6620_R2\", \"tool0\", \"Top Cripple Stud\")",
+          "with ThreadPoolExecutor(max_workers=2) as executor:",
+          "    giver_home = executor.submit(",
+          "        robot_2.move_to_home",
+          "    )",
+          "    receiver_home = executor.submit(",
+          "        robot_1.move_to_home",
+          "    )",
+          "    giver_home.result()",
+          "    receiver_home.result()"
+        ]
+      }
+    }
+  },
+  "input_hashes_sha256": {
+    "L_A_II_Output.json": "4c7108d136aec7e43557a255feea96bc7bfdf28074c2af278f1530bda5a7563e",
+    "Primitive_Library_Definitions.json": "9668e440ca9ea389cd97403ff96d1c2cfb3c8ecff91b51be1a0c9e4f6caea313",
+    "config.json": "3b226d6ac888a8cf62e37f9fe9926afdabb9e59a06b5f1178721db251ef3d3af"
+  },
+  "configuration": {
+    "active_model_profile": "o3",
+    "requested_model_identifier": "o3",
+    "api_family": "Responses API",
+    "api_version": "v1",
+    "base_url": "https://api.ai.it.ufl.edu",
+    "reasoning_effort": "high",
+    "temperature": null,
+    "top_p": null,
+    "max_output_tokens": 12000,
+    "sdk_max_retries": 2,
+    "validation_max_attempts": 3,
+    "strict_tool_schema": true,
+    "parallel_tool_calls": false,
+    "fallback_to_auto_tool_choice": true,
+    "reuse_accepted_agent_blocks": true,
+    "co_a_validation_max_attempts": 5
+  },
+  "runtime_robot_names": {
+    "Robot_1": "IRB6620_R1",
+    "Robot_2": "IRB6620_R2"
+  },
+  "software": {
+    "python_version": "3.10.12",
+    "openai_python_version": "2.43.0"
+  },
+  "agent_task_counts": {
+    "Sb-A": 11,
+    "Pb-A": 20,
+    "Co-A": 4
+  },
+  "tool_schema": {
+    "type": "function",
+    "name": "submit_hlaf_code_blocks",
+    "description": "Submit the generated Python code lines for every assigned HLAF block.",
+    "strict": true,
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "Blocks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "block_id": {
+                "type": "string",
+                "description": "The exact block_id supplied in the task."
+              },
+              "code_lines": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Python statements only, one source line per array entry, without Markdown fences."
+              }
+            },
+            "required": [
+              "block_id",
+              "code_lines"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "Blocks"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "generated_hlaf_count": 20,
+  "generated_block_count": 35,
+  "manifest": [
+    {
+      "index": 1,
+      "function": "hlaf_001_vertical_stud_set_stud_on_bottom_plate_layout_mark_and_tip_into_place_under",
+      "element": "Vertical Stud",
+      "sub_step": "Set stud on bottom plate layout mark and tip into place under top plate",
+      "required_variables": [
+        "L",
+        "W",
+        "H",
+        "X"
+      ],
+      "agents": [
+        "Sb-A",
+        "Pb-A"
+      ],
+      "poses": [
+        "Vertical_Stud_Pick_Pose",
+        "Vertical_Stud_Place_Pose"
+      ]
+    },
+    {
+      "index": 2,
+      "function": "hlaf_002_vertical_stud_fasten_stud_to_plates_with_nails_or_screws_through_toe_nailing",
+      "element": "Vertical Stud",
+      "sub_step": "Fasten stud to plates with nails or screws through toe-nailing or metal connectors",
+      "required_variables": [
+        "H"
+      ],
+      "agents": [
+        "Pb-A"
+      ],
+      "poses": [
+        "Vertical_Stud_Nail_Pose"
+      ]
+    },
+    {
+      "index": 3,
+      "function": "hlaf_003_king_stud_stand_each_king_stud_against_layout_line_flanking_rough_opening",
+      "element": "King Stud",
+      "sub_step": "Stand each king stud against layout line flanking rough opening",
+      "required_variables": [
+        "L",
+        "W",
+        "H",
+        "X"
+      ],
+      "agents": [
+        "Sb-A",
+        "Pb-A"
+      ],
+      "poses": [
+        "King_Stud_Pick_Pose",
+        "King_Stud_Place_Pose"
+      ]
+    },
+    {
+      "index": 4,
+      "function": "hlaf_004_king_stud_secure_king_studs_to_bottom_and_top_plates_with_nails_or_structura",
+      "element": "King Stud",
+      "sub_step": "Secure king studs to bottom and top plates with nails or structural screws",
+      "required_variables": [
+        "H"
+      ],
+      "agents": [
+        "Pb-A"
+      ],
+      "poses": [
+        "King_Stud_Nail_Pose"
+      ]
+    },
+    {
+      "index": 5,
+      "function": "hlaf_005_lower_cripple_stud_position_cripples_at_marked_on_center_spacing_below_sill",
+      "element": "Lower Cripple Stud",
+      "sub_step": "Position cripples at marked on-center spacing below sill opening",
+      "required_variables": [
+        "L",
+        "W",
+        "H",
+        "X"
+      ],
+      "agents": [
+        "Sb-A",
+        "Pb-A"
+      ],
+      "poses": [
+        "Lower_Cripple_Plate_Pick_Pose",
+        "Lower_Cripple_Plate_Place_Pose"
+      ]
+    },
+    {
+      "index": 6,
+      "function": "hlaf_006_osb_sheathing_plate_position_first_sheet_flush_with_bottom_plate_and_edge_of",
+      "element": "OSB Sheathing Plate",
+      "sub_step": "Position first sheet flush with bottom plate and edge of framing",
+      "required_variables": [
+        "H",
+        "X",
+        "Z"
+      ],
+      "agents": [
+        "Sb-A",
+        "Pb-A"
+      ],
+      "poses": [
+        "OSB_Sheathing_Plate_Pick_Pose",
+        "OSB_Sheathing_Plate_Place_Pose"
+      ]
+    },
+    {
+      "index": 7,
+      "function": "hlaf_007_osb_sheathing_plate_fasten_osb_to_studs_plates_and_blocking_with_specified_n",
+      "element": "OSB Sheathing Plate",
+      "sub_step": "Fasten OSB to studs, plates, and blocking with specified nails or screws at required spacing, starting from center and working outward",
+      "required_variables": [
+        "L",
+        "H"
+      ],
+      "agents": [
+        "Pb-A"
+      ],
+      "poses": [
+        "OSB_Sheathing_Plate_Nail_Pose"
+      ]
+    },
+    {
+      "index": 8,
+      "function": "hlaf_008_top_plate_install_second_cap_plate_overlapping_joints_for_strength",
+      "element": "Top Plate",
+      "sub_step": "Install second (cap) plate overlapping joints for strength",
+      "required_variables": [
+        "L",
+        "W",
+        "H",
+        "X"
+      ],
+      "agents": [
+        "Sb-A",
+        "Co-A",
+        "Co-A",
+        "Pb-A"
+      ],
+      "poses": [
+        "Top_Plate_Pick_Pose",
+        "Top_Plate_Pass_Pose",
+        "Top_Plate_Pass_Pose",
+        "Top_Plate_Place_Pose"
+      ]
+    },
+    {
+      "index": 9,
+      "function": "hlaf_009_jack_stud_place_each_jack_stud_against_king_stud_at_opening_sides",
+      "element": "Jack Stud",
+      "sub_step": "Place each jack stud against king stud at opening sides",
+      "required_variables": [
+        "L",
+        "W",
+        "H",
+        "X"
+      ],
+      "agents": [
+        "Sb-A",
+        "Pb-A"
+      ],
+      "poses": [
+        "Jack_Stud_Pick_Pose",
+        "Jack_Stud_Place_Pose"
+      ]
+    },
+    {
+      "index": 10,
+      "function": "hlaf_010_jack_stud_nail_jack_studs_to_king_studs_and_bottom_plate_then_toenail_into_h",
+      "element": "Jack Stud",
+      "sub_step": "Nail jack studs to king studs and bottom plate, then toenail into header after placement",
+      "required_variables": [
+        "L",
+        "X"
+      ],
+      "agents": [
+        "Pb-A"
+      ],
+      "poses": [
+        "Jack_Stud_Nail_Pose"
+      ]
+    },
+    {
+      "index": 11,
+      "function": "hlaf_011_bear_loading_lift_header_onto_jack_studs_within_opening_using_additional_hel",
+      "element": "Bear Loading",
+      "sub_step": "Lift header onto jack studs within opening using additional help or temporary support",
+      "required_variables": [
+        "W",
+        "X"
+      ],
+      "agents": [
+        "Sb-A",
+        "Pb-A"
+      ],
+      "poses": [
+        "Load_Bearing_Pick_Pose",
+        "Load_Bearing_Place_Pose"
+      ]
+    },
+    {
+      "index": 12,
+      "function": "hlaf_012_bear_loading_nail_or_screw_header_to_jack_studs_and_add_metal_hangers_or_str",
+      "element": "Bear Loading",
+      "sub_step": "Nail or screw header to jack studs and add metal hangers or straps if required",
+      "required_variables": [
+        "W",
+        "H",
+        "X",
+        "Z"
+      ],
+      "agents": [
+        "Pb-A"
+      ],
+      "poses": [
+        "Load_Bearing_Nail_Pose"
+      ]
+    },
+    {
+      "index": 13,
+      "function": "hlaf_013_l_u_stud_stand_stud_in_place_providing_space_for_service_penetrations_as_det",
+      "element": "L/U Stud",
+      "sub_step": "Stand stud in place providing space for service penetrations as detailed",
+      "required_variables": [
+        "L",
+        "W",
+        "H",
+        "X",
+        "Z"
+      ],
+      "agents": [
+        "Sb-A",
+        "Co-A",
+        "Co-A",
+        "Pb-A"
+      ],
+      "poses": [
+        "L_U_Stud_Pick_Pose",
+        "L_U_Stud_Pass_Pose",
+        "L_U_Stud_Pass_Pose",
+        "L_U_Stud_Place_Pose"
+      ]
+    },
+    {
+      "index": 14,
+      "function": "hlaf_014_lower_sill_plate_position_sill_on_marked_lines_with_crown_up_and_faces_flush",
+      "element": "Lower Sill Plate",
+      "sub_step": "Position sill on marked lines with crown up and faces flush",
+      "required_variables": [
+        "W",
+        "H",
+        "X"
+      ],
+      "agents": [
+        "Sb-A",
+        "Pb-A"
+      ],
+      "poses": [
+        "Lower_Sill_Plate_Pick_Pose",
+        "Lower_Sill_Plate_Place_Pose"
+      ]
+    },
+    {
+      "index": 15,
+      "function": "hlaf_015_lower_sill_plate_tack_sill_to_king_or_jack_studs_then_secure_with_nails_or_s",
+      "element": "Lower Sill Plate",
+      "sub_step": "Tack sill to king or jack studs, then secure with nails or screws through end joints",
+      "required_variables": [
+        "W",
+        "H",
+        "X"
+      ],
+      "agents": [
+        "Pb-A"
+      ],
+      "poses": [
+        "Lower_Sill_Plate_Nail_Pose"
+      ]
+    },
+    {
+      "index": 16,
+      "function": "hlaf_016_bottom_plate_fasten_plate_to_floor_framing_or_slab_with_nails_screws_or_anch",
+      "element": "Bottom Plate",
+      "sub_step": "Fasten plate to floor framing or slab with nails, screws, or anchors per specification",
+      "required_variables": [
+        "H"
+      ],
+      "agents": [
+        "Pb-A"
+      ],
+      "poses": [
+        "Bottom_Plate_Nail_Pose"
+      ]
+    },
+    {
+      "index": 17,
+      "function": "hlaf_017_top_sill_plate_set_top_sill_on_marks_and_hold_flush_with_inner_faces_of_stud",
+      "element": "Top Sill Plate",
+      "sub_step": "Set top sill on marks and hold flush with inner faces of studs",
+      "required_variables": [
+        "W",
+        "H",
+        "X"
+      ],
+      "agents": [
+        "Sb-A",
+        "Co-A",
+        "Co-A",
+        "Pb-A"
+      ],
+      "poses": [
+        "Top_Sill_Plate_Pick_Pose",
+        "Top_Sill_Plate_Pass_Pose",
+        "Top_Sill_Plate_Pass_Pose",
+        "Top_Sill_Plate_Place_Pose"
+      ]
+    },
+    {
+      "index": 18,
+      "function": "hlaf_018_top_sill_plate_nail_or_screw_plate_to_king_studs_and_to_any_top_cripple_stud",
+      "element": "Top Sill Plate",
+      "sub_step": "Nail or screw plate to king studs and to any top cripple studs above",
+      "required_variables": [
+        "W",
+        "H",
+        "X"
+      ],
+      "agents": [
+        "Pb-A"
+      ],
+      "poses": [
+        "Top_Sill_Plate_Nail_Pose"
+      ]
+    },
+    {
+      "index": 19,
+      "function": "hlaf_019_top_cripple_stud_position_cripples_at_on_center_spacing_above_opening_betwee",
+      "element": "Top Cripple Stud",
+      "sub_step": "Position cripples at on-center spacing above opening between header and top plate",
+      "required_variables": [
+        "L",
+        "W",
+        "H",
+        "X"
+      ],
+      "agents": [
+        "Sb-A",
+        "Co-A",
+        "Co-A",
+        "Pb-A"
+      ],
+      "poses": [
+        "Top_Cripple_Plate_Pick_Pose",
+        "Top_Cripple_Plate_Pass_Pose",
+        "Top_Cripple_Plate_Pass_Pose",
+        "Top_Cripple_Plate_Place_Pose"
+      ]
+    },
+    {
+      "index": 20,
+      "function": "hlaf_020_top_cripple_stud_fasten_cripples_through_top_plate_and_header_with_nails_or",
+      "element": "Top Cripple Stud",
+      "sub_step": "Fasten cripples through top plate and header with nails or screws",
+      "required_variables": [
+        "H"
+      ],
+      "agents": [
+        "Pb-A"
+      ],
+      "poses": [
+        "Top_Cripple_Plate_Nail_Pose"
+      ]
+    }
+  ],
+  "output_sha256": "9a1c71a700e87b6affeabdb27a72d8cd983396c187878631575ac849e906c7b8"
+}
