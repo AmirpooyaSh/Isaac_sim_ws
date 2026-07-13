@@ -410,12 +410,14 @@ class GeneratedHLAFs:
         """
         robot_2 = self.robots["Robot_2"]
 
-        robot_2.plan("tool0", np.array([4.179000, -2.422283 + (0.250000 * W), 1.048050 + (0.433013 * W)], dtype=float), np.array([0.612354, 0.612354, 0.353553, 0.353553], dtype=float))
+        robot_2.plan("tool0", np.array([4.179, -2.422283 + (0.25 * W), 1.04805 + (0.433013 * W)], dtype=float), np.array([0.612354, 0.612354, 0.353553, 0.353553], dtype=float))
         robot_2.render_exec()
         robot_2.eef_attach("IRB6620_R2", "tool0", "Vertical Stud")
         robot_2.move_to_home()
 
-        robot_2.plan("tool0", np.array([X + (L / 2) + 0.962590, 0.500000, H + 0.889360], dtype=float), np.array([0.0, 0.0, 0.707107, 0.707107], dtype=float))
+        target_pose = np.array([X + (L / 2) + 0.962590, 0.500000, H + 0.889360], dtype=float)
+        target_orientation = np.array([0.0, 0.0, 0.707107, 0.707107], dtype=float)
+        robot_2.plan("tool0", target_pose, target_orientation)
         robot_2.render_exec()
         robot_2.eef_detach("IRB6620_R2", "tool0", "Vertical Stud")
         robot_2.move_to_home()
@@ -427,7 +429,7 @@ class GeneratedHLAFs:
         """
         robot_1 = self.robots["Robot_1"]
 
-        robot_1.plan("tool2", np.array([1.100000, 0.500000, 0.895460 + (0.300000 * H)], dtype=float), np.array([0.0, 0.707107, 0.0, 0.707107], dtype=float))
+        robot_1.plan("tool2", np.array([1.1, 0.5, 0.895460 + (0.300000 * H)], dtype=float), np.array([0.0, 0.707107, 0.0, 0.707107], dtype=float))
         robot_1.render_exec()
         robot_1.move_to_home()
 
@@ -443,9 +445,9 @@ class GeneratedHLAFs:
         robot_2.eef_attach("IRB6620_R2", "tool0", "King Stud")
         robot_2.move_to_home()
 
-        robot_2.plan("Gripper", np.array([X + (L / 2) + 0.962590, 0.500000, H + 0.889360], dtype=float), np.array([0.0, 0.0, 0.707107, 0.707107], dtype=float))
+        robot_2.plan("tool0", np.array([X + (L / 2) + 0.962590, 0.500000, H + 0.889360], dtype=float), np.array([0.0, 0.0, 0.707107, 0.707107], dtype=float))
         robot_2.render_exec()
-        robot_2.eef_detach("IRB6620_R2", "tool0", "King Stud")
+        robot_2.eef_detach("IRB6620_R2", "Gripper", "King Stud")
         robot_2.move_to_home()
 
     def hlaf_004_king_stud_secure_king_studs_to_bottom_and_top_plates_with_nails_or_structura(self, element_object_name: str, *, H: float) -> None:
@@ -466,9 +468,9 @@ class GeneratedHLAFs:
         """
         robot_2 = self.robots["Robot_2"]
 
-        robot_2.plan('tool0', np.array([6.450100, 0.782470, 0.803000 + (W / 2)], dtype=float), np.array([-0.707107, 0.0, -0.707107, 0.0], dtype=float))
+        robot_2.plan("tool0", np.array([6.450100, 0.782470, 0.803000 + (W / 2)], dtype=float), np.array([-0.707107, 0.0, -0.707107, 0.0], dtype=float))
         robot_2.render_exec()
-        robot_2.eef_attach('IRB6620_R2', 'tool0', 'Lower Cripple Stud')
+        robot_2.eef_attach("IRB6620_R2", "tool0", "Lower Cripple Stud")
         robot_2.move_to_home()
 
         robot_2.plan("tool0", np.array([X - (L / 2) + 1.182590, 0.0, H + 0.889360], dtype=float), np.array([0.0, 0.0, -0.707107, -0.707107], dtype=float))
@@ -483,15 +485,15 @@ class GeneratedHLAFs:
         """
         robot_1 = self.robots["Robot_1"]
 
-        robot_1.plan('tool1', np.array([0.0, -1.5, H + 0.6], dtype=float), np.array([0.0, 0.0, 0.707107, 0.707107], dtype=float))
+        robot_1.plan("tool1", np.array([0.0, -1.5, H + 0.6], dtype=float), np.array([0.0, 0.0, 0.707107, 0.707107], dtype=float))
         robot_1.render_exec()
-        robot_1.eef_attach('IRB6620_R1', 'tool1', 'OSB Sheathing Plate')
+        robot_1.eef_attach("IRB6620_R1", "tool1", "OSB Sheathing Plate")
         robot_1.move_to_home()
 
-        robot_1.plan('Suction_Cup', np.array([2.691790 - X, 0.0, Z + 0.895460], dtype=float), np.array([0.0, 0.0, 0.0, -1.0], dtype=float))
-        robot_1.render_exec(True, True, False)
+        robot_1.plan('tool1', np.array([2.691790 - X, 0.0, Z + 0.895460], dtype=float), np.array([0.0, 0.0, 0.0, -1.0], dtype=float))
+        robot_1.render_exec()
         robot_1.eef_detach('IRB6620_R1', 'tool1', 'OSB Sheathing Plate')
-        robot_1.move_to_home(False, [0, -0.5, 0.5, 0, 0, 0], [])
+        robot_1.move_to_home()
 
     def hlaf_007_osb_sheathing_plate_fasten_osb_to_studs_plates_and_blocking_with_specified_n(self, element_object_name: str, *, L: float, H: float) -> None:
         """
@@ -500,8 +502,8 @@ class GeneratedHLAFs:
         """
         robot_1 = self.robots["Robot_1"]
 
-        robot_1.plan("tool2", np.array([L + 1.152590, 0.0, H + 1.047060], dtype=float), np.array([0.0, 1.0, 0.0, 0.0], dtype=float))
-        robot_1.render_exec()
+        robot_1.plan('Nail_Gun', np.array([L + 1.152590, 0.0, H + 1.047060], dtype=float), np.array([0.0, 1.0, 0.0, 0.0], dtype=float))
+        robot_1.render_exec(True, True, False)
         robot_1.move_to_home()
 
     def hlaf_008_top_plate_install_second_cap_plate_overlapping_joints_for_strength(self, element_object_name: str, *, L: float, W: float, H: float, X: float) -> None:
@@ -517,8 +519,8 @@ class GeneratedHLAFs:
         robot_2.eef_attach("IRB6620_R2", "tool0", "Top Plate")
         robot_2.move_to_home()
 
-        robot_2.plan(tcp_name='tool0', target_pose=np.array([2.250000 + (L / 2), -1.000000, H + 0.850000], dtype=float), target_orientation=np.array([0.0, 0.0, 0.707107, 0.707107], dtype=float))
-        robot_1.plan(tcp_name='tool0', target_pose=np.array([2.250000 + (L / 2), -1.000000, H + 0.850000], dtype=float), target_orientation=np.array([0.0, 0.0, 0.707107, 0.707107], dtype=float))
+        robot_2.plan('tool0', np.array([2.250000 + (L / 2), -1.000000, H + 0.850000], dtype=float), np.array([0.0, 0.0, 0.707107, 0.707107], dtype=float))
+        robot_1.plan('tool0', np.array([2.250000 + (L / 2), -1.000000, H + 0.850000], dtype=float), np.array([0.0, 0.0, 0.707107, 0.707107], dtype=float))
         with ThreadPoolExecutor(max_workers=2) as executor:
             giver_exec = executor.submit(
                 robot_2.render_exec,
@@ -530,8 +532,8 @@ class GeneratedHLAFs:
             )
             giver_exec.result()
             receiver_exec.result()
-        robot_1.eef_attach('IRB6620_R1', 'Gripper', 'Top Plate')
-        robot_2.eef_detach('IRB6620_R2', 'Gripper', 'Top Plate')
+        robot_1.eef_attach('IRB6620_R1', 'tool0', 'Top Plate')
+        robot_2.eef_detach('IRB6620_R2', 'tool0', 'Top Plate')
         with ThreadPoolExecutor(max_workers=2) as executor:
             giver_home = executor.submit(
                 robot_2.move_to_home
@@ -542,9 +544,9 @@ class GeneratedHLAFs:
             giver_home.result()
             receiver_home.result()
 
-        robot_1.plan('tool0', np.array([X + 1.132590, 0.0, H + 0.889360], dtype=float), np.array([0.0, 0.0, 1.0, 0.0], dtype=float))
+        robot_1.plan(tcp_name="tool0", target_pose=np.array([X + 1.132590, 0.0, H + 0.889360], dtype=float), target_orientation=np.array([0.0, 0.0, 1.0, 0.0], dtype=float))
         robot_1.render_exec()
-        robot_1.eef_detach(r_name='IRB6620_R1', tool_name='tool0', detaching_object_name='Top Plate')
+        robot_1.eef_detach(r_name="IRB6620_R1", tool_name="tool0", detaching_object_name="Top Plate")
         robot_1.move_to_home()
 
     def hlaf_009_jack_stud_place_each_jack_stud_against_king_stud_at_opening_sides(self, element_object_name: str, *, L: float, W: float, H: float, X: float) -> None:
@@ -559,9 +561,7 @@ class GeneratedHLAFs:
         robot_2.eef_attach("IRB6620_R2", "tool0", "Jack Stud")
         robot_2.move_to_home()
 
-        target_pose = np.array([X + (L / 2) + 1.082590, 0.500000, H + 0.939360], dtype=float)
-        target_orientation = np.array([0.0, 0.0, -0.707107, 0.707107], dtype=float)
-        robot_2.plan("tool0", target_pose, target_orientation)
+        robot_2.plan("Gripper", np.array([X + (L / 2) + 1.082590, 0.5, H + 0.939360], dtype=float), np.array([0.0, 0.0, -0.707107, 0.707107], dtype=float))
         robot_2.render_exec()
         robot_2.eef_detach("IRB6620_R2", "tool0", "Jack Stud")
         robot_2.move_to_home()
@@ -573,9 +573,9 @@ class GeneratedHLAFs:
         """
         robot_1 = self.robots["Robot_1"]
 
-        robot_1.plan("tool2", np.array([X - (L / 2) + 1.193550, 0.586603, 0.945460], dtype=float), np.array([0.353553, -0.612354, 0.612354, 0.353553], dtype=float))
-        robot_1.render_exec(renderInstance=True, Show_Sphere=True, is_synchronizer=False)
-        robot_1.move_to_home(if_show_spheres=False, Customized_JS=[0, -0.5, 0.5, 0, 0, 0], removing_primitives=[])
+        robot_1.plan('tool2', np.array([X - (L / 2) + 1.193550, 0.586603, 0.945460], dtype=float), np.array([0.353553, -0.612354, 0.612354, 0.353553], dtype=float))
+        robot_1.render_exec()
+        robot_1.move_to_home()
 
     def hlaf_011_bear_loading_lift_header_onto_jack_studs_within_opening_using_additional_hel(self, element_object_name: str, *, W: float, X: float) -> None:
         """
@@ -589,7 +589,7 @@ class GeneratedHLAFs:
         robot_1.eef_attach("IRB6620_R1", "tool1", "Bear Loading")
         robot_1.move_to_home()
 
-        robot_1.plan("tool1", np.array([X + 1.132590, 0.0, W + 1.045460], dtype=float), np.array([0.0, 0.0, 0.707107, 0.707107], dtype=float))
+        robot_1.plan("Suction_Cup", np.array([X + 1.132590, 0.0, W + 1.04546], dtype=float), np.array([0.0, 0.0, 0.707107, 0.707107], dtype=float))
         robot_1.render_exec()
         robot_1.eef_detach("IRB6620_R1", "tool1", "Bear Loading")
         robot_1.move_to_home()
@@ -618,8 +618,16 @@ class GeneratedHLAFs:
         robot_2.eef_attach("IRB6620_R2", "tool0", "L/U Stud")
         robot_2.move_to_home()
 
-        robot_2.plan("tool0", np.array([2.816340 - (0.866025), 1.244430 + (H / 2), 1.297380 + (0.500000)], dtype=float), np.array([0.0, 0.96593, 0.0, 0.25882], dtype=float))
-        robot_1.plan("tool1", np.array([2.816340 - (0.866025), 1.244430 + (H / 2), 1.297380 + (0.500000)], dtype=float), np.array([0.0, 0.96593, 0.0, 0.25882], dtype=float))
+        robot_2.plan(
+            tcp_name="tool0",
+            target_pose=np.array([2.816340 - (0.866025), 1.244430 + (H / 2), 1.297380 + (0.500000)], dtype=float),
+            target_orientation=np.array([0.0, 0.96593, 0.0, 0.25882], dtype=float)
+         )
+        robot_1.plan(
+            tcp_name="tool1",
+            target_pose=np.array([2.816340 - (0.866025), 1.244430 + (H / 2), 1.297380 + (0.500000)], dtype=float),
+            target_orientation=np.array([0.0, 0.96593, 0.0, 0.25882], dtype=float)
+         )
         with ThreadPoolExecutor(max_workers=2) as executor:
             giver_exec = executor.submit(
                 robot_2.render_exec,
@@ -631,8 +639,8 @@ class GeneratedHLAFs:
             )
             giver_exec.result()
             receiver_exec.result()
-        robot_1.eef_attach("IRB6620_R1", "Suction_Cup", "L/U Stud")
-        robot_2.eef_detach("IRB6620_R2", "Gripper", "L/U Stud")
+        robot_1.eef_attach("IRB6620_R1", "tool1", "L/U Stud")
+        robot_2.eef_detach("IRB6620_R2", "tool0", "L/U Stud")
         with ThreadPoolExecutor(max_workers=2) as executor:
             giver_home = executor.submit(
                 robot_2.move_to_home
@@ -643,9 +651,9 @@ class GeneratedHLAFs:
             giver_home.result()
             receiver_home.result()
 
-        robot_1.plan('tool1', np.array([3.650990 - X - (L / 2), 0.0, 0.895460 + Z + (W / 2)], dtype=float), np.array([0.0, 0.0, 1.0, 0.0], dtype=float))
+        robot_1.plan("tool1", np.array([3.650990 - X - (L / 2), 0.0, 0.895460 + Z + (W / 2)], dtype=float), np.array([0.0, 0.0, 1.0, 0.0], dtype=float))
         robot_1.render_exec()
-        robot_1.eef_detach('IRB6620_R1', 'tool1', 'L/U Stud')
+        robot_1.eef_detach("IRB6620_R1", "tool1", "L/U Stud")
         robot_1.move_to_home()
 
     def hlaf_014_lower_sill_plate_position_sill_on_marked_lines_with_crown_up_and_faces_flush(self, element_object_name: str, *, W: float, H: float, X: float) -> None:
@@ -655,14 +663,14 @@ class GeneratedHLAFs:
         """
         robot_2 = self.robots["Robot_2"]
 
-        robot_2.plan("tool0", np.array([6.450100, 0.782470, 0.803000 + (W / 2)], dtype=float), np.array([-0.707107, 0.0, -0.707107, 0.0], dtype=float))
+        robot_2.plan('tool0', np.array([6.450100, 0.782470, 0.803000 + (W / 2)], dtype=float), np.array([-0.707107, 0.0, -0.707107, 0.0], dtype=float))
         robot_2.render_exec()
-        robot_2.eef_attach("IRB6620_R2", "tool0", "Lower Sill Plate")
+        robot_2.eef_attach('IRB6620_R2', 'tool0', 'Lower Sill Plate')
         robot_2.move_to_home()
 
-        robot_2.plan(tcp_name="Gripper", target_pose=np.array([X + 1.132590, 0.0, H + 1.189360], dtype=float), target_orientation=np.array([0.0, 0.0, -1.0, 0.0], dtype=float))
+        robot_2.plan("tool0", np.array([X + 1.132590, 0.0, H + 1.189360], dtype=float), np.array([0.0, 0.0, -1.0, 0.0], dtype=float))
         robot_2.render_exec()
-        robot_2.eef_detach(r_name="IRB6620_R2", tool_name="tool0", detaching_object_name="Lower Sill Plate")
+        robot_2.eef_detach("IRB6620_R2", "tool0", "Lower Sill Plate")
         robot_2.move_to_home()
 
     def hlaf_015_lower_sill_plate_tack_sill_to_king_or_jack_studs_then_secure_with_nails_or_s(self, element_object_name: str, *, W: float, H: float, X: float) -> None:
@@ -683,7 +691,7 @@ class GeneratedHLAFs:
         """
         robot_2 = self.robots["Robot_2"]
 
-        robot_2.plan('tool1', np.array([3.690000, 0, 0.895460 + (0.300000 * H)], dtype=float), np.array([0.0, 0.5, 0.5, 0.5], dtype=float))
+        robot_2.plan("tool1", np.array([3.690000, 0, 0.895460 + (0.300000 * H)], dtype=float), np.array([0.0, 0.5, 0.5, 0.5], dtype=float))
         robot_2.render_exec()
         robot_2.move_to_home()
 
@@ -697,7 +705,7 @@ class GeneratedHLAFs:
 
         robot_2.plan('tool0', np.array([6.450100, 0.782470, 0.803000 + (W / 2)], dtype=float), np.array([-0.707107, 0.0, -0.707107, 0.0], dtype=float))
         robot_2.render_exec()
-        robot_2.eef_attach('IRB6620_R2', 'tool0', 'Top Sill Plate')
+        robot_2.eef_attach('IRB6620_R2','tool0','Top Sill Plate')
         robot_2.move_to_home()
 
         robot_2.plan("tool0", np.array([1.762200 - (H / 2), -0.150000, 1.550000], dtype=float), np.array([0.0, 0.707107, 0.0, 0.707107], dtype=float))
@@ -713,8 +721,8 @@ class GeneratedHLAFs:
             )
             giver_exec.result()
             receiver_exec.result()
-        robot_1.eef_attach("IRB6620_R1", "Gripper", "Top Sill Plate")
-        robot_2.eef_detach("IRB6620_R2", "Gripper", "Top Sill Plate")
+        robot_1.eef_attach("IRB6620_R1", "tool0", "Top Sill Plate")
+        robot_2.eef_detach("IRB6620_R2", "tool0", "Top Sill Plate")
         with ThreadPoolExecutor(max_workers=2) as executor:
             giver_home = executor.submit(
                 robot_2.move_to_home
@@ -725,7 +733,7 @@ class GeneratedHLAFs:
             giver_home.result()
             receiver_home.result()
 
-        robot_1.plan("tool0", np.array([X + 1.132590, 0.0, H + 0.989360], dtype=float), np.array([0.0, 0.0, 1.0, 0.0], dtype=float))
+        robot_1.plan("tool0", np.array([X + 1.132590, 0.000000, H + 0.989360], dtype=float), np.array([0.0, 0.0, 1.0, 0.0], dtype=float))
         robot_1.render_exec()
         robot_1.eef_detach("IRB6620_R1", "tool0", "Top Sill Plate")
         robot_1.move_to_home()
@@ -738,8 +746,8 @@ class GeneratedHLAFs:
         robot_1 = self.robots["Robot_1"]
 
         robot_1.plan("tool2", np.array([X + 1.132590, 0.413397 - (W / 2), 0.945460 + (0.300000 * H)], dtype=float), np.array([0.182999, -0.682994, 0.682994, 0.182999], dtype=float))
-        robot_1.render_exec()
-        robot_1.move_to_home()
+        robot_1.render_exec(True, True, False)
+        robot_1.move_to_home(False, [0, -0.5, 0.5, 0, 0, 0], [])
 
     def hlaf_019_top_cripple_stud_position_cripples_at_on_center_spacing_above_opening_betwee(self, element_object_name: str, *, L: float, W: float, H: float, X: float) -> None:
         """
@@ -779,9 +787,9 @@ class GeneratedHLAFs:
             giver_home.result()
             receiver_home.result()
 
-        robot_1.plan("Gripper", np.array([X + (L / 2) + 0.932590, 0.5, H + 0.989360], dtype=float), np.array([0.0, 0.0, -0.707107, -0.707107], dtype=float))
+        robot_1.plan("tool0", np.array([X + (L / 2) + 0.932590, 0.500000, H + 0.989360], dtype=float), np.array([0.0, 0.0, -0.707107, -0.707107], dtype=float))
         robot_1.render_exec()
-        robot_1.eef_detach("IRB6620_R1", "tool0", "Top Cripple Stud")
+        robot_1.eef_detach("IRB6620_R1", "Gripper", "Top Cripple Stud")
         robot_1.move_to_home()
 
     def hlaf_020_top_cripple_stud_fasten_cripples_through_top_plate_and_header_with_nails_or(self, element_object_name: str, *, H: float) -> None:

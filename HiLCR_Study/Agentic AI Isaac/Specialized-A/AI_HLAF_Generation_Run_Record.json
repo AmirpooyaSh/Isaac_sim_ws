@@ -1,9 +1,9 @@
 {
   "generator": "o3 Multi-Agent HLAF Generator",
   "status": "success",
-  "started_at_utc": "2026-07-12T20:20:13.834043+00:00",
-  "completed_at_utc": "2026-07-12T20:20:59.633883+00:00",
-  "duration_seconds": 45.799849,
+  "started_at_utc": "2026-07-13T21:03:13.460625+00:00",
+  "completed_at_utc": "2026-07-13T21:08:20.732482+00:00",
+  "duration_seconds": 307.271873,
   "files": {
     "hlaf_flow_input": "L_A_II_Output.json",
     "primitive_definitions": "Primitive_Library_Definitions.json",
@@ -540,69 +540,442 @@
       ],
       "attempts": [
         {
-          "status": "reused_from_previous_run",
+          "batch": 1,
+          "batch_count": 11,
           "block_ids": [
-            "flow_001_procedure_001_sb_a",
-            "flow_003_procedure_001_sb_a",
-            "flow_005_procedure_001_sb_a",
-            "flow_006_procedure_001_sb_a",
-            "flow_008_procedure_001_sb_a",
-            "flow_009_procedure_001_sb_a",
-            "flow_011_procedure_001_sb_a",
-            "flow_013_procedure_001_sb_a",
-            "flow_014_procedure_001_sb_a",
-            "flow_017_procedure_001_sb_a",
+            "flow_001_procedure_001_sb_a"
+          ],
+          "attempt": 1,
+          "status": "accepted",
+          "tool_choice_mode": "forced_function",
+          "response_id": "resp_OfiYM1cYHQRuhLHFZU3wDYxK4Mfc-UOTo9MnQKakcMK7ZucVyYIX2X3Epquz8Zkhg0M5I4FItvstIiEcE_j2bngEhsZcxfPmpPyvn-ZTjMAyc5hzbIXb2SgAj27ro4EWpah7ywSqPBarM3dpECcqObzVOJBCrTDrlmVU5TpKa3P6iIDCDIjlc3i5fsxPGD94RH4O_yV0_Eb73RLJeXrgiNXM2Hwu_b9ALHpBzO7csfrFPom2_OFfl1-Tv2fwhP-fM85o6odwMmRKZUj21vd8Z69Y2LYoGHvrBRhnQbNJOc3dE8GO1Dt8Yv10rH0GsLdbzs2DagTcxfdGgJUHEC7p5iQmIfkodxlmAcd_nv4BN1gjs8_zufpKyEmhacQ_UNDBmk2ykzqR6_w1vWoLNb_dYiBQkZDm94dc7Nap4OIte8w0L7BY7MP9qYrSgPjh2BNqq5rKcGK3bFuwWZmcgZ8OvA==",
+          "returned_model_identifier": "o3",
+          "response_status": "completed",
+          "duration_seconds": 6.967809,
+          "usage": {
+            "input_tokens": 951,
+            "input_tokens_details": {
+              "cached_tokens": 0,
+              "audio_tokens": null,
+              "text_tokens": null
+            },
+            "output_tokens": 719,
+            "output_tokens_details": {
+              "reasoning_tokens": 512,
+              "text_tokens": null
+            },
+            "total_tokens": 1670,
+            "cost": null
+          },
+          "blocks": {
+            "flow_001_procedure_001_sb_a": [
+              "robot_2.plan(\"tool0\", np.array([4.179, -2.422283 + (0.25 * W), 1.04805 + (0.433013 * W)], dtype=float), np.array([0.612354, 0.612354, 0.353553, 0.353553], dtype=float))",
+              "robot_2.render_exec()",
+              "robot_2.eef_attach(\"IRB6620_R2\", \"tool0\", \"Vertical Stud\")",
+              "robot_2.move_to_home()"
+            ]
+          }
+        },
+        {
+          "batch": 2,
+          "batch_count": 11,
+          "block_ids": [
+            "flow_003_procedure_001_sb_a"
+          ],
+          "attempt": 1,
+          "status": "accepted",
+          "tool_choice_mode": "forced_function",
+          "response_id": "resp_0fVrRVZkzI6yS-oeeEN2bgI7FrJ9FAz250IyK2D_itHNixY3ge6r3GthoR5dzCKDnRgOToz8Mh0uRpPpqrVm_CNzZ-sbF-ynYmnd2dXj53jpuKoI40r6yAt0pdIGG_UgAUmL5j2XVOm8IYP3eUiiyPlys5aRjOXm7TJEpGgQcfITQIUQH0KslSHlnWcDRRDz-kp3nKBDmqdHJSlK0bl_-ZTRa2pdr6nSSSqKyP50PuAYUYfr3B4AqtfGyNDo3kpQLNvzZKf5myQqPNMTa6UyS1o30bB1NhXVWFqQU5xeD8rP8BDkw3F60LiVZnMNbZ5jsWMVN7k0VZi8JQxIJZnfzimW8NKSRS4YvoxuKb2gaJKnLPfzYA1ktWamVOitOFeSXTkevoU7d_e6917vKjL2eC9LQN0u2kjRYGhhEecxVlGZCpQCW005ETv9dPfFWmWe2DscLsA_c1OQBFiQPhRQ7Q==",
+          "returned_model_identifier": "o3",
+          "response_status": "completed",
+          "duration_seconds": 9.003282,
+          "usage": {
+            "input_tokens": 948,
+            "input_tokens_details": {
+              "cached_tokens": 0,
+              "audio_tokens": null,
+              "text_tokens": null
+            },
+            "output_tokens": 1061,
+            "output_tokens_details": {
+              "reasoning_tokens": 896,
+              "text_tokens": null
+            },
+            "total_tokens": 2009,
+            "cost": null
+          },
+          "blocks": {
+            "flow_003_procedure_001_sb_a": [
+              "robot_2.plan(\"tool0\", np.array([4.179000, -2.422283 + (0.250000 * W), 1.048050 + (0.433013 * W)], dtype=float), np.array([0.612354, 0.612354, 0.353553, 0.353553], dtype=float))",
+              "robot_2.render_exec()",
+              "robot_2.eef_attach(\"IRB6620_R2\", \"tool0\", \"King Stud\")",
+              "robot_2.move_to_home()"
+            ]
+          }
+        },
+        {
+          "batch": 3,
+          "batch_count": 11,
+          "block_ids": [
+            "flow_005_procedure_001_sb_a"
+          ],
+          "attempt": 1,
+          "status": "accepted",
+          "tool_choice_mode": "forced_function",
+          "response_id": "resp_50PuEyUwuCZ6zo07RD4AWINxIkIDQ4GtShFWFG7u-iasXKViyy78BvKWlhiGhV7KzqpSKJ3TiLSIFBtKWNGGk3amkqH17V9cx-U40avA0faQuPHPgDaHXjS3XpkI8FkHdDtqsLRMPjnzFTqIsPsawwYi9h6B__SxFQJtq0vFlPF60zPRhYsgaB5JK-hCLtnfR4bZpwt__cLMpyG8NBayCr7TQB2P-zDYSrF-5Sp6fFTMlCqC40G9yxLeA9wXHBxwFEo0DCiOKwjhBK2oPfuCONhNhJiK5a9vhK4isdJZ7RAcX9us8iqk-sjzvalkNqdYrrOEyggrs6P0_F42Q3JPSsVEoG-1Vb8wTjVRLrevt8N12LKF1V5dlFEUAmq_c3MZmz-UadngGK64qnxthvGVjDEj_00HyQJtndaz013AH8w3pw9GLF-G6anMBGTZau1zHpVZ1AFfTGErkSwIOGJi0w==",
+          "returned_model_identifier": "o3",
+          "response_status": "completed",
+          "duration_seconds": 8.396033,
+          "usage": {
+            "input_tokens": 935,
+            "input_tokens_details": {
+              "cached_tokens": 0,
+              "audio_tokens": null,
+              "text_tokens": null
+            },
+            "output_tokens": 1026,
+            "output_tokens_details": {
+              "reasoning_tokens": 832,
+              "text_tokens": null
+            },
+            "total_tokens": 1961,
+            "cost": null
+          },
+          "blocks": {
+            "flow_005_procedure_001_sb_a": [
+              "robot_2.plan(\"tool0\", np.array([6.450100, 0.782470, 0.803000 + (W / 2)], dtype=float), np.array([-0.707107, 0.0, -0.707107, 0.0], dtype=float))",
+              "robot_2.render_exec()",
+              "robot_2.eef_attach(\"IRB6620_R2\", \"tool0\", \"Lower Cripple Stud\")",
+              "robot_2.move_to_home()"
+            ]
+          }
+        },
+        {
+          "batch": 4,
+          "batch_count": 11,
+          "block_ids": [
+            "flow_006_procedure_001_sb_a"
+          ],
+          "attempt": 1,
+          "status": "accepted",
+          "tool_choice_mode": "forced_function",
+          "response_id": "resp_UdJXtWPN2Nq0z0WzCjFDkK_wk5fZtuxJf0JUv5bMckswuHeq2SkXm71O8Tn2lFGo1nS49L7QS6ty6cf6bu-PaWq_21HnO4liOFwYvAimd4fGCOfWVoS67k7F40HpKQGlTAS99-63csdwgQ_Vrs2_9LdVh_vtxOIlhysM5HqXkN4B1myMpBIUXUUTEsfvnx7btu1IV8_SbiIb4I1H8kdHyMO9WyPZTA-qdcWMvqPwdr3cCXOdnLS1IkGFS5kE82tUObJDKPWLo8dcCMo4A_fDivtepaoQmITbB8kj0749WmwtssECFwIkjuhtFYBevXWTCYEmXb4R7rNYbRs-RdakU-6AITn0sPo0G8KcTQRBioEKDgYUeNg2VPOQL6naKuT3XMGuKLYA8q_X3E69d1WcQrektHwV5iZjsg7BXS2HgGlE93aDs4wEc_x_PzJPFebDaak2Cyror67cXrRi6xTFMQ==",
+          "returned_model_identifier": "o3",
+          "response_status": "completed",
+          "duration_seconds": 10.546984,
+          "usage": {
+            "input_tokens": 936,
+            "input_tokens_details": {
+              "cached_tokens": 0,
+              "audio_tokens": null,
+              "text_tokens": null
+            },
+            "output_tokens": 1156,
+            "output_tokens_details": {
+              "reasoning_tokens": 960,
+              "text_tokens": null
+            },
+            "total_tokens": 2092,
+            "cost": null
+          },
+          "blocks": {
+            "flow_006_procedure_001_sb_a": [
+              "robot_1.plan(\"tool1\", np.array([0.0, -1.5, H + 0.6], dtype=float), np.array([0.0, 0.0, 0.707107, 0.707107], dtype=float))",
+              "robot_1.render_exec()",
+              "robot_1.eef_attach(\"IRB6620_R1\", \"tool1\", \"OSB Sheathing Plate\")",
+              "robot_1.move_to_home()"
+            ]
+          }
+        },
+        {
+          "batch": 5,
+          "batch_count": 11,
+          "block_ids": [
+            "flow_008_procedure_001_sb_a"
+          ],
+          "attempt": 1,
+          "status": "accepted",
+          "tool_choice_mode": "forced_function",
+          "response_id": "resp_isVPiLHHpLJKaCR_va_R89hrGiRhAgtqA_r76vAnHuLElPklnHcXowzp5Mq0OOyg-7C8Sd3NRv5PWzeuBT4VytURAuieqMnsB83duRSzIi2PUETggMriuyUhFU396M_MWaoHQKZl6-4h_UQz7pesZIPB72WDmrXK4xOwmsYqWxNWalVJ09nEYWACXyk3l_hifPcEALN1H4sqO1MaAaB59Vi3QDWhLLvpdkSwmREelBGpIC4QfB6ULKQBfxQZYaxvvZ4Am7oMyWlQ2uybDwq57LrtHYR6boaRhiK1dnb1Cl48g6YC1H3RqOT7phQlXFZQv5A73gJXXwnj4f1BZpJBK9WXnqBe64ijQ9n7nSnJVKD8BvxrbZ1ZFy4-qSFipqBgrWYUbnfjvWDsMo72zTLzTYRi68csOVgsuGRBeyTqIVs2K_fZN0hLpbLdkKDWa_PJq0YuuPVjjSk7pZ8vD5zObg==",
+          "returned_model_identifier": "o3",
+          "response_status": "completed",
+          "duration_seconds": 10.285545,
+          "usage": {
+            "input_tokens": 929,
+            "input_tokens_details": {
+              "cached_tokens": 0,
+              "audio_tokens": null,
+              "text_tokens": null
+            },
+            "output_tokens": 816,
+            "output_tokens_details": {
+              "reasoning_tokens": 640,
+              "text_tokens": null
+            },
+            "total_tokens": 1745,
+            "cost": null
+          },
+          "blocks": {
+            "flow_008_procedure_001_sb_a": [
+              "robot_2.plan(\"tool0\", np.array([6.450100, 1.003400, 0.803000 + (W / 2)], dtype=float), np.array([0.707107, 0.0, 0.707107, 0.0], dtype=float))",
+              "robot_2.render_exec()",
+              "robot_2.eef_attach(\"IRB6620_R2\", \"tool0\", \"Top Plate\")",
+              "robot_2.move_to_home()"
+            ]
+          }
+        },
+        {
+          "batch": 6,
+          "batch_count": 11,
+          "block_ids": [
+            "flow_009_procedure_001_sb_a"
+          ],
+          "attempt": 1,
+          "status": "accepted",
+          "tool_choice_mode": "forced_function",
+          "response_id": "resp_J554lbOGo9zQfcQP8yBf8qe7zmFJM4cQx5zSD5x2T_XX3fvJnFpCG_byJEi8j6nOgwsaI02MhoyCb-0Y0UCFCpznPCptx-VC_R8YWItq1RZIidc9GhJssofJKOBw1Z-12LYi7knLnETGqIgo4UvBb0LZOtba9lUsISjqNGMoYizUAB1lkG927AYq3Q9BJETkFAJTCWa9o5JIO6W9x0Q0QqJtHdrBWJOJ_FV4w-uSP7LaeMLkeiwFAYeywkWEaHYeVVAQO9ukfqoGrmdZMpyUwJ_IIK9bGzq1REbNdT5tOP6XJf6xpPH5GTeL3E81_1H8_DnPWmQfXtEeVcOZA9WQA13uXqtz_7h11pT9P_gHwi2MUu5Z1uKjoB-GBgOF_aJBOq_qIUhagn-23f6L-3DQOnqru0gPIu_31HLwHodLhPG59QOEJfONiJyRjo60ykdBSSRsn0n5UQS0kH5GcGmb5A==",
+          "returned_model_identifier": "o3",
+          "response_status": "completed",
+          "duration_seconds": 6.3042,
+          "usage": {
+            "input_tokens": 929,
+            "input_tokens_details": {
+              "cached_tokens": 0,
+              "audio_tokens": null,
+              "text_tokens": null
+            },
+            "output_tokens": 697,
+            "output_tokens_details": {
+              "reasoning_tokens": 512,
+              "text_tokens": null
+            },
+            "total_tokens": 1626,
+            "cost": null
+          },
+          "blocks": {
+            "flow_009_procedure_001_sb_a": [
+              "robot_2.plan(\"tool0\", np.array([6.450100, 0.782470, 0.803000 + (W / 2)], dtype=float), np.array([-0.707107, 0.0, -0.707107, 0.0], dtype=float))",
+              "robot_2.render_exec()",
+              "robot_2.eef_attach(\"IRB6620_R2\", \"tool0\", \"Jack Stud\")",
+              "robot_2.move_to_home()"
+            ]
+          }
+        },
+        {
+          "batch": 7,
+          "batch_count": 11,
+          "block_ids": [
+            "flow_011_procedure_001_sb_a"
+          ],
+          "attempt": 1,
+          "status": "accepted",
+          "tool_choice_mode": "forced_function",
+          "response_id": "resp_7COEfeev8p30Gus2CUx1vI2dRo0XtY_3grNqoGxCAePPZNzfeNdfe9Pt3lKSagwEuB2YZakrP-K3GbE6tLbColGTooGQ46gH0hDmXIQCEt5ThBIpVvxvF2T4BVQXQFpijTVk0YJ5C_wPvXeyefH359qs6z1GStE9UCp_Utru25C9dU7q7d2mucx2DZlNukpPJDxr2TitAgqiSxEKIUWw7oyCIlYLqZVNnBL_QDW0cGT9uMLl3QYhuZkWeJCZXI1D0mPCvmT_J4pz3FDpvU4agoqKvEYgRqPSKNqJQ8_cwwB4FbjjlUGgmfOcTKBON417-tr2urV76hpa1sYe2DnRBWQJ4Q8A7HEUeM98uzdxEQYQWWEBkThfeL-68iob53AKTgq7tFBjEqZ_0TbClcuFHd2MDQulYiCXBQWz37bkk69jDjC_YWncrTNXZhDwdUejTO2RS5miohRJZOR4i-SeTw==",
+          "returned_model_identifier": "o3",
+          "response_status": "completed",
+          "duration_seconds": 6.962759,
+          "usage": {
+            "input_tokens": 916,
+            "input_tokens_details": {
+              "cached_tokens": 0,
+              "audio_tokens": null,
+              "text_tokens": null
+            },
+            "output_tokens": 826,
+            "output_tokens_details": {
+              "reasoning_tokens": 640,
+              "text_tokens": null
+            },
+            "total_tokens": 1742,
+            "cost": null
+          },
+          "blocks": {
+            "flow_011_procedure_001_sb_a": [
+              "robot_1.plan(\"tool1\", np.array([-1.127, 1.02, 0.354], dtype=float), np.array([0.0, 0.0, 0.707107, -0.707107], dtype=float))",
+              "robot_1.render_exec()",
+              "robot_1.eef_attach(\"IRB6620_R1\", \"tool1\", \"Bear Loading\")",
+              "robot_1.move_to_home()"
+            ]
+          }
+        },
+        {
+          "batch": 8,
+          "batch_count": 11,
+          "block_ids": [
+            "flow_013_procedure_001_sb_a"
+          ],
+          "attempt": 1,
+          "status": "accepted",
+          "tool_choice_mode": "forced_function",
+          "response_id": "resp_QfTuhXNDfQRb2hdaIFQTrfeueV3pyV7kkGW8VOwlk1qCuDSdF0OaTqObnE-XpByWC-2-84hYE0FOyoLJe_qM1NoEpilKPbo0_Bgm79koO6KLBs9qSPP65n5wVLMN2lnXOE1-n-39J0uSPWgpb0oq1i4lqNxPPb3dFmeqXdqsKDk4KScu0MOy3pPqRoJoyeA-uqL9eAJS-lHVUsm7OArx20plCJFfRyLECglXe0G6k0skdANbVXrg0VrCmzkMJPCxD7qZruQwywGn-hw16ujjOjRuCVa13PLxJ6Bbfi3xvlf1qiYwA870LXWvWA18pxVYtQ4bTbspnA8WoAtGCMbeJNwzyf02tt4CwzPxWMNn_oYkBsDZvkqrBKMqyjIMuI7ysjZNnhC-epDxS7HyXlf-S39-2wKIsKYw0ZHUe7aPUavaT1R48NBu5-2VTOmRQy6amtVF4wbcobHX-R17R721NA==",
+          "returned_model_identifier": "o3",
+          "response_status": "completed",
+          "duration_seconds": 5.692117,
+          "usage": {
+            "input_tokens": 951,
+            "input_tokens_details": {
+              "cached_tokens": 0,
+              "audio_tokens": null,
+              "text_tokens": null
+            },
+            "output_tokens": 764,
+            "output_tokens_details": {
+              "reasoning_tokens": 576,
+              "text_tokens": null
+            },
+            "total_tokens": 1715,
+            "cost": null
+          },
+          "blocks": {
+            "flow_013_procedure_001_sb_a": [
+              "robot_2.plan(\"tool0\", np.array([4.179000, -2.422283 + (0.250000 * W), 1.048050 + (0.433013 * W)], dtype=float), np.array([0.612354, 0.612354, 0.353553, 0.353553], dtype=float))",
+              "robot_2.render_exec()",
+              "robot_2.eef_attach(\"IRB6620_R2\", \"tool0\", \"L/U Stud\")",
+              "robot_2.move_to_home()"
+            ]
+          }
+        },
+        {
+          "batch": 9,
+          "batch_count": 11,
+          "block_ids": [
+            "flow_014_procedure_001_sb_a"
+          ],
+          "attempt": 1,
+          "status": "accepted",
+          "tool_choice_mode": "forced_function",
+          "response_id": "resp_ixtXV1tw_8R2JHMvcJrIqu0ta5HOklFKT_eyfWAVVBfml6Yifxw9xOeHMQe4a8e1x3PMynqTlSIaBz9E_zrM3le_O2H8wsCwCpdHCYgiFUV1dMBDvm-XpL5MtPzV_IObBz4zakflNCpnNAehgvBFgwGY0rx_lObx7abNALVqHnTstpBD_C5SiyV7JOBRk3ewcdkStXZzzGk2MovenVFFHcgraLZDeVEjbSblo434OMlLbgDWdn_DHvWQKNTltZRqqhV4lt9H5La1vXIefS3SHf-NIZve-_dC33vNIKD6yJQBeecXdYg_Nq4-azDBQNQYnEcRIcEAgFPly0_fyioir9-Y99LpGkDOETB734x4gILpowprXf56NKhnlEDhe-XEePTWFkM-NYT9QQvNFDXEQIqogcoNBorFZtHJj5rhfc4AxjClacrDKFWM7FSchT5PKVQrG1WFos0Oynvtoqx3pQ==",
+          "returned_model_identifier": "o3",
+          "response_status": "completed",
+          "duration_seconds": 6.287338,
+          "usage": {
+            "input_tokens": 934,
+            "input_tokens_details": {
+              "cached_tokens": 0,
+              "audio_tokens": null,
+              "text_tokens": null
+            },
+            "output_tokens": 719,
+            "output_tokens_details": {
+              "reasoning_tokens": 576,
+              "text_tokens": null
+            },
+            "total_tokens": 1653,
+            "cost": null
+          },
+          "blocks": {
+            "flow_014_procedure_001_sb_a": [
+              "robot_2.plan('tool0', np.array([6.450100, 0.782470, 0.803000 + (W / 2)], dtype=float), np.array([-0.707107, 0.0, -0.707107, 0.0], dtype=float))",
+              "robot_2.render_exec()",
+              "robot_2.eef_attach('IRB6620_R2', 'tool0', 'Lower Sill Plate')",
+              "robot_2.move_to_home()"
+            ]
+          }
+        },
+        {
+          "batch": 10,
+          "batch_count": 11,
+          "block_ids": [
+            "flow_017_procedure_001_sb_a"
+          ],
+          "attempt": 1,
+          "status": "accepted",
+          "tool_choice_mode": "forced_function",
+          "response_id": "resp_wqvnAEnu96_1Iua1VYKum6WbNbWP5nEdtNykEYLgUmrKgJkRzDrI1FAXWs0bdEHXIfSCRffJ8nSmambC1Ts8gr5wmBDS_EGYM1iYeFLby0FfMnu2jkUQ0O9VU4NGXcinoj5QsAinb0yWLDtFp4_4RvhC5ZfEVb10Zd8_fwII8LzKMaMeYQHPn8gxKsDJ70Mvcsez5rE850Cyq5xd-SIzQ_aYsTSli7qscFfWdt2_x4wzFFOfCUkYEc9UcWcnIjd3LfUievdDuOyZN3lco-dPmvjr4Qz_TXCGF1H3pNAI1ySb_J91OOINvFORx7SHyJ1HT-WoMHOy6JOadewZ2baQz9GC78gUrT7FwYtpZ9pEnTQ2HmjXTITX1YOwglaPoXN9W61Fu_KPyDAUjWb-MzITDbYMl6prQsyokBDO-2Kksgv0qrO1HhQq4n2MyGVq4X4sqXuJJFJtR_oTGS_DnlCCXQ==",
+          "returned_model_identifier": "o3",
+          "response_status": "completed",
+          "duration_seconds": 9.010766,
+          "usage": {
+            "input_tokens": 936,
+            "input_tokens_details": {
+              "cached_tokens": 0,
+              "audio_tokens": null,
+              "text_tokens": null
+            },
+            "output_tokens": 716,
+            "output_tokens_details": {
+              "reasoning_tokens": 576,
+              "text_tokens": null
+            },
+            "total_tokens": 1652,
+            "cost": null
+          },
+          "blocks": {
+            "flow_017_procedure_001_sb_a": [
+              "robot_2.plan('tool0', np.array([6.450100, 0.782470, 0.803000 + (W / 2)], dtype=float), np.array([-0.707107, 0.0, -0.707107, 0.0], dtype=float))",
+              "robot_2.render_exec()",
+              "robot_2.eef_attach('IRB6620_R2','tool0','Top Sill Plate')",
+              "robot_2.move_to_home()"
+            ]
+          }
+        },
+        {
+          "batch": 11,
+          "batch_count": 11,
+          "block_ids": [
             "flow_019_procedure_001_sb_a"
-          ]
+          ],
+          "attempt": 1,
+          "status": "accepted",
+          "tool_choice_mode": "forced_function",
+          "response_id": "resp_Px9KB8aa5paiiQDQT3ZE1j1xLBUYRKsWPvWEziTMTSEY1VMjdf3poBkG9S3QIfDYE3GVABJ512DFbuSzA2B2fzri1k0S29vi5ryg9smp_p5tppC82P_Scn9Srg765PtR4-sfneCK0sbpQHx2dhfFwa6mHBMv-BodW1u2mxK8opBCitoOPjnGO5vmH5Z2lEMHYNzgweVSdKmnnoKyOotF8m_y0rIn3_GSlNhEeIh_nWcS4dPKiaEoeYgULGTKwnp1tu2z1x2i7kBnKoI8r5sYNgj3BEQG7-8pRZUCv22XhCMt6OkoCsg-DccsHAxUIoRGI-E_kzXfOZfSWtrpB_3wobuSb_0jxgJa53CnlbV2lQyem13rzDBD3GUrlCORgcwR6DIqpUEoboZURhFaPFbAeW-dweVRl2PSTMuA1zmZG8tV-9QX5F26DdzWq1Hg0uHs8QVDAEFpNZCVMwWZ6LiOYw==",
+          "returned_model_identifier": "o3",
+          "response_status": "completed",
+          "duration_seconds": 5.631814,
+          "usage": {
+            "input_tokens": 938,
+            "input_tokens_details": {
+              "cached_tokens": 0,
+              "audio_tokens": null,
+              "text_tokens": null
+            },
+            "output_tokens": 595,
+            "output_tokens_details": {
+              "reasoning_tokens": 448,
+              "text_tokens": null
+            },
+            "total_tokens": 1533,
+            "cost": null
+          },
+          "blocks": {
+            "flow_019_procedure_001_sb_a": [
+              "robot_2.plan('tool0', np.array([6.450100, 0.782470, 0.803000 + (W / 2)], dtype=float), np.array([-0.707107, 0.0, -0.707107, 0.0], dtype=float))",
+              "robot_2.render_exec()",
+              "robot_2.eef_attach('IRB6620_R2', 'tool0', 'Top Cripple Stud')",
+              "robot_2.move_to_home()"
+            ]
+          }
         }
       ],
       "generated_blocks": {
-        "flow_006_procedure_001_sb_a": [
-          "robot_1.plan('tool1', np.array([0.0, -1.5, H + 0.6], dtype=float), np.array([0.0, 0.0, 0.707107, 0.707107], dtype=float))",
-          "robot_1.render_exec()",
-          "robot_1.eef_attach('IRB6620_R1', 'tool1', 'OSB Sheathing Plate')",
-          "robot_1.move_to_home()"
-        ],
-        "flow_013_procedure_001_sb_a": [
-          "robot_2.plan(\"tool0\", np.array([4.179000, -2.422283 + (0.250000 * W), 1.048050 + (0.433013 * W)], dtype=float), np.array([0.612354, 0.612354, 0.353553, 0.353553], dtype=float))",
-          "robot_2.render_exec()",
-          "robot_2.eef_attach(\"IRB6620_R2\", \"tool0\", \"L/U Stud\")",
-          "robot_2.move_to_home()"
-        ],
-        "flow_011_procedure_001_sb_a": [
-          "robot_1.plan(\"tool1\", np.array([-1.127, 1.02, 0.354], dtype=float), np.array([0.0, 0.0, 0.707107, -0.707107], dtype=float))",
-          "robot_1.render_exec()",
-          "robot_1.eef_attach(\"IRB6620_R1\", \"tool1\", \"Bear Loading\")",
-          "robot_1.move_to_home()"
-        ],
         "flow_001_procedure_001_sb_a": [
-          "robot_2.plan(\"tool0\", np.array([4.179000, -2.422283 + (0.250000 * W), 1.048050 + (0.433013 * W)], dtype=float), np.array([0.612354, 0.612354, 0.353553, 0.353553], dtype=float))",
+          "robot_2.plan(\"tool0\", np.array([4.179, -2.422283 + (0.25 * W), 1.04805 + (0.433013 * W)], dtype=float), np.array([0.612354, 0.612354, 0.353553, 0.353553], dtype=float))",
           "robot_2.render_exec()",
           "robot_2.eef_attach(\"IRB6620_R2\", \"tool0\", \"Vertical Stud\")",
           "robot_2.move_to_home()"
         ],
-        "flow_005_procedure_001_sb_a": [
-          "robot_2.plan('tool0', np.array([6.450100, 0.782470, 0.803000 + (W / 2)], dtype=float), np.array([-0.707107, 0.0, -0.707107, 0.0], dtype=float))",
+        "flow_003_procedure_001_sb_a": [
+          "robot_2.plan(\"tool0\", np.array([4.179000, -2.422283 + (0.250000 * W), 1.048050 + (0.433013 * W)], dtype=float), np.array([0.612354, 0.612354, 0.353553, 0.353553], dtype=float))",
           "robot_2.render_exec()",
-          "robot_2.eef_attach('IRB6620_R2', 'tool0', 'Lower Cripple Stud')",
+          "robot_2.eef_attach(\"IRB6620_R2\", \"tool0\", \"King Stud\")",
           "robot_2.move_to_home()"
+        ],
+        "flow_005_procedure_001_sb_a": [
+          "robot_2.plan(\"tool0\", np.array([6.450100, 0.782470, 0.803000 + (W / 2)], dtype=float), np.array([-0.707107, 0.0, -0.707107, 0.0], dtype=float))",
+          "robot_2.render_exec()",
+          "robot_2.eef_attach(\"IRB6620_R2\", \"tool0\", \"Lower Cripple Stud\")",
+          "robot_2.move_to_home()"
+        ],
+        "flow_006_procedure_001_sb_a": [
+          "robot_1.plan(\"tool1\", np.array([0.0, -1.5, H + 0.6], dtype=float), np.array([0.0, 0.0, 0.707107, 0.707107], dtype=float))",
+          "robot_1.render_exec()",
+          "robot_1.eef_attach(\"IRB6620_R1\", \"tool1\", \"OSB Sheathing Plate\")",
+          "robot_1.move_to_home()"
         ],
         "flow_008_procedure_001_sb_a": [
           "robot_2.plan(\"tool0\", np.array([6.450100, 1.003400, 0.803000 + (W / 2)], dtype=float), np.array([0.707107, 0.0, 0.707107, 0.0], dtype=float))",
           "robot_2.render_exec()",
           "robot_2.eef_attach(\"IRB6620_R2\", \"tool0\", \"Top Plate\")",
-          "robot_2.move_to_home()"
-        ],
-        "flow_014_procedure_001_sb_a": [
-          "robot_2.plan(\"tool0\", np.array([6.450100, 0.782470, 0.803000 + (W / 2)], dtype=float), np.array([-0.707107, 0.0, -0.707107, 0.0], dtype=float))",
-          "robot_2.render_exec()",
-          "robot_2.eef_attach(\"IRB6620_R2\", \"tool0\", \"Lower Sill Plate\")",
-          "robot_2.move_to_home()"
-        ],
-        "flow_017_procedure_001_sb_a": [
-          "robot_2.plan('tool0', np.array([6.450100, 0.782470, 0.803000 + (W / 2)], dtype=float), np.array([-0.707107, 0.0, -0.707107, 0.0], dtype=float))",
-          "robot_2.render_exec()",
-          "robot_2.eef_attach('IRB6620_R2', 'tool0', 'Top Sill Plate')",
           "robot_2.move_to_home()"
         ],
         "flow_009_procedure_001_sb_a": [
@@ -611,16 +984,34 @@
           "robot_2.eef_attach(\"IRB6620_R2\", \"tool0\", \"Jack Stud\")",
           "robot_2.move_to_home()"
         ],
+        "flow_011_procedure_001_sb_a": [
+          "robot_1.plan(\"tool1\", np.array([-1.127, 1.02, 0.354], dtype=float), np.array([0.0, 0.0, 0.707107, -0.707107], dtype=float))",
+          "robot_1.render_exec()",
+          "robot_1.eef_attach(\"IRB6620_R1\", \"tool1\", \"Bear Loading\")",
+          "robot_1.move_to_home()"
+        ],
+        "flow_013_procedure_001_sb_a": [
+          "robot_2.plan(\"tool0\", np.array([4.179000, -2.422283 + (0.250000 * W), 1.048050 + (0.433013 * W)], dtype=float), np.array([0.612354, 0.612354, 0.353553, 0.353553], dtype=float))",
+          "robot_2.render_exec()",
+          "robot_2.eef_attach(\"IRB6620_R2\", \"tool0\", \"L/U Stud\")",
+          "robot_2.move_to_home()"
+        ],
+        "flow_014_procedure_001_sb_a": [
+          "robot_2.plan('tool0', np.array([6.450100, 0.782470, 0.803000 + (W / 2)], dtype=float), np.array([-0.707107, 0.0, -0.707107, 0.0], dtype=float))",
+          "robot_2.render_exec()",
+          "robot_2.eef_attach('IRB6620_R2', 'tool0', 'Lower Sill Plate')",
+          "robot_2.move_to_home()"
+        ],
+        "flow_017_procedure_001_sb_a": [
+          "robot_2.plan('tool0', np.array([6.450100, 0.782470, 0.803000 + (W / 2)], dtype=float), np.array([-0.707107, 0.0, -0.707107, 0.0], dtype=float))",
+          "robot_2.render_exec()",
+          "robot_2.eef_attach('IRB6620_R2','tool0','Top Sill Plate')",
+          "robot_2.move_to_home()"
+        ],
         "flow_019_procedure_001_sb_a": [
           "robot_2.plan('tool0', np.array([6.450100, 0.782470, 0.803000 + (W / 2)], dtype=float), np.array([-0.707107, 0.0, -0.707107, 0.0], dtype=float))",
           "robot_2.render_exec()",
           "robot_2.eef_attach('IRB6620_R2', 'tool0', 'Top Cripple Stud')",
-          "robot_2.move_to_home()"
-        ],
-        "flow_003_procedure_001_sb_a": [
-          "robot_2.plan(\"tool0\", np.array([4.179000, -2.422283 + (0.250000 * W), 1.048050 + (0.433013 * W)], dtype=float), np.array([0.612354, 0.612354, 0.353553, 0.353553], dtype=float))",
-          "robot_2.render_exec()",
-          "robot_2.eef_attach(\"IRB6620_R2\", \"tool0\", \"King Stud\")",
           "robot_2.move_to_home()"
         ]
       }
@@ -1646,61 +2037,761 @@
       ],
       "attempts": [
         {
-          "status": "reused_from_previous_run",
+          "batch": 1,
+          "batch_count": 20,
           "block_ids": [
-            "flow_001_procedure_002_pb_a",
-            "flow_002_procedure_001_pb_a",
-            "flow_003_procedure_002_pb_a",
-            "flow_004_procedure_001_pb_a",
-            "flow_005_procedure_002_pb_a",
-            "flow_006_procedure_002_pb_a",
-            "flow_007_procedure_001_pb_a",
-            "flow_008_procedure_004_pb_a",
-            "flow_009_procedure_002_pb_a",
-            "flow_010_procedure_001_pb_a",
-            "flow_011_procedure_002_pb_a",
-            "flow_012_procedure_001_pb_a",
-            "flow_013_procedure_004_pb_a",
-            "flow_014_procedure_002_pb_a",
-            "flow_015_procedure_001_pb_a",
-            "flow_016_procedure_001_pb_a",
-            "flow_017_procedure_004_pb_a",
-            "flow_018_procedure_001_pb_a",
-            "flow_019_procedure_004_pb_a",
+            "flow_001_procedure_002_pb_a"
+          ],
+          "attempt": 1,
+          "status": "accepted",
+          "tool_choice_mode": "forced_function",
+          "response_id": "resp_6PhhyS6gflIFtkr7v3rn9tzvvrnqjumP4M7pHOG7t7_ElsdeFAYvD43_-X3V1EjOPo-WYEvMoUkbwc4bkqvXo9g_Auque1pFj8PBe2EjoXZNiglJ-i7sAU8BaWpc5DVHuFN6szCASkTf0YZKuQ_JgUGbZpYPuOk1JP_8CKC3jLhCHJ53JEYfxc3RKIz0QFQfLYB9gfR3BhGIdb8w6kmud-FqrRmpGdGcX28_fWLiMbkLFQCaYDPNiFsPuL6R0DH6Z_wvLtzcuxv5PRlwWiNmAUbbSGBZR41pxB6Yd13oaRIUVYAL2Gub_7hMBOWIh364jI7Km-Nxfz3sjsNjAnUmQokww_vxuMLJTJyWr1smXV8MMCqitGRZXdsbDdsXMeRKLEgHf3mRuLME6foS1RBHq_uLV1BTb-a_cynKOy6tGOt7E47pg-BmrZ2CODo4fvX9jV2Cp9kqWTo8vQZUR1ZcGw==",
+          "returned_model_identifier": "o3",
+          "response_status": "completed",
+          "duration_seconds": 4.780624,
+          "usage": {
+            "input_tokens": 961,
+            "input_tokens_details": {
+              "cached_tokens": 0,
+              "audio_tokens": null,
+              "text_tokens": null
+            },
+            "output_tokens": 597,
+            "output_tokens_details": {
+              "reasoning_tokens": 384,
+              "text_tokens": null
+            },
+            "total_tokens": 1558,
+            "cost": null
+          },
+          "blocks": {
+            "flow_001_procedure_002_pb_a": [
+              "target_pose = np.array([X + (L / 2) + 0.962590, 0.500000, H + 0.889360], dtype=float)",
+              "target_orientation = np.array([0.0, 0.0, 0.707107, 0.707107], dtype=float)",
+              "robot_2.plan(\"tool0\", target_pose, target_orientation)",
+              "robot_2.render_exec()",
+              "robot_2.eef_detach(\"IRB6620_R2\", \"tool0\", \"Vertical Stud\")",
+              "robot_2.move_to_home()"
+            ]
+          }
+        },
+        {
+          "batch": 2,
+          "batch_count": 20,
+          "block_ids": [
+            "flow_002_procedure_001_pb_a"
+          ],
+          "attempt": 1,
+          "status": "accepted",
+          "tool_choice_mode": "forced_function",
+          "response_id": "resp_L_3-r-ewEoeIGV6yVVUfUGjFS4Ht1TYIyLV3YhykgCY5DIRTd6W3M2lA_BOBQtXAR73IEtPkxDmW6qTm-ZNbjsR8XTz6Yzggdbuta3qO6uQxyZCaIphwQXfrZ8b3Smqh8dZGltK6gqtJxFR20hhp3kucW97mIShbjktuRbIHmLCC_gpjp_EzvU_WzzpIvHH9gw5u4z3Qu349fAU2bmIQBsGLuxJsvSDNq6Beyboiw-wdrb8qThLpv8DfFfSJSDNuIi14G_HOk_RJ70znPcJhKlp1aVh7KhZRa-mgk7hBSlxvudjcX4UWK46ac7-dt3gpsJzAIjig18GATmVrAF_uB7hmb6hD-V3utZrJwHVfRT2fjaGsie7vZWHyOa_Zcn10HsEcssoyG5fTQHahZyDthcmF9B3y-LiznuwgQlhalKVrpV63hCkl-QmOByDrMeBylBo13kfQw3xPWYMeoGy_lw==",
+          "returned_model_identifier": "o3",
+          "response_status": "completed",
+          "duration_seconds": 7.379075,
+          "usage": {
+            "input_tokens": 943,
+            "input_tokens_details": {
+              "cached_tokens": 0,
+              "audio_tokens": null,
+              "text_tokens": null
+            },
+            "output_tokens": 623,
+            "output_tokens_details": {
+              "reasoning_tokens": 448,
+              "text_tokens": null
+            },
+            "total_tokens": 1566,
+            "cost": null
+          },
+          "blocks": {
+            "flow_002_procedure_001_pb_a": [
+              "robot_1.plan(\"tool2\", np.array([1.1, 0.5, 0.895460 + (0.300000 * H)], dtype=float), np.array([0.0, 0.707107, 0.0, 0.707107], dtype=float))",
+              "robot_1.render_exec()",
+              "robot_1.move_to_home()"
+            ]
+          }
+        },
+        {
+          "batch": 3,
+          "batch_count": 20,
+          "block_ids": [
+            "flow_003_procedure_002_pb_a"
+          ],
+          "attempt": 1,
+          "status": "accepted",
+          "tool_choice_mode": "forced_function",
+          "response_id": "resp_Msd8ze5nwOXdEjCajRpfBtOGeSKu6jig1aVzz4zTacYztyduiHP7a5qPWzz5L0pjA9AuxasoWFz0G78rh5ChtAbuOPGAidjEUaGD9rgXpLn-JBf0lEo8siaWjeR5uxqwAO9Y2GFrXJKERtfagK-ja1KrH7GJwUL94TEy9J9C9PiLsyGJkD1nJBnAQrNych3DDVs5Yp0qodcQImbVu-RmhRwh9jp1mrLogo7I6tgF_acNuFK6-PYT37p3YoCBq51GKZdHuw8xI_HefwMhHkMmsRzCbVg1mLydihzuzcKI2-06pubwMWeEzARQx_IOsof68BR6xJLPGX_4_KxANnvg6UGy5M182g7bR8IHRtgQgyuH5QLq35zWmT5095J_3E-9beRwqb0UpuYKm4h0SM0ByRETC6faQCe8_cGsDZyFndPhwENkWdvKAsp20LjPMZZ1IxjjaihSkwjZxMmD3z2Lmw==",
+          "returned_model_identifier": "o3",
+          "response_status": "completed",
+          "duration_seconds": 9.138598,
+          "usage": {
+            "input_tokens": 958,
+            "input_tokens_details": {
+              "cached_tokens": 0,
+              "audio_tokens": null,
+              "text_tokens": null
+            },
+            "output_tokens": 916,
+            "output_tokens_details": {
+              "reasoning_tokens": 768,
+              "text_tokens": null
+            },
+            "total_tokens": 1874,
+            "cost": null
+          },
+          "blocks": {
+            "flow_003_procedure_002_pb_a": [
+              "robot_2.plan(\"tool0\", np.array([X + (L / 2) + 0.962590, 0.500000, H + 0.889360], dtype=float), np.array([0.0, 0.0, 0.707107, 0.707107], dtype=float))",
+              "robot_2.render_exec()",
+              "robot_2.eef_detach(\"IRB6620_R2\", \"Gripper\", \"King Stud\")",
+              "robot_2.move_to_home()"
+            ]
+          }
+        },
+        {
+          "batch": 4,
+          "batch_count": 20,
+          "block_ids": [
+            "flow_004_procedure_001_pb_a"
+          ],
+          "attempt": 1,
+          "status": "accepted",
+          "tool_choice_mode": "forced_function",
+          "response_id": "resp_dZDoMeoeTGBzvWdZDUskOL_SOl846qprUUZsrJyC19YF9HhQk0b-qLgYcCtF0uSI6ZpXJuxxdsqUl6qJ7LLUsgH_O1Jsgx0idK6LCTGNLAfV9NpwL6YJr8d7kqbI1UXKdILe-iKlmlA3sahmubgchiG2fG0FbzPEm4GGtpd0QHJjlyaUW9fFwmFmRTvr3sCj1s-Z9bnJELIkxjmK2VwVStn4UV6UOBNz3DuZzmuCADDhNY8jLiYLCodel1sb2AjVAl_hdSUvixx-5wn05KmcXMDsSHj3NXdCCGCk7BTNPL1EfCDMkRL9RT3_AIbaYGkIx-tOsZ6Wnw6oUHQg0N9NbUBYbUdJeRoH4HcTFN6i13zd3R2A2a3VdCkBnHc7xEOZB2cRypmDA-n-PRVo5n0BU91rahWhQo8tfaDB2xpE15mOnY0yUF0w3MoFk4XilPcYFC7JVn746LBHykZDfD6zaw==",
+          "returned_model_identifier": "o3",
+          "response_status": "completed",
+          "duration_seconds": 6.245598,
+          "usage": {
+            "input_tokens": 940,
+            "input_tokens_details": {
+              "cached_tokens": 0,
+              "audio_tokens": null,
+              "text_tokens": null
+            },
+            "output_tokens": 700,
+            "output_tokens_details": {
+              "reasoning_tokens": 576,
+              "text_tokens": null
+            },
+            "total_tokens": 1640,
+            "cost": null
+          },
+          "blocks": {
+            "flow_004_procedure_001_pb_a": [
+              "robot_1.plan(\"tool2\", np.array([1.100000, 0.500000, 0.895460 + (0.300000 * H)], dtype=float), np.array([0.0, 0.707107, 0.0, 0.707107], dtype=float))",
+              "robot_1.render_exec()",
+              "robot_1.move_to_home()"
+            ]
+          }
+        },
+        {
+          "batch": 5,
+          "batch_count": 20,
+          "block_ids": [
+            "flow_005_procedure_002_pb_a"
+          ],
+          "attempt": 1,
+          "status": "accepted",
+          "tool_choice_mode": "forced_function",
+          "response_id": "resp_Tp6lCUWwLyzWImlotzrVU9VAxp2P5xQW9Bg5zGbTiDwU7s1FrtOfX_PEM2wbH-k1O1q7a9FiVGnB6UyOq2MvLKUB6LQwpxjGTCLyYOD0Vwh9Gh59gzvL2KQfGzkcOQRrGQig8yeJ8RTtE03Eo3Ua51GuoaQjq0V5NAlhXEJ4cxDDOnh09GU7NPLE-BqLGyXvtC28kbqTuGmd7QLkDDXORmBfkfxPkO7Vd4ImVK3Dr-6HYMCHvqHae_LbVJKsu88Y_1AxPlayB5BwPvXjsh5qCUtMQo7AdTGaw3mPup3AF3NEXlDDX5aYuV0Guu09jrjCPVTWxasexUbUn68CGmuy3uwvIBBVAPQmXaplkJ8fn29efyjKu1Hd6wGC0-UAg1C-Um2y3lwExi-GXciBB8dcOmlVUdN6lYfAECMizEBpvDz9BmoKP4d0lmFcgfoPW6dTSeA_iIhFMEfoUDXmyf-B3Q==",
+          "returned_model_identifier": "o3",
+          "response_status": "completed",
+          "duration_seconds": 9.627334,
+          "usage": {
+            "input_tokens": 963,
+            "input_tokens_details": {
+              "cached_tokens": 0,
+              "audio_tokens": null,
+              "text_tokens": null
+            },
+            "output_tokens": 1266,
+            "output_tokens_details": {
+              "reasoning_tokens": 1088,
+              "text_tokens": null
+            },
+            "total_tokens": 2229,
+            "cost": null
+          },
+          "blocks": {
+            "flow_005_procedure_002_pb_a": [
+              "robot_2.plan(\"tool0\", np.array([X - (L / 2) + 1.182590, 0.0, H + 0.889360], dtype=float), np.array([0.0, 0.0, -0.707107, -0.707107], dtype=float))",
+              "robot_2.render_exec()",
+              "robot_2.eef_detach(\"IRB6620_R2\", \"tool0\", \"Lower Cripple Stud\")",
+              "robot_2.move_to_home()"
+            ]
+          }
+        },
+        {
+          "batch": 6,
+          "batch_count": 20,
+          "block_ids": [
+            "flow_006_procedure_002_pb_a"
+          ],
+          "attempt": 1,
+          "status": "accepted",
+          "tool_choice_mode": "forced_function",
+          "response_id": "resp_tDoMJFsvA3VbQR3Lws8Tc9Dn8wzIaKXtct1RUmQft7pY8gH_pQjmYMS9BlJbmVXIrpPPUGccXod5oFmnbV3KS4njwjqfc4JFfxEnyvKZpdAZqWU3O-kyulaPMdpJO3bJmMvhG1K57u9MH7l7DdfTatRqct4hugoBmEhpJaIBoCd_46XN5DaWo4Kk6pcdd_K22L_DiYITKtd2JySnk-CMuh27fTRyVcgW1sGFpSFqt_BHLe_lV3wWyqAiK1aKwrB-kYN6DaGVBZkMMJps3Mp0mI2AjOoBfgw0LKGPPn58q98OpZUUMQVjCXW1RgrZh4GQ6rPydU6ngYeIBTAJJr0N9I1eUV37PF2y7MHJUqsQrhAyxcigB3jA_gO3CsHEBm-jyaQqaMWManRfwyAsPjpjr-Q3e6ugf7TnQdAgsyNugOweT64cMIU7e93KIf_9vaCo1w9lZ7J5JYBBXyEgCWJWcw==",
+          "returned_model_identifier": "o3",
+          "response_status": "completed",
+          "duration_seconds": 6.244141,
+          "usage": {
+            "input_tokens": 949,
+            "input_tokens_details": {
+              "cached_tokens": 0,
+              "audio_tokens": null,
+              "text_tokens": null
+            },
+            "output_tokens": 669,
+            "output_tokens_details": {
+              "reasoning_tokens": 512,
+              "text_tokens": null
+            },
+            "total_tokens": 1618,
+            "cost": null
+          },
+          "blocks": {
+            "flow_006_procedure_002_pb_a": [
+              "robot_1.plan('tool1', np.array([2.691790 - X, 0.0, Z + 0.895460], dtype=float), np.array([0.0, 0.0, 0.0, -1.0], dtype=float))",
+              "robot_1.render_exec()",
+              "robot_1.eef_detach('IRB6620_R1', 'tool1', 'OSB Sheathing Plate')",
+              "robot_1.move_to_home()"
+            ]
+          }
+        },
+        {
+          "batch": 7,
+          "batch_count": 20,
+          "block_ids": [
+            "flow_007_procedure_001_pb_a"
+          ],
+          "attempt": 1,
+          "status": "accepted",
+          "tool_choice_mode": "forced_function",
+          "response_id": "resp_qqESW3aKZZN1ajlZ1V93YBZYSweI_5SA-zZ4g4cj7W1Flr0OvvkuWorTIBsmvm-qILMt9FWdMUd37nnrPkqUw8MbJ15u_tUN1CyyHnB4mN420iSIlC-xOQVeKGJ9Z38C5f6LaPT1TeLVOkHiQYTTlsOAgc5ITDrApyiliShkPsYOFeFmLlImuy6EcwrRWJtC_pGTU4gVfJbOngoICieaFpxflShNM8Ipp3Fob5gXPp0uGlCJ4AaGuLItSkgXW_YY1VMYIl-ItHB9titwCG0u4RNXbQ3CX1sRLYf1NCzMVUINKtUWv6ENrNsLx1qk9HB3c5_eZxg_kPc828TtKuTCh_0jsm7djEFTNEJNqb_Wyhbrk5rT1Caurjna-V49FlJJ4GYPQ5sQXqWWERFU7yLxQSRDq31ba5apSo9xIc9TKLoGGeWRTwejf1xMeCd46y0nglO6YEGej_9da-C8-Ws8Cg==",
+          "returned_model_identifier": "o3",
+          "response_status": "completed",
+          "duration_seconds": 7.577532,
+          "usage": {
+            "input_tokens": 966,
+            "input_tokens_details": {
+              "cached_tokens": 0,
+              "audio_tokens": null,
+              "text_tokens": null
+            },
+            "output_tokens": 911,
+            "output_tokens_details": {
+              "reasoning_tokens": 768,
+              "text_tokens": null
+            },
+            "total_tokens": 1877,
+            "cost": null
+          },
+          "blocks": {
+            "flow_007_procedure_001_pb_a": [
+              "robot_1.plan('Nail_Gun', np.array([L + 1.152590, 0.0, H + 1.047060], dtype=float), np.array([0.0, 1.0, 0.0, 0.0], dtype=float))",
+              "robot_1.render_exec(True, True, False)",
+              "robot_1.move_to_home()"
+            ]
+          }
+        },
+        {
+          "batch": 8,
+          "batch_count": 20,
+          "block_ids": [
+            "flow_008_procedure_004_pb_a"
+          ],
+          "attempt": 1,
+          "status": "accepted",
+          "tool_choice_mode": "forced_function",
+          "response_id": "resp_E7lHgDkmY4JjXaxKxzkhSdD2ZglZvEXo_PzSX6SUFWawBL0aJN6X_yqtnZ1GN4eJKKp4lMP7vkQuXBOD91pcOoj2lUpe3roMavyVDTcNdqe7VedQmWXTndA10ZURXBZRil3TYHlnCr5Sqejf_3DDCwrIhtanGnDD7l0urZXHp7647aPlha_fWETRUGBaScEnWv-Fk-VGgFpUpjxgfCOoLCPVXAvr6bxbwex043XcZkigqwu--AYlI8hSnlv8s9wO9ZrW3SWpBGV_rs6PkLXLej2aMeElofGA1STbRSGT9EaupZ5J5rBeVvSr0zpSIsqAYmd8BJRHgcIH8MXg8Bf7j95mPMfhMdyj4JqOtpCU4cJavNjhMmBC4z7tShEFLLL0nXfI1Y-mRRHm2tQDkyYrBF4Jccs_zpQUwv7DaaIzZBwKHq9UO2feBGsr-ycwkVLiqz7Mz9XUs8bcfXyH-07o3A==",
+          "returned_model_identifier": "o3",
+          "response_status": "completed",
+          "duration_seconds": 8.090345,
+          "usage": {
+            "input_tokens": 940,
+            "input_tokens_details": {
+              "cached_tokens": 0,
+              "audio_tokens": null,
+              "text_tokens": null
+            },
+            "output_tokens": 631,
+            "output_tokens_details": {
+              "reasoning_tokens": 448,
+              "text_tokens": null
+            },
+            "total_tokens": 1571,
+            "cost": null
+          },
+          "blocks": {
+            "flow_008_procedure_004_pb_a": [
+              "robot_1.plan(tcp_name=\"tool0\", target_pose=np.array([X + 1.132590, 0.0, H + 0.889360], dtype=float), target_orientation=np.array([0.0, 0.0, 1.0, 0.0], dtype=float))",
+              "robot_1.render_exec()",
+              "robot_1.eef_detach(r_name=\"IRB6620_R1\", tool_name=\"tool0\", detaching_object_name=\"Top Plate\")",
+              "robot_1.move_to_home()"
+            ]
+          }
+        },
+        {
+          "batch": 9,
+          "batch_count": 20,
+          "block_ids": [
+            "flow_009_procedure_002_pb_a"
+          ],
+          "attempt": 1,
+          "status": "accepted",
+          "tool_choice_mode": "forced_function",
+          "response_id": "resp_t21F_OBplvj4Ehr4gD0raYpk_44v_rKGW9ycCNaY4Hw6GklVcEcTcPirF4FXFT_laifamZQWLj5kD_4kBwfcTcVj-Yde1tE5az51uMHvH-HD7EmiLpzlZMR_3IcFDvNnn3MjuCqGCNdDWGQuk6LgBsAwbTrtRT7bAL1QC_d_eEwgaNf_bPonu03mMQp9AZgzqcWgi2ZkHjX01ey9L6njHYqYyzFJ7T1HjGzbgoKx3TxjnRh8Qgw9lPETC9ZNMl6AF71AT13ogC6SkQOzz9sJhWC37bqli5jnOxwLH8iEP_mqiNqOPDua_Us1ssmpgQMCk7M6vjiWMkK9yQaJjGYOH5VSd_Yyi9X85eSLOHDfC9vTn6beRLgKIOVjfGWgSPe8bjb14KVlsiBq39pqlCBUX3wmA9kQjoXvr951i1i9IUBsSM3bemkXTCAqkAVk8rLddaGj8BZpapo2JpMjSVYj3g==",
+          "returned_model_identifier": "o3",
+          "response_status": "completed",
+          "duration_seconds": 5.426953,
+          "usage": {
+            "input_tokens": 957,
+            "input_tokens_details": {
+              "cached_tokens": 0,
+              "audio_tokens": null,
+              "text_tokens": null
+            },
+            "output_tokens": 694,
+            "output_tokens_details": {
+              "reasoning_tokens": 512,
+              "text_tokens": null
+            },
+            "total_tokens": 1651,
+            "cost": null
+          },
+          "blocks": {
+            "flow_009_procedure_002_pb_a": [
+              "robot_2.plan(\"Gripper\", np.array([X + (L / 2) + 1.082590, 0.5, H + 0.939360], dtype=float), np.array([0.0, 0.0, -0.707107, 0.707107], dtype=float))",
+              "robot_2.render_exec()",
+              "robot_2.eef_detach(\"IRB6620_R2\", \"tool0\", \"Jack Stud\")",
+              "robot_2.move_to_home()"
+            ]
+          }
+        },
+        {
+          "batch": 10,
+          "batch_count": 20,
+          "block_ids": [
+            "flow_010_procedure_001_pb_a"
+          ],
+          "attempt": 1,
+          "status": "accepted",
+          "tool_choice_mode": "forced_function",
+          "response_id": "resp_0Rs8GT1XNkOFa_i6NkzEU25QZa0kUrg3O6NoKWK8ob6mAAd-3cKNIBR18twftA61P9UCC_mxxxP3xdayEO9KeRH1VXGZaN5c_l_EM5OZPG2hzrzqRtu11gK_ybbAzYlQ14MeQ3GyHyVteJYFfQ-YYFpjWKV3RuV23sQ7Xkh23Y9ZyExMOv8gr49QS5B9grG-faynTqTqYSqL_LzqOaO6pAfbvAQnx0II29dhMHkdeE-zwiN0rYE6HcqgMxATnrbhdJTQPzcVPmC3UJzC92afhho1h0zWfYoKBjNtC2UPBa3ZX8zxgaoR4M4Etj8LaIV8j34DaeAzv1IpyWBokOB2LOKdLtnOZAAPGhsHmzmIkm4L_epHMrmlVw7m6WyiRRrtW_t3hTfh4X6JGoGvuAmOr_LkpvkvgxDxHOzt3WQiIiAfmaR8Zif5UfK366F4AyCU9UslFbWJJdCGDK-wOa2ceg==",
+          "returned_model_identifier": "o3",
+          "response_status": "completed",
+          "duration_seconds": 7.373037,
+          "usage": {
+            "input_tokens": 957,
+            "input_tokens_details": {
+              "cached_tokens": 0,
+              "audio_tokens": null,
+              "text_tokens": null
+            },
+            "output_tokens": 666,
+            "output_tokens_details": {
+              "reasoning_tokens": 512,
+              "text_tokens": null
+            },
+            "total_tokens": 1623,
+            "cost": null
+          },
+          "blocks": {
+            "flow_010_procedure_001_pb_a": [
+              "robot_1.plan('tool2', np.array([X - (L / 2) + 1.193550, 0.586603, 0.945460], dtype=float), np.array([0.353553, -0.612354, 0.612354, 0.353553], dtype=float))",
+              "robot_1.render_exec()",
+              "robot_1.move_to_home()"
+            ]
+          }
+        },
+        {
+          "batch": 11,
+          "batch_count": 20,
+          "block_ids": [
+            "flow_011_procedure_002_pb_a"
+          ],
+          "attempt": 1,
+          "status": "accepted",
+          "tool_choice_mode": "forced_function",
+          "response_id": "resp_Oybf2EEg549jWElPDzODFF1tpoV6VE9UPgxW38OZBQKFjmte4FGzkFUDAcSFHa3ZfQPFlLa51az-uNtiY3-LxF95c1O26xB4wkDpzvanXbUUBiiGgh52zJG8jTIBvD0Cjk3ckcLxNMnu62BjBdvuoGIZTHQ05Xor06orogNEB9oOMvkv4fZwCV-jCcHK2GtYmfzIVx_WaI3W0XSqnIK9LntWWqZf_19oGUbG2z0ZyQAJH-5NDdWXoTopqnkTliTmq96qP4UGOWMpFNJbavg0AQ1vEQBv6-smZnEkE1T9y-FoOFbgtxX8MmQbq8BKF7UQ9ap0ux1bjkQXj9a9Tvaf8rD8kxVNnUv6Pt4QHis3Ejp0lWm4p3ngwHxHa86Gxhm93a0jGQHfwxx_XaraTNJ9A5LTAvOkJrmVmLjr_NadbUQThJ1SnMqEvkwHKCc98QyO2hygafS5WcuFfEjdzGNCQw==",
+          "returned_model_identifier": "o3",
+          "response_status": "completed",
+          "duration_seconds": 9.010959,
+          "usage": {
+            "input_tokens": 947,
+            "input_tokens_details": {
+              "cached_tokens": 0,
+              "audio_tokens": null,
+              "text_tokens": null
+            },
+            "output_tokens": 1059,
+            "output_tokens_details": {
+              "reasoning_tokens": 896,
+              "text_tokens": null
+            },
+            "total_tokens": 2006,
+            "cost": null
+          },
+          "blocks": {
+            "flow_011_procedure_002_pb_a": [
+              "robot_1.plan(\"Suction_Cup\", np.array([X + 1.132590, 0.0, W + 1.04546], dtype=float), np.array([0.0, 0.0, 0.707107, 0.707107], dtype=float))",
+              "robot_1.render_exec()",
+              "robot_1.eef_detach(\"IRB6620_R1\", \"tool1\", \"Bear Loading\")",
+              "robot_1.move_to_home()"
+            ]
+          }
+        },
+        {
+          "batch": 12,
+          "batch_count": 20,
+          "block_ids": [
+            "flow_012_procedure_001_pb_a"
+          ],
+          "attempt": 1,
+          "status": "accepted",
+          "tool_choice_mode": "forced_function",
+          "response_id": "resp_HoSoQiP_Q5jJTi4rkIBbM-3-0IJbANCyOaUr-XocMIzczzNy5NNOqmajNhw5KmQlZPSkgz7u05iangk1ZJ0ry1v9g0nRZV02QdapQ7a4_Wb0147qeguS7qAsGu0eN8T2qmA7ZjExQTO0QlXErCGeX0Oqqs4KuHYqrnwuB2AwH6jobd4tBHnR8CsbLSJo4wtBAn63COrjwHGPVmO7IF76SiOtNZmncI45ERBLqFkKhsZ982XkkXtj6b5aG75H-Gq0eGycqSlvLHO_UrBMzH58bPuognRJ8myGuuNbnTjfJ6N04KCVZ0w_4xHiPxauUrZfRs7c4Y9Tjd8IZb6GbQFkrRjW-bYi61BLwzD43le_0I1NZTje1GCk0T_qUUb4exUM_tzSxtwxldr68khSCTUBexfsK2PM61-igKbiSKVIgeCMxA6SfDoRSLPiDoErcfI_ishTTXWUNHAUgT9FTQYGww==",
+          "returned_model_identifier": "o3",
+          "response_status": "completed",
+          "duration_seconds": 7.082827,
+          "usage": {
+            "input_tokens": 987,
+            "input_tokens_details": {
+              "cached_tokens": 0,
+              "audio_tokens": null,
+              "text_tokens": null
+            },
+            "output_tokens": 909,
+            "output_tokens_details": {
+              "reasoning_tokens": 768,
+              "text_tokens": null
+            },
+            "total_tokens": 1896,
+            "cost": null
+          },
+          "blocks": {
+            "flow_012_procedure_001_pb_a": [
+              "robot_1.plan(\"tool2\", np.array([X + (0.200000 * H) + 1.132590, 0.429289 - (W / 2), Z + 0.986491], dtype=float), np.array([0.27061, 0.27061, -0.653296, 0.653296], dtype=float))",
+              "robot_1.render_exec()",
+              "robot_1.move_to_home()"
+            ]
+          }
+        },
+        {
+          "batch": 13,
+          "batch_count": 20,
+          "block_ids": [
+            "flow_013_procedure_004_pb_a"
+          ],
+          "attempt": 1,
+          "status": "accepted",
+          "tool_choice_mode": "forced_function",
+          "response_id": "resp_UBzKM3NiwvuvIjZGxMybDNi778-59nMB6Ij__ItxOV_m3H9NhlMgcL5ROu_AUExaQdk5nK7u5x8hc3CPoFuWvOv7gA1_uIKSP-S68RXN4GEbQ9bn1WnP11_jZWqmaGRGZLnWTDMBpoN8sbujr-3aGWoPZkS4R8SSQV2BhhkNMAsfLhLdSwvv8ZEIPNNmlFILucwV8PD57QFCg68mnPuvEE4yz9ULJtu4eAh54vfoanXXvMpWh-Mf5Sk84mr7j_5HZAPgnU4Q4okZHYmn9SerdXWlI50csORZK_C-nd8XT52GaVkJI9kaulldr7sqXQcsdmekKJOBt-3gfMj9Vfz7wEcFn9s0eO-85x5JNhUTMprO-Ciiy1_BEcKh83YvG9_C0yPRzPSexUm1hV-17FcNVMKtw6_HrL4IXGlz30LHi0gwJ8J9q5h8dOP9jWl28IB-lFNYudJDARvNzUackyoxew==",
+          "returned_model_identifier": "o3",
+          "response_status": "completed",
+          "duration_seconds": 19.439168,
+          "usage": {
+            "input_tokens": 972,
+            "input_tokens_details": {
+              "cached_tokens": 0,
+              "audio_tokens": null,
+              "text_tokens": null
+            },
+            "output_tokens": 1955,
+            "output_tokens_details": {
+              "reasoning_tokens": 1792,
+              "text_tokens": null
+            },
+            "total_tokens": 2927,
+            "cost": null
+          },
+          "blocks": {
+            "flow_013_procedure_004_pb_a": [
+              "robot_1.plan(\"tool1\", np.array([3.650990 - X - (L / 2), 0.0, 0.895460 + Z + (W / 2)], dtype=float), np.array([0.0, 0.0, 1.0, 0.0], dtype=float))",
+              "robot_1.render_exec()",
+              "robot_1.eef_detach(\"IRB6620_R1\", \"tool1\", \"L/U Stud\")",
+              "robot_1.move_to_home()"
+            ]
+          }
+        },
+        {
+          "batch": 14,
+          "batch_count": 20,
+          "block_ids": [
+            "flow_014_procedure_002_pb_a"
+          ],
+          "attempt": 1,
+          "status": "accepted",
+          "tool_choice_mode": "forced_function",
+          "response_id": "resp_xIExNsRg474_eUioOfPVWnHpFwyECMTyNr0AHGdx7Ss-n55JWPcn_AEta5ZM6iDN8nxwrhb01bJgZozYdhGmU4cQdhBIXAbVlJzwHtKi2X5Zqri78hEFOIONjVYXrteq8ui1lNApVf_AcyakWgfkxzfMzuGvNRFJrcjhiV-oNIvJKJm1671WxCs8bQAeMnVAI3i2YPHHnnhrhZbzZ0RACL4uOceZdldgayhwsB-r8yJMWm2CMfxSdXC3L22H_CT83MWVRZML90d2Sef0iVWWqdxkUhxqUqR-GXDJ4FWi2emCgD_bbwj7nPZ2YrP7UuzPfumhVvgSbZ87HTbneIF2twM_4v8tYYnS7lsFxVwlH0sFkGxTVNBewyu3khJ2CdfMucKY3gqT9SouK8OHPSJXyxYvIExvgJNFt3NnsYKe_B8IIn-90sfPkWfkIU0PJ7cidh_fcV-Wl4y0l_D0b-1mjQ==",
+          "returned_model_identifier": "o3",
+          "response_status": "completed",
+          "duration_seconds": 12.54719,
+          "usage": {
+            "input_tokens": 945,
+            "input_tokens_details": {
+              "cached_tokens": 0,
+              "audio_tokens": null,
+              "text_tokens": null
+            },
+            "output_tokens": 1567,
+            "output_tokens_details": {
+              "reasoning_tokens": 1408,
+              "text_tokens": null
+            },
+            "total_tokens": 2512,
+            "cost": null
+          },
+          "blocks": {
+            "flow_014_procedure_002_pb_a": [
+              "robot_2.plan(\"tool0\", np.array([X + 1.132590, 0.0, H + 1.189360], dtype=float), np.array([0.0, 0.0, -1.0, 0.0], dtype=float))",
+              "robot_2.render_exec()",
+              "robot_2.eef_detach(\"IRB6620_R2\", \"tool0\", \"Lower Sill Plate\")",
+              "robot_2.move_to_home()"
+            ]
+          }
+        },
+        {
+          "batch": 15,
+          "batch_count": 20,
+          "block_ids": [
+            "flow_015_procedure_001_pb_a"
+          ],
+          "attempt": 1,
+          "status": "accepted",
+          "tool_choice_mode": "forced_function",
+          "response_id": "resp_kdnvnAFLQ6YiNR76n_c4K6LUlNg5FKp7UhukmZm4R7vH4MpVr9nG887KTgCZGRPVIbdJ51VKK3bumbNnJA7KTOxxNDoTgA-CUA8Z1UvlA9ADT9T6vlvKuOCpsI72IVrU6yFk4XY9Mxioh0RDbH5MdwkChHdvWtkZVNpqVUIQQMeIF9xuAos_yHR-SSVaqhu-7QOhu6gbgO31gXNd8vYH8Sdo-IcTEvLmzddTYsOqFAiJr-WT8CAsuUgd-FzyNXcp5qg1qNYL1Bsfhjp3pjuACWS6KuxvXl5uK4-5sx3H-5FpueNltP5Fw9r2zxRMMyUh1B79vMchSRCseuFBpwmtoRhkBRLNAWbFO44woiNaSUgR2IcpfbJDYHG0WKxINjQ5f_Tmn9yNxHyLlZoO293ebW7CAZ2ujpTiAuPn-Gm3HZ4-c5SmJz4P-APjIesobz-r5xtACvc2zzS6-jzyj1J-ww==",
+          "returned_model_identifier": "o3",
+          "response_status": "completed",
+          "duration_seconds": 5.987765,
+          "usage": {
+            "input_tokens": 980,
+            "input_tokens_details": {
+              "cached_tokens": 0,
+              "audio_tokens": null,
+              "text_tokens": null
+            },
+            "output_tokens": 703,
+            "output_tokens_details": {
+              "reasoning_tokens": 512,
+              "text_tokens": null
+            },
+            "total_tokens": 1683,
+            "cost": null
+          },
+          "blocks": {
+            "flow_015_procedure_001_pb_a": [
+              "robot_2.plan(\"tool1\", np.array([X + 1.132590, -0.413397 + (1.500000 * W), 0.945460 + (0.300000 * H)], dtype=float), np.array([0.0, 0.0, 0.353553, 0.612354], dtype=float))",
+              "robot_2.render_exec()",
+              "robot_2.move_to_home()"
+            ]
+          }
+        },
+        {
+          "batch": 16,
+          "batch_count": 20,
+          "block_ids": [
+            "flow_016_procedure_001_pb_a"
+          ],
+          "attempt": 1,
+          "status": "accepted",
+          "tool_choice_mode": "forced_function",
+          "response_id": "resp_r9qVybEYWASAJ0kJBH9QNcriXPnhHsrMClx_e85LkEy_VFJWXwtO6Fkk0HUM6hEISaJiFHH8kfIwO1XZtH6tejZDKqkC2jaMkZWTmwn7WjO06r0uIpSIfE6-2J4qwmbbAi_mt64TngoP-Yw9M9eGiLrTPz4i-egA_BF_iUDP3KhGTLBI4ykEdRDyWpJV8hGcgTUSZbzYyqEpsZRUnped4aGx5ffE2qio4WcWRB2Rk9SRWuQ90oXEePTGBveYYugakZ4rEQakMBCWu48yisMWtKVqM_ZA-0mnO5HvcFs6Y1aitD8rJj-wncDbw1XfIhYyS3nea1DkKK5AX-V5zFf1-GzGenXp3V6kwYuCMsVBjJAHCuSDaqKqf4NMcaEzx6TJBFEYAUYr0ilN674Q_lugW47zybwrzaWrsXVvfSyE_6cNbxKcr7qKmlTn0W35k08kUqtVWZ1ciS0whf10js_-oQ==",
+          "returned_model_identifier": "o3",
+          "response_status": "completed",
+          "duration_seconds": 7.269627,
+          "usage": {
+            "input_tokens": 939,
+            "input_tokens_details": {
+              "cached_tokens": 0,
+              "audio_tokens": null,
+              "text_tokens": null
+            },
+            "output_tokens": 888,
+            "output_tokens_details": {
+              "reasoning_tokens": 768,
+              "text_tokens": null
+            },
+            "total_tokens": 1827,
+            "cost": null
+          },
+          "blocks": {
+            "flow_016_procedure_001_pb_a": [
+              "robot_2.plan(\"tool1\", np.array([3.690000, 0, 0.895460 + (0.300000 * H)], dtype=float), np.array([0.0, 0.5, 0.5, 0.5], dtype=float))",
+              "robot_2.render_exec()",
+              "robot_2.move_to_home()"
+            ]
+          }
+        },
+        {
+          "batch": 17,
+          "batch_count": 20,
+          "block_ids": [
+            "flow_017_procedure_004_pb_a"
+          ],
+          "attempt": 1,
+          "status": "accepted",
+          "tool_choice_mode": "forced_function",
+          "response_id": "resp_3FzX0akpjMk_EomQjZTzVbcMH2p8E_EtIMiNURVsb0_1E4GVG8-mU8hJCAOq2dZYNZGoncGCjPO7Dc7-3tnDbkXtF_Q28GUCZGC8I-uQGHRs34_3YpSyDceFKciQpmFxLCDxWC0WUxE1sePu2uo7ApN0IzlgSi6m6dAGAs9QckEm0vSgzDkNQflM1EbpVsGRChT4xn7XYBw2388DwDYBFSfKEjjskzGHtCWNjHjquc0QXML5aGEt3HJk4Uvtat-fKvoQf-NHDfMn4E4m7_AjdcDml7koRYNAqD4k4UbMYYenkmSU8VjqIiLfwpps7Fon9bLxKN-ISW7hbiF7xKdB7RUpU8oP8PRyksYaxbwIYR_EB7FcnW3K-rSgqtAA-2pgdaFF4Ckib8hjpSar23mAH8fuSoHCfkkb4qaIXO6hlnRQE2S2hxp6ylUMT0XhqzJJnFCpdF68xB8LC_DrEkUt8Q==",
+          "returned_model_identifier": "o3",
+          "response_status": "completed",
+          "duration_seconds": 7.168139,
+          "usage": {
+            "input_tokens": 947,
+            "input_tokens_details": {
+              "cached_tokens": 0,
+              "audio_tokens": null,
+              "text_tokens": null
+            },
+            "output_tokens": 792,
+            "output_tokens_details": {
+              "reasoning_tokens": 576,
+              "text_tokens": null
+            },
+            "total_tokens": 1739,
+            "cost": null
+          },
+          "blocks": {
+            "flow_017_procedure_004_pb_a": [
+              "robot_1.plan(\"tool0\", np.array([X + 1.132590, 0.000000, H + 0.989360], dtype=float), np.array([0.0, 0.0, 1.0, 0.0], dtype=float))",
+              "robot_1.render_exec()",
+              "robot_1.eef_detach(\"IRB6620_R1\", \"tool0\", \"Top Sill Plate\")",
+              "robot_1.move_to_home()"
+            ]
+          }
+        },
+        {
+          "batch": 18,
+          "batch_count": 20,
+          "block_ids": [
+            "flow_018_procedure_001_pb_a"
+          ],
+          "attempt": 1,
+          "status": "accepted",
+          "tool_choice_mode": "forced_function",
+          "response_id": "resp_rCkLie0f9WIbTTrJWm1okwB1p_PqF3n1u1BjcCg1EHEmI5NC-r_uWh4d32lx4HTxPUuKoaypT9YInLbrzMW-uqVyTR8InrLQzcBIAonndcmOBGg5TRjvfI-JWDQ0I9axxBBIh_2b2X0mHHeoTBCq19xehmxB6QbuMXmn_99uo6j740w0GP-btleFtbKQW3siLzkIzb85UnUJUpjl5WRy7j3O9N6XSRT5U6eqGgRAJvpYe3CMpwEFV96qp8A6q-YLIZhWDWRNwv5dmVcTjztGMjqCj52edpr5Wndv5weXN-zMWSCF0KBB2Pz3iKwdEp9Gn3TapEcaLjOb-bQesuscX_ACC2S-ns_rvNaPynbZ5LkIfww1n10953MZYf6Ka-7SWu5biHnyuqkznp0P5EDkSzBZywiC6zQEWVC29m4BXVgLcmBmuFzUd6QpKtJkzS-BTVDB8mmv5p72gnZjOY6UlA==",
+          "returned_model_identifier": "o3",
+          "response_status": "completed",
+          "duration_seconds": 8.089732,
+          "usage": {
+            "input_tokens": 977,
+            "input_tokens_details": {
+              "cached_tokens": 0,
+              "audio_tokens": null,
+              "text_tokens": null
+            },
+            "output_tokens": 1182,
+            "output_tokens_details": {
+              "reasoning_tokens": 960,
+              "text_tokens": null
+            },
+            "total_tokens": 2159,
+            "cost": null
+          },
+          "blocks": {
+            "flow_018_procedure_001_pb_a": [
+              "robot_1.plan(\"tool2\", np.array([X + 1.132590, 0.413397 - (W / 2), 0.945460 + (0.300000 * H)], dtype=float), np.array([0.182999, -0.682994, 0.682994, 0.182999], dtype=float))",
+              "robot_1.render_exec(True, True, False)",
+              "robot_1.move_to_home(False, [0, -0.5, 0.5, 0, 0, 0], [])"
+            ]
+          }
+        },
+        {
+          "batch": 19,
+          "batch_count": 20,
+          "block_ids": [
+            "flow_019_procedure_004_pb_a"
+          ],
+          "attempt": 1,
+          "status": "accepted",
+          "tool_choice_mode": "forced_function",
+          "response_id": "resp_fMJuUCZ3oNO08mNk3q-LR6ppW10wRvOWp_OOWmR-mKcc7nr456tbyKZgEdZdjyAROoVnxY4USmX_EoKy0b7zSBcJ3d1TSV8SRDXCZrFTWGD3FMbaHjDRc8Sf9ft5fTyGYra7Efyk9uBKNGhkSlGRxPxxSn3WEk4Q_Lv07fNRDJWCIvnqSkHSSfxNpB5yAMXtxwswY9lt1UlQXgij2T4lqGuYKkkxqcHBrXr7cLKuUh4kOhHjim5tww8J591QBbZTTkxRd7b_En556HHJFKWSbab5t5C9ke8uSCgP9NBgrR7x588W0G818t48b-sVtCkLS8KxF7u7i299il02NKzn-_278MryD2E9aUydAMseUp-PYpQDuY7EbWttjgtqd1DjdjuyTgevFl5yNkwYiHMg9cmb-4ht2p4-Pgqoa7XaeylEKfjDz66BrB-lFZOzMIRyuy93__GZT0wqDH-qx2zbAA==",
+          "returned_model_identifier": "o3",
+          "response_status": "completed",
+          "duration_seconds": 6.86038,
+          "usage": {
+            "input_tokens": 966,
+            "input_tokens_details": {
+              "cached_tokens": 0,
+              "audio_tokens": null,
+              "text_tokens": null
+            },
+            "output_tokens": 817,
+            "output_tokens_details": {
+              "reasoning_tokens": 640,
+              "text_tokens": null
+            },
+            "total_tokens": 1783,
+            "cost": null
+          },
+          "blocks": {
+            "flow_019_procedure_004_pb_a": [
+              "robot_1.plan(\"tool0\", np.array([X + (L / 2) + 0.932590, 0.500000, H + 0.989360], dtype=float), np.array([0.0, 0.0, -0.707107, -0.707107], dtype=float))",
+              "robot_1.render_exec()",
+              "robot_1.eef_detach(\"IRB6620_R1\", \"Gripper\", \"Top Cripple Stud\")",
+              "robot_1.move_to_home()"
+            ]
+          }
+        },
+        {
+          "batch": 20,
+          "batch_count": 20,
+          "block_ids": [
             "flow_020_procedure_001_pb_a"
-          ]
+          ],
+          "attempt": 1,
+          "status": "accepted",
+          "tool_choice_mode": "forced_function",
+          "response_id": "resp_SUy43O7GP5RydAiN-_QMzB35kzyxGagIZ7IjOeT5toXBFeBkNl4DnzBZMGiZfwh6zRv7eAJrHv1WGlAQWJ2MEUYcF-VNnDjpq47EQzbaWTC2UpBWKNvI6fLh1vqTvIjlKUxNmMu2UuUcWgQaORtdJE5JNYxq5p9wMYT-8xngiivaFLBl3bMArdT43I7LZvzd5DQdHs5JUAFDG8oxkT83JvQsjsKzV1Of5RJA3AbmfoJ-V1C8pc9gOOmrEhStR_ILOdmioXLGaYWsDnXlclq0d4WW_j9JI5nSc4gQGnz4zMTKem7kXt-ui2Lp0kv2v11wtb5d4Bq-WydtKGiELtjKDDZRn2P-cYT_MyYs59TxpmjDGWY4jLGS1sgUz8rNeTLkkiakvdJKczBxCkpvL3dXeJzqBbFx2W_JNeMdGsqVSipQFug3LObPuLfIWSY_eSSi13O_PDkOwrQA9Ye-d2lRTA==",
+          "returned_model_identifier": "o3",
+          "response_status": "completed",
+          "duration_seconds": 5.939486,
+          "usage": {
+            "input_tokens": 945,
+            "input_tokens_details": {
+              "cached_tokens": 0,
+              "audio_tokens": null,
+              "text_tokens": null
+            },
+            "output_tokens": 564,
+            "output_tokens_details": {
+              "reasoning_tokens": 384,
+              "text_tokens": null
+            },
+            "total_tokens": 1509,
+            "cost": null
+          },
+          "blocks": {
+            "flow_020_procedure_001_pb_a": [
+              "robot_1.plan('tool2', np.array([1.100000, 0.500000, 0.895460 + (0.300000 * H)], dtype=float), np.array([0.0, 0.707107, 0.0, 0.707107], dtype=float))",
+              "robot_1.render_exec()",
+              "robot_1.move_to_home()"
+            ]
+          }
         }
       ],
       "generated_blocks": {
-        "flow_002_procedure_001_pb_a": [
-          "robot_1.plan(\"tool2\", np.array([1.100000, 0.500000, 0.895460 + (0.300000 * H)], dtype=float), np.array([0.0, 0.707107, 0.0, 0.707107], dtype=float))",
-          "robot_1.render_exec()",
-          "robot_1.move_to_home()"
-        ],
-        "flow_013_procedure_004_pb_a": [
-          "robot_1.plan('tool1', np.array([3.650990 - X - (L / 2), 0.0, 0.895460 + Z + (W / 2)], dtype=float), np.array([0.0, 0.0, 1.0, 0.0], dtype=float))",
-          "robot_1.render_exec()",
-          "robot_1.eef_detach('IRB6620_R1', 'tool1', 'L/U Stud')",
-          "robot_1.move_to_home()"
-        ],
         "flow_001_procedure_002_pb_a": [
-          "robot_2.plan(\"tool0\", np.array([X + (L / 2) + 0.962590, 0.500000, H + 0.889360], dtype=float), np.array([0.0, 0.0, 0.707107, 0.707107], dtype=float))",
+          "target_pose = np.array([X + (L / 2) + 0.962590, 0.500000, H + 0.889360], dtype=float)",
+          "target_orientation = np.array([0.0, 0.0, 0.707107, 0.707107], dtype=float)",
+          "robot_2.plan(\"tool0\", target_pose, target_orientation)",
           "robot_2.render_exec()",
           "robot_2.eef_detach(\"IRB6620_R2\", \"tool0\", \"Vertical Stud\")",
           "robot_2.move_to_home()"
         ],
-        "flow_007_procedure_001_pb_a": [
-          "robot_1.plan(\"tool2\", np.array([L + 1.152590, 0.0, H + 1.047060], dtype=float), np.array([0.0, 1.0, 0.0, 0.0], dtype=float))",
+        "flow_002_procedure_001_pb_a": [
+          "robot_1.plan(\"tool2\", np.array([1.1, 0.5, 0.895460 + (0.300000 * H)], dtype=float), np.array([0.0, 0.707107, 0.0, 0.707107], dtype=float))",
           "robot_1.render_exec()",
           "robot_1.move_to_home()"
         ],
-        "flow_016_procedure_001_pb_a": [
-          "robot_2.plan('tool1', np.array([3.690000, 0, 0.895460 + (0.300000 * H)], dtype=float), np.array([0.0, 0.5, 0.5, 0.5], dtype=float))",
+        "flow_003_procedure_002_pb_a": [
+          "robot_2.plan(\"tool0\", np.array([X + (L / 2) + 0.962590, 0.500000, H + 0.889360], dtype=float), np.array([0.0, 0.0, 0.707107, 0.707107], dtype=float))",
           "robot_2.render_exec()",
+          "robot_2.eef_detach(\"IRB6620_R2\", \"Gripper\", \"King Stud\")",
           "robot_2.move_to_home()"
         ],
-        "flow_018_procedure_001_pb_a": [
-          "robot_1.plan(\"tool2\", np.array([X + 1.132590, 0.413397 - (W / 2), 0.945460 + (0.300000 * H)], dtype=float), np.array([0.182999, -0.682994, 0.682994, 0.182999], dtype=float))",
+        "flow_004_procedure_001_pb_a": [
+          "robot_1.plan(\"tool2\", np.array([1.100000, 0.500000, 0.895460 + (0.300000 * H)], dtype=float), np.array([0.0, 0.707107, 0.0, 0.707107], dtype=float))",
           "robot_1.render_exec()",
           "robot_1.move_to_home()"
         ],
@@ -1710,79 +2801,87 @@
           "robot_2.eef_detach(\"IRB6620_R2\", \"tool0\", \"Lower Cripple Stud\")",
           "robot_2.move_to_home()"
         ],
-        "flow_020_procedure_001_pb_a": [
-          "robot_1.plan('tool2', np.array([1.100000, 0.500000, 0.895460 + (0.300000 * H)], dtype=float), np.array([0.0, 0.707107, 0.0, 0.707107], dtype=float))",
+        "flow_006_procedure_002_pb_a": [
+          "robot_1.plan('tool1', np.array([2.691790 - X, 0.0, Z + 0.895460], dtype=float), np.array([0.0, 0.0, 0.0, -1.0], dtype=float))",
           "robot_1.render_exec()",
+          "robot_1.eef_detach('IRB6620_R1', 'tool1', 'OSB Sheathing Plate')",
           "robot_1.move_to_home()"
         ],
-        "flow_015_procedure_001_pb_a": [
-          "robot_2.plan(\"tool1\", np.array([X + 1.132590, -0.413397 + (1.500000 * W), 0.945460 + (0.300000 * H)], dtype=float), np.array([0.0, 0.0, 0.353553, 0.612354], dtype=float))",
+        "flow_007_procedure_001_pb_a": [
+          "robot_1.plan('Nail_Gun', np.array([L + 1.152590, 0.0, H + 1.047060], dtype=float), np.array([0.0, 1.0, 0.0, 0.0], dtype=float))",
+          "robot_1.render_exec(True, True, False)",
+          "robot_1.move_to_home()"
+        ],
+        "flow_008_procedure_004_pb_a": [
+          "robot_1.plan(tcp_name=\"tool0\", target_pose=np.array([X + 1.132590, 0.0, H + 0.889360], dtype=float), target_orientation=np.array([0.0, 0.0, 1.0, 0.0], dtype=float))",
+          "robot_1.render_exec()",
+          "robot_1.eef_detach(r_name=\"IRB6620_R1\", tool_name=\"tool0\", detaching_object_name=\"Top Plate\")",
+          "robot_1.move_to_home()"
+        ],
+        "flow_009_procedure_002_pb_a": [
+          "robot_2.plan(\"Gripper\", np.array([X + (L / 2) + 1.082590, 0.5, H + 0.939360], dtype=float), np.array([0.0, 0.0, -0.707107, 0.707107], dtype=float))",
           "robot_2.render_exec()",
+          "robot_2.eef_detach(\"IRB6620_R2\", \"tool0\", \"Jack Stud\")",
           "robot_2.move_to_home()"
         ],
         "flow_010_procedure_001_pb_a": [
-          "robot_1.plan(\"tool2\", np.array([X - (L / 2) + 1.193550, 0.586603, 0.945460], dtype=float), np.array([0.353553, -0.612354, 0.612354, 0.353553], dtype=float))",
-          "robot_1.render_exec(renderInstance=True, Show_Sphere=True, is_synchronizer=False)",
-          "robot_1.move_to_home(if_show_spheres=False, Customized_JS=[0, -0.5, 0.5, 0, 0, 0], removing_primitives=[])"
-        ],
-        "flow_019_procedure_004_pb_a": [
-          "robot_1.plan(\"Gripper\", np.array([X + (L / 2) + 0.932590, 0.5, H + 0.989360], dtype=float), np.array([0.0, 0.0, -0.707107, -0.707107], dtype=float))",
+          "robot_1.plan('tool2', np.array([X - (L / 2) + 1.193550, 0.586603, 0.945460], dtype=float), np.array([0.353553, -0.612354, 0.612354, 0.353553], dtype=float))",
           "robot_1.render_exec()",
-          "robot_1.eef_detach(\"IRB6620_R1\", \"tool0\", \"Top Cripple Stud\")",
           "robot_1.move_to_home()"
         ],
-        "flow_017_procedure_004_pb_a": [
-          "robot_1.plan(\"tool0\", np.array([X + 1.132590, 0.0, H + 0.989360], dtype=float), np.array([0.0, 0.0, 1.0, 0.0], dtype=float))",
+        "flow_011_procedure_002_pb_a": [
+          "robot_1.plan(\"Suction_Cup\", np.array([X + 1.132590, 0.0, W + 1.04546], dtype=float), np.array([0.0, 0.0, 0.707107, 0.707107], dtype=float))",
           "robot_1.render_exec()",
-          "robot_1.eef_detach(\"IRB6620_R1\", \"tool0\", \"Top Sill Plate\")",
+          "robot_1.eef_detach(\"IRB6620_R1\", \"tool1\", \"Bear Loading\")",
           "robot_1.move_to_home()"
-        ],
-        "flow_006_procedure_002_pb_a": [
-          "robot_1.plan('Suction_Cup', np.array([2.691790 - X, 0.0, Z + 0.895460], dtype=float), np.array([0.0, 0.0, 0.0, -1.0], dtype=float))",
-          "robot_1.render_exec(True, True, False)",
-          "robot_1.eef_detach('IRB6620_R1', 'tool1', 'OSB Sheathing Plate')",
-          "robot_1.move_to_home(False, [0, -0.5, 0.5, 0, 0, 0], [])"
         ],
         "flow_012_procedure_001_pb_a": [
           "robot_1.plan(\"tool2\", np.array([X + (0.200000 * H) + 1.132590, 0.429289 - (W / 2), Z + 0.986491], dtype=float), np.array([0.27061, 0.27061, -0.653296, 0.653296], dtype=float))",
           "robot_1.render_exec()",
           "robot_1.move_to_home()"
         ],
-        "flow_009_procedure_002_pb_a": [
-          "target_pose = np.array([X + (L / 2) + 1.082590, 0.500000, H + 0.939360], dtype=float)",
-          "target_orientation = np.array([0.0, 0.0, -0.707107, 0.707107], dtype=float)",
-          "robot_2.plan(\"tool0\", target_pose, target_orientation)",
-          "robot_2.render_exec()",
-          "robot_2.eef_detach(\"IRB6620_R2\", \"tool0\", \"Jack Stud\")",
-          "robot_2.move_to_home()"
+        "flow_013_procedure_004_pb_a": [
+          "robot_1.plan(\"tool1\", np.array([3.650990 - X - (L / 2), 0.0, 0.895460 + Z + (W / 2)], dtype=float), np.array([0.0, 0.0, 1.0, 0.0], dtype=float))",
+          "robot_1.render_exec()",
+          "robot_1.eef_detach(\"IRB6620_R1\", \"tool1\", \"L/U Stud\")",
+          "robot_1.move_to_home()"
         ],
         "flow_014_procedure_002_pb_a": [
-          "robot_2.plan(tcp_name=\"Gripper\", target_pose=np.array([X + 1.132590, 0.0, H + 1.189360], dtype=float), target_orientation=np.array([0.0, 0.0, -1.0, 0.0], dtype=float))",
+          "robot_2.plan(\"tool0\", np.array([X + 1.132590, 0.0, H + 1.189360], dtype=float), np.array([0.0, 0.0, -1.0, 0.0], dtype=float))",
           "robot_2.render_exec()",
-          "robot_2.eef_detach(r_name=\"IRB6620_R2\", tool_name=\"tool0\", detaching_object_name=\"Lower Sill Plate\")",
+          "robot_2.eef_detach(\"IRB6620_R2\", \"tool0\", \"Lower Sill Plate\")",
           "robot_2.move_to_home()"
         ],
-        "flow_003_procedure_002_pb_a": [
-          "robot_2.plan(\"Gripper\", np.array([X + (L / 2) + 0.962590, 0.500000, H + 0.889360], dtype=float), np.array([0.0, 0.0, 0.707107, 0.707107], dtype=float))",
+        "flow_015_procedure_001_pb_a": [
+          "robot_2.plan(\"tool1\", np.array([X + 1.132590, -0.413397 + (1.500000 * W), 0.945460 + (0.300000 * H)], dtype=float), np.array([0.0, 0.0, 0.353553, 0.612354], dtype=float))",
           "robot_2.render_exec()",
-          "robot_2.eef_detach(\"IRB6620_R2\", \"tool0\", \"King Stud\")",
           "robot_2.move_to_home()"
         ],
-        "flow_004_procedure_001_pb_a": [
-          "robot_1.plan(\"tool2\", np.array([1.100000, 0.500000, 0.895460 + (0.300000 * H)], dtype=float), np.array([0.0, 0.707107, 0.0, 0.707107], dtype=float))",
+        "flow_016_procedure_001_pb_a": [
+          "robot_2.plan(\"tool1\", np.array([3.690000, 0, 0.895460 + (0.300000 * H)], dtype=float), np.array([0.0, 0.5, 0.5, 0.5], dtype=float))",
+          "robot_2.render_exec()",
+          "robot_2.move_to_home()"
+        ],
+        "flow_017_procedure_004_pb_a": [
+          "robot_1.plan(\"tool0\", np.array([X + 1.132590, 0.000000, H + 0.989360], dtype=float), np.array([0.0, 0.0, 1.0, 0.0], dtype=float))",
           "robot_1.render_exec()",
+          "robot_1.eef_detach(\"IRB6620_R1\", \"tool0\", \"Top Sill Plate\")",
           "robot_1.move_to_home()"
         ],
-        "flow_011_procedure_002_pb_a": [
-          "robot_1.plan(\"tool1\", np.array([X + 1.132590, 0.0, W + 1.045460], dtype=float), np.array([0.0, 0.0, 0.707107, 0.707107], dtype=float))",
+        "flow_018_procedure_001_pb_a": [
+          "robot_1.plan(\"tool2\", np.array([X + 1.132590, 0.413397 - (W / 2), 0.945460 + (0.300000 * H)], dtype=float), np.array([0.182999, -0.682994, 0.682994, 0.182999], dtype=float))",
+          "robot_1.render_exec(True, True, False)",
+          "robot_1.move_to_home(False, [0, -0.5, 0.5, 0, 0, 0], [])"
+        ],
+        "flow_019_procedure_004_pb_a": [
+          "robot_1.plan(\"tool0\", np.array([X + (L / 2) + 0.932590, 0.500000, H + 0.989360], dtype=float), np.array([0.0, 0.0, -0.707107, -0.707107], dtype=float))",
           "robot_1.render_exec()",
-          "robot_1.eef_detach(\"IRB6620_R1\", \"tool1\", \"Bear Loading\")",
+          "robot_1.eef_detach(\"IRB6620_R1\", \"Gripper\", \"Top Cripple Stud\")",
           "robot_1.move_to_home()"
         ],
-        "flow_008_procedure_004_pb_a": [
-          "robot_1.plan('tool0', np.array([X + 1.132590, 0.0, H + 0.889360], dtype=float), np.array([0.0, 0.0, 1.0, 0.0], dtype=float))",
+        "flow_020_procedure_001_pb_a": [
+          "robot_1.plan('tool2', np.array([1.100000, 0.500000, 0.895460 + (0.300000 * H)], dtype=float), np.array([0.0, 0.707107, 0.0, 0.707107], dtype=float))",
           "robot_1.render_exec()",
-          "robot_1.eef_detach(r_name='IRB6620_R1', tool_name='tool0', detaching_object_name='Top Plate')",
           "robot_1.move_to_home()"
         ]
       }
@@ -2174,10 +3273,10 @@
           "attempt": 1,
           "status": "accepted",
           "tool_choice_mode": "forced_function",
-          "response_id": "resp_E-ZX3ZgVZgHl8Bp4I1SY50J0fa0Y3LNh9Hm3M069BVz1dOQ4VIWclTDX_2_aX9EXS_HDUqY3zXElToG6DRNZCwM5gSPC-USZUaWig2X6ii_AgidyWlhqAjetzjdqkeOoDXJRuIozLvDCtKvGnllKReSd-P-c49MhzqFj_MP8uL2cW3SjrcqCJwSBVj1LCHNCel8PuwyVuXgGCvr2UMaC_qsfNvqzD5h7Hm8xmgXsZKQIKbROR5Y5TBTH2t5PawfyKnigd2lGgSKkkzHLfg7qFtw2VYBgHKkOp8iqe3mDuQ8H83MS3lj1-Kzk5nwcLDe3OzL4DbyKBHJjkdjPmKhdhsJWfhMtxDin49UnPchsl8418qkhI5xil31qdpZDDptojoxSDvbWWCLTl8sb8omTjDb888IY71qgXZX56WfZyfd8pE50IBjsf3WbwoHlalS0v1HV7H0jZKu2co130tTKmw==",
+          "response_id": "resp_cCqpb4pIVyuRzCVjOssmjzuHKtkVnWVHsCYnAxQNmxREVmd8EDpOOawu71Yh8RpEcDtCt9PEFWL04B6pjNF4n6Gh7XiRXkVylXC2z36Qe_OOd8stXl8bBQfhBj7s3qlKkC7hBD4xDSUCNJNIfy3ObMQErJrpOGGvISG1tPeZq5MSfV-2FfniJjQ3tN6zteDPjmzzYaqtxV8T9VLozpMis7dBULfUe5HWt6TWu8jkTZJ5l0ztodhxQQZ7CYA0SQUVBlMLOe3oUiJk_53djeMTk808iPwkO-HbuKVoxnkTvPnj_ZsZD-mdqhfkvs_yZwnSqQZ9khuMvfYiGFWYJFp_vh-qXMaxYE5vRmsxRpSOTv7enKRt6PZbYHYI9zfYymGfcpa8imoibdnYcAbMknNSa9ugxdJd0Xw6I1bIT26QWnIBYrOE6HRhef_qU_HDqmzXfiTpxdy1azISZVCLoe6OEg==",
           "returned_model_identifier": "o3",
           "response_status": "completed",
-          "duration_seconds": 9.850298,
+          "duration_seconds": 16.896702,
           "usage": {
             "input_tokens": 1391,
             "input_tokens_details": {
@@ -2185,18 +3284,18 @@
               "audio_tokens": null,
               "text_tokens": null
             },
-            "output_tokens": 1815,
+            "output_tokens": 2012,
             "output_tokens_details": {
-              "reasoning_tokens": 1408,
+              "reasoning_tokens": 1600,
               "text_tokens": null
             },
-            "total_tokens": 3206,
+            "total_tokens": 3403,
             "cost": null
           },
           "blocks": {
             "flow_008_procedures_002_003_co_a": [
-              "robot_2.plan(tcp_name='tool0', target_pose=np.array([2.250000 + (L / 2), -1.000000, H + 0.850000], dtype=float), target_orientation=np.array([0.0, 0.0, 0.707107, 0.707107], dtype=float))",
-              "robot_1.plan(tcp_name='tool0', target_pose=np.array([2.250000 + (L / 2), -1.000000, H + 0.850000], dtype=float), target_orientation=np.array([0.0, 0.0, 0.707107, 0.707107], dtype=float))",
+              "robot_2.plan('tool0', np.array([2.250000 + (L / 2), -1.000000, H + 0.850000], dtype=float), np.array([0.0, 0.0, 0.707107, 0.707107], dtype=float))",
+              "robot_1.plan('tool0', np.array([2.250000 + (L / 2), -1.000000, H + 0.850000], dtype=float), np.array([0.0, 0.0, 0.707107, 0.707107], dtype=float))",
               "with ThreadPoolExecutor(max_workers=2) as executor:",
               "    giver_exec = executor.submit(",
               "        robot_2.render_exec,",
@@ -2208,8 +3307,8 @@
               "    )",
               "    giver_exec.result()",
               "    receiver_exec.result()",
-              "robot_1.eef_attach('IRB6620_R1', 'Gripper', 'Top Plate')",
-              "robot_2.eef_detach('IRB6620_R2', 'Gripper', 'Top Plate')",
+              "robot_1.eef_attach('IRB6620_R1', 'tool0', 'Top Plate')",
+              "robot_2.eef_detach('IRB6620_R2', 'tool0', 'Top Plate')",
               "with ThreadPoolExecutor(max_workers=2) as executor:",
               "    giver_home = executor.submit(",
               "        robot_2.move_to_home",
@@ -2231,10 +3330,10 @@
           "attempt": 1,
           "status": "accepted",
           "tool_choice_mode": "forced_function",
-          "response_id": "resp_Wuk-adQEtrw3EfEW81E1Uqg3k_TSAROPX0jA0If_xgY6nHwxVoanrNanE6U3YJoGC_0b7bIPX_yPuap_Je5Df7d-2fz51Vql32s_3pqfclasWgN0IhEAKo5hKxD5e7fSik643yP5Y4IK--46FKkBtz5CHlYUFIQVMLe0VVed9qa6POefZ1sbOzge8qaRosdmwGyKT7QPv-GKUZiNVY-x_iENdfMe9V0CZTB5Ywt5wj2mPHCqUjEYqafGbIuDdwu7HlMvAigwDMvYOS44U6Ky_U8gIxOyWgw3ZUpaX2-qCE20gsT-8fUUwhFELGcstUe5Ag5Ttu1H8teoUWVPLdgwK-kC3VvNPQZuiPxOFr7TrokmPCgV8hfOsKiKdKhXE4Lg7zkmzKBqjABC1mWUh-AxplK4QeW2uU9FFughplJl7c6x2htq9wbv5a7LklSF1kZRoW7ehoHC-aJbIxbx1tc0dQ==",
+          "response_id": "resp_IO1-10jSHg7CU0DQeAHwgOOZ8NAS1ly4CwfJZAPC9kDqYYUaW5Yjbuw6BTJ2gB7KOuMSUZ-IMGkT7LdZvpcbWcP77b-GH0n_sMZol2ZBAHTznVTBGqcPKczqqO_c7QeIC3ZrckhkP7AuaakDe4_upir7iaCE5lEQ5GGdLXO3W1Pf0dHo7TcSouADupHyo-aO8s0u0C_ugFLwC2xssqloXciUCQvkq1Yr93iCye6x3d4ZoVT07VwG_zeITu8E66_-7t__582aMPNIYQdhAmDbYlBQ1fDqBGcVb1s5hVZRmWCuS80_rfWhag4NjBKat0ieLQirNtLhGtKnSSR0R1k4XnDLmbXCbacwwhWT7a8EPbIdbphIJotgjzOTVrVhbQ4xMbPe13kFFSYU5qc05HXDDlKHuQFBW2inbLpr99k1EzXd3ukoX9mbgwWmvXBDsk_Ctay5c0OfwaVk87BTt8ae-Q==",
           "returned_model_identifier": "o3",
           "response_status": "completed",
-          "duration_seconds": 12.558643,
+          "duration_seconds": 20.06958,
           "usage": {
             "input_tokens": 1398,
             "input_tokens_details": {
@@ -2242,18 +3341,26 @@
               "audio_tokens": null,
               "text_tokens": null
             },
-            "output_tokens": 2262,
+            "output_tokens": 3143,
             "output_tokens_details": {
-              "reasoning_tokens": 1856,
+              "reasoning_tokens": 2688,
               "text_tokens": null
             },
-            "total_tokens": 3660,
+            "total_tokens": 4541,
             "cost": null
           },
           "blocks": {
             "flow_013_procedures_002_003_co_a": [
-              "robot_2.plan(\"tool0\", np.array([2.816340 - (0.866025), 1.244430 + (H / 2), 1.297380 + (0.500000)], dtype=float), np.array([0.0, 0.96593, 0.0, 0.25882], dtype=float))",
-              "robot_1.plan(\"tool1\", np.array([2.816340 - (0.866025), 1.244430 + (H / 2), 1.297380 + (0.500000)], dtype=float), np.array([0.0, 0.96593, 0.0, 0.25882], dtype=float))",
+              "robot_2.plan(",
+              "    tcp_name=\"tool0\",",
+              "    target_pose=np.array([2.816340 - (0.866025), 1.244430 + (H / 2), 1.297380 + (0.500000)], dtype=float),",
+              "    target_orientation=np.array([0.0, 0.96593, 0.0, 0.25882], dtype=float)",
+              " )",
+              "robot_1.plan(",
+              "    tcp_name=\"tool1\",",
+              "    target_pose=np.array([2.816340 - (0.866025), 1.244430 + (H / 2), 1.297380 + (0.500000)], dtype=float),",
+              "    target_orientation=np.array([0.0, 0.96593, 0.0, 0.25882], dtype=float)",
+              " )",
               "with ThreadPoolExecutor(max_workers=2) as executor:",
               "    giver_exec = executor.submit(",
               "        robot_2.render_exec,",
@@ -2265,8 +3372,8 @@
               "    )",
               "    giver_exec.result()",
               "    receiver_exec.result()",
-              "robot_1.eef_attach(\"IRB6620_R1\", \"Suction_Cup\", \"L/U Stud\")",
-              "robot_2.eef_detach(\"IRB6620_R2\", \"Gripper\", \"L/U Stud\")",
+              "robot_1.eef_attach(\"IRB6620_R1\", \"tool1\", \"L/U Stud\")",
+              "robot_2.eef_detach(\"IRB6620_R2\", \"tool0\", \"L/U Stud\")",
               "with ThreadPoolExecutor(max_workers=2) as executor:",
               "    giver_home = executor.submit(",
               "        robot_2.move_to_home",
@@ -2288,10 +3395,10 @@
           "attempt": 1,
           "status": "accepted",
           "tool_choice_mode": "forced_function",
-          "response_id": "resp_OO_0hIZqUN_MRrZLuyGUqLZJd_tax3zwSWdkYifVjsgRGTeGbcyphE7-vWyWKw1axFbsJ421Fp1mvjXILaQyqE5IJBQEQD54TZDB-AQW6fVp_8D9FINedC-JWGGKLprAwd8ZjB9VUMbwlczwBehlSzUNLua6J0ej8yGC3sEzDK3-JCwowL-LDU_PmenchjkUcozcNUi5FwNlqxiwtSt4DQiQv4Mti-aFFLbIEgjxKVJmvE-eesZVm2IM04HKfHx7fiycrMUy9trlBXpvEvUpDkCFoX6hhgg7NC2OUqWgEXwTA_rzDyuYQa3W3UzNAAOO5KmZvO1QFEOJNRj_S90jso2N_jsOZ3lX4WOYOtNMggV_YIzNXBqmBDfRpM7XXmaIGlsu_B2JHBHyibNyz7-4fXlpTffxwMKUqBsfwPbO67vJyGIqOg0MGeVo1Jy1WTGaMAdzVGyZ78zK7N5mNHp-nw==",
+          "response_id": "resp_aLh2JB4BIPbojz6ivpMNp9fUd85skrKkKrQsugqyyb4Od-ytTor2uO5M5-6yjgepHI2JfmhU90ez02jODn96IDm0mtk1bbjETb1sZCK4OwXtL5an_g8Cg64DK8ChITJi2VQOxdLLhMuUDDeTh_weuITKSERKarekv5GGC8RxsvwmT5j2h7nFNGZWEIndVeNmvIiSo79wQGpYjYd69wBIKQ6cF60aoegZoGjQDxMVW_ie9TDYl5Imr1X02TEzJF9uqZgf02H3tYKk4GTOz763qzJzREGd9f5tPJZm_WH49YSOS3SAgUYjV7AIcrstLvnuBNteyp_JIKKATyE-lSd4cWqkYVY7Lybo2TPPpyeeQP5A0hOLp-KCIoYehWsZr-4qyhAqeBS48rz5qfdCjnShOy7RXte5bQtMnuVdSlnaGc4wuEghNdRfN6S60qjFj3DG2tPBFsty_vmlP5-05ySGpA==",
           "returned_model_identifier": "o3",
           "response_status": "completed",
-          "duration_seconds": 11.376731,
+          "duration_seconds": 11.878104,
           "usage": {
             "input_tokens": 1378,
             "input_tokens_details": {
@@ -2299,12 +3406,12 @@
               "audio_tokens": null,
               "text_tokens": null
             },
-            "output_tokens": 2041,
+            "output_tokens": 1504,
             "output_tokens_details": {
-              "reasoning_tokens": 1600,
+              "reasoning_tokens": 1088,
               "text_tokens": null
             },
-            "total_tokens": 3419,
+            "total_tokens": 2882,
             "cost": null
           },
           "blocks": {
@@ -2322,8 +3429,8 @@
               "    )",
               "    giver_exec.result()",
               "    receiver_exec.result()",
-              "robot_1.eef_attach(\"IRB6620_R1\", \"Gripper\", \"Top Sill Plate\")",
-              "robot_2.eef_detach(\"IRB6620_R2\", \"Gripper\", \"Top Sill Plate\")",
+              "robot_1.eef_attach(\"IRB6620_R1\", \"tool0\", \"Top Sill Plate\")",
+              "robot_2.eef_detach(\"IRB6620_R2\", \"tool0\", \"Top Sill Plate\")",
               "with ThreadPoolExecutor(max_workers=2) as executor:",
               "    giver_home = executor.submit(",
               "        robot_2.move_to_home",
@@ -2345,10 +3452,10 @@
           "attempt": 1,
           "status": "accepted",
           "tool_choice_mode": "forced_function",
-          "response_id": "resp_KdO_1jEmevVXnxI6cutqNr2o-kQs9hhGWG1ZiRXJzoLjhiYm-XfTh4-F44dOEkEIlyEpmDIj8opmoej5cqKkajkmJJKFhphWmMjav3h9uFOuwyBDI7QJ9oz4PPF-_hbJWdWD12Ylvlm8MPQP-y-m_qzMKpgMCeVlwgT6tsg7-6cVEvLgpYVSaxcEF0PWNhpiRvYsPMSA31jMU-7X7VuWPkg8_rrpwzSnMuuwQLew4UjZtppNlK1JtXECYxupFL7hJ9XdP1v4qJcLzoc8hnmJMEhamqVjXPZbBxYw5t3CMxwJ3FTXOvBNp_AofwDE608tYsz09L4Z8bWRx8J0SQEXjGnV7-IUDXDlCGxwXj_uzerZk9ultK3A-DJkpJKb3e3xi1ihucWwKXHuimuiYGtLRlYB3lEPhGWk8DZq8mXCuDbQ_tmpd2wk5a60sMqLeEAotdm_XBK7PofZrfpiHGyjGA==",
+          "response_id": "resp_wWbhYVkVUvNNxSyK50nW2ycuBNezN4il1dLfUg0zTSw1lwphWIymvrXqD0z071EeO94Kkf-qqYzYjRoqK_HdOChns4Iuh7myLflspthNAoILCgTYjcc-Q6HNC2SmcYLQxmLeFcAMG67VLWX_7o_gD_nKNLe5AolDpvm7GhTLKzYzWk5O7GqTv8MW34OJCu0XJt1SbQHZU06vFvO3p2w7rh2ZCSpt2djDe83vKWa3LvdrVKIyD41O-N_Xur6dNW-H4BosFC6I8PmbHi1xAwxIXDNObJYnwZP-kIyQeoKN6_4i7jHyCjIsLT7pqxuDGwJZujs238-EaxhlPDLNzlA3vcyicI-19_ZYNBJJMHHihUd9Hl2ugapJP6_pPIi1zw54lHzwK1yQ6PTy4saOesz5b1KgHypKTGlAx8JxD9paCJKNljbnNYKUkAVltHWNnMkB2w6qogDW7kgSNzJqWCygTA==",
           "returned_model_identifier": "o3",
           "response_status": "completed",
-          "duration_seconds": 11.982963,
+          "duration_seconds": 11.980146,
           "usage": {
             "input_tokens": 1381,
             "input_tokens_details": {
@@ -2356,12 +3463,12 @@
               "audio_tokens": null,
               "text_tokens": null
             },
-            "output_tokens": 2512,
+            "output_tokens": 2149,
             "output_tokens_details": {
-              "reasoning_tokens": 2112,
+              "reasoning_tokens": 1664,
               "text_tokens": null
             },
-            "total_tokens": 3893,
+            "total_tokens": 3530,
             "cost": null
           },
           "blocks": {
@@ -2396,8 +3503,8 @@
       ],
       "generated_blocks": {
         "flow_008_procedures_002_003_co_a": [
-          "robot_2.plan(tcp_name='tool0', target_pose=np.array([2.250000 + (L / 2), -1.000000, H + 0.850000], dtype=float), target_orientation=np.array([0.0, 0.0, 0.707107, 0.707107], dtype=float))",
-          "robot_1.plan(tcp_name='tool0', target_pose=np.array([2.250000 + (L / 2), -1.000000, H + 0.850000], dtype=float), target_orientation=np.array([0.0, 0.0, 0.707107, 0.707107], dtype=float))",
+          "robot_2.plan('tool0', np.array([2.250000 + (L / 2), -1.000000, H + 0.850000], dtype=float), np.array([0.0, 0.0, 0.707107, 0.707107], dtype=float))",
+          "robot_1.plan('tool0', np.array([2.250000 + (L / 2), -1.000000, H + 0.850000], dtype=float), np.array([0.0, 0.0, 0.707107, 0.707107], dtype=float))",
           "with ThreadPoolExecutor(max_workers=2) as executor:",
           "    giver_exec = executor.submit(",
           "        robot_2.render_exec,",
@@ -2409,8 +3516,8 @@
           "    )",
           "    giver_exec.result()",
           "    receiver_exec.result()",
-          "robot_1.eef_attach('IRB6620_R1', 'Gripper', 'Top Plate')",
-          "robot_2.eef_detach('IRB6620_R2', 'Gripper', 'Top Plate')",
+          "robot_1.eef_attach('IRB6620_R1', 'tool0', 'Top Plate')",
+          "robot_2.eef_detach('IRB6620_R2', 'tool0', 'Top Plate')",
           "with ThreadPoolExecutor(max_workers=2) as executor:",
           "    giver_home = executor.submit(",
           "        robot_2.move_to_home",
@@ -2422,8 +3529,16 @@
           "    receiver_home.result()"
         ],
         "flow_013_procedures_002_003_co_a": [
-          "robot_2.plan(\"tool0\", np.array([2.816340 - (0.866025), 1.244430 + (H / 2), 1.297380 + (0.500000)], dtype=float), np.array([0.0, 0.96593, 0.0, 0.25882], dtype=float))",
-          "robot_1.plan(\"tool1\", np.array([2.816340 - (0.866025), 1.244430 + (H / 2), 1.297380 + (0.500000)], dtype=float), np.array([0.0, 0.96593, 0.0, 0.25882], dtype=float))",
+          "robot_2.plan(",
+          "    tcp_name=\"tool0\",",
+          "    target_pose=np.array([2.816340 - (0.866025), 1.244430 + (H / 2), 1.297380 + (0.500000)], dtype=float),",
+          "    target_orientation=np.array([0.0, 0.96593, 0.0, 0.25882], dtype=float)",
+          " )",
+          "robot_1.plan(",
+          "    tcp_name=\"tool1\",",
+          "    target_pose=np.array([2.816340 - (0.866025), 1.244430 + (H / 2), 1.297380 + (0.500000)], dtype=float),",
+          "    target_orientation=np.array([0.0, 0.96593, 0.0, 0.25882], dtype=float)",
+          " )",
           "with ThreadPoolExecutor(max_workers=2) as executor:",
           "    giver_exec = executor.submit(",
           "        robot_2.render_exec,",
@@ -2435,8 +3550,8 @@
           "    )",
           "    giver_exec.result()",
           "    receiver_exec.result()",
-          "robot_1.eef_attach(\"IRB6620_R1\", \"Suction_Cup\", \"L/U Stud\")",
-          "robot_2.eef_detach(\"IRB6620_R2\", \"Gripper\", \"L/U Stud\")",
+          "robot_1.eef_attach(\"IRB6620_R1\", \"tool1\", \"L/U Stud\")",
+          "robot_2.eef_detach(\"IRB6620_R2\", \"tool0\", \"L/U Stud\")",
           "with ThreadPoolExecutor(max_workers=2) as executor:",
           "    giver_home = executor.submit(",
           "        robot_2.move_to_home",
@@ -2461,8 +3576,8 @@
           "    )",
           "    giver_exec.result()",
           "    receiver_exec.result()",
-          "robot_1.eef_attach(\"IRB6620_R1\", \"Gripper\", \"Top Sill Plate\")",
-          "robot_2.eef_detach(\"IRB6620_R2\", \"Gripper\", \"Top Sill Plate\")",
+          "robot_1.eef_attach(\"IRB6620_R1\", \"tool0\", \"Top Sill Plate\")",
+          "robot_2.eef_detach(\"IRB6620_R2\", \"tool0\", \"Top Sill Plate\")",
           "with ThreadPoolExecutor(max_workers=2) as executor:",
           "    giver_home = executor.submit(",
           "        robot_2.move_to_home",
@@ -2531,7 +3646,7 @@
   },
   "software": {
     "python_version": "3.10.12",
-    "openai_python_version": "2.43.0"
+    "openai_python_version": "2.44.0"
   },
   "agent_task_counts": {
     "Sb-A": 11,
@@ -2957,5 +4072,5 @@
       ]
     }
   ],
-  "output_sha256": "9a1c71a700e87b6affeabdb27a72d8cd983396c187878631575ac849e906c7b8"
+  "output_sha256": "0ced1f2365a4ba0800b6cdf920cf3e92fd91592f6934e03e0f0e45db0e938bf7"
 }
