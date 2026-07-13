@@ -2044,8 +2044,3 @@ Coordinates Robot_1 (tool3) and Robot_2 (tool2) together with the Smart_Conv con
 
 Human Trade Knowledge Is Not Available:
 No component-to-crew mapping or occupational task descriptions are supplied in this experimental condition. Infer the function sequence only from the Assembly Instance Data, Design Rules, framing order, and the finalized HLAF descriptions. Do not assume access to omitted crew or occupational-task data.
-
-
-The previous generated sequence was rejected by the local validator for the following reason:
-ValueError: The generated file may contain only direct HLAF calls, assignments receiving HLAF return values, and comments.
-Return a corrected complete sequence for the same case.

@@ -4,9 +4,9 @@
   "knowledge_mode": "Without_Knowledge",
   "knowledge_included": false,
   "status": "success",
-  "started_at_utc": "2026-07-12T21:41:24.425977+00:00",
-  "completed_at_utc": "2026-07-12T21:42:12.769059+00:00",
-  "duration_seconds": 48.34309,
+  "started_at_utc": "2026-07-13T21:59:24.440362+00:00",
+  "completed_at_utc": "2026-07-13T22:00:01.193238+00:00",
+  "duration_seconds": 36.752889,
   "model": "o3",
   "input_files_sha256": {
     "No_Open.json": "ad1011c3da3f36ed01cdc26a7500238d13ad8a2ecef674400b59efb886f3f6c7",
@@ -23,17 +23,17 @@
     {
       "attempt": 1,
       "status": "accepted",
-      "response_id": "chatcmpl-E0wDMmfEKxzt1I645FftbB2OpFqKv",
+      "response_id": "chatcmpl-E1IyKXsuoLxgJI2SWn4Xs2bcyb4xB",
       "returned_model": "o3",
       "finish_reason": "stop",
       "usage": {
-        "completion_tokens": 9018,
+        "completion_tokens": 6566,
         "prompt_tokens": 26712,
-        "total_tokens": 35730,
+        "total_tokens": 33278,
         "completion_tokens_details": {
           "accepted_prediction_tokens": 0,
           "audio_tokens": 0,
-          "reasoning_tokens": 6144,
+          "reasoning_tokens": 3776,
           "rejected_prediction_tokens": 0
         },
         "prompt_tokens_details": {
@@ -42,19 +42,19 @@
         },
         "latency_checkpoint": {
           "engine_tbt_ms": 5,
-          "engine_ttft_ms": 285,
-          "engine_ttlt_ms": 46407,
-          "pre_inference_ms": 137,
+          "engine_ttft_ms": 71,
+          "engine_ttlt_ms": 35288,
+          "pre_inference_ms": 192,
           "service_tbt_ms": 5,
-          "service_ttft_ms": 1249,
-          "service_ttlt_ms": 47365,
-          "total_duration_ms": 47237,
-          "user_visible_ttft_ms": 1112
+          "service_ttft_ms": 484,
+          "service_ttlt_ms": 35698,
+          "total_duration_ms": 35517,
+          "user_visible_ttft_ms": 291
         }
       },
-      "duration_seconds": 48.342654,
+      "duration_seconds": 36.752092,
       "prompt_sha256": "c6482ce9438a563a2b7ee4170c32e270cfc65300c891e072bf49646a6f7d60df",
-      "raw_response_sha256": "fa1dd2d7ddd998ba4b6119677fed09f6e430e5249f686be03553b409c869a840",
+      "raw_response_sha256": "e18ba059abb790eb739838aa22a1fc97d77ecee2f5e00092ef27acce155675be",
       "validation": {
         "call_count": 48,
         "function_calls": [
@@ -104,39 +104,37 @@
           "Place_and_Hold_8ft_Element_On_Smart_Conveyor",
           "Nail_and_Release_Vertical_Element",
           "Pick_Long_Element_From_Mat_Supply",
-          "Place_Long_Element_On_Smart_Conveyor_by_Rob2_Gripper",
-          "Complementary_Nail_Operation"
+          "Pass_Long_Element_G2G",
+          "Place_Long_Element_On_Smart_Conveyor_by_Rob1_Gripper"
         ],
         "unique_function_calls": [
-          "Complementary_Nail_Operation",
           "Nail_and_Release_Vertical_Element",
           "Pass_Long_Element_G2G",
           "Pick_8ft_Element_From_Sloped_Table",
           "Pick_Long_Element_From_Mat_Supply",
           "Place_Long_Element_On_Smart_Conveyor_by_Rob1_Gripper",
-          "Place_Long_Element_On_Smart_Conveyor_by_Rob2_Gripper",
           "Place_and_Hold_8ft_Element_On_Smart_Conveyor"
         ],
         "assigned_result_variables": [
-          "side_F_Stud",
-          "side_L_U_Element_1",
-          "side_R_Stud_10",
-          "side_R_Stud_12",
-          "side_R_Stud_14",
-          "side_R_Stud_16",
-          "side_R_Stud_18",
-          "side_R_Stud_2",
-          "side_R_Stud_20",
-          "side_R_Stud_22",
-          "side_R_Stud_24",
-          "side_R_Stud_4",
-          "side_R_Stud_6",
-          "side_R_Stud_8"
+          "side_selector_F_Stud",
+          "side_selector_L_U_Element_1",
+          "side_selector_R_Stud_10",
+          "side_selector_R_Stud_12",
+          "side_selector_R_Stud_14",
+          "side_selector_R_Stud_16",
+          "side_selector_R_Stud_18",
+          "side_selector_R_Stud_2",
+          "side_selector_R_Stud_20",
+          "side_selector_R_Stud_22",
+          "side_selector_R_Stud_24",
+          "side_selector_R_Stud_4",
+          "side_selector_R_Stud_6",
+          "side_selector_R_Stud_8"
         ]
       }
     }
   ],
-  "final_sequence_sha256": "cba8d0d1bc27a62557d4e74e910acd4dc9315295ec96a073ec362edbbf1c2405",
+  "final_sequence_sha256": "490d562d967a4f2f6006b53ac9573f62e21f458d0acef6b9ee208d219f88dc61",
   "final_validation": {
     "call_count": 48,
     "function_calls": [
@@ -186,34 +184,32 @@
       "Place_and_Hold_8ft_Element_On_Smart_Conveyor",
       "Nail_and_Release_Vertical_Element",
       "Pick_Long_Element_From_Mat_Supply",
-      "Place_Long_Element_On_Smart_Conveyor_by_Rob2_Gripper",
-      "Complementary_Nail_Operation"
+      "Pass_Long_Element_G2G",
+      "Place_Long_Element_On_Smart_Conveyor_by_Rob1_Gripper"
     ],
     "unique_function_calls": [
-      "Complementary_Nail_Operation",
       "Nail_and_Release_Vertical_Element",
       "Pass_Long_Element_G2G",
       "Pick_8ft_Element_From_Sloped_Table",
       "Pick_Long_Element_From_Mat_Supply",
       "Place_Long_Element_On_Smart_Conveyor_by_Rob1_Gripper",
-      "Place_Long_Element_On_Smart_Conveyor_by_Rob2_Gripper",
       "Place_and_Hold_8ft_Element_On_Smart_Conveyor"
     ],
     "assigned_result_variables": [
-      "side_F_Stud",
-      "side_L_U_Element_1",
-      "side_R_Stud_10",
-      "side_R_Stud_12",
-      "side_R_Stud_14",
-      "side_R_Stud_16",
-      "side_R_Stud_18",
-      "side_R_Stud_2",
-      "side_R_Stud_20",
-      "side_R_Stud_22",
-      "side_R_Stud_24",
-      "side_R_Stud_4",
-      "side_R_Stud_6",
-      "side_R_Stud_8"
+      "side_selector_F_Stud",
+      "side_selector_L_U_Element_1",
+      "side_selector_R_Stud_10",
+      "side_selector_R_Stud_12",
+      "side_selector_R_Stud_14",
+      "side_selector_R_Stud_16",
+      "side_selector_R_Stud_18",
+      "side_selector_R_Stud_2",
+      "side_selector_R_Stud_20",
+      "side_selector_R_Stud_22",
+      "side_selector_R_Stud_24",
+      "side_selector_R_Stud_4",
+      "side_selector_R_Stud_6",
+      "side_selector_R_Stud_8"
     ]
   }
 }

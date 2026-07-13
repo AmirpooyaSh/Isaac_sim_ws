@@ -2,22 +2,22 @@
   "agent": "Pln-A",
   "experiment": "Three wall-panel cases with and without human trade knowledge",
   "status": "success",
-  "started_at_utc": "2026-07-12T21:40:48.660569+00:00",
-  "completed_at_utc": "2026-07-12T21:49:23.844561+00:00",
-  "duration_seconds": 515.218186,
+  "started_at_utc": "2026-07-13T21:58:26.501103+00:00",
+  "completed_at_utc": "2026-07-13T22:07:23.776181+00:00",
+  "duration_seconds": 537.331531,
   "model": "o3",
   "base_url": "https://api.ai.it.ufl.edu",
   "cases": {
     "No_Open": {
       "With_Knowledge": {
         "status": "success",
-        "duration_seconds": 35.764738,
+        "duration_seconds": 57.938213,
         "output_directory": "No_Open/With_Knowledge",
         "call_count": 49
       },
       "Without_Knowledge": {
         "status": "success",
-        "duration_seconds": 48.34309,
+        "duration_seconds": 36.752889,
         "output_directory": "No_Open/Without_Knowledge",
         "call_count": 48
       }
@@ -25,29 +25,29 @@
     "1_Door": {
       "With_Knowledge": {
         "status": "success",
-        "duration_seconds": 47.180584,
+        "duration_seconds": 99.455282,
         "output_directory": "1_Door/With_Knowledge",
-        "call_count": 57
+        "call_count": 59
       },
       "Without_Knowledge": {
         "status": "success",
-        "duration_seconds": 59.175274,
+        "duration_seconds": 69.094158,
         "output_directory": "1_Door/Without_Knowledge",
-        "call_count": 56
+        "call_count": 54
       }
     },
     "1_Door_1_Window": {
       "With_Knowledge": {
         "status": "success",
-        "duration_seconds": 159.10941,
+        "duration_seconds": 88.265177,
         "output_directory": "1_Door_1_Window/With_Knowledge",
-        "call_count": 69
+        "call_count": 51
       },
       "Without_Knowledge": {
         "status": "success",
-        "duration_seconds": 165.608068,
+        "duration_seconds": 185.76364,
         "output_directory": "1_Door_1_Window/Without_Knowledge",
-        "call_count": 86
+        "call_count": 67
       }
     }
   },

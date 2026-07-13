@@ -149,6 +149,7 @@ class AI_Agent:
     ) -> ModelResult:
         response = self.client.chat.completions.create(
             model=self.model,
+            reasoning_effort="high",
             messages=[
                 {
                     "role": "user",

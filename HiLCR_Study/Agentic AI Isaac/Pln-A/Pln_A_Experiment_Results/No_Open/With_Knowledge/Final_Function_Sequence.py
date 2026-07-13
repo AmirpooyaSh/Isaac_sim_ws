@@ -1,362 +1,86 @@
 # Pln-A case: No_Open
 # Knowledge mode: With_Knowledge
 
-# --- Install Top Plate ---
-Pick_Long_Element_From_Mat_Supply(
-    el_name='Top_Stud',
-    L=3.6576,
-    W=0.04,
-    H=0.1016
-)
+# --- Top Plate Installation ---
+Pick_Long_Element_From_Mat_Supply(el_name="Top_Stud", L=3.6576, W=0.04, H=0.1016)
+Pass_Long_Element_G2G(el_name="Top_Stud", L=3.6576, H=0.1016)
+Place_Long_Element_On_Smart_Conveyor_by_Rob1_Gripper(el_name="Top_Stud", X=0.02, Y=1.8288, L=3.6576, H=0.1016)
 
-Pass_Long_Element_G2G(
-    el_name='Top_Stud',
-    L=3.6576,
-    H=0.1016
-)
+# --- Left-Most Standard Stud ---
+Pick_8ft_Element_From_Sloped_Table(el_name="F_Stud", W=0.04, H=0.1016)
+side_F_Stud = Place_and_Hold_8ft_Element_On_Smart_Conveyor(X=1.2592, Y=0.02, H=0.1016)
+Nail_and_Release_Vertical_Element(el_name="F_Stud", X=1.2592, L=2.4384, H=0.1016, Side_Selector=side_F_Stud)
 
-Place_Long_Element_On_Smart_Conveyor_by_Rob1_Gripper(
-    el_name='Top_Stud',
-    X=0.02,
-    Y=1.8288,
-    L=3.6576,
-    H=0.1016
-)
-
-# --- Install Vertical Studs Left-to-Right ---
-
-# 1) F_Stud (Standard Stud)
-Pick_8ft_Element_From_Sloped_Table(
-    el_name='F_Stud',
-    L=2.4384,
-    W=0.04,
-    H=0.1016
-)
-side_F_Stud = Place_and_Hold_8ft_Element_On_Smart_Conveyor(
-    X=1.2592,
-    Y=0.02,
-    L=2.4384,
-    H=0.1016
-)
-Nail_and_Release_Vertical_Element(
-    el_name='F_Stud',
-    X=1.2592,
-    L=2.4384,
-    H=0.1016,
-    Side_Selector=side_F_Stud,
-    Is_Held=False
-)
-
-# 2) L_U_Element_1 (L/U Stud directly after first standard stud)
-Pick_8ft_Element_From_Sloped_Table(
-    el_name='L_U_Element_1',
-    L=2.4384,
-    W=0.04,
-    H=0.1016
-)
-side_LU_1 = Place_and_Hold_8ft_Element_On_Smart_Conveyor(
+# --- Optional L/U Stud (installed immediately after first stud) ---
+Pick_8ft_Element_From_Sloped_Table(el_name="L_U_Element_1", W=0.04, H=0.1016)
+side_LU = Drop_Short_Vertical_Element_With_Tangent_to_an_Element(
+    el_name="L_U_Element_1",
     X=1.2592,
     Y=0.0908,
     L=2.4384,
-    H=0.1016
-)
-Nail_and_Release_Vertical_Element(
-    el_name='L_U_Element_1',
-    X=1.2592,
-    L=2.4384,
     H=0.1016,
-    Side_Selector=side_LU_1,
-    Is_Held=False
+    If_Tangent_From_Left=True
+)
+Nail_Vertical_Element_With_Tangent_to_an_Element(
+    el_pose=[1.2592, 0.0908, 0.02],
+    el_dims=[2.4384, 0.04, 0.1016],
+    If_Tangent_From_Left=True,
+    Side_Selector=side_LU
 )
 
-# 3) R_Stud_2
-Pick_8ft_Element_From_Sloped_Table(
-    el_name='R_Stud_2',
-    L=2.4384,
-    W=0.04,
-    H=0.1016
-)
-side_R_Stud_2 = Place_and_Hold_8ft_Element_On_Smart_Conveyor(
-    X=1.2592,
-    Y=0.3248,
-    L=2.4384,
-    H=0.1016
-)
-Nail_and_Release_Vertical_Element(
-    el_name='R_Stud_2',
-    X=1.2592,
-    L=2.4384,
-    H=0.1016,
-    Side_Selector=side_R_Stud_2,
-    Is_Held=False
-)
+# --- Remaining Standard Studs (left-to-right through all bays) ---
+Pick_8ft_Element_From_Sloped_Table(el_name="R_Stud_2", W=0.04, H=0.1016)
+side_R_Stud_2 = Place_and_Hold_8ft_Element_On_Smart_Conveyor(X=1.2592, Y=0.3248, H=0.1016)
+Nail_and_Release_Vertical_Element(el_name="R_Stud_2", X=1.2592, L=2.4384, H=0.1016, Side_Selector=side_R_Stud_2)
 
-# 4) R_Stud_4
-Pick_8ft_Element_From_Sloped_Table(
-    el_name='R_Stud_4',
-    L=2.4384,
-    W=0.04,
-    H=0.1016
-)
-side_R_Stud_4 = Place_and_Hold_8ft_Element_On_Smart_Conveyor(
-    X=1.2592,
-    Y=0.6296,
-    L=2.4384,
-    H=0.1016
-)
-Nail_and_Release_Vertical_Element(
-    el_name='R_Stud_4',
-    X=1.2592,
-    L=2.4384,
-    H=0.1016,
-    Side_Selector=side_R_Stud_4,
-    Is_Held=False
-)
+Pick_8ft_Element_From_Sloped_Table(el_name="R_Stud_4", W=0.04, H=0.1016)
+side_R_Stud_4 = Place_and_Hold_8ft_Element_On_Smart_Conveyor(X=1.2592, Y=0.6296, H=0.1016)
+Nail_and_Release_Vertical_Element(el_name="R_Stud_4", X=1.2592, L=2.4384, H=0.1016, Side_Selector=side_R_Stud_4)
 
-# 5) R_Stud_6
-Pick_8ft_Element_From_Sloped_Table(
-    el_name='R_Stud_6',
-    L=2.4384,
-    W=0.04,
-    H=0.1016
-)
-side_R_Stud_6 = Place_and_Hold_8ft_Element_On_Smart_Conveyor(
-    X=1.2592,
-    Y=0.9344,
-    L=2.4384,
-    H=0.1016
-)
-Nail_and_Release_Vertical_Element(
-    el_name='R_Stud_6',
-    X=1.2592,
-    L=2.4384,
-    H=0.1016,
-    Side_Selector=side_R_Stud_6,
-    Is_Held=False
-)
+Pick_8ft_Element_From_Sloped_Table(el_name="R_Stud_6", W=0.04, H=0.1016)
+side_R_Stud_6 = Place_and_Hold_8ft_Element_On_Smart_Conveyor(X=1.2592, Y=0.9344, H=0.1016)
+Nail_and_Release_Vertical_Element(el_name="R_Stud_6", X=1.2592, L=2.4384, H=0.1016, Side_Selector=side_R_Stud_6)
 
-# 6) R_Stud_8
-Pick_8ft_Element_From_Sloped_Table(
-    el_name='R_Stud_8',
-    L=2.4384,
-    W=0.04,
-    H=0.1016
-)
-side_R_Stud_8 = Place_and_Hold_8ft_Element_On_Smart_Conveyor(
-    X=1.2592,
-    Y=1.2392,
-    L=2.4384,
-    H=0.1016
-)
-Nail_and_Release_Vertical_Element(
-    el_name='R_Stud_8',
-    X=1.2592,
-    L=2.4384,
-    H=0.1016,
-    Side_Selector=side_R_Stud_8,
-    Is_Held=False
-)
+Pick_8ft_Element_From_Sloped_Table(el_name="R_Stud_8", W=0.04, H=0.1016)
+side_R_Stud_8 = Place_and_Hold_8ft_Element_On_Smart_Conveyor(X=1.2592, Y=1.2392, H=0.1016)
+Nail_and_Release_Vertical_Element(el_name="R_Stud_8", X=1.2592, L=2.4384, H=0.1016, Side_Selector=side_R_Stud_8)
 
-# 7) R_Stud_10
-Pick_8ft_Element_From_Sloped_Table(
-    el_name='R_Stud_10',
-    L=2.4384,
-    W=0.04,
-    H=0.1016
-)
-side_R_Stud_10 = Place_and_Hold_8ft_Element_On_Smart_Conveyor(
-    X=1.2592,
-    Y=1.544,
-    L=2.4384,
-    H=0.1016
-)
-Nail_and_Release_Vertical_Element(
-    el_name='R_Stud_10',
-    X=1.2592,
-    L=2.4384,
-    H=0.1016,
-    Side_Selector=side_R_Stud_10,
-    Is_Held=False
-)
+Pick_8ft_Element_From_Sloped_Table(el_name="R_Stud_10", W=0.04, H=0.1016)
+side_R_Stud_10 = Place_and_Hold_8ft_Element_On_Smart_Conveyor(X=1.2592, Y=1.544, H=0.1016)
+Nail_and_Release_Vertical_Element(el_name="R_Stud_10", X=1.2592, L=2.4384, H=0.1016, Side_Selector=side_R_Stud_10)
 
-# 8) R_Stud_12
-Pick_8ft_Element_From_Sloped_Table(
-    el_name='R_Stud_12',
-    L=2.4384,
-    W=0.04,
-    H=0.1016
-)
-side_R_Stud_12 = Place_and_Hold_8ft_Element_On_Smart_Conveyor(
-    X=1.2592,
-    Y=1.8488,
-    L=2.4384,
-    H=0.1016
-)
-Nail_and_Release_Vertical_Element(
-    el_name='R_Stud_12',
-    X=1.2592,
-    L=2.4384,
-    H=0.1016,
-    Side_Selector=side_R_Stud_12,
-    Is_Held=False
-)
+Pick_8ft_Element_From_Sloped_Table(el_name="R_Stud_12", W=0.04, H=0.1016)
+side_R_Stud_12 = Place_and_Hold_8ft_Element_On_Smart_Conveyor(X=1.2592, Y=1.8488, H=0.1016)
+Nail_and_Release_Vertical_Element(el_name="R_Stud_12", X=1.2592, L=2.4384, H=0.1016, Side_Selector=side_R_Stud_12)
 
-# 9) R_Stud_14
-Pick_8ft_Element_From_Sloped_Table(
-    el_name='R_Stud_14',
-    L=2.4384,
-    W=0.04,
-    H=0.1016
-)
-side_R_Stud_14 = Place_and_Hold_8ft_Element_On_Smart_Conveyor(
-    X=1.2592,
-    Y=2.1536,
-    L=2.4384,
-    H=0.1016
-)
-Nail_and_Release_Vertical_Element(
-    el_name='R_Stud_14',
-    X=1.2592,
-    L=2.4384,
-    H=0.1016,
-    Side_Selector=side_R_Stud_14,
-    Is_Held=False
-)
+Pick_8ft_Element_From_Sloped_Table(el_name="R_Stud_14", W=0.04, H=0.1016)
+side_R_Stud_14 = Place_and_Hold_8ft_Element_On_Smart_Conveyor(X=1.2592, Y=2.1536, H=0.1016)
+Nail_and_Release_Vertical_Element(el_name="R_Stud_14", X=1.2592, L=2.4384, H=0.1016, Side_Selector=side_R_Stud_14)
 
-# 10) R_Stud_16
-Pick_8ft_Element_From_Sloped_Table(
-    el_name='R_Stud_16',
-    L=2.4384,
-    W=0.04,
-    H=0.1016
-)
-side_R_Stud_16 = Place_and_Hold_8ft_Element_On_Smart_Conveyor(
-    X=1.2592,
-    Y=2.4584,
-    L=2.4384,
-    H=0.1016
-)
-Nail_and_Release_Vertical_Element(
-    el_name='R_Stud_16',
-    X=1.2592,
-    L=2.4384,
-    H=0.1016,
-    Side_Selector=side_R_Stud_16,
-    Is_Held=False
-)
+Pick_8ft_Element_From_Sloped_Table(el_name="R_Stud_16", W=0.04, H=0.1016)
+side_R_Stud_16 = Place_and_Hold_8ft_Element_On_Smart_Conveyor(X=1.2592, Y=2.4584, H=0.1016)
+Nail_and_Release_Vertical_Element(el_name="R_Stud_16", X=1.2592, L=2.4384, H=0.1016, Side_Selector=side_R_Stud_16)
 
-# 11) R_Stud_18
-Pick_8ft_Element_From_Sloped_Table(
-    el_name='R_Stud_18',
-    L=2.4384,
-    W=0.04,
-    H=0.1016
-)
-side_R_Stud_18 = Place_and_Hold_8ft_Element_On_Smart_Conveyor(
-    X=1.2592,
-    Y=2.7632,
-    L=2.4384,
-    H=0.1016
-)
-Nail_and_Release_Vertical_Element(
-    el_name='R_Stud_18',
-    X=1.2592,
-    L=2.4384,
-    H=0.1016,
-    Side_Selector=side_R_Stud_18,
-    Is_Held=False
-)
+Pick_8ft_Element_From_Sloped_Table(el_name="R_Stud_18", W=0.04, H=0.1016)
+side_R_Stud_18 = Place_and_Hold_8ft_Element_On_Smart_Conveyor(X=1.2592, Y=2.7632, H=0.1016)
+Nail_and_Release_Vertical_Element(el_name="R_Stud_18", X=1.2592, L=2.4384, H=0.1016, Side_Selector=side_R_Stud_18)
 
-# 12) R_Stud_20
-Pick_8ft_Element_From_Sloped_Table(
-    el_name='R_Stud_20',
-    L=2.4384,
-    W=0.04,
-    H=0.1016
-)
-side_R_Stud_20 = Place_and_Hold_8ft_Element_On_Smart_Conveyor(
-    X=1.2592,
-    Y=3.068,
-    L=2.4384,
-    H=0.1016
-)
-Nail_and_Release_Vertical_Element(
-    el_name='R_Stud_20',
-    X=1.2592,
-    L=2.4384,
-    H=0.1016,
-    Side_Selector=side_R_Stud_20,
-    Is_Held=False
-)
+Pick_8ft_Element_From_Sloped_Table(el_name="R_Stud_20", W=0.04, H=0.1016)
+side_R_Stud_20 = Place_and_Hold_8ft_Element_On_Smart_Conveyor(X=1.2592, Y=3.068, H=0.1016)
+Nail_and_Release_Vertical_Element(el_name="R_Stud_20", X=1.2592, L=2.4384, H=0.1016, Side_Selector=side_R_Stud_20)
 
-# 13) R_Stud_22
-Pick_8ft_Element_From_Sloped_Table(
-    el_name='R_Stud_22',
-    L=2.4384,
-    W=0.04,
-    H=0.1016
-)
-side_R_Stud_22 = Place_and_Hold_8ft_Element_On_Smart_Conveyor(
-    X=1.2592,
-    Y=3.3728,
-    L=2.4384,
-    H=0.1016
-)
-Nail_and_Release_Vertical_Element(
-    el_name='R_Stud_22',
-    X=1.2592,
-    L=2.4384,
-    H=0.1016,
-    Side_Selector=side_R_Stud_22,
-    Is_Held=False
-)
+Pick_8ft_Element_From_Sloped_Table(el_name="R_Stud_22", W=0.04, H=0.1016)
+side_R_Stud_22 = Place_and_Hold_8ft_Element_On_Smart_Conveyor(X=1.2592, Y=3.3728, H=0.1016)
+Nail_and_Release_Vertical_Element(el_name="R_Stud_22", X=1.2592, L=2.4384, H=0.1016, Side_Selector=side_R_Stud_22)
 
-# 14) R_Stud_24
-Pick_8ft_Element_From_Sloped_Table(
-    el_name='R_Stud_24',
-    L=2.4384,
-    W=0.04,
-    H=0.1016
-)
-side_R_Stud_24 = Place_and_Hold_8ft_Element_On_Smart_Conveyor(
-    X=1.2592,
-    Y=3.6376,
-    L=2.4384,
-    H=0.1016
-)
-Nail_and_Release_Vertical_Element(
-    el_name='R_Stud_24',
-    X=1.2592,
-    L=2.4384,
-    H=0.1016,
-    Side_Selector=side_R_Stud_24,
-    Is_Held=False
-)
+Pick_8ft_Element_From_Sloped_Table(el_name="R_Stud_24", W=0.04, H=0.1016)
+side_R_Stud_24 = Place_and_Hold_8ft_Element_On_Smart_Conveyor(X=1.2592, Y=3.6376, H=0.1016)
+Nail_and_Release_Vertical_Element(el_name="R_Stud_24", X=1.2592, L=2.4384, H=0.1016, Side_Selector=side_R_Stud_24)
 
-# --- Install Bottom Plate ---
-Pick_Long_Element_From_Mat_Supply(
-    el_name='Bot_Stud',
-    L=3.6576,
-    W=0.04,
-    H=0.1016
-)
+# --- Bottom Plate Installation (after all studs are secured) ---
+Pick_Long_Element_From_Mat_Supply(el_name="Bot_Stud", L=3.6576, W=0.04, H=0.1016)
+Pass_Long_Element_G2G(el_name="Bot_Stud", L=3.6576, H=0.1016)
+Place_Long_Element_On_Smart_Conveyor_by_Rob1_Gripper(el_name="Bot_Stud", X=2.4984, Y=1.8288, L=3.6576, H=0.1016)
 
-Pass_Long_Element_G2G(
-    el_name='Bot_Stud',
-    L=3.6576,
-    H=0.1016
-)
-
-Place_Long_Element_On_Smart_Conveyor_by_Rob1_Gripper(
-    el_name='Bot_Stud',
-    X=2.4984,
-    Y=1.8288,
-    L=3.6576,
-    H=0.1016
-)
-
-# --- Complementary Nailing Pass (if additional nailing is required) ---
-# Complementary_Nail_Operation will nail at all recorded positions.
-Complementary_Nail_Operation(
-    H=0.1016
-)
+# --- Consolidated Nailing Pass for All Vertical Elements ---
+Complementary_Nail_Operation(H=2.4384)

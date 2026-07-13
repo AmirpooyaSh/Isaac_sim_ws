@@ -2159,8 +2159,3 @@ Crew-to-Task Knowledge:
     ]
   ]
 ]
-
-
-The previous generated sequence was rejected by the local validator for the following reason:
-ValueError: The generated file may contain only direct HLAF calls, assignments receiving HLAF return values, and comments.
-Return a corrected complete sequence for the same case.
