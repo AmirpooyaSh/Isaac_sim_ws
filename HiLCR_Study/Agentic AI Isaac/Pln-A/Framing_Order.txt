@@ -1,22 +1,28 @@
-   • Install Top Plate (H) across the full wall length to establish the upper boundary.
+Required operational sequences:
+- Execute the listed actions for each element in the specified order.
+- Use Pass only when it appears in the element sequence.
+- Complete Nail after Place whenever Nail is included.
+- Do not omit, reorder, or infer additional actions.
+
+   • Install Top Plate (H) across the full wall length to establish the upper boundary. [Pick → Pass → Place]
    • Proceed left-to-right through the wall panel bays:
    •   • If the bay is a STANDARD wall segment (no opening):
-   •         – Install Vertical Stud (V).
-   •         – (Optional) If location calls for an L/U Stud, install it immediately after the first standard stud.
+   •         – Install Vertical Stud (V). [Pick → Place → Nail]
+   •         – (Optional) If the location calls for an L/U Stud, install it immediately after the first standard stud. [Pick → Pass → Place]
    •   • If the bay is an OPENING zone (door or window):
-   •         – Install King Stud (left).
-   •         – Install King Stud (right).
-   •         – Install Jack Stud (left).
-   •         – Install Jack Stud (right).
+   •         – Install King Stud (left). [Pick → Place → Nail]
+   •         – Install King Stud (right). [Pick → Place → Nail]
+   •         – Install Jack Stud (left). [Pick → Place → Nail]
+   •         – Install Jack Stud (right). [Pick → Place → Nail]
    •         – If the opening header is BEAR LOADING:
-   •               • Install Bear Loading plank 1 (H).
-   •               • Install Bear Loading plank 2 (H) stacked on plank 1.
+   •               • Install Bear Loading (Header). [Pick → Place → Nail]
+   •               • Install Bear Loading (Header) stacked on plank 1. [Pick → Place → Nail]
    •           Else (the header is TOP SILL PLATE):
-   •               • Install Top Sill Plate (H).
-   •               • Moving left-to-right, install Top Cripple Stud(s) (V) above the plate up to the Top Plate.
+   •               • Install Top Sill Plate (H). [Pick → Pass → Place → Nail]
+   •               • Moving left-to-right, install Top Cripple Stud(s) (V) above the plate up to the Top Plate. [Pick → Pass → Place → Nail]
    •         – If the opening type is WINDOW (not a full-height door):
-   •               • Install Lower Sill Plate (H).
-   •               • Moving left-to-right, install Lower Cripple Stud(s) (V) beneath the sill down to Bottom Plate level.
+   •               • Install Lower Sill Plate (H). [Pick → Place → Nail]
+   •               • Moving left-to-right, install Lower Cripple Stud(s) (V) beneath the sill down to Bottom Plate level. [Pick → Place]
    • Repeat the left-to-right bay sequence until the end of the wall panel is reached and all vertical elements are in place.
-   • Install Bottom Plate (H) across the wall once all studs, kings, jacks, headers/plates, and cripples are secured to lock everything together.
-   • Install OSB Sheathing Plates (V) from left-to-right over the completed frame to finish the wall panel.
+   • Install Bottom Plate (H) across the wall once all studs, kings, jacks, headers/plates, and cripples are secured to lock everything together. [Pick → Place → Nail]
+   • Install OSB Sheathing Plates (V) from left-to-right over the completed frame to finish the wall panel. [Pick → Place → Nail]

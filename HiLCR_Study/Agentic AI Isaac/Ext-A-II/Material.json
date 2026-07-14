@@ -1,0 +1,55 @@
+{
+    "Design": [
+      {
+        "Element": "Vertical Stud", "Direction": ["V"],
+        "Description": "Primary vertical framing stud extending from bottom to top plates."
+      },
+      {
+        "Element": "King Stud", "Direction": ["V"],
+        "Description": "Full-height stud flanking window or door openings to carry loads (Same as Vertical Stud, but around opennings)."
+      },
+      {
+        "Element": "Lower Cripple Stud", "Direction": ["V"],
+        "Description": "Short stud below a window opening that supports the bottom sill plate (If window)."
+      },
+      {
+        "Element": "OSB Sheathing Plate", "Direction": ["V"],
+        "Description": "Oriented-strand-board panel fastened to the frame for sheathing and bracing."
+      },
+      {
+        "Element": "Top Plate", "Direction": ["H"],
+        "Description": "Horizontal member capping the wall and tying the studs together."
+      },
+      {
+        "Element": "Jack Stud", "Direction": ["V"],
+        "Description": "Shortened stud under the lef/right side of a kings supporting an opening (Shorter than kings length from the bottom plate to the header/bear loading)."
+      },
+      {
+        "Element": "Bear Loading", "Direction": ["H"],
+        "Description": "Load-bearing blocking/header component distributing loads across an opening (Usually 2 elements with 2x10in cross section stacked)."
+      },
+      {
+        "Element": "L/U Stud", "Direction": ["V"],
+        "Description": "Utility stud providing lateral bracing or service-run pathways (beside the first vertical stud)."
+      },
+      {
+        "Element": "Lower Sill Plate", "Direction": ["H"],
+        "Description": "Horizontal plate forming the sill at the bottom of a opening (If window)."
+      },
+      {
+        "Element": "Bottom Plate", "Direction": ["H"],
+        "Description": "Horizontal framing member anchored to the floor, forming the base of the wall."
+      },
+      {
+        "Element": "Top Sill Plate",
+        "Direction": ["H"],
+        "Description": "Horizontal plate forming the upper sill of a window opening, providing a bearing surface for top cripples and tying the frame together only if there is no Bear Loading required in the openning."
+      },
+      {
+        "Element": "Top Cripple Stud",
+        "Direction": ["V"],
+        "Description": "Short vertical stud positioned above a header (Top Sill Plate) only if there is no Bear Loading required in the openning."
+      }
+    ]
+  }
+  

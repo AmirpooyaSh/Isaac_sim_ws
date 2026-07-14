@@ -5,7 +5,7 @@
     "api_family": "Responses API",
     "api_version": "v1",
     "base_url": null,
-    "timeout_seconds": 300,
+    "timeout_seconds": 120,
     "sdk_max_retries": 2
   },
   "model_profiles": {
@@ -16,13 +16,23 @@
       "reasoning_effort": "high",
       "temperature": null,
       "top_p": null,
-      "max_output_tokens": 100000
+      "max_output_tokens": 4096
     }
   },
   "request": {
     "store": false
   },
   "agent": {
+    "confidence_threshold": 0.8,
     "validation_max_attempts": 3
-  }
+  },
+    "web_search": {
+      "tool_type": "web_search_preview",
+      "tool_choice": "auto",
+      "allowed_domains": [
+        "onetonline.org",
+        "onetcenter.org"
+      ],
+      "max_search_attempts": 3
+    }
 }

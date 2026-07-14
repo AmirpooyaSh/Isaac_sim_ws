@@ -147,19 +147,23 @@ class AI_Agent:
         self,
         information: str,
     ) -> ModelResult:
-        response = self.client.chat.completions.create(
+        response = self.client.responses.create(
             model=self.model,
-            reasoning_effort="high",
-            messages=[
-                {
-                    "role": "user",
-                    "content": information,
-                }
+            reasoning={
+            "effort": "high"
+            },
+            input=[
+            {
+                "role": "user",
+                "content": information,
+            }
             ],
+            max_output_tokens=32768,
+            store=False,
         )
 
         choice = response.choices[0]
-        content = choice.message.content
+        content = response.output_text
 
         if not content:
             raise RuntimeError(

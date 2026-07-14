@@ -1,0 +1,148 @@
+{
+  "agent": "Pln-A",
+  "experiment": "Three wall-panel cases under three conditions: knowledge and rules, HLAF plus element information only, and HLAF plus a worked sample",
+  "status": "success",
+  "started_at_utc": "2026-07-14T21:54:21.205427+00:00",
+  "completed_at_utc": "2026-07-14T22:14:56.651581+00:00",
+  "duration_seconds": 1235.492461,
+  "model_configuration": {
+    "profile": "o3",
+    "model": "o3",
+    "api_family": "Responses API",
+    "api_version": "v1",
+    "base_url": "https://api.ai.it.ufl.edu",
+    "reasoning_effort": "high",
+    "max_output_tokens": 100000,
+    "temperature": null,
+    "top_p": null,
+    "timeout_seconds": 300.0,
+    "sdk_max_retries": 2,
+    "store": false,
+    "validation_max_attempts": 3
+  },
+  "conditions": {
+    "1_Human_Knowledge_Design_Rules": {
+      "label": "Human Knowledge + Design Rules + HLAFs + Element Info",
+      "description": "Target element information and HLAF interfaces are supplemented with Ext-A human trade knowledge and explicit design/framing rules.",
+      "human_knowledge_included": true,
+      "design_rules_included": true,
+      "sample_included": false
+    },
+    "2_HLAF_Element_Info_Only": {
+      "label": "HLAFs + Element Info Only",
+      "description": "Only the target element information and finalized HLAF headers and docstrings are supplied.",
+      "human_knowledge_included": false,
+      "design_rules_included": false,
+      "sample_included": false
+    },
+    "3_HLAF_Element_Info_With_Sample": {
+      "label": "HLAFs + Element Info + Sample",
+      "description": "The target element information and HLAF interfaces are supplemented with one worked assembly example; human knowledge and design rules are omitted.",
+      "human_knowledge_included": false,
+      "design_rules_included": false,
+      "sample_included": true
+    }
+  },
+  "cases": {
+    "No_Open": {
+      "1_Human_Knowledge_Design_Rules": {
+        "label": "Human Knowledge + Design Rules + HLAFs + Element Info",
+        "status": "success",
+        "duration_seconds": 120.578207,
+        "output_directory": "No_Open/1_Human_Knowledge_Design_Rules",
+        "agent_api_calls": 1,
+        "generated_hlaf_call_count": 48,
+        "unique_hlaf_function_count": 7
+      },
+      "2_HLAF_Element_Info_Only": {
+        "label": "HLAFs + Element Info Only",
+        "status": "success",
+        "duration_seconds": 85.113208,
+        "output_directory": "No_Open/2_HLAF_Element_Info_Only",
+        "agent_api_calls": 1,
+        "generated_hlaf_call_count": 48,
+        "unique_hlaf_function_count": 6
+      },
+      "3_HLAF_Element_Info_With_Sample": {
+        "label": "HLAFs + Element Info + Sample",
+        "status": "success",
+        "duration_seconds": 54.78386,
+        "output_directory": "No_Open/3_HLAF_Element_Info_With_Sample",
+        "agent_api_calls": 1,
+        "generated_hlaf_call_count": 48,
+        "unique_hlaf_function_count": 10
+      }
+    },
+    "1_Door": {
+      "1_Human_Knowledge_Design_Rules": {
+        "label": "Human Knowledge + Design Rules + HLAFs + Element Info",
+        "status": "success",
+        "duration_seconds": 133.349798,
+        "output_directory": "1_Door/1_Human_Knowledge_Design_Rules",
+        "agent_api_calls": 1,
+        "generated_hlaf_call_count": 54,
+        "unique_hlaf_function_count": 15
+      },
+      "2_HLAF_Element_Info_Only": {
+        "label": "HLAFs + Element Info Only",
+        "status": "success",
+        "duration_seconds": 297.863091,
+        "output_directory": "1_Door/2_HLAF_Element_Info_Only",
+        "agent_api_calls": 3,
+        "generated_hlaf_call_count": 61,
+        "unique_hlaf_function_count": 14
+      },
+      "3_HLAF_Element_Info_With_Sample": {
+        "label": "HLAFs + Element Info + Sample",
+        "status": "success",
+        "duration_seconds": 121.036385,
+        "output_directory": "1_Door/3_HLAF_Element_Info_With_Sample",
+        "agent_api_calls": 1,
+        "generated_hlaf_call_count": 56,
+        "unique_hlaf_function_count": 17
+      }
+    },
+    "1_Door_1_Window": {
+      "1_Human_Knowledge_Design_Rules": {
+        "label": "Human Knowledge + Design Rules + HLAFs + Element Info",
+        "status": "success",
+        "duration_seconds": 202.454939,
+        "output_directory": "1_Door_1_Window/1_Human_Knowledge_Design_Rules",
+        "agent_api_calls": 1,
+        "generated_hlaf_call_count": 76,
+        "unique_hlaf_function_count": 17
+      },
+      "2_HLAF_Element_Info_Only": {
+        "label": "HLAFs + Element Info Only",
+        "status": "success",
+        "duration_seconds": 107.508522,
+        "output_directory": "1_Door_1_Window/2_HLAF_Element_Info_Only",
+        "agent_api_calls": 1,
+        "generated_hlaf_call_count": 32,
+        "unique_hlaf_function_count": 17
+      },
+      "3_HLAF_Element_Info_With_Sample": {
+        "label": "HLAFs + Element Info + Sample",
+        "status": "success",
+        "duration_seconds": 112.747694,
+        "output_directory": "1_Door_1_Window/3_HLAF_Element_Info_With_Sample",
+        "agent_api_calls": 1,
+        "generated_hlaf_call_count": 80,
+        "unique_hlaf_function_count": 24
+      }
+    }
+  },
+  "successful_runs": 9,
+  "failed_runs": 0,
+  "total_runs": 9,
+  "shared_input_files_sha256": {
+    "config.json": "1d317c132f63978727a1e552016816f83edf2f5813379b78345cecb273896427",
+    "KBS_Simplified_Codified.py": "f51101aa75697a96560374d7b5a2ee8c94b4d20622b337e3e21f2429e55a60ef",
+    "Framing_Order.txt": "123bf5b28e63172b00999a8782d64bbd86e687325ad0c4be601c77b167843f9f",
+    "Ext_A_II_Output.json": "59d5378395ecafcefb05471e79200ca519cad05680fabf6bb086cbe72a76ee9c",
+    "Ext_A_III_Output.json": "631733c3fd22430b1765348edf25cbc845cdf167dbe05d3e621a9bed29f6b40f",
+    "Sample/1_Door_1_Window.json": "b91152cd80300460190815f0f32915e45e7e6d0bcbb44e6404a536624321362a",
+    "Sample/1_Door_1_Window.txt": "05f7a8ae926e132a5c680303e8a70164ab68a286cb5c22f29630cd8d0364d1d2"
+  },
+  "hlaf_function_count": 27
+}

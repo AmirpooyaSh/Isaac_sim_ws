@@ -1,0 +1,5 @@
+{
+  "status": "configuration_or_input_failure",
+  "error_type": "RuntimeError",
+  "message": "This model profile does not support temperature/top_p. Set both to null."
+}
