@@ -28,7 +28,7 @@ Target Assembly Instance Data:
     },
     {
       "name": "F_Stud",
-      "type": "King Stud",
+      "type": "Vertical Stud",
       "coordination": {
         "x": 1.2592,
         "y": 0.02,
@@ -56,7 +56,7 @@ Target Assembly Instance Data:
     },
     {
       "name": "R_Stud_2",
-      "type": "King Stud",
+      "type": "Vertical Stud",
       "coordination": {
         "x": 1.2592,
         "y": 0.3248,
@@ -70,7 +70,7 @@ Target Assembly Instance Data:
     },
     {
       "name": "R_Stud_4",
-      "type": "King Stud",
+      "type": "Vertical Stud",
       "coordination": {
         "x": 1.2592,
         "y": 0.6296,
@@ -84,7 +84,7 @@ Target Assembly Instance Data:
     },
     {
       "name": "R_Stud_6",
-      "type": "King Stud",
+      "type": "Vertical Stud",
       "coordination": {
         "x": 1.2592,
         "y": 0.9344,
@@ -98,7 +98,7 @@ Target Assembly Instance Data:
     },
     {
       "name": "R_Stud_8",
-      "type": "King Stud",
+      "type": "Vertical Stud",
       "coordination": {
         "x": 1.2592,
         "y": 1.2392,
@@ -112,7 +112,7 @@ Target Assembly Instance Data:
     },
     {
       "name": "R_Stud_10",
-      "type": "King Stud",
+      "type": "Vertical Stud",
       "coordination": {
         "x": 1.2592,
         "y": 1.544,
@@ -126,7 +126,7 @@ Target Assembly Instance Data:
     },
     {
       "name": "R_Stud_12",
-      "type": "King Stud",
+      "type": "Vertical Stud",
       "coordination": {
         "x": 1.2592,
         "y": 1.8488,
@@ -140,7 +140,7 @@ Target Assembly Instance Data:
     },
     {
       "name": "R_Stud_14",
-      "type": "King Stud",
+      "type": "Vertical Stud",
       "coordination": {
         "x": 1.2592,
         "y": 2.1536,
@@ -154,7 +154,7 @@ Target Assembly Instance Data:
     },
     {
       "name": "R_Stud_16",
-      "type": "King Stud",
+      "type": "Vertical Stud",
       "coordination": {
         "x": 1.2592,
         "y": 2.4584,
@@ -168,7 +168,7 @@ Target Assembly Instance Data:
     },
     {
       "name": "R_Stud_18",
-      "type": "King Stud",
+      "type": "Vertical Stud",
       "coordination": {
         "x": 1.2592,
         "y": 2.7632,
@@ -182,7 +182,7 @@ Target Assembly Instance Data:
     },
     {
       "name": "R_Stud_20",
-      "type": "King Stud",
+      "type": "Vertical Stud",
       "coordination": {
         "x": 1.2592,
         "y": 3.068,
@@ -196,7 +196,7 @@ Target Assembly Instance Data:
     },
     {
       "name": "R_Stud_22",
-      "type": "King Stud",
+      "type": "Vertical Stud",
       "coordination": {
         "x": 1.2592,
         "y": 3.3728,
@@ -210,7 +210,7 @@ Target Assembly Instance Data:
     },
     {
       "name": "R_Stud_24",
-      "type": "King Stud",
+      "type": "Vertical Stud",
       "coordination": {
         "x": 1.2592,
         "y": 3.6376,

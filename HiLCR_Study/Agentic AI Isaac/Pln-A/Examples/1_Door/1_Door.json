@@ -4,252 +4,252 @@
       "name": "Top_Stud",
       "type": "Top Plate",
       "coordination": {
-        "x": 0.02,
-        "y": 1.8288,
-        "z": 0.06
+        "X": 0.02,
+        "Y": 1.8288,
+        "Z": 0.06
       },
       "dimension": {
-        "l": 3.6576,
-        "w": 0.04,
-        "h": 0.1016
+        "L": 3.6576,
+        "W": 0.04,
+        "H": 0.1016
       }
     },
     {
       "name": "F_Stud",
-      "type": "King Stud",
+      "type": "Vertical Stud",
       "coordination": {
-        "x": 1.2592,
-        "y": 0.02,
-        "z": 0.0
+        "X": 1.2592,
+        "Y": 0.02,
+        "Z": 0.0
       },
       "dimension": {
-        "l": 2.4384,
-        "w": 0.04,
-        "h": 0.1016
+        "L": 2.4384,
+        "W": 0.04,
+        "H": 0.1016
       }
     },
     {
       "name": "L_U_Element_1",
       "type": "L/U Stud",
       "coordination": {
-        "x": 1.2592,
-        "y": 0.0908,
-        "z": 0.02
+        "X": 1.2592,
+        "Y": 0.0908,
+        "Z": 0.02
       },
       "dimension": {
-        "l": 2.4384,
-        "w": 0.04,
-        "h": 0.1016
+        "L": 2.4384,
+        "W": 0.04,
+        "H": 0.1016
       }
     },
     {
       "name": "R_Stud_2",
-      "type": "King Stud",
+      "type": "Vertical Stud",
       "coordination": {
-        "x": 1.2592,
-        "y": 0.3248,
-        "z": 0.0
+        "X": 1.2592,
+        "Y": 0.3248,
+        "Z": 0.0
       },
       "dimension": {
-        "l": 2.4384,
-        "w": 0.04,
-        "h": 0.1016
+        "L": 2.4384,
+        "W": 0.04,
+        "H": 0.1016
       }
     },
     {
       "name": "R_Stud_4",
-      "type": "King Stud",
+      "type": "Vertical Stud",
       "coordination": {
-        "x": 1.2592,
-        "y": 0.6296,
-        "z": 0.0
+        "X": 1.2592,
+        "Y": 0.6296,
+        "Z": 0.0
       },
       "dimension": {
-        "l": 2.4384,
-        "w": 0.04,
-        "h": 0.1016
+        "L": 2.4384,
+        "W": 0.04,
+        "H": 0.1016
       }
     },
     {
       "name": "R_Stud_6",
-      "type": "King Stud",
+      "type": "Vertical Stud",
       "coordination": {
-        "x": 1.2592,
-        "y": 0.9344,
-        "z": 0.0
+        "X": 1.2592,
+        "Y": 0.9344,
+        "Z": 0.0
       },
       "dimension": {
-        "l": 2.4384,
-        "w": 0.04,
-        "h": 0.1016
+        "L": 2.4384,
+        "W": 0.04,
+        "H": 0.1016
       }
     },
     {
       "name": "R_Stud_8",
-      "type": "King Stud",
+      "type": "Vertical Stud",
       "coordination": {
-        "x": 1.2592,
-        "y": 1.2392,
-        "z": 0.0
+        "X": 1.2592,
+        "Y": 1.2392,
+        "Z": 0.0
       },
       "dimension": {
-        "l": 2.4384,
-        "w": 0.04,
-        "h": 0.1016
+        "L": 2.4384,
+        "W": 0.04,
+        "H": 0.1016
       }
     },
     {
       "name": "Wooden_Element_6",
       "type": "King Stud",
       "coordination": {
-        "x": 1.2592,
-        "y": 1.52,
-        "z": 0.0
+        "X": 1.2592,
+        "Y": 1.52,
+        "Z": 0.0
       },
       "dimension": {
-        "l": 2.4384,
-        "w": 0.04,
-        "h": 0.1016
+        "L": 2.4384,
+        "W": 0.04,
+        "H": 0.1016
       }
     },
     {
       "name": "Wooden_Element_7",
       "type": "King Stud",
       "coordination": {
-        "x": 1.2592,
-        "y": 2.52,
-        "z": 0.0
+        "X": 1.2592,
+        "Y": 2.52,
+        "Z": 0.0
       },
       "dimension": {
-        "l": 2.4384,
-        "w": 0.04,
-        "h": 0.1016
+        "L": 2.4384,
+        "W": 0.04,
+        "H": 0.1016
       }
     },
     {
       "name": "Wooden_Element_12",
       "type": "Jack Stud",
       "coordination": {
-        "x": 1.4784,
-        "y": 1.56,
-        "z": 0.0
+        "X": 1.4784,
+        "Y": 1.56,
+        "Z": 0.0
       },
       "dimension": {
-        "l": 2.0,
-        "w": 0.04,
-        "h": 0.1016
+        "L": 2.0,
+        "W": 0.04,
+        "H": 0.1016
       }
     },
     {
       "name": "Wooden_Element_11",
       "type": "Jack Stud",
       "coordination": {
-        "x": 1.4784,
-        "y": 2.48,
-        "z": 0.0
+        "X": 1.4784,
+        "Y": 2.48,
+        "Z": 0.0
       },
       "dimension": {
-        "l": 2.0,
-        "w": 0.04,
-        "h": 0.1016
+        "L": 2.0,
+        "W": 0.04,
+        "H": 0.1016
       }
     },
     {
       "name": "Wooden_Element_13",
       "type": "Bear Loading",
       "coordination": {
-        "x": 0.3514,
-        "y": 2.02,
-        "z": 0.0254
+        "X": 0.3514,
+        "Y": 2.02,
+        "Z": 0.0254
       },
       "dimension": {
-        "l": 0.96,
-        "w": 0.0508,
-        "h": 0.254
+        "L": 0.96,
+        "W": 0.0508,
+        "H": 0.254
       }
     },
     {
       "name": "Wooden_Element_14",
       "type": "Bear Loading",
       "coordination": {
-        "x": 0.3514,
-        "y": 2.02,
-        "z": 0.0762
+        "X": 0.3514,
+        "Y": 2.02,
+        "Z": 0.0762
       },
       "dimension": {
-        "l": 0.96,
-        "w": 0.0508,
-        "h": 0.254
+        "L": 0.96,
+        "W": 0.0508,
+        "H": 0.254
       }
     },
     {
       "name": "R_Stud_18",
-      "type": "King Stud",
+      "type": "Vertical Stud",
       "coordination": {
-        "x": 1.2592,
-        "y": 2.7632,
-        "z": 0.0
+        "X": 1.2592,
+        "Y": 2.7632,
+        "Z": 0.0
       },
       "dimension": {
-        "l": 2.4384,
-        "w": 0.04,
-        "h": 0.1016
+        "L": 2.4384,
+        "W": 0.04,
+        "H": 0.1016
       }
     },
     {
       "name": "R_Stud_20",
-      "type": "King Stud",
+      "type": "Vertical Stud",
       "coordination": {
-        "x": 1.2592,
-        "y": 3.068,
-        "z": 0.0
+        "X": 1.2592,
+        "Y": 3.068,
+        "Z": 0.0
       },
       "dimension": {
-        "l": 2.4384,
-        "w": 0.04,
-        "h": 0.1016
+        "L": 2.4384,
+        "W": 0.04,
+        "H": 0.1016
       }
     },
     {
       "name": "R_Stud_22",
-      "type": "King Stud",
+      "type": "Vertical Stud",
       "coordination": {
-        "x": 1.2592,
-        "y": 3.3728,
-        "z": 0.0
+        "X": 1.2592,
+        "Y": 3.3728,
+        "Z": 0.0
       },
       "dimension": {
-        "l": 2.4384,
-        "w": 0.04,
-        "h": 0.1016
+        "L": 2.4384,
+        "W": 0.04,
+        "H": 0.1016
       }
     },
     {
       "name": "R_Stud_24",
-      "type": "King Stud",
+      "type": "Vertical Stud",
       "coordination": {
-        "x": 1.2592,
-        "y": 3.6376,
-        "z": 0.0
+        "X": 1.2592,
+        "Y": 3.6376,
+        "Z": 0.0
       },
       "dimension": {
-        "l": 2.4384,
-        "w": 0.04,
-        "h": 0.1016
+        "L": 2.4384,
+        "W": 0.04,
+        "H": 0.1016
       }
     },
     {
       "name": "Bot_Stud",
       "type": "Bottom Plate",
       "coordination": {
-        "x": 2.4984,
-        "y": 1.8288,
-        "z": 0.06
+        "X": 2.4984,
+        "Y": 1.8288,
+        "Z": 0.06
       },
       "dimension": {
-        "l": 3.6576,
-        "w": 0.04,
-        "h": 0.1016
+        "L": 3.6576,
+        "W": 0.04,
+        "H": 0.1016
       }
     }
   ]

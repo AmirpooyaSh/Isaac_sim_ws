@@ -16,252 +16,252 @@ Target Assembly Instance Data:
       "name": "Top_Stud",
       "type": "Top Plate",
       "coordination": {
-        "x": 0.02,
-        "y": 1.8288,
-        "z": 0.06
+        "X": 0.02,
+        "Y": 1.8288,
+        "Z": 0.06
       },
       "dimension": {
-        "l": 3.6576,
-        "w": 0.04,
-        "h": 0.1016
+        "L": 3.6576,
+        "W": 0.04,
+        "H": 0.1016
       }
     },
     {
       "name": "F_Stud",
-      "type": "King Stud",
+      "type": "Vertical Stud",
       "coordination": {
-        "x": 1.2592,
-        "y": 0.02,
-        "z": 0.0
+        "X": 1.2592,
+        "Y": 0.02,
+        "Z": 0.0
       },
       "dimension": {
-        "l": 2.4384,
-        "w": 0.04,
-        "h": 0.1016
+        "L": 2.4384,
+        "W": 0.04,
+        "H": 0.1016
       }
     },
     {
       "name": "L_U_Element_1",
       "type": "L/U Stud",
       "coordination": {
-        "x": 1.2592,
-        "y": 0.0908,
-        "z": 0.02
+        "X": 1.2592,
+        "Y": 0.0908,
+        "Z": 0.02
       },
       "dimension": {
-        "l": 2.4384,
-        "w": 0.04,
-        "h": 0.1016
+        "L": 2.4384,
+        "W": 0.04,
+        "H": 0.1016
       }
     },
     {
       "name": "R_Stud_2",
-      "type": "King Stud",
+      "type": "Vertical Stud",
       "coordination": {
-        "x": 1.2592,
-        "y": 0.3248,
-        "z": 0.0
+        "X": 1.2592,
+        "Y": 0.3248,
+        "Z": 0.0
       },
       "dimension": {
-        "l": 2.4384,
-        "w": 0.04,
-        "h": 0.1016
+        "L": 2.4384,
+        "W": 0.04,
+        "H": 0.1016
       }
     },
     {
       "name": "R_Stud_4",
-      "type": "King Stud",
+      "type": "Vertical Stud",
       "coordination": {
-        "x": 1.2592,
-        "y": 0.6296,
-        "z": 0.0
+        "X": 1.2592,
+        "Y": 0.6296,
+        "Z": 0.0
       },
       "dimension": {
-        "l": 2.4384,
-        "w": 0.04,
-        "h": 0.1016
+        "L": 2.4384,
+        "W": 0.04,
+        "H": 0.1016
       }
     },
     {
       "name": "R_Stud_6",
-      "type": "King Stud",
+      "type": "Vertical Stud",
       "coordination": {
-        "x": 1.2592,
-        "y": 0.9344,
-        "z": 0.0
+        "X": 1.2592,
+        "Y": 0.9344,
+        "Z": 0.0
       },
       "dimension": {
-        "l": 2.4384,
-        "w": 0.04,
-        "h": 0.1016
+        "L": 2.4384,
+        "W": 0.04,
+        "H": 0.1016
       }
     },
     {
       "name": "R_Stud_8",
-      "type": "King Stud",
+      "type": "Vertical Stud",
       "coordination": {
-        "x": 1.2592,
-        "y": 1.2392,
-        "z": 0.0
+        "X": 1.2592,
+        "Y": 1.2392,
+        "Z": 0.0
       },
       "dimension": {
-        "l": 2.4384,
-        "w": 0.04,
-        "h": 0.1016
+        "L": 2.4384,
+        "W": 0.04,
+        "H": 0.1016
       }
     },
     {
       "name": "Wooden_Element_6",
       "type": "King Stud",
       "coordination": {
-        "x": 1.2592,
-        "y": 1.52,
-        "z": 0.0
+        "X": 1.2592,
+        "Y": 1.52,
+        "Z": 0.0
       },
       "dimension": {
-        "l": 2.4384,
-        "w": 0.04,
-        "h": 0.1016
+        "L": 2.4384,
+        "W": 0.04,
+        "H": 0.1016
       }
     },
     {
       "name": "Wooden_Element_7",
       "type": "King Stud",
       "coordination": {
-        "x": 1.2592,
-        "y": 2.52,
-        "z": 0.0
+        "X": 1.2592,
+        "Y": 2.52,
+        "Z": 0.0
       },
       "dimension": {
-        "l": 2.4384,
-        "w": 0.04,
-        "h": 0.1016
+        "L": 2.4384,
+        "W": 0.04,
+        "H": 0.1016
       }
     },
     {
       "name": "Wooden_Element_12",
       "type": "Jack Stud",
       "coordination": {
-        "x": 1.4784,
-        "y": 1.56,
-        "z": 0.0
+        "X": 1.4784,
+        "Y": 1.56,
+        "Z": 0.0
       },
       "dimension": {
-        "l": 2.0,
-        "w": 0.04,
-        "h": 0.1016
+        "L": 2.0,
+        "W": 0.04,
+        "H": 0.1016
       }
     },
     {
       "name": "Wooden_Element_11",
       "type": "Jack Stud",
       "coordination": {
-        "x": 1.4784,
-        "y": 2.48,
-        "z": 0.0
+        "X": 1.4784,
+        "Y": 2.48,
+        "Z": 0.0
       },
       "dimension": {
-        "l": 2.0,
-        "w": 0.04,
-        "h": 0.1016
+        "L": 2.0,
+        "W": 0.04,
+        "H": 0.1016
       }
     },
     {
       "name": "Wooden_Element_13",
       "type": "Bear Loading",
       "coordination": {
-        "x": 0.3514,
-        "y": 2.02,
-        "z": 0.0254
+        "X": 0.3514,
+        "Y": 2.02,
+        "Z": 0.0254
       },
       "dimension": {
-        "l": 0.96,
-        "w": 0.0508,
-        "h": 0.254
+        "L": 0.96,
+        "W": 0.0508,
+        "H": 0.254
       }
     },
     {
       "name": "Wooden_Element_14",
       "type": "Bear Loading",
       "coordination": {
-        "x": 0.3514,
-        "y": 2.02,
-        "z": 0.0762
+        "X": 0.3514,
+        "Y": 2.02,
+        "Z": 0.0762
       },
       "dimension": {
-        "l": 0.96,
-        "w": 0.0508,
-        "h": 0.254
+        "L": 0.96,
+        "W": 0.0508,
+        "H": 0.254
       }
     },
     {
       "name": "R_Stud_18",
-      "type": "King Stud",
+      "type": "Vertical Stud",
       "coordination": {
-        "x": 1.2592,
-        "y": 2.7632,
-        "z": 0.0
+        "X": 1.2592,
+        "Y": 2.7632,
+        "Z": 0.0
       },
       "dimension": {
-        "l": 2.4384,
-        "w": 0.04,
-        "h": 0.1016
+        "L": 2.4384,
+        "W": 0.04,
+        "H": 0.1016
       }
     },
     {
       "name": "R_Stud_20",
-      "type": "King Stud",
+      "type": "Vertical Stud",
       "coordination": {
-        "x": 1.2592,
-        "y": 3.068,
-        "z": 0.0
+        "X": 1.2592,
+        "Y": 3.068,
+        "Z": 0.0
       },
       "dimension": {
-        "l": 2.4384,
-        "w": 0.04,
-        "h": 0.1016
+        "L": 2.4384,
+        "W": 0.04,
+        "H": 0.1016
       }
     },
     {
       "name": "R_Stud_22",
-      "type": "King Stud",
+      "type": "Vertical Stud",
       "coordination": {
-        "x": 1.2592,
-        "y": 3.3728,
-        "z": 0.0
+        "X": 1.2592,
+        "Y": 3.3728,
+        "Z": 0.0
       },
       "dimension": {
-        "l": 2.4384,
-        "w": 0.04,
-        "h": 0.1016
+        "L": 2.4384,
+        "W": 0.04,
+        "H": 0.1016
       }
     },
     {
       "name": "R_Stud_24",
-      "type": "King Stud",
+      "type": "Vertical Stud",
       "coordination": {
-        "x": 1.2592,
-        "y": 3.6376,
-        "z": 0.0
+        "X": 1.2592,
+        "Y": 3.6376,
+        "Z": 0.0
       },
       "dimension": {
-        "l": 2.4384,
-        "w": 0.04,
-        "h": 0.1016
+        "L": 2.4384,
+        "W": 0.04,
+        "H": 0.1016
       }
     },
     {
       "name": "Bot_Stud",
       "type": "Bottom Plate",
       "coordination": {
-        "x": 2.4984,
-        "y": 1.8288,
-        "z": 0.06
+        "X": 2.4984,
+        "Y": 1.8288,
+        "Z": 0.06
       },
       "dimension": {
-        "l": 3.6576,
-        "w": 0.04,
-        "h": 0.1016
+        "L": 3.6576,
+        "W": 0.04,
+        "H": 0.1016
       }
     }
   ]
@@ -415,7 +415,7 @@ Positions a smart conveyor under a long element, drives Robot_1 to deposit the g
                    center aligns with the element’s final position.
         L (float): Total length of the element; half of this length is added to Y to
                    correctly position the conveyor under the element’s midpoint.
-        H (float): Height of the element’s top surface; used to derive the robot’s vertical
+        H (float): Height of the element; used to derive the robot’s vertical
                    pre-place and place Z positions.
 
     Returns:
@@ -466,7 +466,7 @@ Positions the smart conveyor and commands Robot_2, equipped with "tool0", to pla
                    specifies the conveyor’s target translation along axis "Joint_1".
         L (float): Total length of the element; its half-length is added to Y when
                    positioning the conveyor to centre the element.
-        H (float): Height of the desired placement surface; used to compute the robot’s
+        H (float): Height of the element; used to compute the robot’s
                    approach, placement, and retreat z-coordinates.
 
     Returns:
@@ -571,8 +571,8 @@ Positions the smart conveyor and guides Robot_2 through a two-step approach to p
                    conveyor; determines joint offset and side selection.
         L (float): Length of the element in metres; defaults to 2.4384 m (8 ft) and is used
                    to offset the robot’s X-axis approach and placement poses.
-        H (float): Target height (Z-coordinate) at which the element should be held; offsets
-                   are added to generate approach and final placement heights.
+        H (float): Height of the element; offsets are added to generate 
+                   approach and final placement heights.
 
     Returns:
         An integer Side_Selector equal to +1 when the element is placed on the conveyor’s
@@ -1082,7 +1082,7 @@ Commands Robot 2 to drop a short horizontal element that is currently held by it
                    conveyor’s Joint_1 displacement and Conv_Curr_Loc.
         L (float): Overall length of the horizontal element; half of this value is
                    considered when translating the conveyor to centre the element.
-        H (float): Height (thickness) of the element above the world reference, used to
+        H (float): Height (thickness) of the element, used to
                    compute the robot TCP’s Z-level during approach and placement and to
                    adjust the element’s final rigid-body pose if manual placement is
                    required.
@@ -1943,7 +1943,3 @@ Not supplied in this condition. Do not assume access to omitted crew mappings or
 
 Worked Sample:
 Not supplied in this condition.
-
-The previous generated sequence was rejected by the local validator for this reason:
-ValueError: Unsupported top-level statement at line 17: Assign: 'el_pose_header = [0.3514, 2.02, 0.0254]'. Only direct HLAF calls, assignments receiving an HLAF return value, and comments are allowed.
-Return a corrected complete sequence for the same target case and experimental condition.

@@ -8,9 +8,9 @@
   "design_rules_included": false,
   "sample_included": true,
   "status": "success",
-  "started_at_utc": "2026-07-14T21:57:46.898417+00:00",
-  "completed_at_utc": "2026-07-14T21:58:41.682268+00:00",
-  "duration_seconds": 54.78386,
+  "started_at_utc": "2026-07-15T13:54:14.357005+00:00",
+  "completed_at_utc": "2026-07-15T13:55:10.165464+00:00",
+  "duration_seconds": 55.808468,
   "model_configuration": {
     "profile": "o3",
     "model": "o3",
@@ -27,7 +27,7 @@
     "validation_max_attempts": 3
   },
   "input_files_sha256": {
-    "No_Open.json": "77812cb428620c585d6e806b0707795b40819437b4829b8ee437f01d1e9039b0",
+    "No_Open.json": "de94c73023d8d3e5bf65e12762ab75b5a9b0d6ee052046fde3f47846d9d16da9",
     "KBS_Simplified_Codified.py": "f51101aa75697a96560374d7b5a2ee8c94b4d20622b337e3e21f2429e55a60ef",
     "Sample/1_Door_1_Window.json": "b91152cd80300460190815f0f32915e45e7e6d0bcbb44e6404a536624321362a",
     "Sample/1_Door_1_Window.txt": "05f7a8ae926e132a5c680303e8a70164ab68a286cb5c22f29630cd8d0364d1d2"
@@ -42,28 +42,28 @@
     {
       "attempt": 1,
       "status": "accepted",
-      "response_id": "resp_NAbEmu1JGXDrq3C8HtQcREw_VvM40AeEV5oT-y3ud11w9VVyavD_5d-i2eaBnr-jIChpsmXkcA2b4BKKacdGUyg3Dqviv7Is7Km-tKuR1F3Wfrt7KQgteTkqAQjAQ5QDE4w4LXP5OG_UX2Ja8xsWAQcbfRQCYpnvtHQvQF9i7Ri60xZDABd3_5mvvs-lJSSU4Cf9OUC5NhDjkSjOBK5JQktDIwrjGZIvmqZ2-x7SzA1c-Jw8hF517To4exTU_EPgzCU_XIhgAqoBTyZPef5YgAZdY2Idjjah3crTKqb-V-cZZ31rK_j6_RD74xmIse-lXnchvb7nmhzZjSr6UfkWbB0pn0Ax48c61yETIjsz3eoCdxdXI3tQkGcsPs9asHAVsMuqIERcuOx7UpsNlHbuMl8czRfoY1LIDjWZMHrqQws9wZKmm5u55KkU2-t_1HpA9GZEsxL_cKggzdfJ8DQFRA==",
+      "response_id": "resp_n3P_MRy93GTde3EY_dVN_Ve9iiv7YxhgVXcexilqdHv5vamIx-mw-SKzclORZpsftyVdqNvyRMlGz-gLw6VIcbB5WwIHEEOoc8oW7VJ_uYZ33VYKLypDPjGmoMs8uJjc7fE41aKIrq3D6ak2dCIXETk3xwUE0dMeKmX8VkAerdpZ3jCwdnv-uCjjpP8j7wyj59hywHgRtY5iq_0HSHf-PvKPDWQneCJknJgb9agObB-jfURieDrBRrmP5Vl9Gr375TT06R6eo2yZBv9J0PgaIt7py1EZapayt39L_Qjux76rC9EKFXuZ4bE0ffHWXNnNuzcLcMSXnx5qHWrcHdSOVQdex9ydJYLhdrX0I6Q4sW_ugWssc4Mqef6C12ia8z5DsrJmlgbSCap3b2KUSMxvXFcYsbuLKfCW0PV2IRyqcN3rV4Bm0Ny3PTTV2JAICJ5PQqVHufsbRZ-odcCRVSQRhA==",
       "returned_model": "o3",
       "response_status": "completed",
       "incomplete_details": null,
       "usage": {
         "input_tokens": 32257,
         "input_tokens_details": {
-          "cached_tokens": 32128,
+          "cached_tokens": 0,
           "audio_tokens": null,
           "text_tokens": null
         },
-        "output_tokens": 9568,
+        "output_tokens": 10129,
         "output_tokens_details": {
-          "reasoning_tokens": 7040,
+          "reasoning_tokens": 7744,
           "text_tokens": null
         },
-        "total_tokens": 41825,
+        "total_tokens": 42386,
         "cost": null
       },
-      "duration_seconds": 54.783341,
-      "prompt_sha256": "b8479117f00d47f8fe787acfd3c3251e0ac61b19c0f71bfb6a08bc7f44e47b45",
-      "raw_response_sha256": "648229a583e0bf11b72f8365967b064cc606bb083c661f39474bc9faf99486ed",
+      "duration_seconds": 55.807947,
+      "prompt_sha256": "5e17880bdb1f06f5920da3b0b81a0e750526a1921a8f99582c3b3f51a8777b10",
+      "raw_response_sha256": "a8f1464f387ab2f45716014b19b84b04e1f4cddbe435c3a8836c7f742324de06",
       "validation": {
         "call_count": 48,
         "function_calls": [
@@ -146,7 +146,7 @@
       }
     }
   ],
-  "final_sequence_sha256": "a7aa61eb5750e10ea904d5e975c0a608a9cd7d91521bb9d8a884dd30064372b6",
+  "final_sequence_sha256": "9866dcb3dd2996f608ec22e6dd24eb093fe9f79bd31ea6a8c1aa7f40eb39bce0",
   "final_validation": {
     "call_count": 48,
     "function_calls": [

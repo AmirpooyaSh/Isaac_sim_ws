@@ -138,7 +138,7 @@ def Place_Long_Element_On_Smart_Conveyor_by_Rob1_Gripper(el_name: str=None, X: f
                    center aligns with the element’s final position.
         L (float): Total length of the element; half of this length is added to Y to
                    correctly position the conveyor under the element’s midpoint.
-        H (float): Height of the element’s top surface; used to derive the robot’s vertical
+        H (float): Height of the element; used to derive the robot’s vertical
                    pre-place and place Z positions.
 
     Returns:
@@ -187,7 +187,7 @@ def Place_Long_Element_On_Smart_Conveyor_by_Rob2_Gripper(el_name: str=None, X: f
                    specifies the conveyor’s target translation along axis "Joint_1".
         L (float): Total length of the element; its half-length is added to Y when
                    positioning the conveyor to centre the element.
-        H (float): Height of the desired placement surface; used to compute the robot’s
+        H (float): Height of the element; used to compute the robot’s
                    approach, placement, and retreat z-coordinates.
 
     Returns:
@@ -288,8 +288,8 @@ def Place_and_Hold_8ft_Element_On_Smart_Conveyor(X: float=None, Y: float=None, L
                    conveyor; determines joint offset and side selection.
         L (float): Length of the element in metres; defaults to 2.4384 m (8 ft) and is used
                    to offset the robot’s X-axis approach and placement poses.
-        H (float): Target height (Z-coordinate) at which the element should be held; offsets
-                   are added to generate approach and final placement heights.
+        H (float): Height of the element; offsets are added to generate 
+                   approach and final placement heights.
 
     Returns:
         An integer Side_Selector equal to +1 when the element is placed on the conveyor’s
@@ -783,7 +783,7 @@ def Place_Short_Horizontal_Element_On_Smart_Conveyor_by_Rob2_Gripper(el_name: st
                    conveyor’s Joint_1 displacement and Conv_Curr_Loc.
         L (float): Overall length of the horizontal element; half of this value is
                    considered when translating the conveyor to centre the element.
-        H (float): Height (thickness) of the element above the world reference, used to
+        H (float): Height (thickness) of the element, used to
                    compute the robot TCP’s Z-level during approach and placement and to
                    adjust the element’s final rigid-body pose if manual placement is
                    required.
