@@ -24,15 +24,20 @@
   },
   "agent": {
     "confidence_threshold": 0.8,
-    "validation_max_attempts": 3
+    "validation_max_attempts": 3,
+    "validation_retry_delay_seconds": 0.0
   },
-    "web_search": {
-      "tool_type": "web_search_preview",
-      "tool_choice": "auto",
-      "allowed_domains": [
-        "onetonline.org",
-        "onetcenter.org"
-      ],
-      "max_search_attempts": 3
-    }
+  "web_search": {
+    "tool_type": "web_search_preview",
+    "tool_choice": "auto",
+    "allowed_domains": [
+      "onetonline.org",
+      "onetcenter.org"
+    ],
+    "max_search_attempts": 3
+  },
+  "failure_handling": {
+    "validation_actions": {},
+    "default_validation_action": "retry"
+  }
 }

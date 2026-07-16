@@ -15,8 +15,6 @@ The script separates:
 1. SDK transport retries: network, timeout, rate-limit, and server failures.
 2. Agent validation attempts: missing/invalid tool calls and low-confidence
    classifications.
-3. Sampling-control compatibility: temperature and top_p may both be present
-   in the configuration; unsupported controls are omitted or retried safely.
 
 It also writes a run record containing the exact model identifier, API family,
 parameter values, SDK versions, tool schema, prompt hash, attempts, and token
@@ -223,6 +221,17 @@ def load_experiment_config(path: Path) -> dict[str, Any]:
     resolved = deepcopy(config)
     resolved["resolved_model"] = deepcopy(profile)
 
+    # Optional configuration sections use explicit defaults so older/minimal
+    # config files remain compatible with this script.
+    resolved.setdefault("request", {"store": False})
+    resolved["request"].setdefault("store", False)
+
+    resolved["agent"].setdefault("validation_retry_delay_seconds", 0.0)
+
+    failure_handling = resolved.setdefault("failure_handling", {})
+    failure_handling.setdefault("validation_actions", {})
+    failure_handling.setdefault("default_validation_action", "retry")
+
     validate_experiment_config(resolved)
     return resolved
 
@@ -272,7 +281,7 @@ def validate_experiment_config(config: dict[str, Any]) -> None:
 
     failure_handling = config.get("failure_handling", {})
     validation_actions = failure_handling.get("validation_actions", {})
-    default_action = failure_handling.get("default_validation_action", "stop")
+    default_action = failure_handling.get("default_validation_action", "retry")
     allowed_actions = {"retry", "stop"}
     if default_action not in allowed_actions:
         raise RuntimeError("default_validation_action must be 'retry' or 'stop'.")
@@ -371,18 +380,17 @@ class ExtAIAgent:
             config["agent"]["validation_max_attempts"]
         )
         self.validation_retry_delay = float(
-            config["agent"]["validation_retry_delay_seconds"]
+            config["agent"].get("validation_retry_delay_seconds", 0.0)
         )
-        failure_handling = config["failure_handling"]
+        failure_handling = config.get("failure_handling", {})
         self.validation_actions = dict(
             failure_handling.get("validation_actions", {})
         )
         self.default_validation_action = failure_handling.get(
-            "default_validation_action", "stop"
+            "default_validation_action", "retry"
         )
 
-    def _base_request_kwargs(self, user_prompt: str) -> dict[str, Any]:
-        """Build the request without optional sampling controls."""
+    def _request_kwargs(self, user_prompt: str) -> dict[str, Any]:
         request: dict[str, Any] = {
             "model": self.model["identifier"],
             "instructions": SYSTEM_PROMPT,
@@ -399,155 +407,15 @@ class ExtAIAgent:
         if reasoning_effort is not None:
             request["reasoning"] = {"effort": reasoning_effort}
 
+        temperature = self.model.get("temperature")
+        if temperature is not None:
+            request["temperature"] = float(temperature)
+
+        top_p = self.model.get("top_p")
+        if top_p is not None:
+            request["top_p"] = float(top_p)
+
         return request
-
-    def _request_variants(
-        self,
-        user_prompt: str,
-    ) -> list[tuple[str, dict[str, Any]]]:
-        """Return API-compatible request variants in deterministic order.
-
-        Both ``temperature`` and ``top_p`` may remain populated in the model
-        profile. When the profile declares that sampling controls are not
-        supported, neither value is sent to the API. When sampling controls are
-        supported, the first request preserves both configured values. If the
-        API rejects the sampling parameters, the caller may retry with the
-        subsequent compatibility variants.
-        """
-        base_request = self._base_request_kwargs(user_prompt)
-        temperature = self.model.get("temperature")
-        top_p = self.model.get("top_p")
-        supports_sampling = bool(self.model.get("supports_sampling_controls"))
-
-        variants: list[tuple[str, dict[str, Any]]] = []
-
-        if supports_sampling and (temperature is not None or top_p is not None):
-            configured_request = deepcopy(base_request)
-            if temperature is not None:
-                configured_request["temperature"] = float(temperature)
-            if top_p is not None:
-                configured_request["top_p"] = float(top_p)
-            variants.append(("configured_sampling_controls", configured_request))
-
-            # Some models or compatible gateways reject using both controls
-            # together. Prefer temperature deterministically for the first
-            # compatibility retry, while retaining both configured values in
-            # the run record.
-            if temperature is not None and top_p is not None:
-                temperature_only = deepcopy(base_request)
-                temperature_only["temperature"] = float(temperature)
-                variants.append(("temperature_only_fallback", temperature_only))
-
-            # Final compatibility retry for models that support neither field.
-            variants.append(("sampling_controls_omitted_fallback", base_request))
-        else:
-            mode = (
-                "sampling_controls_omitted_unsupported_profile"
-                if not supports_sampling and (temperature is not None or top_p is not None)
-                else "sampling_controls_not_configured"
-            )
-            variants.append((mode, base_request))
-
-        # Remove duplicate variants while preserving order.
-        unique_variants: list[tuple[str, dict[str, Any]]] = []
-        seen: set[tuple[float | None, float | None]] = set()
-        for mode, request in variants:
-            signature = (request.get("temperature"), request.get("top_p"))
-            if signature not in seen:
-                seen.add(signature)
-                unique_variants.append((mode, request))
-        return unique_variants
-
-    @staticmethod
-    def _is_sampling_parameter_error(exc: APIStatusError) -> bool:
-        """Return True only for a 400 error involving temperature or top_p."""
-        if getattr(exc, "status_code", None) != 400:
-            return False
-
-        body = getattr(exc, "body", None)
-        try:
-            body_text = json.dumps(body, ensure_ascii=False, default=str)
-        except (TypeError, ValueError):
-            body_text = str(body)
-
-        error_text = f"{exc} {body_text}".casefold()
-        mentions_sampling = any(
-            token in error_text for token in ("temperature", "top_p", "top p")
-        )
-        indicates_parameter_problem = any(
-            token in error_text
-            for token in (
-                "unsupported",
-                "not supported",
-                "does not support",
-                "unknown parameter",
-                "invalid parameter",
-                "cannot be used",
-                "not allowed",
-            )
-        )
-        return mentions_sampling and indicates_parameter_problem
-
-    def _create_response(
-        self,
-        user_prompt: str,
-        attempt_record: dict[str, Any],
-    ) -> Any:
-        """Create a response with sampling-control compatibility fallbacks."""
-        temperature = self.model.get("temperature")
-        top_p = self.model.get("top_p")
-        request_variants = self._request_variants(user_prompt)
-
-        sampling_record: dict[str, Any] = {
-            "configured": {
-                "temperature": temperature,
-                "top_p": top_p,
-            },
-            "profile_supports_sampling_controls": bool(
-                self.model.get("supports_sampling_controls")
-            ),
-            "api_request_attempts": [],
-        }
-        attempt_record["sampling_controls"] = sampling_record
-
-        for request_number, (mode, request) in enumerate(request_variants, start=1):
-            request_attempt: dict[str, Any] = {
-                "request_number": request_number,
-                "mode": mode,
-                "sent_temperature": request.get("temperature"),
-                "sent_top_p": request.get("top_p"),
-                "status": "started",
-            }
-            sampling_record["api_request_attempts"].append(request_attempt)
-
-            try:
-                response = self.client.responses.create(**request)
-            except APIStatusError as exc:
-                request_attempt.update(
-                    {
-                        "status": "rejected_by_api",
-                        "error_type": type(exc).__name__,
-                        "status_code": getattr(exc, "status_code", None),
-                        "message": str(exc),
-                    }
-                )
-
-                has_next_variant = request_number < len(request_variants)
-                if has_next_variant and self._is_sampling_parameter_error(exc):
-                    request_attempt["action"] = "retry_with_compatible_sampling_controls"
-                    continue
-                raise
-
-            request_attempt["status"] = "accepted_by_api"
-            sampling_record["effective"] = {
-                "temperature": request.get("temperature"),
-                "top_p": request.get("top_p"),
-                "mode": mode,
-            }
-            return response
-
-        # This point is unreachable because the final API error is re-raised.
-        raise RuntimeError("No API request variant was executed.")
 
     @staticmethod
     def _usage_to_dict(response: Any) -> dict[str, Any] | None:
@@ -671,7 +539,7 @@ Call {TOOL_NAME} once with the final classification.
             }
             run_record["attempts"].append(attempt_record)
 
-            response = self._create_response(user_prompt, attempt_record)
+            response = self.client.responses.create(**self._request_kwargs(user_prompt))
 
             attempt_record.update(
                 {
@@ -794,17 +662,16 @@ def create_run_record(
             "tool_choice": {"type": "function", "name": TOOL_NAME},
             "parallel_tool_calls": False,
             "strict_tool_schema": True,
-            "sampling_control_policy": {
-                "configured_values_preserved_in_record": True,
-                "omit_when_profile_unsupported": True,
-                "compatibility_fallback_order": [
-                    "configured temperature and top_p",
-                    "temperature only when both were configured",
-                    "omit both sampling controls",
-                ],
-            },
         },
-        "failure_handling": deepcopy(config["failure_handling"]),
+        "failure_handling": deepcopy(
+            config.get(
+                "failure_handling",
+                {
+                    "validation_actions": {},
+                    "default_validation_action": "retry",
+                },
+            )
+        ),
         "software": {
             "python": platform.python_version(),
             "platform": platform.platform(),
