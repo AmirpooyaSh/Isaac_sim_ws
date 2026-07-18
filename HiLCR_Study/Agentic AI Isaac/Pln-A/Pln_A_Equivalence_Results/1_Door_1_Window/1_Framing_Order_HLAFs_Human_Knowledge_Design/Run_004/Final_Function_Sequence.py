@@ -1,0 +1,106 @@
+# Pln-A case: 1_Door_1_Window
+# Experimental condition: 1_Framing_Order_HLAFs_Human_Knowledge_Design
+# Repetition: 004
+# Execution order: 023
+
+# 1. Install Top Plate
+Pick_Long_Element_From_Mat_Supply(el_name="Top_Stud", L=3.6576, W=0.04, H=0.1016)
+Pass_Long_Element_G2G(el_name="Top_Stud", L=3.6576, H=0.1016)
+conv_top_plate_loc = Place_Long_Element_On_Smart_Conveyor_by_Rob1_Gripper(el_name="Top_Stud", X=0.02, Y=1.8288, L=3.6576, H=0.1016)
+# 2. Leftmost Standard Vertical Stud
+Pick_Short_Element_From_Mat_Supply(el_name="F_Stud", L=2.4384, W=0.04, H=0.1016)
+Place_Short_Vertical_Element_On_Smart_Conveyor_by_Rob2_Gripper(el_name="F_Stud", X=1.2592, Y=0.02, L=2.4384, H=0.1016)
+Nail_Vertical_Element_With_Tangent_to_an_Element(el_pose=[1.2592, 0.02, 0.0], el_dims=[2.4384, 0.04, 0.1016], If_Tangent_From_Left=False, Side_Selector=1)
+# 3. Optional L/U Stud installed with pass
+Pick_Short_Element_From_Mat_Supply(el_name="L_U_Element_1", L=2.4384, W=0.04, H=0.1016)
+Pass_Short_Element_G2G(el_name="L_U_Element_1", H=0.1016)
+side_lu = Place_Short_Vertical_Element_On_Smart_Conveyor_by_Rob1_Gripper(el_name="L_U_Element_1", X=1.2592, Y=0.0908, L=2.4384, H=0.1016)
+Nail_Vertical_Element_With_Tangent_to_an_Element(el_pose=[1.2592, 0.0908, 0.02], el_dims=[2.4384, 0.04, 0.1016], If_Tangent_From_Left=True, Side_Selector=side_lu)
+# 4. Next standard vertical stud
+Pick_Short_Element_From_Mat_Supply(el_name="R_Stud_1", L=2.4384, W=0.04, H=0.1016)
+Place_Short_Vertical_Element_On_Smart_Conveyor_by_Rob2_Gripper(el_name="R_Stud_1", X=1.2592, Y=0.5, L=2.4384, H=0.1016)
+Nail_Vertical_Element_With_Tangent_to_an_Element(el_pose=[1.2592, 0.5, 0.0], el_dims=[2.4384, 0.04, 0.1016], If_Tangent_From_Left=False, Side_Selector=1)
+# 5. Door Opening – Left King Stud
+Pick_Short_Element_From_Mat_Supply(el_name="LK_1", L=2.4384, W=0.04, H=0.1016)
+Place_Short_Vertical_Element_On_Smart_Conveyor_by_Rob2_Gripper(el_name="LK_1", X=1.2592, Y=0.72, L=2.4384, H=0.1016)
+Nail_Vertical_Element_With_Tangent_to_an_Element(el_pose=[1.2592, 0.72, 0.0], el_dims=[2.4384, 0.04, 0.1016], If_Tangent_From_Left=False, Side_Selector=1)
+# 6. Door Opening – Right King Stud
+Pick_Short_Element_From_Mat_Supply(el_name="RK_1", L=2.4384, W=0.04, H=0.1016)
+Place_Short_Vertical_Element_On_Smart_Conveyor_by_Rob2_Gripper(el_name="RK_1", X=1.2592, Y=1.68, L=2.4384, H=0.1016)
+Nail_Vertical_Element_With_Tangent_to_an_Element(el_pose=[1.2592, 1.68, 0.0], el_dims=[2.4384, 0.04, 0.1016], If_Tangent_From_Left=False, Side_Selector=1)
+# 7. Door Opening – Left Jack Stud
+Pick_Short_Element_From_Mat_Supply(el_name="LJ_1", L=2.0, W=0.04, H=0.1016)
+Place_Short_Vertical_Element_On_Smart_Conveyor_by_Rob2_Gripper(el_name="LJ_1", X=1.4784, Y=0.76, L=2.0, H=0.1016)
+Nail_Vertical_Element_With_Tangent_to_an_Element(el_pose=[1.4784, 0.76, 0.0], el_dims=[2.0, 0.04, 0.1016], If_Tangent_From_Left=False, Side_Selector=1)
+# 8. Door Opening – Right Jack Stud
+Pick_Short_Element_From_Mat_Supply(el_name="RJ_1", L=2.0, W=0.04, H=0.1016)
+Place_Short_Vertical_Element_On_Smart_Conveyor_by_Rob2_Gripper(el_name="RJ_1", X=1.4784, Y=1.64, L=2.0, H=0.1016)
+Nail_Vertical_Element_With_Tangent_to_an_Element(el_pose=[1.4784, 1.64, 0.0], el_dims=[2.0, 0.04, 0.1016], If_Tangent_From_Left=False, Side_Selector=1)
+# 9. Door Opening – Bear Loading Header Plank 1
+Pick_Short_Element_From_Mat_Supply(el_name="BL_1", L=0.86, W=0.0508, H=0.254)
+conv_bl1 = Place_Short_Horizontal_Element_On_Smart_Conveyor_by_Rob2_Gripper(el_name="BL_1", X=0.5514, Y=2.6876, L=0.86, H=0.254)
+Nail_Short_Horizontal_Element_by_Rob2_NailGun(el_pose=[0.5514, 2.6876, 0.0254], el_dims=[0.86, 0.0508, 0.254], conv_current_location=conv_bl1)
+# 10. Door Opening – Bear Loading Header Plank 2
+Pick_Short_Element_From_Mat_Supply(el_name="BL_2", L=0.86, W=0.0508, H=0.254)
+conv_bl2 = Place_Short_Horizontal_Element_On_Smart_Conveyor_by_Rob2_Gripper(el_name="BL_2", X=0.5514, Y=2.6876, L=0.86, H=0.254)
+Nail_Short_Horizontal_Element_by_Rob2_NailGun(el_pose=[0.5514, 2.6876, 0.0762], el_dims=[0.86, 0.0508, 0.254], conv_current_location=conv_bl2)
+# 11. Top Sill Plate for Window Opening
+Pick_Short_Element_From_Mat_Supply(el_name="TSP_1", L=0.92, W=0.04, H=0.1016)
+Pass_Short_Element_G2G(el_name="TSP_1", H=0.1016)
+conv_tsp = Place_Short_Horizontal_Element_On_Smart_Conveyor_by_Rob1_Gripper(el_name="TSP_1", X=0.4584, Y=1.2, L=0.92, H=0.1016)
+Nail_Short_Horizontal_Element_by_Rob1_NailGun(el_pose=[0.4584, 1.2, 0.0], el_dims=[0.92, 0.04, 0.1016], conv_current_location=conv_tsp)
+# 12. Top Cripple Stud TCP_2
+Pick_Short_Element_From_Mat_Supply(el_name="TCP_2", L=0.3984, W=0.04, H=0.1016)
+Pass_Short_Element_G2G(el_name="TCP_2", H=0.1016)
+side_tcp2 = Place_Short_Vertical_Element_On_Smart_Conveyor_by_Rob1_Gripper(el_name="TCP_2", X=0.2392, Y=0.98, L=0.3984, H=0.1016)
+Nail_Vertical_Element_With_Tangent_to_an_Element(el_pose=[0.2392, 0.98, 0.0], el_dims=[0.3984, 0.04, 0.1016], If_Tangent_From_Left=True, Side_Selector=side_tcp2)
+# 13. Top Cripple Stud TCP_1
+Pick_Short_Element_From_Mat_Supply(el_name="TCP_1", L=0.3984, W=0.04, H=0.1016)
+Pass_Short_Element_G2G(el_name="TCP_1", H=0.1016)
+side_tcp1 = Place_Short_Vertical_Element_On_Smart_Conveyor_by_Rob1_Gripper(el_name="TCP_1", X=0.2392, Y=1.2, L=0.3984, H=0.1016)
+Nail_Vertical_Element_With_Tangent_to_an_Element(el_pose=[0.2392, 1.2, 0.0], el_dims=[0.3984, 0.04, 0.1016], If_Tangent_From_Left=True, Side_Selector=side_tcp1)
+# 14. Top Cripple Stud TCP_3
+Pick_Short_Element_From_Mat_Supply(el_name="TCP_3", L=0.3984, W=0.04, H=0.1016)
+Pass_Short_Element_G2G(el_name="TCP_3", H=0.1016)
+side_tcp3 = Place_Short_Vertical_Element_On_Smart_Conveyor_by_Rob1_Gripper(el_name="TCP_3", X=0.2392, Y=1.42, L=0.3984, H=0.1016)
+Nail_Vertical_Element_With_Tangent_to_an_Element(el_pose=[0.2392, 1.42, 0.0], el_dims=[0.3984, 0.04, 0.1016], If_Tangent_From_Left=True, Side_Selector=side_tcp3)
+# 15. Standard Vertical Stud after Door/Window
+Pick_Short_Element_From_Mat_Supply(el_name="R_Stud_2", L=2.4384, W=0.04, H=0.1016)
+Place_Short_Vertical_Element_On_Smart_Conveyor_by_Rob2_Gripper(el_name="R_Stud_2", X=1.2592, Y=1.9588, L=2.4384, H=0.1016)
+Nail_Vertical_Element_With_Tangent_to_an_Element(el_pose=[1.2592, 1.9588, 0.0], el_dims=[2.4384, 0.04, 0.1016], If_Tangent_From_Left=False, Side_Selector=1)
+# 16. Window Opening – Left King Stud
+Pick_Short_Element_From_Mat_Supply(el_name="RK_2", L=2.4384, W=0.04, H=0.1016)
+Place_Short_Vertical_Element_On_Smart_Conveyor_by_Rob2_Gripper(el_name="RK_2", X=1.2592, Y=2.2376, L=2.4384, H=0.1016)
+Nail_Vertical_Element_With_Tangent_to_an_Element(el_pose=[1.2592, 2.2376, 0.0], el_dims=[2.4384, 0.04, 0.1016], If_Tangent_From_Left=False, Side_Selector=1)
+# 17. Window Opening – Right King Stud
+Pick_Short_Element_From_Mat_Supply(el_name="LK_2", L=2.4384, W=0.04, H=0.1016)
+Place_Short_Vertical_Element_On_Smart_Conveyor_by_Rob2_Gripper(el_name="LK_2", X=1.2592, Y=3.1376, L=2.4384, H=0.1016)
+Nail_Vertical_Element_With_Tangent_to_an_Element(el_pose=[1.2592, 3.1376, 0.0], el_dims=[2.4384, 0.04, 0.1016], If_Tangent_From_Left=False, Side_Selector=1)
+# 18. Window Opening – Left Jack Stud
+Pick_Short_Element_From_Mat_Supply(el_name="RJ_2", L=1.8, W=0.04, H=0.1016)
+Place_Short_Vertical_Element_On_Smart_Conveyor_by_Rob2_Gripper(el_name="RJ_2", X=1.5784, Y=2.2776, L=1.8, H=0.1016)
+Nail_Vertical_Element_With_Tangent_to_an_Element(el_pose=[1.5784, 2.2776, 0.0], el_dims=[1.8, 0.04, 0.1016], If_Tangent_From_Left=False, Side_Selector=1)
+# 19. Window Opening – Right Jack Stud
+Pick_Short_Element_From_Mat_Supply(el_name="LJ_2", L=1.8, W=0.04, H=0.1016)
+Place_Short_Vertical_Element_On_Smart_Conveyor_by_Rob2_Gripper(el_name="LJ_2", X=1.5784, Y=3.0976, L=1.8, H=0.1016)
+Nail_Vertical_Element_With_Tangent_to_an_Element(el_pose=[1.5784, 3.0976, 0.0], el_dims=[1.8, 0.04, 0.1016], If_Tangent_From_Left=False, Side_Selector=1)
+# 20. Window Opening – Lower Sill Plate
+Pick_Short_Element_From_Mat_Supply(el_name="BS_1", L=0.78, W=0.04, H=0.1016)
+conv_bs1 = Place_Short_Horizontal_Element_On_Smart_Conveyor_by_Rob2_Gripper(el_name="BS_1", X=1.8984, Y=2.6876, L=0.78, H=0.1016)
+Nail_Short_Horizontal_Element_by_Rob2_NailGun(el_pose=[1.8984, 2.6876, 0.0], el_dims=[0.78, 0.04, 0.1016], conv_current_location=conv_bs1)
+# 21. Window Opening – Lower Cripple Stud LC_1
+Pick_Short_Element_From_Mat_Supply(el_name="LC_1", L=0.56, W=0.04, H=0.1016)
+Place_Short_Vertical_Element_On_Smart_Conveyor_by_Rob2_Gripper(el_name="LC_1", X=2.1984, Y=2.5376, L=0.56, H=0.1016)
+# 22. Window Opening – Lower Cripple Stud LC_2
+Pick_Short_Element_From_Mat_Supply(el_name="LC_2", L=0.56, W=0.04, H=0.1016)
+Place_Short_Vertical_Element_On_Smart_Conveyor_by_Rob2_Gripper(el_name="LC_2", X=2.1984, Y=2.8376, L=0.56, H=0.1016)
+# 23. Rightmost Vertical Stud
+Pick_Short_Element_From_Mat_Supply(el_name="R_Stud_3", L=2.4384, W=0.04, H=0.1016)
+Place_Short_Vertical_Element_On_Smart_Conveyor_by_Rob2_Gripper(el_name="R_Stud_3", X=1.2592, Y=3.6376, L=2.4384, H=0.1016)
+Nail_Vertical_Element_With_Tangent_to_an_Element(el_pose=[1.2592, 3.6376, 0.0], el_dims=[2.4384, 0.04, 0.1016], If_Tangent_From_Left=False, Side_Selector=1)
+# 24. Install Bottom Plate
+Pick_Long_Element_From_Mat_Supply(el_name="Bot_Stud", L=3.6576, W=0.04, H=0.1016)
+conv_bot = Place_Long_Element_On_Smart_Conveyor_by_Rob2_Gripper(el_name="Bot_Stud", X=2.4984, Y=1.8288, L=3.6576, H=0.1016)
+Nail_Short_Horizontal_Element_by_Rob2_NailGun(el_pose=[2.4984, 1.8288, 0.06], el_dims=[3.6576, 0.04, 0.1016], conv_current_location=conv_bot)
+# 25. Complementary Nailing pass for any remaining vertical nail poses
+Complementary_Nail_Operation(push_to_nail=0.05, H=2.4384)

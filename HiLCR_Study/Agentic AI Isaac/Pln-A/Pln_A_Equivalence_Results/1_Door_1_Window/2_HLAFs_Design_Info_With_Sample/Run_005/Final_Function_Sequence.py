@@ -1,0 +1,106 @@
+# Pln-A case: 1_Door_1_Window
+# Experimental condition: 2_HLAFs_Design_Info_With_Sample
+# Repetition: 005
+# Execution order: 030
+
+# Pick and place top plate
+Pick_Long_Element_From_Mat_Supply(el_name="Top_Stud", L=3.6576, W=0.04, H=0.1016)
+Pass_Long_Element_G2G(el_name="Top_Stud", L=3.6576, H=0.1016)
+Place_Long_Element_On_Smart_Conveyor_by_Rob1_Gripper(el_name="Top_Stud", X=0.02, Y=1.8288, L=3.6576, H=0.1016)
+# F_Stud vertical placement and nailing
+Pick_8ft_Element_From_Sloped_Table(el_name="F_Stud", L=2.4384, W=0.04, H=0.1016)
+f_stud_ss = Place_and_Hold_8ft_Element_On_Smart_Conveyor(X=1.2592, Y=0.02, L=2.4384, H=0.1016)
+Nail_and_Release_Vertical_Element(el_name="F_Stud", X=1.2592, L=2.4384, H=0.1016, Side_Selector=f_stud_ss)
+# L/U stud placement by suction
+Pick_8ft_Element_From_Sloped_Table(el_name="L_U_Element_1", L=2.4384, W=0.04, H=0.1016)
+Pass_8ft_Element_G2S(el_name="L_U_Element_1", L=2.4384, H=0.1016)
+Place_8ft_Vertical_Element_On_Smart_Conveyor_by_Rob1_Suction(el_name="L_U_Element_1", X=1.2592, Y=0.0908, Z=0.02, L=2.4384, W=0.04, H=0.1016)
+# R_Stud_1 vertical placement and nailing
+Pick_8ft_Element_From_Sloped_Table(el_name="R_Stud_1", L=2.4384, W=0.04, H=0.1016)
+r_stud1_ss = Place_and_Hold_8ft_Element_On_Smart_Conveyor(X=1.2592, Y=0.5, L=2.4384, H=0.1016)
+Nail_and_Release_Vertical_Element(el_name="R_Stud_1", X=1.2592, L=2.4384, H=0.1016, Side_Selector=r_stud1_ss)
+# LK_1 vertical placement and nailing
+Pick_8ft_Element_From_Sloped_Table(el_name="LK_1", L=2.4384, W=0.04, H=0.1016)
+lk1_ss = Place_and_Hold_8ft_Element_On_Smart_Conveyor(X=1.2592, Y=0.72, L=2.4384, H=0.1016)
+Nail_and_Release_Vertical_Element(el_name="LK_1", X=1.2592, L=2.4384, H=0.1016, Side_Selector=lk1_ss)
+# RK_1 vertical placement and nailing
+Pick_8ft_Element_From_Sloped_Table(el_name="RK_1", L=2.4384, W=0.04, H=0.1016)
+rk1_ss = Place_and_Hold_8ft_Element_On_Smart_Conveyor(X=1.2592, Y=1.68, L=2.4384, H=0.1016)
+Nail_and_Release_Vertical_Element(el_name="RK_1", X=1.2592, L=2.4384, H=0.1016, Side_Selector=rk1_ss)
+# Left Jack 1 placement and nailing
+Pick_Short_Element_From_Mat_Supply(el_name="LJ_1", L=2.0, W=0.04, H=0.1016)
+lj1_ss = Drop_Short_Vertical_Element_With_Tangent_to_an_Element(el_name="LJ_1", X=1.4784, Y=0.76, L=2.0, H=0.1016, If_Tangent_From_Left=True)
+Nail_Vertical_Element_With_Tangent_to_an_Element(el_pose=[1.4784, 0.76, 0.0], el_dims=[2.0, 0.04, 0.1016], If_Tangent_From_Left=True, Side_Selector=lj1_ss)
+# Right Jack 1 placement and nailing
+Pick_Short_Element_From_Mat_Supply(el_name="RJ_1", L=2.0, W=0.04, H=0.1016)
+rj1_ss = Drop_Short_Vertical_Element_With_Tangent_to_an_Element(el_name="RJ_1", X=1.4784, Y=1.64, L=2.0, H=0.1016, If_Tangent_From_Left=False)
+Nail_Vertical_Element_With_Tangent_to_an_Element(el_pose=[1.4784, 1.64, 0.0], el_dims=[2.0, 0.04, 0.1016], If_Tangent_From_Left=False, Side_Selector=rj1_ss)
+# Top sill plate horizontal placement and nailing
+Pick_Short_Element_From_Mat_Supply(el_name="TSP_1", L=0.92, W=0.04, H=0.1016)
+Pass_Short_Element_G2G(el_name="TSP_1", H=0.1016)
+tsp_1_conv = Place_Short_Horizontal_Element_On_Smart_Conveyor_by_Rob1_Gripper(el_name="TSP_1", X=0.4584, Y=1.2, L=0.92, H=0.1016)
+Nail_Short_Horizontal_Element_by_Rob1_NailGun(el_pose=[0.4584, 1.2, 0.0], el_dims=[0.92, 0.04, 0.1016], conv_current_location=tsp_1_conv)
+# Top Cripple 1 placement and nailing (held)
+Pick_Short_Element_From_Mat_Supply(el_name="TCP_1", L=0.3984, W=0.04, H=0.1016)
+Pass_Short_Element_G2G(el_name="TCP_1", H=0.1016)
+tcp1_ss = Place_Short_Vertical_Element_On_Smart_Conveyor_by_Rob1_Gripper(el_name="TCP_1", X=0.2392, Y=1.2, L=0.3984, H=0.1016)
+Nail_and_Release_Vertical_Element(el_name="TCP_1", X=0.2392, L=0.3984, H=0.1016, Side_Selector=tcp1_ss, Is_Held=True)
+# Top Cripple 2
+Pick_Short_Element_From_Mat_Supply(el_name="TCP_2", L=0.3984, W=0.04, H=0.1016)
+Pass_Short_Element_G2G(el_name="TCP_2", H=0.1016)
+tcp2_ss = Place_Short_Vertical_Element_On_Smart_Conveyor_by_Rob1_Gripper(el_name="TCP_2", X=0.2392, Y=0.98, L=0.3984, H=0.1016)
+Nail_and_Release_Vertical_Element(el_name="TCP_2", X=0.2392, L=0.3984, H=0.1016, Side_Selector=tcp2_ss, Is_Held=True)
+# Top Cripple 3
+Pick_Short_Element_From_Mat_Supply(el_name="TCP_3", L=0.3984, W=0.04, H=0.1016)
+Pass_Short_Element_G2G(el_name="TCP_3", H=0.1016)
+tcp3_ss = Place_Short_Vertical_Element_On_Smart_Conveyor_by_Rob1_Gripper(el_name="TCP_3", X=0.2392, Y=1.42, L=0.3984, H=0.1016)
+Nail_and_Release_Vertical_Element(el_name="TCP_3", X=0.2392, L=0.3984, H=0.1016, Side_Selector=tcp3_ss, Is_Held=True)
+# R_Stud_2 vertical placement and nailing
+Pick_8ft_Element_From_Sloped_Table(el_name="R_Stud_2", L=2.4384, W=0.04, H=0.1016)
+r_stud2_ss = Place_and_Hold_8ft_Element_On_Smart_Conveyor(X=1.2592, Y=1.9588, L=2.4384, H=0.1016)
+Nail_and_Release_Vertical_Element(el_name="R_Stud_2", X=1.2592, L=2.4384, H=0.1016, Side_Selector=r_stud2_ss)
+# LK_2 vertical placement and nailing
+Pick_8ft_Element_From_Sloped_Table(el_name="LK_2", L=2.4384, W=0.04, H=0.1016)
+lk2_ss = Place_and_Hold_8ft_Element_On_Smart_Conveyor(X=1.2592, Y=3.1376, L=2.4384, H=0.1016)
+Nail_and_Release_Vertical_Element(el_name="LK_2", X=1.2592, L=2.4384, H=0.1016, Side_Selector=lk2_ss)
+# RK_2 vertical placement and nailing
+Pick_8ft_Element_From_Sloped_Table(el_name="RK_2", L=2.4384, W=0.04, H=0.1016)
+rk2_ss = Place_and_Hold_8ft_Element_On_Smart_Conveyor(X=1.2592, Y=2.2376, L=2.4384, H=0.1016)
+Nail_and_Release_Vertical_Element(el_name="RK_2", X=1.2592, L=2.4384, H=0.1016, Side_Selector=rk2_ss)
+# Left Jack 2 placement and nailing
+Pick_Short_Element_From_Mat_Supply(el_name="LJ_2", L=1.8, W=0.04, H=0.1016)
+lj2_ss = Drop_Short_Vertical_Element_With_Tangent_to_an_Element(el_name="LJ_2", X=1.5784, Y=2.2776, L=1.8, H=0.1016, If_Tangent_From_Left=True)
+Nail_Vertical_Element_With_Tangent_to_an_Element(el_pose=[1.5784, 2.2776, 0.0], el_dims=[1.8, 0.04, 0.1016], If_Tangent_From_Left=True, Side_Selector=lj2_ss)
+# Right Jack 2 placement and nailing
+Pick_Short_Element_From_Mat_Supply(el_name="RJ_2", L=1.8, W=0.04, H=0.1016)
+rj2_ss = Drop_Short_Vertical_Element_With_Tangent_to_an_Element(el_name="RJ_2", X=1.5784, Y=3.0976, L=1.8, H=0.1016, If_Tangent_From_Left=False)
+Nail_Vertical_Element_With_Tangent_to_an_Element(el_pose=[1.5784, 3.0976, 0.0], el_dims=[1.8, 0.04, 0.1016], If_Tangent_From_Left=False, Side_Selector=rj2_ss)
+# Header BL_1 pick, cut, place, nail
+Pick_2x10_Header(X=0.5514, L=0.86)
+Cut_2x10_Header(L=0.86, W=0.0508, H=0.254)
+bl1_conv = Place_2x10_Header(X=0.5514, Y=2.6876, Z=0.0254, L=0.86, W=0.0508, H=0.254)
+Nail_2x10_Header(el_pose=[0.5514, 2.6876, 0.0254], el_dims=[0.86, 0.0508, 0.254], conv_current_location=bl1_conv)
+# Header BL_2 pick, cut, place, nail
+Pick_2x10_Header(X=0.5514, L=0.96)
+Cut_2x10_Header(L=0.86, W=0.0508, H=0.254)
+bl2_conv = Place_2x10_Header(X=0.5514, Y=2.6876, Z=0.0762, L=0.86, W=0.0508, H=0.254)
+Nail_2x10_Header(el_pose=[0.5514, 2.6876, 0.0762], el_dims=[0.86, 0.0508, 0.254], conv_current_location=bl2_conv)
+# Lower sill plate placement and nailing
+Pick_Short_Element_From_Mat_Supply(el_name="BS_1", L=0.78, W=0.04, H=0.1016)
+bs1_conv = Place_Short_Horizontal_Element_On_Smart_Conveyor_by_Rob2_Gripper(el_name="BS_1", X=1.8984, Y=2.6876, L=0.78, H=0.1016)
+Nail_Short_Horizontal_Element_by_Rob2_NailGun(el_pose=[1.8984, 2.6876, 0.0], el_dims=[0.78, 0.04, 0.1016], conv_current_location=bs1_conv)
+# Lower Cripple 1 placement
+Pick_Short_Element_From_Mat_Supply(el_name="LC_1", L=0.56, W=0.04, H=0.1016)
+Place_Short_Vertical_Element_On_Smart_Conveyor_by_Rob2_Gripper(el_name="LC_1", X=2.1984, Y=2.5376, L=0.56, H=0.1016)
+# Lower Cripple 2 placement
+Pick_Short_Element_From_Mat_Supply(el_name="LC_2", L=0.56, W=0.04, H=0.1016)
+Place_Short_Vertical_Element_On_Smart_Conveyor_by_Rob2_Gripper(el_name="LC_2", X=2.1984, Y=2.8376, L=0.56, H=0.1016)
+# R_Stud_3 vertical placement and nailing
+Pick_8ft_Element_From_Sloped_Table(el_name="R_Stud_3", L=2.4384, W=0.04, H=0.1016)
+r_stud3_ss = Place_and_Hold_8ft_Element_On_Smart_Conveyor(X=1.2592, Y=3.6376, L=2.4384, H=0.1016)
+Nail_and_Release_Vertical_Element(el_name="R_Stud_3", X=1.2592, L=2.4384, H=0.1016, Side_Selector=r_stud3_ss)
+# Bottom plate placement
+Pick_Long_Element_From_Mat_Supply(el_name="Bot_Stud", L=3.6576, W=0.04, H=0.1016)
+Place_Long_Element_On_Smart_Conveyor_by_Rob2_Gripper(el_name="Bot_Stud", X=2.4984, Y=1.8288, L=3.6576, H=0.1016)
+# Complementary nail operation
+Complementary_Nail_Operation(H=0.1016)

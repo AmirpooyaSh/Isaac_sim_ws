@@ -1,0 +1,2175 @@
+You are Pln-A, a construction robotic planning agent. Generate an ordered sequence of calls to the supplied finalized high-level assembly functions for the target wall-panel case '1_Door_1_Window'.
+
+Experimental condition: Framing Order + HLAFs + Human Knowledge + Design Info.
+Condition definition: Target assembly/design information and finalized HLAF interfaces are supplemented with Ext-A human trade knowledge and explicit framing-order/action-sequence rules. No worked sample is supplied.
+
+The Target Assembly Instance Data contains design-specific element names, types, coordinates, dimensions, and geometric metadata. Use exact values from this JSON when populating function arguments. Do not invent missing element geometry.
+
+The HLAF catalog contains only function headers and docstrings. These are the only functions that may be called. Infer each function's capability, required inputs, sequencing dependencies, and return-value usage from its signature and docstring. Use exact function names and exact keyword argument names. Do not define new functions, import modules, call low-level robot methods, or include unsupported helpers.
+
+Submit the complete sequence through the required submit_pln_a_sequence tool. Its python_lines field must be an ordered JSON array containing one complete Python statement per item. Each item may contain only: (1) one Python comment, (2) one direct HLAF call, or (3) one simple assignment whose right-hand side is one direct HLAF call and whose returned value is used later. Keep each HLAF call in a single array item even when it is long. Do not include headings as string literals, standalone prose, imports, literal variable initializations, standalone dictionaries or lists, print calls, new function or class definitions, loops, conditionals, try blocks, or Markdown fences. Literal lists are allowed only inside HLAF keyword arguments when required by a documented parameter such as el_pose or el_dims. Use keyword arguments rather than positional arguments. Optional parameters may be omitted when their documented defaults are appropriate. Every executable item must therefore have one of these forms: HLAF_Name(keyword=value, ...) or result_name = HLAF_Name(keyword=value, ...).
+
+Target Assembly Instance Data:
+{
+  "elements": [
+    {
+      "name": "Top_Stud",
+      "type": "Top Plate",
+      "coordination": {
+        "X": 0.02,
+        "Y": 1.8288,
+        "Z": 0.06
+      },
+      "dimension": {
+        "L": 3.6576,
+        "W": 0.04,
+        "H": 0.1016
+      }
+    },
+    {
+      "name": "LK_1",
+      "type": "King Stud",
+      "coordination": {
+        "X": 1.2592,
+        "Y": 0.72,
+        "Z": 0.0
+      },
+      "dimension": {
+        "L": 2.4384,
+        "W": 0.04,
+        "H": 0.1016
+      }
+    },
+    {
+      "name": "RK_1",
+      "type": "King Stud",
+      "coordination": {
+        "X": 1.2592,
+        "Y": 1.68,
+        "Z": 0.0
+      },
+      "dimension": {
+        "L": 2.4384,
+        "W": 0.04,
+        "H": 0.1016
+      }
+    },
+    {
+      "name": "LJ_1",
+      "type": "Jack Stud",
+      "coordination": {
+        "X": 1.4784,
+        "Y": 0.76,
+        "Z": 0.0
+      },
+      "dimension": {
+        "L": 2.0,
+        "W": 0.04,
+        "H": 0.1016
+      }
+    },
+    {
+      "name": "RJ_1",
+      "type": "Jack Stud",
+      "coordination": {
+        "X": 1.4784,
+        "Y": 1.64,
+        "Z": 0.0
+      },
+      "dimension": {
+        "L": 2.0,
+        "W": 0.04,
+        "H": 0.1016
+      }
+    },
+    {
+      "name": "TSP_1",
+      "type": "Top Sill Plate",
+      "coordination": {
+        "X": 0.4584,
+        "Y": 1.2,
+        "Z": 0.0
+      },
+      "dimension": {
+        "L": 0.92,
+        "W": 0.04,
+        "H": 0.1016
+      }
+    },
+    {
+      "name": "TCP_1",
+      "type": "Top Cripple Stud",
+      "coordination": {
+        "X": 0.2392,
+        "Y": 1.2,
+        "Z": 0.0
+      },
+      "dimension": {
+        "L": 0.3984,
+        "W": 0.04,
+        "H": 0.1016
+      }
+    },
+    {
+      "name": "TCP_2",
+      "type": "Top Cripple Stud",
+      "coordination": {
+        "X": 0.2392,
+        "Y": 0.98,
+        "Z": 0.0
+      },
+      "dimension": {
+        "L": 0.3984,
+        "W": 0.04,
+        "H": 0.1016
+      }
+    },
+    {
+      "name": "TCP_3",
+      "type": "Top Cripple Stud",
+      "coordination": {
+        "X": 0.2392,
+        "Y": 1.42,
+        "Z": 0.0
+      },
+      "dimension": {
+        "L": 0.3984,
+        "W": 0.04,
+        "H": 0.1016
+      }
+    },
+    {
+      "name": "LK_2",
+      "type": "King Stud",
+      "coordination": {
+        "X": 1.2592,
+        "Y": 3.1376,
+        "Z": 0.0
+      },
+      "dimension": {
+        "L": 2.4384,
+        "W": 0.04,
+        "H": 0.1016
+      }
+    },
+    {
+      "name": "RK_2",
+      "type": "King Stud",
+      "coordination": {
+        "X": 1.2592,
+        "Y": 2.2376,
+        "Z": 0.0
+      },
+      "dimension": {
+        "L": 2.4384,
+        "W": 0.04,
+        "H": 0.1016
+      }
+    },
+    {
+      "name": "LJ_2",
+      "type": "Jack Stud",
+      "coordination": {
+        "X": 1.5784,
+        "Y": 3.0976,
+        "Z": 0.0
+      },
+      "dimension": {
+        "L": 1.8,
+        "W": 0.04,
+        "H": 0.1016
+      }
+    },
+    {
+      "name": "RJ_2",
+      "type": "Jack Stud",
+      "coordination": {
+        "X": 1.5784,
+        "Y": 2.2776,
+        "Z": 0.0
+      },
+      "dimension": {
+        "L": 1.8,
+        "W": 0.04,
+        "H": 0.1016
+      }
+    },
+    {
+      "name": "BL_1",
+      "type": "Bear Loading",
+      "coordination": {
+        "X": 0.5514,
+        "Y": 2.6876,
+        "Z": 0.0254
+      },
+      "dimension": {
+        "L": 0.86,
+        "W": 0.0508,
+        "H": 0.254
+      }
+    },
+    {
+      "name": "BL_2",
+      "type": "Bear Loading",
+      "coordination": {
+        "X": 0.5514,
+        "Y": 2.6876,
+        "Z": 0.0762
+      },
+      "dimension": {
+        "L": 0.86,
+        "W": 0.0508,
+        "H": 0.254
+      }
+    },
+    {
+      "name": "BS_1",
+      "type": "Lower Sill Plate",
+      "coordination": {
+        "X": 1.8984,
+        "Y": 2.6876,
+        "Z": 0.0
+      },
+      "dimension": {
+        "L": 0.78,
+        "W": 0.04,
+        "H": 0.1016
+      }
+    },
+    {
+      "name": "LC_1",
+      "type": "Lower Cripple Stud",
+      "coordination": {
+        "X": 2.1984,
+        "Y": 2.5376,
+        "Z": 0.0
+      },
+      "dimension": {
+        "L": 0.56,
+        "W": 0.04,
+        "H": 0.1016
+      }
+    },
+    {
+      "name": "LC_2",
+      "type": "Lower Cripple Stud",
+      "coordination": {
+        "X": 2.1984,
+        "Y": 2.8376,
+        "Z": 0.0
+      },
+      "dimension": {
+        "L": 0.56,
+        "W": 0.04,
+        "H": 0.1016
+      }
+    },
+    {
+      "name": "F_Stud",
+      "type": "Vertical Stud",
+      "coordination": {
+        "X": 1.2592,
+        "Y": 0.02,
+        "Z": 0.0
+      },
+      "dimension": {
+        "L": 2.4384,
+        "W": 0.04,
+        "H": 0.1016
+      }
+    },
+    {
+      "name": "L_U_Element_1",
+      "type": "L/U Stud",
+      "coordination": {
+        "X": 1.2592,
+        "Y": 0.0908,
+        "Z": 0.02
+      },
+      "dimension": {
+        "L": 2.4384,
+        "W": 0.04,
+        "H": 0.1016
+      }
+    },
+    {
+      "name": "R_Stud_1",
+      "type": "Vertical Stud",
+      "coordination": {
+        "X": 1.2592,
+        "Y": 0.5,
+        "Z": 0.0
+      },
+      "dimension": {
+        "L": 2.4384,
+        "W": 0.04,
+        "H": 0.1016
+      }
+    },
+    {
+      "name": "R_Stud_2",
+      "type": "Vertical Stud",
+      "coordination": {
+        "X": 1.2592,
+        "Y": 1.9588,
+        "Z": 0.0
+      },
+      "dimension": {
+        "L": 2.4384,
+        "W": 0.04,
+        "H": 0.1016
+      }
+    },
+    {
+      "name": "R_Stud_3",
+      "type": "Vertical Stud",
+      "coordination": {
+        "X": 1.2592,
+        "Y": 3.6376,
+        "Z": 0.0
+      },
+      "dimension": {
+        "L": 2.4384,
+        "W": 0.04,
+        "H": 0.1016
+      }
+    },
+    {
+      "name": "Bot_Stud",
+      "type": "Bottom Plate",
+      "coordination": {
+        "X": 2.4984,
+        "Y": 1.8288,
+        "Z": 0.06
+      },
+      "dimension": {
+        "L": 3.6576,
+        "W": 0.04,
+        "H": 0.1016
+      }
+    }
+  ]
+}
+
+Finalized HLAF Headers and Docstrings:
+Function Name: Pick_Long_Element_From_Mat_Supply
+Signature:
+def Pick_Long_Element_From_Mat_Supply(el_name: str=None, L: float=None, W: float=None, H: float=None):
+Description:
+Brings Robot_2’s "tool0" end-effector to the smart material table, creates the requested long wooden element in the simulation and mechanically attaches it to the tool, then retracts to a safe height.
+
+    Procedure:
+        1. Plan and execute a safe, collision-free motion that moves Robot_2’s tool0 TCP to
+           a hover pose above the material supply table at position [5.0, 1.08, 0.87] with
+           quaternion orientation [0, 1, 0, 0]. The world model is refreshed before planning
+           and the trajectory is executed immediately.
+        2. Approach the pick area: plan and execute a motion to the intermediate pose
+           [6.1501, 1.298421, 0.803 + (W⁄2)] using the same tool frame and an orientation
+           defined by the variable 'ev'; the world model is again updated.
+        3. Advance to the final grasp position [6.4501, 1.298421, 0.803 + (W⁄2)] with
+           identical orientation, temporarily removing the planner obstacle group
+           "world/obstacles" and constraining the tool orientation with a [1, 1, 1]
+           Cartesian restriction tensor; execute the plan.
+        4. Instantiate a virtual wooden element that matches the requested geometry by
+           calling Create_Wooden_Element_For_Smart_Mat_Table(el_name, L, W, H).
+        5. Command Robot_2.eef_attach to rigidly attach the newly created element,
+           identified by el_name, to the tool0 flange, and print a confirmation message.
+        6. Retract 0.10 m along the positive X direction to pose [6.5501, 1.298421, 0.803 +
+           (W⁄2)] under the same orientation and planning constraints; execute the motion.
+        7. Raise the end-effector 0.20 m in Z to pose [6.5501, 1.298421, 1.003 + (W⁄2)]
+           while maintaining orientation and obstacle removal; execute the motion.
+        8. Translate back along the negative X direction to a final clearance pose [6.1501,
+           1.298421, 1.003 + (W⁄2)] under the same planning parameters; execute the motion,
+           completing the pick sequence.
+
+    Args:
+        el_name (str): Unique identifier for the wooden element; used both to spawn the
+                       object in the simulation and to specify which body the robot should
+                       attach.
+        L (float): Requested length of the wooden element in the simulator’s length units.
+        W (float): Width of the element; also determines the vertical offset added to all
+                   approach and retraction Z-coordinates (W⁄2).
+        H (float): Height or thickness of the element, passed to the creation routine for
+                   accurate geometry.
+
+    Returns:
+        None. The procedure ends after the robot has attached the newly created element and
+        moved to a safe post-pick position.
+
+    Notes:
+        - Relies on Robot_2 and its TCP named "tool0" being available in the motion-planning
+          environment.
+        - Several plans explicitly remove the planning group "world/obstacles" and apply an
+          orientational restriction tensor of [1, 1, 1] to constrain rotation during
+          approach and retraction.
+        - The orientation array uses a variable 'ev' that must be defined elsewhere in the
+          execution context before this function is called.
+        - All motions are synchronously executed via Robot_2.render_exec; no conditional
+          branches or retries are implemented.
+        - The function performs no error handling and returns implicitly with None.
+
+Function Name: Pass_Long_Element_G2G
+Signature:
+def Pass_Long_Element_G2G(el_name: str=None, L: float=None, H: float=None):
+Description:
+Coordinates Robot_2 and Robot_1 to hand-off a long structural element from one gripper (Robot_2/tool0) to the other (Robot_1/tool0) at a fixed transfer station, including conveyor clearance, approach, detachment/attachment, retraction, and return-to-home motions.
+
+    Procedure:
+        1. Command Robot_2 to travel to its predefined home joint pose to start from a known
+           collision-free configuration.
+        2. Rotate the smart conveyor’s Joint_1 axis to 4.55 rad via Smart_Conv.render_exec
+           to clear the robots’ passing corridor.
+        3. Plan and immediately execute a Cartesian move for Robot_2 (tool0) to the
+           pass-over position located at X = L⁄2 + 1.954979 m, Y = −1 m, Z = H + 0.85 m with
+           quaternion [0, ev, ev, 0], updating the simulation’s world model.
+        4. Plan and execute a two-stage approach for Robot_1 (tool0): a. Pre-approach above
+           the pass point at X = −L⁄2 + 2.650101 m, Y = −1 m, Z = H + 0.95 m, orientation
+           [0, ev, −ev, 0]. b. Lower to the grasp height Z = H + 0.85 m at the same X, Y and
+           orientation, again updating the world model.
+        5. Release the element from Robot_2 by invoking eef_detach on tool0 with
+           detaching_object_name = el_name, then immediately grasp it with Robot_1 using
+           eef_attach on tool0 with attaching_object_name = el_name.
+        6. Retract Robot_2 upward to Z = H + 0.95 m (same X, Y as its pass pose) with the
+           same orientation and an explicit orientational_restriction tensor [1,1,1] to
+           constrain rotation, then execute the motion.
+        7. Return both Robot_2 and Robot_1 to their respective home joint configurations to
+           conclude the handoff sequence.
+
+    Args:
+        el_name (str): Identifier of the wooden element that Robot_2 detaches and Robot_1
+                       attaches during the hand-off.
+        L (float): Overall length of the element in the cell’s length units; used to compute
+                   the X-coordinates for both robots so the element’s midpoint aligns with
+                   the transfer station.
+        H (float): Height of the element in the cell’s units; determines the Z-offsets
+                   applied when positioning the robots above and at the passing elevation.
+
+    Returns:
+        None. The procedure completes after both robots have returned home with the element
+        attached to Robot_1’s tool.
+
+    Notes:
+        - Both robots use TCP "tool0" for planning, execution, attachment, and detachment
+          operations.
+        - The function assumes the global variable 'ev' defines the required orientation
+          components; its value must be valid before invocation.
+        - Smart_Conv.render_exec is executed once to reposition the conveyor; no subsequent
+          conveyor motions are commanded.
+        - Robot_2’s final retraction enforces a full orientational restriction via a
+          torch.tensor([1,1,1]) argument, limiting rotation during the move.
+        - No conditional branches or retries are implemented; successful execution presumes
+          reachable poses and valid element name.
+
+Function Name: Place_Long_Element_On_Smart_Conveyor_by_Rob1_Gripper
+Signature:
+def Place_Long_Element_On_Smart_Conveyor_by_Rob1_Gripper(el_name: str=None, X: float=None, Y: float=None, L: float=None, H: float=None):
+Description:
+Positions a smart conveyor under a long element, drives Robot_1 to deposit the gripped element onto the conveyor, transfers the element’s attachment from the robot’s gripper to the conveyor, then retracts and returns the robot to its home pose.
+
+    Procedure:
+        1. Stage 1 – Conveyor alignment: The smart conveyor’s drive joint “Joint_1” is
+           commanded via Smart_Conv.render_exec to the absolute position Y + L⁄2 + 0.096099
+           so that the conveyor surface is centered beneath the intended element drop-off
+           point.
+        2. Stage 2 – Move Robot_1 to a pre-place pose: Robot_1 plans and immediately
+           executes a motion of tool0 to the pose [X + 1.13259, 0, H + 1.08936] with a fixed
+           quaternion orientation [0,1,0,0], updating the world model to reflect the move.
+        3. Stage 3 – Approach placement height: Robot_1 plans and executes a linear descent
+           along the Z-axis to the pose [X + 1.13259, 0, H + 0.88936] while temporarily
+           disabling collision checking with "Smart_Conveyor" and "world/obstacles". The
+           grasp-approach metric generated by PoseCostMetric enforces the straight-line
+           vertical approach.
+        4. Stage 4 – Transfer element to conveyor: The element named el_name is first
+           detached from tool0 using Robot_1.eef_detach and then immediately attached to the
+           smart conveyor with Smart_Conv.attach_object_to_conv, physically handing off the
+           payload.
+        5. Stage 5 – Retract to pre-place pose: Robot_1 reverses the previous approach,
+           planning and executing a linear retreat back to [X + 1.13259, 0, H + 1.08936]
+           with the same collision exclusions and approach metric.
+        6. Stage 6 – Return home: Robot_1 executes its predefined move_to_home routine,
+           clearing the workcell for subsequent tasks.
+
+    Args:
+        el_name (str): Identifier of the long element currently held in tool0; used for
+                       detachment from the gripper and subsequent attachment to the
+                       conveyor.
+        X (float): World-frame X coordinate of the element’s target placement reference;
+                   combined with a fixed offset to form robot target poses.
+        Y (float): World-frame Y coordinate used to translate the conveyor so that its
+                   center aligns with the element’s final position.
+        L (float): Total length of the element; half of this length is added to Y to
+                   correctly position the conveyor under the element’s midpoint.
+        H (float): Height of the element; used to derive the robot’s vertical
+                   pre-place and place Z positions.
+
+    Returns:
+        None. The function completes after issuing all motion, detachment, attachment, and
+        homing commands without returning a value.
+
+    Notes:
+        - Assumes the element specified by el_name is already rigidly grasped by Robot_1’s
+          tool0 before invocation.
+        - The direct_pose_cost created by PoseCostMetric constrains approach and retreat to
+          follow a linear path along the robot’s Z (axis 2), minimizing lateral deviation.
+        - During approach and retract planning, collision primitives for the smart conveyor
+          and general world obstacles are temporarily ignored to prevent false positives.
+        - All motions are executed immediately after each plan through Robot_1.render_exec;
+          no conditional branches or retries are implemented.
+        - The function performs real-time actuation of both the smart conveyor and Robot_1
+          and updates the simulation/world model at each move where specified.
+
+Function Name: Place_Long_Element_On_Smart_Conveyor_by_Rob2_Gripper
+Signature:
+def Place_Long_Element_On_Smart_Conveyor_by_Rob2_Gripper(el_name: str=None, X: float=None, Y: float=None, L: float=None, H: float=None):
+Description:
+Positions the smart conveyor and commands Robot_2, equipped with "tool0", to place a long structural element onto the conveyor, then releases the element and retreats.
+
+    Procedure:
+        1. Command the Smart_Conv mechanism to move its axis "Joint_1" to the position Y + L
+           / 2 + 0.101179 so the conveyor deck is centred beneath the intended drop-off
+           location.
+        2. Plan a pre-placement approach for Robot_2’s TCP "tool0" to the pose [X + 1.33259,
+           0, H + 1.08936] with quaternion orientation [0, 1, 0, 0]; request world-model
+           updates; execute the trajectory.
+        3. Plan the downward placement motion for Robot_2 to the pose [X + 1.13259, 0, H +
+           0.88936] while removing the "Smart_Conveyor" and "world/obstacles" primitives
+           from motion planning and enforcing a full orientation lock (tensor([1,1,1]));
+           execute the trajectory.
+        4. Detach the element named by el_name from "tool0" and immediately call
+           Smart_Conv.attach_object_to_conv to fix the same element onto the conveyor.
+        5. Plan Robot_2’s retreat to the safe pose [X + 1.13259, 0, H + 1.08936] with the
+           same orientation and environmental restrictions as before; execute the
+           trajectory.
+
+    Args:
+        el_name (str): Identifier of the long element currently held by Robot_2; this name
+                       is passed to detachment and conveyor-attachment routines.
+        X (float): World-frame x-coordinate that defines the element’s final placement
+                   position on the conveyor.
+        Y (float): World-frame y-coordinate that, together with the element length,
+                   specifies the conveyor’s target translation along axis "Joint_1".
+        L (float): Total length of the element; its half-length is added to Y when
+                   positioning the conveyor to centre the element.
+        H (float): Height of the element; used to compute the robot’s
+                   approach, placement, and retreat z-coordinates.
+
+    Returns:
+        None. The function finishes after executing all motions and attachment changes
+        without returning a value.
+
+    Notes:
+        - Executed exclusively by Robot_2 using TCP "tool0".
+        - No conditional branches; all motions are executed sequentially as planned.
+        - The orientation restriction vector [1,1,1] locks all rotational degrees of freedom
+          during the constrained placements.
+        - Function produces simulation side-effects: moves the Smart Conveyor, updates the
+          world model, detaches the element from the robot end-effector, and attaches it to
+          the conveyor.
+
+Function Name: Pick_8ft_Element_From_Sloped_Table
+Signature:
+def Pick_8ft_Element_From_Sloped_Table(el_name: str=None, L: float=2.4384, W: float=None, H: float=None):
+Description:
+Commands Robot_2 to approach a wooden 8-ft element resting on a sloped support table, grasp it with the TCP identified as “tool0”, attach the simulated element to the end-effector, retract safely along the table’s slope, and finally return the robot to its predefined home position.
+
+    Procedure:
+        1. Derive the element’s centre-of-mass Cartesian position on the sloped table from
+           its width, height and the known table inclination (30°).
+        2. Convert the desired tool frame orientation—perpendicular to the stud’s long axis
+           and normal to the table surface—into a quaternion, mirroring the Y component to
+           avoid Euler singularity.
+        3. Stage 1 – Pre-pick: plan and immediately execute a motion that moves tool0 above
+           the element along the table normal, stopping 0.2 m away from the surface.
+        4. Stage 2 – Pick: plan and execute a descending motion that brings tool0 to the
+           grasp depth equal to half the element height minus a 6.1 mm clearance, reaching
+           the pick pose while respecting orientation constraints and temporarily removing
+           the sloped table obstacle model from motion planning.
+        5. Stage 3 – Create and attach: instantiate the element in the simulation with
+           Create_Wooden_Element_For_Sloped_Table, then attach the new object to tool0 to
+           represent a successful grasp.
+        6. Stage 4 – Retract: plan and execute a linear retreat of 0.4 m along the table
+           normal while preserving orientation and obstacle-free path.
+        7. Stage 5 – Return: command Robot_2 to move back to its home joint configuration.
+
+    Args:
+        el_name (str): Unique identifier assigned to the wooden element; reused during
+                       simulated creation and end-effector attachment.
+        L (float): Element length in metres; also used to compute the element’s centre
+                   position along the table.
+        W (float): Element width in metres; influences the vertical and lateral offsets
+                   required to locate the centre point on the sloped surface.
+        H (float): Element height (thickness) in metres; determines the final pick depth
+                   inside the table and the TCP approach distance.
+
+    Returns:
+        None. The procedure is executed for its side-effects: robot motion, simulation model
+        creation, and attachment state update.
+
+    Notes:
+        - Assumes Robot_2 is available with TCP name “tool0” and that its move_to_home()
+          call resets the robot to a safe standby pose.
+        - Relies on a fixed table slope of 30° (0.5236 rad) and hard-coded world frame
+          offsets to locate the element.
+        - Motion plans are executed immediately via render_exec, implying synchronous
+          blocking execution before proceeding to the next stage.
+        - The sloped table is removed from the collision scene during pick and retract
+          stages to prevent planner collisions.
+        - No explicit success/failure status is returned; any runtime errors would propagate
+          as exceptions from the underlying motion or attachment calls.
+
+Function Name: Place_and_Hold_8ft_Element_On_Smart_Conveyor
+Signature:
+def Place_and_Hold_8ft_Element_On_Smart_Conveyor(X: float=None, Y: float=None, L: float=2.4384, H: float=None):
+Description:
+Positions the smart conveyor and guides Robot_2 through a two-step approach to press-fit ("place and hold") an 8-foot element at the commanded X-, Y-, and H-coordinates while logging the associated nail locations. The routine also returns which side of the conveyor was chosen so that downstream fastening operations can address the correct face.
+
+    Procedure:
+        1. Compute target_offset = 1.8288 − Y + 2.275 + 0.5 to evaluate whether the desired
+           placement position lies beyond the smart conveyor joint-1 travel limit
+           (SMART_CONV_RANGE_OF_MOTION_J1).
+        2. Select Side_Selector: +1 when the requested position is reachable on the
+           conveyor’s positive side, −1 when the joint must index in the opposite direction
+           to stay within range.
+        3. Derive the joint-1 set-point conv_pose = 1.8288 − Y + 2.275 + 0.5·Side_Selector
+           and command Smart_Conv.render_exec('Joint_1', conv_pose) to translate the
+           conveyor bed accordingly.
+        4. Append (conv_pose, Side_Selector) to Smart_Conv._nail_poses and append 1.8288 − Y
+           + 2.275 to Smart_Conv._vertical_nail_poses so that later nail-driving routines
+           know the horizontal and vertical coordinates just established.
+        5. Calculate a pre-place approach pose for Robot_2 at [X + L/2 + 0.867569,
+           0.5·Side_Selector, H + 0.98936] with quaternion [0, ev, ev, 0]. Plan the motion
+           via Robot_2.plan(..., update_world_needed=True) and immediately execute it with
+           Robot_2.render_exec(renderInstance=True, Show_Sphere=False).
+        6. Plan the final “place and hold” pose 0.2 m closer to the element ([X + L/2 +
+           0.667569, 0.5·Side_Selector, H + 0.88936]) using the same orientation but adding
+           an orientational_restriction tensor and temporarily removing the "Smart_Conveyor"
+           and "world/obstacles" primitives from motion planning. Execute the plan with
+           Robot_2.render_exec(renderInstance=True, Show_Sphere=False).
+        7. Return the computed Side_Selector so that caller logic knows on which side of the
+           conveyor the element now resides.
+
+    Args:
+        X (float): Global X-coordinate of the element’s reference end; used to derive the
+                   robot’s approach and placement x-positions.
+        Y (float): Desired global Y-coordinate of the element’s centerline relative to the
+                   conveyor; determines joint offset and side selection.
+        L (float): Length of the element in metres; defaults to 2.4384 m (8 ft) and is used
+                   to offset the robot’s X-axis approach and placement poses.
+        H (float): Height of the element; offsets are added to generate 
+                   approach and final placement heights.
+
+    Returns:
+        An integer Side_Selector equal to +1 when the element is placed on the conveyor’s
+        positive side or −1 when placed on the negative side.
+
+    Notes:
+        - Requires global constants SMART_CONV_RANGE_OF_MOTION_J1 and ev to be defined and a
+          configured Smart_Conv station object exposing render_exec, _nail_poses, and
+          _vertical_nail_poses.
+        - Mutates Smart_Conv._nail_poses and Smart_Conv._vertical_nail_poses, making the
+          logged poses available to later nailing routines.
+        - Uses Robot_2 with TCP "tool0"; both motion plans are executed immediately after
+          planning.
+        - No feedback or retry logic is implemented; successful execution presumes all poses
+          are reachable.
+        - The function performs no actual nailing operation—only records intended nail
+          coordinates.
+
+Function Name: Nail_and_Release_Vertical_Element
+Signature:
+def Nail_and_Release_Vertical_Element(el_name: str=None, X: float=None, push_to_nail: float=0.05, L: float=2.4384, H: float=None, Side_Selector: int=0, Is_Held: bool=False):
+Description:
+Coordinates Robot_1 and Robot_2 to (1) perform a two-point nailing motion on a standing panel and (2) optionally detach and place that panel onto the smart conveyor, before homing both robots.
+
+    Procedure:
+        1. Determine the lateral Y position to address: set proceeding_y to 0.5 m toward the
+           selected conveyor side (Side_Selector = +1 for +Y, -1 for -Y). If the panel is
+           still held and the active side is -1, offset the Y target further away from the
+           conveyor by NAILING_CONV_TARGET.
+        2. If the side selector equals ±1, start the nailing routine with Robot_1:
+        3. a. Acquire the DynamicControl interface and obtain a live rigid-body handle to
+           Robot_1’s tool frame (tool2) for accurate pose feedback.
+        4. b. Plan and execute a motion that brings Robot_1’s nail-gun TCP (tool2) to the
+           first nailing approach pose at [1.1, proceeding_y, H – 0.7·H + 0.89546] in the
+           world frame with a predefined quaternion orientation [ev, 0, ev, 0].
+        5. c. Query the actual TCP pose, release planner path restrictions, and plan/execute
+           a straight push of +push_to_nail metres along the positive X-axis, simulating the
+           first nail insertion. A grasp-approach cost metric constrains the motion
+           primarily along the tool’s X–Z plane.
+        6. d. Retract the TCP by the same distance (-push_to_nail along X) to clear the
+           surface.
+        7. e. Move the TCP upward by 0.4·H along Z to reach the second (top) nailing
+           position while maintaining orientation constraints.
+        8. f. Perform a second push of +push_to_nail along X for the top nail, again
+           followed by an immediate retraction of -push_to_nail to withdraw the tool.
+        9. g. Command Robot_1 to return to its predefined home configuration.
+        10. If the element is not meant to remain held (Is_Held is False), execute the
+           release sequence with Robot_2:
+        11. h. Issue an end-effector detach on Robot_2’s tool0 to release the element named
+           el_name and call Smart_Conv.attach_object_to_conv to affix it to the conveyor.
+        12. i. Compute a safe post-placement X coordinate (post_x = X + L⁄2 + 0.867569) and
+           plan/execute a withdrawal move of tool0 to [post_x, 0.5·Side_Selector, H +
+           0.98936] with orientation [0, ev, ev, 0], clearing the workspace.
+        13. j. Return Robot_2 to its home configuration, completing the procedure.
+        14. The function exits without an explicit return value.
+
+    Args:
+        el_name (str): Identifier of the vertical element that may be detached from Robot_2
+                       and attached to the conveyor during the release phase.
+        X (float): Nominal centre X-coordinate of the element; used to compute the
+                   post-placement retreat position for Robot_2.
+        push_to_nail (float): Linear offset (metres) by which Robot_1 advances its nail-gun
+                              TCP along the positive X-axis to press the nail into the
+                              element.
+        L (float): Overall length of the element; contributes to calculating the safe X
+                   retreat distance for Robot_2 after release.
+        H (float): Height of the element; used to derive both the initial and secondary
+                   nailing Z levels and the post-placement retreat height.
+        Side_Selector (int): Integer flag indicating which side of the conveyor is active:
+                             +1 for the positive Y side, -1 for the negative Y side; any
+                             other value skips the nailing routine.
+        Is_Held (bool): If True, the element remains gripped after nailing and the release
+                        sequence is skipped; if False, Robot_2 detaches the element and
+                        places it on the conveyor.
+
+    Returns:
+        None. The procedure completes after commanding all planned robot motions and
+        potential attachment operations.
+
+    Notes:
+        - Nailing motions are realised as small linear pushes and retractions along the
+          robot’s X-axis; the function does not issue an explicit trigger to a nail-firing
+          mechanism.
+        - The nailing sequence executes only when Side_Selector is exactly +1 or -1;
+          otherwise the function bypasses all Robot_1 motions.
+        - Release operations are contingent on Is_Held being False; when True, the element
+          remains attached to Robot_2 and no conveyor hand-off occurs.
+        - Both Robot_1 and Robot_2 finish their respective tasks by returning to their
+          predefined home positions, clearing the shared workspace.
+        - Dynamic pose queries through the simulation’s DynamicControl interface ensure that
+          push and retract distances are relative to the tool’s live pose, improving
+          positional accuracy.
+
+Function Name: Pick_Short_Element_From_Mat_Supply
+Signature:
+def Pick_Short_Element_From_Mat_Supply(el_name: str=None, L: float=None, W: float=None, H: float=None):
+Description:
+Commands Robot_2 to collect a short wooden element from the smart material supply, create its digital twin, rigidly attach it to the robot’s end-effector, return to a safe pre-pick position, and finally retreat to the robot’s home pose.
+
+    Procedure:
+        1. Plan a pre-pick approach for Robot_2 with tool0 to the Cartesian pose [6.1501,
+           0.487449, W⁄2 + 0.803] using the current world model, then execute the generated
+           trajectory.
+        2. Plan a short forward motion to the pick pose at [6.4501, 0.487449, W⁄2 + 0.803]
+           while (a) temporarily removing the prims "Smart_Conveyor" and "world/obstacles"
+           from collision checking and (b) constraining the tool orientation with an
+           orientational restriction tensor; execute the plan to place the tool at the grasp
+           location.
+        3. Instantiate the correct-length wooden element on the smart material table by
+           calling Create_Wooden_Element_For_Smart_Mat_Table with the supplied geometry
+           parameters.
+        4. Command Robot_2 to rigidly attach the newly created element (identified by
+           el_name) to the tool0 end-effector, finalizing the physical pick.
+        5. Plan a retreat back to the original pre-pick waypoint, again ignoring the same
+           primitives for collision and applying a direct_pose_cost metric generated by
+           PoseCostMetric.create_grasp_approach_metric; execute this motion.
+        6. Send Robot_2 to its predefined home configuration with move_to_home, completing
+           the pick sequence.
+
+    Args:
+        el_name (str): Unique identifier of the wooden element to be created in simulation
+                       and subsequently attached to the robot’s tool.
+        L (float): Target length of the wooden element in simulation metric units.
+        W (float): Width of the wooden element; also used to compute the Z-height (W⁄2 +
+                   0.803 m) for approach and pick poses.
+        H (float): Height (thickness) of the wooden element in simulation metric units.
+
+    Returns:
+        None. The function completes the pick operation and ends without returning a value.
+
+    Notes:
+        - All motions are performed by Robot_2 using the end-effector identified as tool0.
+        - The orientation values contain a constant 'ev' term whose numeric value is defined
+          elsewhere in the codebase.
+        - Collision avoidance is relaxed for the specified primitives during approach and
+          retreat to simplify motion planning near the supply area.
+        - The direct_pose_cost metric biases the retreat trajectory to move chiefly along
+          the positive Z-axis (linear_axis = 2).
+
+Function Name: Drop_Short_Vertical_Element_With_Tangent_to_an_Element
+Signature:
+def Drop_Short_Vertical_Element_With_Tangent_to_an_Element(el_name: str=None, X: float=None, Y: float=None, L: float=None, H: float=None, If_Tangent_From_Left: bool=False) -> int:
+Description:
+Places a short vertical framing element against an existing element, disengages the robot gripper, re-enables gravity, and hands the element off to the smart conveyor, selecting the conveyor side according to the declared tangency.
+
+    Procedure:
+        1. Compute constant offsets (half_length and mid_range) used to map work-cell Y
+           positions to the Smart_Conv ‘Joint_1’ axis.
+        2. Choose an initial Side_Selector (-1 = left, +1 = right) and a small jack Y offset
+           based on whether the new element is tangent from the left or from the right.
+        3. Check the resulting conveyor joint target against the nailing conveyor target
+           range (NAILING_CONV_TARGET and SMART_CONV_RANGE_OF_MOTION_J1). If the commanded
+           displacement would exceed the conveyor’s travel, flip Side_Selector and update
+           the jack offset to keep the motion within reachable limits.
+        4. Convert the requested element Y position to the required Smart_Conv ‘Joint_1’
+           position (conv_pose) and command the conveyor to that absolute joint value with
+           Smart_Conv.render_exec. Log the tuple (conv_pose, Side_Selector) to
+           Smart_Conv._nail_poses for later reference.
+        5. Stage 1 – Pre-place approach: plan a Cartesian motion of Robot_2 with tool0 to a
+           pose directly above the final placement location. The target pose is (X + L/2 +
+           0.887569 , 0.5·Side_Selector + Jack_Y_Placement_Offset , H + 0.93936) with
+           orientation [0, −ev, ev, 0]. Execute the planned trajectory with
+           Robot_2.render_exec so the element is poised for insertion.
+        6. Stage 2 – Place and drop: plan a second motion that lowers the element by 0.1 m
+           in X (keeping the same Y and Z except for removing the small jack offset) and
+           execute it. During planning the simulation removes the Smart_Conveyor and
+           world/obstacles primitives from collision checking and applies an orientational
+           restriction tensor of [1,1,1] so the orientation is maintained.
+        7. Stage 3 – Release and hand-off: open the robot end-effector (tool0) with
+           Robot_2.eef_detach to detach the element named el_name. Re-enable gravity on the
+           detached USD prim so the element can drop. Finally, call
+           Smart_Conv.attach_object_to_conv to associate the free-falling element with the
+           conveyor system.
+        8. Return the decided Side_Selector so that downstream routines know which conveyor
+           side is in use.
+
+    Args:
+        el_name (str): String identifier of the vertical element that is currently grasped
+                       by Robot_2 and will be detached and dropped onto the conveyor.
+        X (float): World-frame X coordinate of the element’s centreline; used to compute the
+                   robot’s approach and placement poses.
+        Y (float): World-frame Y coordinate of the element; used, together with system
+                   offsets, to derive the required Smart_Conv joint position.
+        L (float): Physical length of the element, used to position the robot TCP half a
+                   length beyond the element’s centre during approach.
+        H (float): Top-of-element height above the world frame; defines the Z component of
+                   the robot’s approach and placement poses.
+        If_Tangent_From_Left (bool): Boolean flag indicating whether the new element must be
+                                     placed tangent to an existing element on its left side
+                                     (True) or right side (False).
+
+    Returns:
+        Integer +1 or −1 indicating the conveyor side selected for the drop operation (right
+        = +1, left = −1).
+
+    Notes:
+        - Uses Robot_2 with TCP/tool name "tool0".
+        - Relies on global constants NAILING_CONV_TARGET and SMART_CONV_RANGE_OF_MOTION_J1
+          to avoid exceeding conveyor travel limits; actual numeric values are retrieved at
+          runtime.
+        - Orientation components include an external variable 'ev' that must be defined
+          elsewhere in the control stack.
+        - Enabling gravity and attaching the object to the conveyor are performed after
+          detachment so the element physically drops onto the conveyor in the simulation.
+        - No retry or error handling is implemented; the caller is responsible for verifying
+          successful execution.
+
+Function Name: Nail_Vertical_Element_With_Tangent_to_an_Element
+Signature:
+def Nail_Vertical_Element_With_Tangent_to_an_Element(push_to_nail: float=0.01, el_pose: List[float]=None, el_dims: List[float]=None, If_Tangent_From_Left: bool=False, Side_Selector: int=0) -> None:
+Description:
+Plans and executes an angled two-nail sequence with Robot_1’s nail-gun TCP ("tool2") on a vertical element that is flush (tangent) to a neighbouring element, then returns both robots to their respective home poses.
+
+    Procedure:
+        1. Derive a left/right multiplier (side_mult = −1 when the neighbouring element is
+           on the left, else +1).
+        2. Verify that Side_Selector is either −1 or +1; if not, print an error and
+           terminate.
+        3. Build the desired tool orientation: combine a 90° rotation about the X-axis with
+           a 30° nail cant, oriented according to side_mult, and convert the Euler angles to
+           a quaternion; negate the Y component to avoid a singularity.
+        4. Compute the pre-nail Cartesian approach pose in front of the element using
+           el_pose, el_dims, Side_Selector, side_mult and fixed approach offsets.
+        5. Ask Robot_1 to plan a collision-aware path for "tool2" to the approach pose;
+           abort if the pose is unreachable. If planning succeeds, execute the motion on the
+           real robot and update the world model.
+        6. Acquire the low-level Dynamic Control interface and obtain the live rigid-body
+           handle for Robot_1’s tool frame.
+        7. Repeat twice to place two nails:
+        8. a. Read the current tool pose from the controller.
+        9. b. Calculate the push offset that drives the tool along the nail axis:
+           –el_dims[1]/(2·cos(θ)) + push_to_nail + 0.1, where θ = 30°. Convert this scalar
+           into Cartesian displacements (dx along ±Y, dz downward) according to side_mult.
+        10. c. Release path-planning restrictions, plan and execute the push-in move to [x,
+           y+dx, z+dz] while maintaining orientation; plan uses a linear-axis (Z) cost
+           metric and temporarily removes the conveyor and world obstacles.
+        11. d. Obtain the updated tool pose, then plan and execute the exact reverse motion
+           to retract the nail gun to its pre-push position.
+        12. e. Obtain the tool pose again, lift the TCP vertically by 40 % of the element
+           height (0.4·el_dims[2]) to align with the next nail location, and execute the
+           lift.
+        13. After delivering both nails, command Robot_1 and Robot_2 to their predefined
+           home configurations while removing temporary planning obstacles.
+
+    Args:
+        push_to_nail (float): Additional forward displacement (metres) applied to the
+                              nail-gun TCP during each push-in move to ensure full nail
+                              penetration; defaults to 0.01 m.
+        el_pose (List[float]): Pose of the vertical element’s reference frame expressed as a
+                               list [x, y, z, …]; the X component is used to position the
+                               pre-nail approach point.
+        el_dims (List[float]): Element dimensions [length_x, depth_y, height_z] in metres;
+                               used to compute approach, push-in, and inter-nail lift
+                               offsets.
+        If_Tangent_From_Left (bool): True when the target element is tangent to a
+                                     neighbouring element on its left; determines whether
+                                     the tool approaches from the left or right.
+        Side_Selector (int): Conveyor side from which the robot operates (−1 or +1). Any
+                             other value triggers an early termination with an error
+                             message.
+
+    Returns:
+        None. The function exits silently after successful completion or after printing an
+        error message if the approach pose is unreachable or Side_Selector is invalid.
+
+    Notes:
+        - All motions are executed with Robot_1 holding TCP "tool2"; Robot_2 only receives a
+          final home command.
+        - The procedure aborts immediately if the pre-nail approach pose is unplanable or if
+          Side_Selector is not ±1.
+        - During each push/retract sequence, planning constraints are relaxed and the
+          conveyor and static obstacles are temporarily excluded to simplify motion
+          generation.
+        - Direct_pose_cost metrics are applied to favour linear motion along the nail
+          insertion axis during push-in/retraction and along Z during the inter-nail lift.
+        - The actual actuation of a nail gun (triggering or firing) is not commanded; the
+          robot only moves the tool along the intended nailing trajectory.
+
+Function Name: Pass_Short_Element_G2G
+Signature:
+def Pass_Short_Element_G2G(el_name: str=None, H: float=None):
+Description:
+Coordinates a two-robot hand-off in which Robot_2 releases a short structural element and Robot_1 grasps it, then both robots retreat to their home poses.
+
+    Procedure:
+        1. Compute the positional and grasping offsets: a fixed passing location
+           (PASSING_LOC), half_grip, a lateral y-offset, and a length-dependent x-offset
+           (delta = −H/2 + 0.0061).
+        2. Stage 1 – Pre-grasp: Robot_1 plans and executes a motion with tool0 to a pose
+           that is 0.3 m short of the final hand-off point (PASSING_LOC[0] + 2·delta − 0.3,
+           half_grip + lateral, PASSING_LOC[2]) using a predefined quaternion orientation
+           and updates the world model.
+        3. Stage 2 – Present element: Robot_2 plans and executes a motion with tool0 to the
+           exact passing location (PASSING_LOC) with its own predefined orientation, ready
+           for transfer.
+        4. Stage 3 – Final grasp approach: Robot_1 plans and executes a second motion that
+           advances the remaining 0.3 m to the hand-off position (PASSING_LOC[0] + 2·delta,
+           half_grip + lateral, PASSING_LOC[2]). During path generation it removes listed
+           primitives from collision checking and biases the trajectory with
+           create_grasp_approach_metric to approach along the Z-axis.
+        5. Stage 4 – Element transfer: Robot_2 opens its tool0 and detaches the element
+           named el_name; Robot_1 refreshes the environment state and attaches the same
+           element to its own tool0, completing the hand-off.
+        6. Stage 5 – Robot_2 retreat: Robot_2 plans and executes a short retreat (+0.2 m in
+           the X direction) while maintaining its orientation and ignoring specified
+           primitives during planning; an orientational restriction tensor constrains
+           rotation.
+        7. Stage 6 – Homing: Both Robot_2 and Robot_1 are commanded to return to their
+           predefined home configurations, concluding the routine.
+
+    Args:
+        el_name (str): Identifier of the element to be transferred; it is detached from
+                       Robot_2’s tool0 and subsequently attached to Robot_1’s tool0.
+        H (float): Height of the element, used to calculate the approach offset (delta) that
+                   aligns Robot_1’s gripper with the element’s center during the grasp.
+
+    Returns:
+        None. The procedure runs to completion or raises an error upstream if any of the
+        planning or execution calls fail.
+
+    Notes:
+        - Requires the global constant 'ev' and the classes/functions PoseCostMetric and
+          torch to be available in the runtime environment.
+        - Assumes the element referenced by el_name is already attached to Robot_2’s tool0
+          before invocation.
+        - Planning calls specify lists of primitives to temporarily exclude from collision
+          checking, affecting only the current motion plan.
+        - All motions are executed sequentially; no concurrent robot movements are
+          scheduled.
+        - All Cartesian positions are expressed in the simulation’s world frame and must be
+          reachable by the respective robots.
+        - No explicit error handling, state validation, or retry logic is implemented;
+          failures propagate from underlying planning or execution methods.
+
+Function Name: Place_Short_Horizontal_Element_On_Smart_Conveyor_by_Rob1_Gripper
+Signature:
+def Place_Short_Horizontal_Element_On_Smart_Conveyor_by_Rob1_Gripper(el_name: str=None, X: float=None, Y: float=None, L: float=None, H: float=None) -> float:
+Description:
+Synchronously moves the smart conveyor into position, guides Robot_1 with gripper "tool0" to lower a short horizontal element onto the conveyor, releases the element by detaching it and re-enabling gravity, mechanically fixes the element to the conveyor, then returns the robot to its home pose.
+
+    Procedure:
+        1. Command the smart conveyor’s joint named "Joint_1" to the offset value -(Y –
+           1.8288) + L⁄2 + 1.774899, aligning the conveyor surface with the element’s
+           intended Y location.
+        2. Compute the conveyor’s current reference location as Conv_Curr_Loc = -(Y –
+           1.8288) + 2.275 for later use and return.
+        3. Plan and immediately execute Robot_1’s motion with TCP "tool0" to a pre-place
+           pose above the target spot at Cartesian position [X + 1.13259, 0, H + 1.18936]
+           and orientation [0, 1, 0, 0], updating the world state during planning.
+        4. Plan and execute a lowering motion that brings the TCP to [X + 1.13259, 0, H +
+           0.98936] with the same orientation while temporarily removing the Smart_Conveyor
+           and world/obstacles primitives from collision checking and biasing the solver
+           with a grasp-approach cost metric.
+        5. Detach the element named el_name from "tool0", enable gravity on the released USD
+           prim "/world/obstacles/{el_name}", and command the conveyor to attach the object
+           so it will be carried away.
+        6. Command Robot_1 to travel to its predefined home configuration, completing the
+           task.
+        7. Return the previously calculated Conv_Curr_Loc value.
+
+    Args:
+        el_name (str): USD prim name of the short horizontal element currently held by
+                       Robot_1 and to be deposited onto the smart conveyor.
+        X (float): World-frame X coordinate of the element’s placement position; used to
+                   compute both pre-place and final TCP poses.
+        Y (float): World-frame Y coordinate of the element’s placement position; used to
+                   position the conveyor and to compute Conv_Curr_Loc.
+        L (float): Length of the element; half of this length offsets the conveyor so its
+                   center aligns with the element’s center.
+        H (float): World-frame height of the element’s top surface; used to set the robot’s
+                   approach and placement heights.
+
+    Returns:
+        Float equal to Conv_Curr_Loc, representing the conveyor’s resulting joint position
+        after alignment.
+
+    Notes:
+        - Uses Robot_1 exclusively with TCP "tool0".
+        - Function performs no internal validation of argument values; invalid or None
+          inputs will raise downstream errors.
+        - Gravity is initially disabled on the element and is explicitly re-enabled before
+          conveyor attachment.
+        - All robot motions are executed immediately after planning via Robot_1.render_exec;
+          no retries or alternative paths are implemented.
+        - No conditional branches or loops are present; the sequence executes in fixed
+          order.
+
+Function Name: Nail_Short_Horizontal_Element_by_Rob1_NailGun
+Signature:
+def Nail_Short_Horizontal_Element_by_Rob1_NailGun(push_to_nail: float=0.01, el_pose: List[float]=None, el_dims: List[float]=None, conv_current_location: float=None) -> None:
+Description:
+Plans and executes Robot_1 motions for driving two nails into each end of a short, horizontally-oriented construction element while coordinating the smart conveyor position. The routine first nails the element’s left edge, then its right edge, provided both the conveyor stroke and the robot/nail-gun TCP (tool2) can reach the commanded poses.
+
+    Procedure:
+        1. Compute the tool (tool2) orientation quaternion required for left-side nailing
+           from the element’s sill-nailing angle.
+        2. LEFT END SEQUENCE: a. Check whether shifting the smart conveyor far enough to
+           expose the element’s left edge would exceed Joint_1 travel
+           (SMART_CONV_RANGE_OF_MOTION_J1). If so, abort left-side nailing and print a
+           warning. b. Move the smart conveyor (Joint_1) to a position that places the
+           element’s left edge under the robot. c. Issue a pre-nail joint-space plan for
+           Robot_1 that positions the nail-gun TCP above the intended first left-edge nail
+           location. Abort this side if the plan is infeasible. d. When planning succeeds,
+           render and execute the motion, then obtain a live Dynamic Control interface
+           handle and read the current tool2 pose. e. Plan and execute a forward "push"
+           along the tool’s approach vector by (|el_dims[1]|/2 /√3 − 0.1 − push_to_nail) to
+           press the gun onto the element (Nail 1 approach). f. Plan and execute a symmetric
+           retreat motion to clear the element after the first push (Nail 1 retract). g.
+           Plan and execute a vertical re-positioning that lifts the tool by 0.4 ×
+           el_dims[2] to reach the height of the second nail (Nail 2 prep). h. Repeat the
+           forward push and retreat pair at the second left-edge nail location (Nail 2
+           approach and retract). i. Return Robot_1 to its home configuration, removing
+           temporary collision primitives for the conveyor and world obstacles.
+        3. Recompute the tool orientation quaternion for right-side nailing (mirrored about
+           the vertical axis).
+        4. RIGHT END SEQUENCE: a. Verify that moving the conveyor to expose the right edge
+           will remain within allowable Joint_1 travel; if not, print a reachability warning
+           and skip this side. b. Command the smart conveyor to shift negatively along
+           Joint_1 to present the right edge. c. Plan and verify a pre-nail approach that
+           positions the TCP above the first right-edge nail site. Abort this side if
+           planning fails. d. Execute the same series of four motions as on the left side
+           (first push, first retract, vertical reposition, second push, second retract),
+           but mirrored in Y so the nail-gun pushes from the opposite direction. e. Conclude
+           by sending Robot_1 back to its home pose and removing temporary collision
+           primitives.
+
+    Args:
+        push_to_nail (float): Additional linear advance (in metres) applied to each nailing
+                              push, allowing fine adjustment of how far the nail-gun TCP
+                              presses into the timber.
+        el_pose (List[float]): XYZ position of the element origin in the world frame, used
+                               as a reference for calculating all robot target poses.
+        el_dims (List[float]): Element’s bounding box dimensions [length_x, width_y,
+                               height_z] in metres; half-width and height are referenced
+                               when computing nail approach offsets.
+        conv_current_location (float): Present position of the smart conveyor’s first joint
+                                       (Joint_1) in metres, used to decide and command
+                                       subsequent conveyor shifts that bring the element’s
+                                       left or right edge within the robot’s workspace.
+
+    Returns:
+        None. The function completes after issuing all feasible conveyor and robot motion
+        commands or printing reachability warnings.
+
+    Notes:
+        - All motions are generated with Robot_1.plan followed by Robot_1.render_exec;
+          execution assumes these calls send trajectories to the physical robot.
+        - Nailing actions are represented as linear push motions of the nail-gun TCP; the
+          function does not explicitly trigger the nail-gun firing mechanism.
+        - Collision models for "Smart_Conveyor" and "world/obstacles" are temporarily
+          removed during close nailing approaches to avoid planning interference.
+        - The function performs two nails per element side (left then right) whenever both
+          the conveyor and robot reachability checks pass; sides that fail either check are
+          skipped with a console message.
+        - After each side’s sequence the robot is returned to its predefined home pose,
+          restoring nominal configuration.
+        - Dynamic (real-time) tool pose feedback is obtained through the dynamic control
+          interface before every push and retreat to ensure motion plans are based on the
+          current TCP pose.
+        - Orientation quaternions are computed from Euler angles that incorporate
+          SILL_NAILING_ANGLE and are mirrored between left and right sides.
+
+Function Name: Place_Short_Horizontal_Element_On_Smart_Conveyor_by_Rob2_Gripper
+Signature:
+def Place_Short_Horizontal_Element_On_Smart_Conveyor_by_Rob2_Gripper(el_name: str=None, X: float=None, Y: float=None, L: float=None, H: float=None) -> float:
+Description:
+Commands Robot 2 to drop a short horizontal element that is currently held by its “tool0” gripper onto the smart conveyor. The routine first positions the conveyor so the element’s longitudinal centre aligns with the conveyor’s zero station, then tries to move the robot above the target location, lowers the element into final contact, releases the grasp, re-enables gravity, attaches the part to the conveyor fixture, and finally returns the robot to its home pose. The function outputs the conveyor joint value that realigns the conveyor’s zero reference to the element’s Y coordinate.
+
+    Procedure:
+        1. Calculate the joint displacement required to bring the smart conveyor’s Joint_1
+           so that the element’s longitudinal centre (Y – L⁄2) coincides with the conveyor
+           reference. Command Smart_Conv.render_exec to apply this motion.
+        2. Derive Conv_Curr_Loc – the conveyor joint position that represents the element’s
+           zero (centre) location – from the provided Y value and store it for later return.
+        3. Ask Robot 2 for a collision-aware motion plan (pre-place pose) that positions TCP
+           “tool0” at [X + 1.13259, 0, H + 1.18936] with quaternion [0, -1, 0, 0]. The plan
+           result is stored in Examiner.
+        4. If a valid pre-place plan exists (Examiner is True): a. Execute the pre-place
+           trajectory with Robot_2.render_exec. b. Plan a final placing motion to [X +
+           1.13259, 0, H + 0.98936] using the same orientation, while ignoring the smart
+           conveyor and world obstacles and applying a grasp-approach cost metric. c.
+           Execute this place motion. d. Command Robot 2 to open the gripper (eef_detach)
+           and release the element identified by el_name. e. Re-enable gravity for the
+           detached element in the physics scene. f. Call Smart_Conv.attach_object_to_conv
+           so the released element is now considered part of (attached to) the moving
+           conveyor.
+        5. If no valid pre-place plan exists (Examiner is False): a. Notify the operator
+           that the target pose is outside Robot 2’s workspace via two print statements. b.
+           Attempt an alternative approach: plan and execute a motion to [X + H⁄2 + 1.12649,
+           0, H + 1.18936] with orientation [0, -ev, 0, ev]. c. Detach the element from the
+           gripper. d. Temporarily enable physics on the element and query its current
+           rigid-body pose via the dynamic control interface. e. Compute a new pose that
+           lifts the element to Z = H⁄2 + 0.89546 while retaining its X/Y position, create a
+           corresponding quaternion, build a Transform message, and set this pose on the
+           rigid body. f. Disable rigid-body simulation again, re-enable gravity, and attach
+           the element to the conveyor.
+        6. Command Robot 2 to return to its predefined home position with move_to_home.
+        7. Return Conv_Curr_Loc so downstream logic knows the conveyor joint value
+           corresponding to the element’s placement.
+
+    Args:
+        el_name (str): Unique identifier of the element that is currently grasped and must
+                       be detached and attached to the conveyor.
+        X (float): Target X-coordinate of the element’s placement, used when planning the
+                   robot’s approach and final pose.
+        Y (float): Target Y-coordinate of the element’s placement, also used to compute the
+                   conveyor’s Joint_1 displacement and Conv_Curr_Loc.
+        L (float): Overall length of the horizontal element; half of this value is
+                   considered when translating the conveyor to centre the element.
+        H (float): Height (thickness) of the element, used to
+                   compute the robot TCP’s Z-level during approach and placement and to
+                   adjust the element’s final rigid-body pose if manual placement is
+                   required.
+
+    Returns:
+        Float value Conv_Curr_Loc – the computed Joint_1 position of the smart conveyor that
+        aligns the element’s centre with the conveyor’s zero reference.
+
+    Notes:
+        - Function assumes the element is already rigidly attached to Robot 2’s gripper
+          (tool0).
+        - If the initial motion planning fails (Examiner == False) the function falls back
+          to an alternate pose, issues operator warnings, and manually relocates the element
+          via direct physics manipulation.
+        - An external variable 'ev' is referenced for orientation in the fallback branch but
+          is not defined within the function; executing that branch will raise a NameError
+          unless 'ev' exists in the surrounding scope.
+        - All moves are executed in simulation through Robot_2.render_exec; no explicit
+          real-world motion commands or feedback loops are present.
+        - After placement, Robot 2 always returns to its home configuration regardless of
+          success or fallback path.
+
+Function Name: Nail_Short_Horizontal_Element_by_Rob2_NailGun
+Signature:
+def Nail_Short_Horizontal_Element_by_Rob2_NailGun(push_to_nail: float=0.01, el_pose: List[float]=None, el_dims: List[float]=None, conv_current_location: float=None) -> None:
+Description:
+Drives two horizontally-oriented nails into the right edge of a short element using Robot_2’s nail-gun TCP (tool1) after positioning the smart conveyor. The routine plans and executes an approach pose, a push-in stroke, a retraction, a vertical index to the second nail location, a second push-in/retraction cycle, and finally returns the robot to its home configuration.
+
+    Procedure:
+        1. Calculate the desired tool orientation: convert fixed XYZ Euler angles (−90° +
+           SILL_NAILING_ANGLE, 0°, 180°) to a quaternion and negate the Y component so the
+           gun faces the element correctly.
+        2. Verify conveyor reachability for right-side nailing by checking whether
+           (conv_current_location − el_dims[0]/2 − NAILING_CONV_TARGET) is non-negative;
+           abort with a console message if the element cannot be brought within reach.
+        3. Command Smart_Conv.render_exec to translate Joint_1 to conv_current_location −
+           el_dims[0]/2 − 0.5, placing the element at the calculated nailing position.
+        4. Plan a pre-nail approach for Robot_2.tool1 at X = el_pose[0] + 1.13259, Y =
+           el_dims[1] * 1.5 − 0.413397459621, Z = el_dims[2] * 0.3 + 0.94546 with the
+           computed orientation; continue only if the planner reports success.
+        5. Execute the pre-nail motion with Robot_2.render_exec, then acquire a dynamic
+           control interface for live TCP feedback.
+        6. First nail push-in: obtain the current tool pose, compute a push offset based on
+           element height and push_to_nail, and plan a linear descent along the gun axis
+           while applying a grasp-approach cost metric and temporarily removing
+           Smart_Conveyor and world/obstacles; execute the plan.
+        7. First nail retraction: read the updated tool pose and plan the mirrored retreat
+           motion to the original depth; execute.
+        8. Second nail preparation: from the current pose, plan and execute a 0.4 *
+           el_dims[2] upward move to index the gun to the second nailing height.
+        9. Second nail push-in and retraction: repeat the push/retract sequence described in
+           steps 6 and 7 for the new height.
+        10. Command Robot_2.move_to_home, again removing Smart_Conveyor and world/obstacles,
+           to leave the workstation in a safe, known state.
+
+    Args:
+        push_to_nail (float): Linear advance distance (in metres) added to the nominal
+                              penetration depth when pushing the nail-gun TCP into the
+                              element.
+        el_pose (List[float]): World-frame pose of the element as a 6-DOF list; the X
+                               component is used to offset the robot’s pre-nail approach
+                               position.
+        el_dims (List[float]): Element dimensions [length, width, height]; used to compute
+                               conveyor shift, lateral push distance, and vertical indexing
+                               between the two nail positions.
+        conv_current_location (float): Current Joint_1 position of the smart conveyor;
+                                       informs reachability checks and determines the new
+                                       conveyor set-point for nailing.
+
+    Returns:
+        None. The function performs motion planning and execution commands and exits
+        silently unless reachability checks fail, in which case it prints an explanatory
+        message before returning.
+
+    Notes:
+        - The function addresses only right-side nailing; left-side or alternate
+          orientations are not handled.
+        - If the initial conveyor reachability test fails, or if the pre-nail plan is
+          infeasible, the robot does not move and an explanatory message is printed.
+        - All robot motions are executed immediately after successful planning via
+          Robot_2.render_exec; no additional verification, force sensing, or nail-firing
+          signal is sent.
+        - Throughout the nailing sequence the environment models 'Smart_Conveyor' and
+          'world/obstacles' are temporarily excluded from collision checking to allow close
+          approaches.
+        - A PoseCostMetric with a linear-axis approach constraint guides the push-in and
+          retreat trajectories to maintain alignment along the nail axis.
+
+Function Name: Place_Short_Vertical_Element_On_Smart_Conveyor_by_Rob1_Gripper
+Signature:
+def Place_Short_Vertical_Element_On_Smart_Conveyor_by_Rob1_Gripper(el_name: str=None, X: float=None, Y: float=None, L: float=None, H: float=None):
+Description:
+Positions a short vertical framing element ("cripple") onto the smart conveyor. Robot_1, equipped with TCP "tool0", first drives the conveyor to the Y–aligned loading slot, then attempts to place and release the element from one of two gripper approach directions. After detaching the element and re–enabling gravity, the element is rigidly attached to the conveyor. The routine finishes by homing the robot and returns which side of the panel will later be accessible for nailing.
+
+    Procedure:
+        1. Translate the smart conveyor’s Joint_1 so that the requested Y-coordinate of the
+           element aligns with the nominal zero position on the conveyor; store the
+           commanded joint offset in "Conv_Curr_Loc" and initialise helper flags
+           ("Solver_Flag" and default "Side_Selector" = 1).
+        2. Branch 1 – positive Y reachability: If the computed conveyor offset keeps the
+           nailing target within the conveyor’s positive range of motion, move the conveyor
+           a small extra distance, plan and execute Robot_1 motions that: a) move above the
+           deposit point, b) descend to the release height, c) detach the element from the
+           gripper (disabling its gravity lock), and d) command the conveyor to attach the
+           freed element. Robot_1 then retreats to a safe height and returns home.
+           "Side_Selector" is set to 1 and "Solver_Flag" to True.
+        3. Branch 2 – negative Y reachability: If the first condition fails but the target
+           lies within the conveyor’s negative range of motion, perform a mirrored sequence
+           with a negative Y approach (tool frame rotated about Y). After the same
+           detach–and–attach sequence, Robot_1 returns home, "Side_Selector" is set to -1,
+           and "Solver_Flag" becomes True.
+        4. Branch 3 – human-assist fallback: If neither positive nor negative approach is
+           reachable, print a help message and move Robot_1 to a hand-off pose. The element
+           is then released, converted to a dynamic rigid body, manually re-positioned in
+           simulation through a dynamic-control Transform to the desired height and
+           orientation, re-fixed to the conveyor, and gravity re-enabled. Robot_1 finally
+           returns home and sets "Side_Selector" to −1 or 1 based on which side will be
+           reachable for subsequent nailing.
+        5. Return the final value of "Side_Selector" to indicate the element’s accessible
+           side for downstream nailing tasks (+1 for the robot’s positive Y side, −1 for the
+           negative side).
+
+    Args:
+        el_name (str): Unique identifier of the element to be placed; used for end-effector
+                       detachment, physics property modification, and conveyor attachment.
+        X (float): Target X coordinate of the element’s placement position in
+                   simulation/world units.
+        Y (float): Target Y coordinate along the conveyor; drives conveyor joint positioning
+                   and reachability checks.
+        L (float): Length of the element; used to offset robot approach poses in X and Y.
+        H (float): Height of the element; used to compute vertical approach, release, and
+                   final placement elevations.
+
+    Returns:
+        Integer scalar (1 or −1). A value of 1 means the element was or should be nailed
+        from the robot’s positive Y side; −1 indicates the negative Y side. The value is
+        decided according to which placement orientation was feasible or, in the fallback
+        path, by residual reachability.
+
+    Notes:
+        - Relies on global constants (e.g., OVERALL_PANEL_LENGTH,
+          SMART_CONV_RANGE_OF_MOTION_J1, NAILING_CONV_TARGET) to evaluate reachability and
+          conveyor motion.
+        - Assumes external helpers (Smart_Conv, Robot_1, PoseCostMetric, _dynamic_control,
+          test) are already instantiated and valid in the execution context.
+        - Element gravity is re-enabled before attaching it to the conveyor to allow correct
+          physics simulation.
+        - No explicit error handling is implemented; failure to achieve any placement branch
+          results in returning the default Side_Selector value (1).
+        - Robot_1 always returns to its predefined home pose before the function finishes.
+
+Function Name: Place_Short_Vertical_Element_On_Smart_Conveyor_by_Rob2_Gripper
+Signature:
+def Place_Short_Vertical_Element_On_Smart_Conveyor_by_Rob2_Gripper(el_name: str=None, X: float=None, Y: float=None, L: float=None, H: float=None):
+Description:
+Positions the smart conveyor, guides Robot_2 through a two-stage approach to place a short vertical element, detaches the element, re-enables its gravity, secures it to the conveyor, retreats to a safe pose, and records the conveyor’s joint pose for a later nailing task.
+
+    Procedure:
+        1. Command Smart_Conv to translate its first joint so the conveyor deck aligns with
+           the requested Y location (offset by the constants 1.8288 m and 2.275 m).
+        2. Return Robot_2 with tool ‘tool0’ to its predefined home configuration to ensure a
+           known, collision-free start state.
+        3. Plan and execute a first pre-placement motion (‘Pre Place1’): move the TCP to a
+           pose above the target drop point at X − L⁄2 + 1.577611 in X, 0 in Y, and H +
+           1.03936 in Z with the specified quaternion orientation; update the world state in
+           the planner and execute the trajectory.
+        4. Plan and execute a second, lower pre-placement motion (‘Pre Place2’) to X − L⁄2 +
+           1.477611, 0, H + 0.88936 with identical orientation; during planning, temporarily
+           ignore the Smart_Conveyor and world/obstacles primitives and constrain
+           orientation with a torch tensor [1,1,1].
+        5. Command Robot_2 to open its gripper on tool ‘tool0’ and detach the object named
+           el_name, leaving the element supported by the conveyor.
+        6. Enable physics on the released element by clearing its
+           ‘physxRigidBody:disableGravity’ flag and immediately attach the element to the
+           conveyor using Smart_Conv.attach_object_to_conv so it moves with the belt.
+        7. Plan and execute a retreat motion (‘Post Place’) that lifts the TCP back to the
+           earlier, higher pre-placement pose while still ignoring the conveyor and
+           obstacles and respecting the orientation constraint.
+        8. Return Robot_2 to the home position, freeing the work envelope for subsequent
+           operations.
+        9. Determine which lateral side of the conveyor will be used for the upcoming
+           nailing operation by computing a Side_Selector sign based on the element’s Y
+           position relative to the conveyor’s motion range.
+        10. Append a tuple containing the chosen joint position and Side_Selector into
+           Smart_Conv._nail_poses, storing the target needed for later nailing actions.
+
+    Args:
+        el_name (str): String identifier of the element being placed; used for detaching the
+                       object from the robot, enabling its gravity, and attaching it to the
+                       conveyor.
+        X (float): World-frame X coordinate of the element’s reference point, used to
+                   compute robot approach and retreat poses.
+        Y (float): World-frame Y coordinate corresponding to the desired conveyor position;
+                   also influences side selection for future nailing operations.
+        L (float): Length of the element; half of this value is subtracted from X to align
+                   the robot TCP with the element’s placement edge.
+        H (float): Height of the element; added to fixed offsets to generate safe Z-heights
+                   for the robot’s approach and retreat trajectories.
+
+    Returns:
+        None. The function performs motion planning/execution, object detachment, physics
+        property modification, conveyor attachment, and bookkeeping as side effects.
+
+    Notes:
+        - Requires Robot_2 with TCP ‘tool0’ to be holding the element identified by el_name
+          at invocation.
+        - Assumes global constants (e.g., OVERALL_PANEL_LENGTH,
+          SMART_CONV_RANGE_OF_MOTION_J1, NAILING_CONV_TARGET, ev) and modules (Smart_Conv,
+          test) are defined and accessible.
+        - The two pre-placement waypoints provide a staged descent that avoids collisions;
+          the same higher waypoint is reused for the post-placement retreat.
+        - Gravity is disabled for the element while grasped and explicitly re-enabled after
+          detachment to let the element settle on the conveyor.
+        - The function records a future nailing pose but does not execute any nailing; it
+          only prepares data for later processes.
+
+Function Name: Pass_8ft_Element_G2S
+Signature:
+def Pass_8ft_Element_G2S(el_name: str=None, L: float=2.4384, H: float=None):
+Description:
+Transfers an ~2.4 m (8 ft) long structural element from Robot_2’s end-effector to Robot_1’s end-effector at a fixed hand-off location after first positioning a conveyor.
+
+    Procedure:
+        1. Command the Smart_Conv conveyor’s Joint_1 axis to the zero position, ensuring the
+           conveyor is clear for the incoming hand-off trajectory.
+        2. Define R2_LU_Pass_Loc – the global Cartesian pass-off point used regardless of
+           the element’s actual size.
+        3. Compute Length_Diff_Term as the difference between the provided element length
+           (L) and a 0.500021 m reference. This value is later used to offset Robot_1’s
+           approach and pass poses.
+        4. Robot_2 performs a motion plan with tool0 toward R2_LU_Pass_Loc with a specified
+           quaternion orientation, requests world-model updating, and temporarily removes
+           the “world/obstacles” collision primitive.
+        5. Execute the planned Robot_2 trajectory by rendering it in the simulator
+           (Robot_2.render_exec). Robot_2 now holds the element at the designated pass-off
+           location.
+        6. Robot_1 generates a pre-pass (approach) plan with tool1 to a pose offset from
+           R2_LU_Pass_Loc by (−0.8660·Length_Diff_Term, +H/2 + 0.1735, +0.5·Length_Diff_Term
+           − 0.10). The orientation is fixed to [0.96593, 0, 0.25882, 0].
+        7. Execute the Robot_1 pre-pass motion.
+        8. Robot_1 plans a final pass-off motion to close the 40 mm gap along the local
+           Z-axis (offset −0.04 m) while reusing the same orientation; it removes the
+           “IRB6620_R2” collision primitive and applies a grasp-approach cost metric
+           generated by PoseCostMetric.create_grasp_approach_metric.
+        9. Execute the Robot_1 pass-off motion, aligning its end-effector with the element
+           held by Robot_2.
+        10. Detach the element (el_name) from Robot_2’s tool0 using Robot_2.eef_detach,
+           releasing the payload.
+        11. Attach the same element to Robot_1’s tool1 using Robot_1.eef_attach, completing
+           the physical transfer.
+        12. Command both Robot_2 and Robot_1 to return to their respective home positions
+           via move_to_home, clearing the workcell for subsequent operations.
+
+    Args:
+        el_name (str): Identifier of the element to be detached from Robot_2’s end-effector
+                       and attached to Robot_1’s end-effector.
+        L (float): Total length of the element in metres (default 2.4384 m ≈ 8 ft); used to
+                   calculate approach offsets for Robot_1.
+        H (float): Height of the element in metres; influences the vertical offset when
+                   Robot_1 approaches the pass-off point.
+
+    Returns:
+        None. The function completes after both robots have returned home; it does not
+        explicitly return a value.
+
+    Notes:
+        - Assumes the element identified by el_name is already attached to Robot_2’s tool0
+          when the function is invoked.
+        - Requires the fixed pass-off location R2_LU_Pass_Loc to be reachable by both robots
+          with the specified tools and orientations.
+        - Temporarily removes specified collision primitives (“world/obstacles”,
+          “IRB6620_R2”) during planning to avoid false collision detections in the motion
+          planner; these primitives are expected to be restored automatically by the
+          underlying system after execution.
+        - Relies on PoseCostMetric.create_grasp_approach_metric to bias the final hand-off
+          approach along the tool’s linear axis for a straight-line insertion over the last
+          40 mm.
+        - Executed entirely in simulation/rendered environment; actual physical execution
+          depends on the backend implementation of render_exec and eef attach/detach calls.
+
+Function Name: Place_8ft_Vertical_Element_On_Smart_Conveyor_by_Rob1_Suction
+Signature:
+def Place_8ft_Vertical_Element_On_Smart_Conveyor_by_Rob1_Suction(el_name: str=None, X: float=None, Y: float=None, Z: float=None, L: float=None, W: float=None, H: float=None):
+Description:
+Positions Robot_1’s suction end-effector above a specified 8-foot vertical element, lowers it to the final set-down height, detaches the element, mounts it onto the smart conveyor at the requested X-, Y-, Z-location, re-enables physics on the element, retracts the robot to a safe height, and finally returns the robot to its home pose.
+
+    Procedure:
+        1. Translate Smart_Conveyor Joint_1 so that its pallet aligns with the requested Y
+           coordinate; the joint offset is computed as −(Y − 1.8288)+2.275.
+        2. Declare a constant vertical Placement_Offset (0.00565 m) used to slightly shift
+           the robot’s X approach positions.
+        3. Pre-place approach: plan a motion for Robot_1 with tcp “tool1” to a hover pose
+           directly above the element’s target location (Z elevated by 1.02546 m plus half
+           the element width). Execute the plan.
+        4. Place motion: plan and execute a second motion that lowers the tool by 0.10 m
+           (from +1.02546 m to +0.92546 m above half width) to bring the element into
+           contact with the conveyor. Path planning employs a grasp-approach cost metric
+           along the Z axis and temporarily removes the obstacle and conveyor primitives
+           from collision checking.
+        5. Command the end-effector to release the element (eef_detach) and disable gravity
+           flag on the element so it can be kinematically attached to the moving conveyor.
+        6. Call Smart_Conv.attach_object_to_conv to rigidly attach the released element to
+           the conveyor while keeping gravity disabled; then re-enable collision detection
+           on the element.
+        7. Post-place retreat: plan and execute a vertical retreat back to the original
+           hover height using the same cost metric and collision-reduction settings.
+        8. Command Robot_1 to return to its predefined home configuration (move_to_home).
+
+    Args:
+        el_name (str): Unique identifier of the 8 ft vertical element to be placed; must
+                       correspond to an existing USD prim under “/world/obstacles” and to
+                       the object currently attached to tool1 for detachment.
+        X (float): Desired X coordinate of the element’s center in world space; used to
+                   compute robot approach positions.
+        Y (float): Desired Y coordinate of the element’s center; also drives the lateral
+                   displacement of the Smart_Conveyor’s Joint_1 before placement.
+        Z (float): Desired Z coordinate of the element’s base; combined with the element
+                   width to derive vertical approach and placement heights.
+        L (float): Length of the element; half of this value is subtracted from the robot’s
+                   X approach position so the tool aligns with the element’s center.
+        W (float): Width (thickness) of the element; half of this value offsets the robot’s
+                   Z approach heights.
+        H (float): Height of the element; not directly referenced inside the current
+                   procedure but retained for interface completeness and potential future
+                   use.
+
+    Returns:
+        None. The procedure ends after the robot is back at its home pose with the element
+        attached to the conveyor.
+
+    Notes:
+        - All motions are executed by Robot_1 using tcp “tool1”; no other robots are
+          involved.
+        - During placement the element’s gravity is momentarily disabled to prevent
+          premature dropping; it is reattached to the conveyor with gravity turned off and
+          collision subsequently re-enabled.
+        - The function assumes the element is already grasped by Robot_1 via suction before
+          invocation; no grasping action is commanded here.
+        - The planner temporarily removes “/world/obstacles” and “Smart_Conveyor” primitives
+          from collision consideration during the lowering and retreat motions to simplify
+          path planning.
+        - No conditional branches or retries are implemented; failure handling is not
+          included.
+
+Function Name: Pick_2x10_Header
+Signature:
+def Pick_2x10_Header(X: float=None, L: float=None):
+Description:
+Moves Robot_1 (equipped with tool1) through a three-stage approach–grasp–retract sequence to pick a single 2 × 10 header from the Bear-Loading pile after confirming the requested stock length is available.
+
+    Procedure:
+        1. Verify that the requested length L does not exceed RAW_HEADER_DIMENSIONS[0];
+           abort and log a message if it does.
+        2. Generate a ‘pre-pick’ motion plan that positions Robot_1’s tool1 100 mm above the
+           pile at the fixed Cartesian pose [-1.306599901277, 1.60499956533, 0.484] and
+           orientation [0, ev, -ev, 0]; execute the plan with visualisation disabled for
+           collision spheres.
+        3. Generate a ‘pick’ motion plan that lowers the tool to z = 0.384 m (same x, y,
+           orientation) while temporarily removing “Smart_Conveyor” and “world/obstacles”
+           from the planner’s collision scene and biasing the planner with a grasp-approach
+           metric along the z-axis; execute the plan.
+        4. Call motion_gen_update_world() so the planner’s world model reflects the robot’s
+           new configuration.
+        5. Attach the picked work-piece named "Bear_Loading_Element_<NUMBER_OF_HEADERS>" to
+           tool1 with eef_attach, registering the grasped object in the simulation.
+        6. Generate a ‘post-pick’ withdrawal plan that raises the tool back to the original
+           pre-pick height (z = 0.484 m) using the same orientation and planning parameters;
+           execute the plan.
+        7. Return with no explicit value.
+
+    Args:
+        X (float): Optional x-coordinate associated with the target header; currently not
+                   referenced inside the routine but retained for interface consistency.
+        L (float): Requested length of the header in simulation units; validated against
+                   RAW_HEADER_DIMENSIONS[0] to ensure the specified size is available before
+                   the pick is attempted.
+
+    Returns:
+        None. The function either exits early after printing a warning when the requested
+        length is unavailable or completes the pick and returns implicitly with no value.
+
+    Notes:
+        - Relies on global NUMBER_OF_HEADERS to build the unique attachment name; the
+          variable itself is not modified in this routine.
+        - Assumes globals RAW_HEADER_DIMENSIONS, ev, PoseCostMetric, and objects
+          “Smart_Conveyor” and “world/obstacles” are already defined in the environment.
+        - The orientation vector [0, ev, -ev, 0] is treated as a quaternion supplied by
+          external context; its numerical values are not resolved within the function.
+        - No loops, retries, or error recovery are implemented; motion and attachment
+          commands are issued once per call.
+        - Side selection or specific tool frames beyond tool1 are not handled; function is
+          tailored for Robot_1 with the ‘tool1’ end-effector.
+        - All actions are issued to a simulated environment; any physical execution depends
+          on the underlying framework’s interpretation of plan(), render_exec(),
+          motion_gen_update_world(), and eef_attach().
+
+Function Name: Cut_2x10_Header
+Signature:
+def Cut_2x10_Header(L: float=None, W: float=None, H: float=None):
+Description:
+Guides Robot_1, equipped with TCP "tool1", through a simulated lumber-cutting routine that replaces an oversize 2 × 10 header with a freshly sized cuboid matching the requested length (L), width (W) and height (H), then re-attaches the cut element for subsequent handling.
+
+    Procedure:
+        1. 1. Pre-cut positioning – plans a motion that drives Robot_1’s TCP (tool1) to a
+           safe hover pose located at X = –L + 1.60499956533, Y = 1.179599901277, Z = W +
+           1.03 with a fixed orientation [0, 0, –1, 0]; the plan is executed immediately via
+           render_exec, updating the world model.
+        2. 2. Cutting approach – generates a second plan that lowers the TCP to the cut
+           level (Z = W + 0.53) while instructing the planner to ignore the
+           "Smart_Conveyor", "/world/obstacles" and the small cutting table and to bias the
+           path with a grasp-approach cost metric along the tool’s Z-axis; the motion is
+           executed.
+        3. 3. Simulated saw activation – detaches the currently grasped object
+           "Bear_Loading_Element_<NUMBER_OF_HEADERS>" from the end effector to represent
+           releasing the board for cutting.
+        4. 4. Physics activation – acquires the simulation’s dynamic-control interface,
+           enables rigid-body physics on the released element, and records its 6-DOF pose.
+        5. 5. Material replacement – deletes the original oversized primitive and
+           instantiates a new Cuboid named "Bear_Loading_Element_<NUMBER_OF_HEADERS>" whose
+           pose is shifted in X by –(RAW_HEADER_DIMENSIONS[0] – L)/2 to represent the
+           trimmed length and whose dimensions are set to [H, L, W]; the new rigid body is
+           then added to the scene.
+        6. 6. Re-attachment – attaches the newly created, correctly sized header back to
+           tool1.
+        7. 7. Post-cut retreat – plans and executes a motion that returns the TCP to the
+           original pre-cut hover pose, again using the obstacle-filtered, grasp-approach
+           biased planner settings, and renders the execution.
+
+    Args:
+        L (float): Desired finished length of the 2 × 10 header in simulation length units.
+        W (float): Width (thickness) of the header in simulation units; also used to compute
+                   safe Z offsets when positioning the tool above and at the cut plane.
+        H (float): Height of the header (2-inch nominal side) in simulation units; supplied
+                   to size the new cuboid created after the cut.
+
+    Returns:
+        None. The function completes after the robot has repositioned with the newly
+        created, length-adjusted header attached.
+
+    Notes:
+        - Relies on global symbols NUMBER_OF_HEADERS, RAW_HEADER_DIMENSIONS, test,
+          prims_utils and _dynamic_control that must exist in the caller’s scope.
+        - The physical separation of the board is not modeled as a material removal process;
+          instead, the function emulates cutting by deleting the original prim and spawning
+          a shorter cuboid with updated dimensions.
+        - During cutting approach and retreat, specific environment primitives are excluded
+          from collision checking to prevent planning failures.
+        - All motions are executed with Robot_1’s TCP named "tool1"; no alternative side or
+          robot selection exists in this routine.
+        - Function assumes that input dimensions are valid and reachable; it does not
+          perform argument validation or error handling.
+
+Function Name: Place_2x10_Header
+Signature:
+def Place_2x10_Header(X: float=None, Y: float=None, Z: float=None, L: float=None, W: float=None, H: float=None):
+Description:
+Positions a gripped “Bear Loading” 2 × 10 header on a moving Smart_Conv conveyor with Robot_1’s TCP "tool1". The routine first aligns the conveyor, then tries to place the header directly at the requested X-, Y-, Z-derived location. If the robot’s motion planner reports that the direct pose is unreachable, the header is instead dropped at an accessible human-handoff location and, through the dynamic-control interface, is kinematically repositioned onto the conveyor with gravity disabled. In either case the header is detached from the tool, optionally has gravity re-enabled, is welded to the conveyor, and Robot_1 returns home before the global header counter is decremented.
+
+    Procedure:
+        1. Command Smart_Conv joint "Joint_1" to translate by a distance equal to -(Y –
+           1.8288) – L⁄2 + 2.87999956533 so the conveyor lines up with the desired placement
+           Y coordinate.
+        2. Compute and store the conveyor’s current logical location as Conv_Curr_Loc = -(Y
+           – 1.8288) + 2.275 for later return.
+        3. Ask Robot_1’s motion planner, using TCP "tool1", to reach a pre-drop pose located
+           at [X + 1.312189901277, 0, W + 1.22546] with quaternion [0, ev, ev, 0]; the
+           boolean result is saved as Place_Doable.
+        4. If Place_Doable is True (direct placement is reachable): a. Execute the pre-drop
+           trajectory (render_exec). b. Plan and execute a second, lower "drop" pose at [X +
+           1.312189901277, 0, W + 1.07546] with the same orientation. c. Detach the header
+           from "tool1" (object name "Bear_Loading_Element_<NUMBER_OF_HEADERS>"). d.
+           Re-enable gravity on the header and attach it to the conveyor via
+           Smart_Conv.attach_object_to_conv. e. Re-enable physics collision on the header.
+        5. Else (direct placement not feasible): a. Plan and execute a hand-off motion to [X
+           – W⁄2 + 1.10259, 0, H + 1.254659802554] with quaternion [0.5, 0.5, 0.5, 0.5]. b.
+           Detach the header from "tool1". c. Through the dynamic-control interface, enable
+           the header’s rigid-body simulation, read its current pose, construct a new pose
+           whose Z component is raised to Z + 0.89546, and apply this transform to the rigid
+           body. d. Disable gravity on the header and attach it to the conveyor with gravity
+           left disabled.
+        6. Command Robot_1 to move to its predefined home position.
+        7. Decrement the global NUMBER_OF_HEADERS counter to reflect that the top header has
+           been used.
+        8. Return the computed Conv_Curr_Loc value so downstream routines know the
+           conveyor’s updated position.
+
+    Args:
+        X (float): Target X coordinate around which the header should be placed or handed
+                   off, expressed in simulator length units.
+        Y (float): Target Y coordinate of the desired conveyor placement location, also used
+                   to determine conveyor travel offset.
+        Z (float): Reference Z coordinate used when repositioning the header during the
+                   fallback (human hand-off) branch.
+        L (float): Length of the 2 × 10 header; used to fine-tune conveyor alignment
+                   distance.
+        W (float): Width of the header; used to compute both pre-drop and drop heights above
+                   the conveyor.
+        H (float): Height of the header; used to define the fallback hand-off pose when
+                   direct placement is impossible.
+
+    Returns:
+        Float value Conv_Curr_Loc: the conveyor’s longitudinal position after motion,
+        enabling subsequent tasks to know where the header was placed.
+
+    Notes:
+        - Function depends on global NUMBER_OF_HEADERS to name the header instance and to
+          track remaining stock; it is decremented after each successful call.
+        - Branching on Place_Doable allows automatic recovery when the robot cannot reach
+          the target pose; fallback uses dynamic control rather than kinematic execution.
+        - Gravity and collision flags on the header are toggled differently depending on
+          whether the header is placed directly (gravity enabled) or repositioned
+          programmatically (gravity disabled).
+        - Orientation arrays reference an external variable ‘ev’ whose value is assumed to
+          be defined elsewhere in the environment.
+        - Robot_1 always returns to its home pose, ensuring predictable starting conditions
+          for subsequent operations.
+
+Function Name: Nail_2x10_Header
+Signature:
+def Nail_2x10_Header(push_to_nail: float=0.025, el_pose: List[float]=[], el_dims: List[float]=[], conv_current_location: float=None):
+Description:
+Moves the Smart Conveyor and commands Robot_1 – equipped with TCP "tool2" nail-gun – to insert two nails into each end of a 2 × 10 header lumber element. The routine first nails the left end, then the right end, provided both the conveyor and the robot can reach the required poses. All motions are planned, rendered, and executed through the robot-controller interfaces; each nail is driven by a short linear push along the tool axis followed by a retreat.
+
+    Procedure:
+        1. Derive a left-side nailing orientation quaternion from BR_NAILING_ANGLE by
+           composing two rotations and inverting the Y component to align the nail-gun with
+           the desired 45 ° downward trajectory.
+        2. Left-end feasibility check: verify that translating Smart Conveyor joint 1 to
+           conv_current_location + el_dims[0]/2 + NAILING_CONV_TARGET is still within
+           SMART_CONV_RANGE_OF_MOTION_J1. If not, abort left-side nailing and issue a
+           console warning.
+        3. If reachable, move the conveyor by calling Smart_Conv.render_exec to place the
+           header’s left end 0.5 m in front of Robot_1.
+        4. Plan a pre-nailing approach for Robot_1 (TCP "tool2") to a pose 0.2·el_dims[2]
+           ahead of the header’s near face and 0.5 m above the conveyor, using the
+           previously computed orientation. If planning fails, report robot reachability
+           failure and skip left-side nailing.
+        5. If planning succeeds, execute the pre-nail motion with Robot_1.render_exec and
+           connect to the low-level dynamic control interface
+           (_dynamic_control.acquire_dynamic_control_interface).
+        6. For the first left-side nail: retrieve the current tool pose, plan a linear push
+           along the tool’s approach axis by (push_to_nail + 0.1 m) at 45 ° downward,
+           excluding the Smart Conveyor and world obstacles from collision checking; execute
+           the plan.
+        7. Plan and execute a symmetric retreat to withdraw the nail-gun from the timber.
+        8. Translate the TCP –0.4·el_dims[2] along the board length to the second left-side
+           nailing location; execute the move.
+        9. Repeat the push-in and retreat sequence for the second left-side nail.
+        10. Return Robot_1 to its home position while temporarily removing conveyor and
+           obstacle primitives from the planning scene.
+        11. Compute a mirrored orientation quaternion for right-side nailing (rotation about
+           +X and –Z).
+        12. Right-end feasibility check: ensure the conveyor can reach conv_current_location
+           – el_dims[0]/2 – NAILING_CONV_TARGET ≥ 0; otherwise print a reachability warning
+           and abort right-side nailing.
+        13. If reachable, move the conveyor so the header’s right end is 0.5 m in front of
+           the robot and repeat the same planning/execution sequence (pre-nail approach,
+           first nail push/retreat, translation, second nail push/retreat, return home)
+           mirrored about the Y axis.
+
+    Args:
+        push_to_nail (float): Additional linear distance (in metres) that the nail-gun TCP
+                              advances into the timber during each nailing push; defaults to
+                              0.025 m.
+        el_pose (List[float]): List of three floats giving the XYZ origin of the header
+                               element in robot base coordinates; indices 0 and 2 (X and Z)
+                               are used to compute approach positions.
+        el_dims (List[float]): List of three floats representing the header’s length (index
+                               0), height/thickness (index 1), and width (index 2); required
+                               for conveyor offsets and inter-nail spacing.
+        conv_current_location (float): Current position (in metres or joint units consistent
+                                       with Smart Conveyor calibration) of Smart Conveyor
+                                       joint 1; used to check reachability and command new
+                                       conveyor targets.
+
+    Returns:
+        None. The function terminates silently when all commanded motions have been
+        rendered/executed, or prints diagnostic messages if either side of the header cannot
+        be reached.
+
+    Notes:
+        - Relies on global constants BR_NAILING_ANGLE, NAILING_CONV_TARGET,
+          SMART_CONV_RANGE_OF_MOTION_J1, and on globally available objects Robot_1,
+          Smart_Conv, PoseCostMetric, and _dynamic_control.
+        - All robot motions are generated through Robot_1.plan and executed via
+          Robot_1.render_exec; no actual tool-trigger signal is issued—only positional
+          pushes and retreats are performed.
+        - Collision checking excludes the Smart Conveyor and world obstacles during nailing
+          motions by specifying removing_primitives.
+        - If either the conveyor or the robot cannot reach a requested pose, the
+          corresponding side is skipped after printing a warning; the other side may still
+          be processed.
+        - The function assumes el_pose and el_dims contain at least three numerical
+          elements; missing or malformed data will raise index errors at runtime.
+        - After completing each side, the robot is returned to its predefined home position
+          to clear the workspace.
+
+Function Name: Complementary_Nail_Operation
+Signature:
+def Complementary_Nail_Operation(push_to_nail: float=0.05, H: float=None):
+Description:
+Coordinates the conveyor and Robot_2 (equipped with TCP "tool1") so the robot drives a nail at two vertical levels for every pose stored in Smart_Conv._nail_poses. The routine advances the conveyor to each nail-pose, positions the robot in front of the workpiece, performs a forward push to seat the nail, retracts, elevates to the higher nail location, and repeats the push–retract cycle before returning the robot to its home pose.
+
+    Procedure:
+        1. Iterate over every (joint_offset , side_flag) tuple contained in
+           Smart_Conv._nail_poses.
+        2. For each target, verify that commanding the conveyor’s Joint_1 to joint_offset +
+           NAILING_CONV_TARGET*side_flag would remain inside SMART_CONV_RANGE_OF_MOTION_J1;
+           if not, replace the target with (joint_offset – 1.0, –side_flag) so the motion
+           stays reachable.
+        3. Command the Smart_Conv conveyor to rotate Joint_1 to the corrected value
+           joint_offset + 0.5*side_flag, visually rendering the execution.
+        4. Plan and execute with Robot_2 (TCP "tool1") a Cartesian move that brings the
+           nail-gun in front of the lower nail position at coordinates [3.69, side_flag,
+           0.3*H + 0.89546] with a fixed quaternion [0.5, 0.5, 0.5, 0.5].
+        5. Acquire the dynamic-control interface, obtain the rigid-body handle for the
+           robot’s tool, and read its current pose (object_pose).
+        6. ---------- Lower nail insertion cycle ---------- a. Clear any path-planning
+           restrictions. b. Plan and execute a linear push along the tool’s –X direction by
+           "push_to_nail" (object_pose.p[0] – push_to_nail) using a grasp-approach cost
+           metric that biases motion along the tool’s Z axis; execute the plan. c.
+           Re-acquire the tool pose, clear restrictions, and plan a symmetric retraction by
+           the same offset in +X (object_pose.p[0] + push_to_nail); execute.
+        7. ---------- Transition to upper nail position ---------- a. Re-acquire the tool
+           pose. b. Clear restrictions and plan a vertical move that raises the tool by
+           0.4*H along +Z; execute.
+        8. ---------- Upper nail insertion cycle ---------- a. Re-acquire the tool pose,
+           clear restrictions, and plan a second forward push by "push_to_nail" along –X;
+           execute. b. Re-acquire the tool pose, clear restrictions, and plan the final
+           retraction by the same amount along +X; execute.
+        9. After all target nail poses have been serviced, command Robot_2 to move to its
+           predefined home configuration.
+
+    Args:
+        push_to_nail (float): Linear offset (in metres) by which the robot advances and then
+                              retracts the nail-gun TCP along its local –X/+X axis during
+                              each nailing action. Defaults to 0.05.
+        H (float): Nominal height of the workpiece or element, used to compute both the
+                   initial approach height and the vertical offset to the second (upper)
+                   nail position. Must be provided; units match the simulation’s length
+                   units.
+
+    Returns:
+        None. The function ends after completing all planned and executed motions without
+        explicitly returning a value.
+
+    Notes:
+        - The routine relies on global constants NAILING_CONV_TARGET and
+          SMART_CONV_RANGE_OF_MOTION_J1 to ensure conveyor reachability.
+        - Path-planning obstacles "Smart_Conveyor" and "world/obstacles" are temporarily
+          removed whenever direct linear pushes or retractions are planned.
+        - PoseCostMetric.create_grasp_approach_metric is configured to favour motion
+          predominantly along a single axis (axis 2 for push/retract, axis 1 for vertical
+          move).
+        - All executions are rendered for visualization via Smart_Conv.render_exec and
+          Robot_2.render_exec; no physical nail-firing command is issued.
+        - Function assumes H is not None even though it defaults to None; passing None will
+          raise a TypeError during arithmetic.
+
+Function Name: Pick_OSB_Plate
+Signature:
+def Pick_OSB_Plate(el_name: str=None, L: float=None, W: float=None, H: float=None):
+Description:
+Plans and executes Robot_1 motions that approach, grasp and lift an oriented-strand-board (OSB) plate from the sheathing table, adds the newly created plate object to the simulation scene, and attaches it to the robot’s TCP "tool1" for subsequent transport.
+
+    Procedure:
+        1. Compute and execute a pre-pick approach: Robot_1 plans a Cartesian motion for TCP
+           "tool1" to a position directly above the plate at X 0.1796 m, Y –2.0850 m and Z
+           set to H+0.70 m, using the supplied orientation vector [0, ev, ev, 0]; the plan
+           is rendered and executed.
+        2. Plan and execute the descent to the grasp height: the robot lowers the TCP to Z =
+           H+0.63 m at the same X-Y coordinates, requesting the planner to ignore the named
+           primitives ("Smart_Conveyor", "world/obstacles") and to bias the path with a
+           grasp-approach cost metric that constrains motion mainly along the Z-axis
+           (linear_axis=2); the trajectory is then rendered and executed.
+        3. Instantiate the OSB plate in the virtual workcell by calling
+           Create_Wooden_Element_For_Sheathing_Table with the given geometric dimensions and
+           element name.
+        4. Physically attach the newly created plate to Robot_1’s end effector by invoking
+           eef_attach on "tool1" with the provided element name, establishing a rigid grasp
+           in the simulation.
+        5. Plan and execute the withdrawal move: the robot retracts the TCP back to the
+           original approach height (Z = H+0.70 m) while additionally requesting the planner
+           to disregard the sheathing table obstacle ("World/obstacles/Sheathing_Table");
+           the same grasp-approach cost metric is applied and the motion is rendered and
+           executed.
+
+    Args:
+        el_name (str): Unique identifier assigned to the OSB plate object; used both for
+                       spawning the plate in the simulation and for attaching it to the
+                       robot’s end effector.
+        L (float): Longitudinal length of the OSB plate, forwarded to the element-creation
+                   routine.
+        W (float): Width of the OSB plate, forwarded to the element-creation routine.
+        H (float): Thickness (height) of the OSB plate; also serves as a reference offset
+                   for computing the robot’s Z-level approach and grasp poses (H+0.70 m and
+                   H+0.63 m).
+
+    Returns:
+        None – the procedure performs motion execution, object creation, and attachment
+        side-effects without returning a value.
+
+    Notes:
+        - All motions are executed sequentially; failure handling is not implemented in this
+          routine.
+        - The planner is instructed to remove specified environment primitives during the
+          descent and retraction phases to avoid collision checks with the conveyor, generic
+          obstacles, and the sheathing table.
+        - The direct_pose_cost parameter enforces a straight-line approach and retreat
+          predominantly along the Z-axis to maintain a safe withdrawal path.
+        - Successful execution assumes that the variable ‘ev’ contains a valid orientation
+          component and that the supplied height H allows the computed Z targets to be
+          reachable.
+
+Function Name: Place_OSB_Plate
+Signature:
+def Place_OSB_Plate(el_name: str=None, X: float=None, Y: float=None, Z: float=None) -> float:
+Description:
+Coordinates two robots and a smart conveyor to deposit an oriented OSB sheathing plate at a Cartesian target and leave it fixed on the conveyor, finally reporting the conveyor’s linear position that now corresponds to the plate location.
+
+    Procedure:
+        1. Command Robot_2 to leave the shared workspace by moving to a custom joint-space
+           home pose so Robot_1 can work unobstructed.
+        2. Translate the Smart_Conv conveyor’s primary axis joint ("Joint_1") by the offset
+           -(Y − 1.8288) + 2.095400098723 to bring the conveyor surface under the desired Y
+           coordinate.
+        3. Plan and execute a "pre-place" Cartesian approach with Robot_1 using TCP "tool1"
+           to a pose directly above the target location (x = −X + 3.17678956533, z = Z +
+           0.99546).
+        4. Plan and execute the final "place" motion: Robot_1 lowers and advances to pose (x
+           = −X + 3.27678956533, z = Z + 0.92546) while maintaining orientation [0,0,−1,0],
+           updating the world model, ignoring the Smart_Conveyor and generic obstacle
+           primitives, and enforcing full orientational restriction.
+        5. Detach the gripped OSB plate from Robot_1’s end effector (tool1) and immediately
+           attach the same object to the conveyor with gravity disabled so it remains fixed
+           in place.
+        6. Plan and execute a retreat: Robot_1 lifts back to the earlier pre-place pose,
+           again omitting the conveyor and obstacle primitives from collision consideration.
+        7. Return both robots to their nominal home configurations (Robot_1 default home,
+           Robot_2 custom home previously defined).
+        8. Compute the resulting conveyor joint position that aligns with the deposited
+           plate as Sht_plate_on_conv_loc = -(Y − 1.8288) + 2.275 and return this value.
+
+    Args:
+        el_name (str): Unique identifier of the OSB plate object that is detached from
+                       Robot_1’s tool and attached to the conveyor during placement.
+        X (float): Target X coordinate of the plate in world space; used to compute the
+                   robot’s approach and placement poses (negated and offset inside the
+                   planner).
+        Y (float): Target Y coordinate of the plate in world space; drives the conveyor
+                   translation and is reused to calculate the returned conveyor location.
+        Z (float): Target Z coordinate of the plate in world space; determines the vertical
+                   level for the robot’s pre-place and place poses.
+
+    Returns:
+        A float holding Sht_plate_on_conv_loc, the final commanded position for the
+        conveyor’s Joint_1 after placement, corresponding to the plate’s location along the
+        conveyor.
+
+    Notes:
+        - Relies on Robot_1 and Robot_2 instances and a Smart_Conv conveyor object being
+          available in the execution context.
+        - Orientation is fixed to a downward-facing quaternion [0,0,−1,0];
+          orientational_restriction is set to [1,1,1] to enforce full orientation adherence
+          during motion planning.
+        - Gravity is explicitly disabled for the plate after attachment to the conveyor, so
+          the physical simulation must support gravity toggling for individual objects.
+        - No conditional branches or iterative loops are present; the sequence executes
+          deterministically as listed.
+
+Function Name: Nail_OSB_Plate
+Signature:
+def Nail_OSB_Plate(push_to_nail: float=0.01, nail_num: int=6, el_dims: list[float]=[], Sht_plate_on_conv_loc: float=None):
+Description:
+Coordinates Robot_1 (tool3) and Robot_2 (tool2) together with the Smart_Conv conveyor to execute a programmed sequence of vertical nailing motions that fasten an oriented-strand-board (OSB) sheathing plate to a framing member. For every candidate nail location that lies beneath the plate, the routine re-positions the conveyor, then iteratively plans and renders approach, push-in, and retract trajectories for each robot so that an even number of nails are driven across the plate width.
+
+    Procedure:
+        1. Iterate over every linear position value stored in
+           Smart_Conv._vertical_nail_poses.
+        2. For each candidate position, check whether it resides inside the current
+           sheathing-plate window defined by Sht_plate_on_conv_loc ± (el_dims[1] / 2). Skip
+           positions that are outside this range.
+        3. For every accepted position:
+        4. a. Command the Smart_Conv conveyor’s axis ‘Joint_1’ to move to the selected nail
+           Y-coordinate by calling Smart_Conv.render_exec.
+        5. b. Declare the fixed X-axis span of the plate (Starting_X = 1.15259 m, Ending_X =
+           3.63099 m) and compute the uniform nail spacing L = round((Ending_X –
+           Starting_X)/(nail_num – 1), 2).
+        6. c. Obtain a dynamic-control interface handle (dc =
+           acquire_dynamic_control_interface()) for direct access to the real-time robot
+           state models.
+        7. d. Vertical nailing with Robot_1 (tool3) for the first half of the requested
+           nails:
+        8. i. Loop while the iterator ‘it’ is less than nail_num/2:
+        9. • Plan and render a pre-nail approach that positions tool3 at [Starting_X + it ×
+           L, 0, el_dims[2] + 1.04706] with orientation [1, 0, 0, 0] and update the world
+           state.
+        10. • Retrieve the current rigid-body pose of tool3 via dc, then plan a linear
+           push-in along the tool Z-axis to [same X,Y, Z – (push_to_nail + 0.05)] using a
+           grasp-approach cost metric and excluding the conveyor and obstacle geometry;
+           render the execution.
+        11. • Query the refreshed tool pose and plan a retract motion back to [same X,Y, Z +
+           (push_to_nail + 0.05)] with identical orientation and cost constraints; render
+           the execution.
+        12. • Increment the iterator.
+        13. e. Command Robot_1 to return to its predefined home position.
+        14. f. Reset the iterator and repeat an analogous loop with Robot_2 (tool2) for the
+           remaining half of the nails:
+        15. i. For each index, plan and render a pre-nail approach to [Ending_X – it × L, 0,
+           el_dims[2] + 1.04706] with orientation [1, 0, 0, 0].
+        16. ii. Execute the push-in and retract pair of linear motions identical in
+           magnitude and cost settings to those used by Robot_1, again excluding the
+           conveyor and global obstacles from collision checking.
+        17. iii. Increment the iterator until all remaining nails are processed.
+        18. g. After finishing, send Robot_2 back to its home configuration.
+        19. Exit the function implicitly without returning a value.
+
+    Args:
+        push_to_nail (float): Additional linear penetration depth (in metres) applied along
+                              the tool Z-axis during each nail push stroke; the robot
+                              descends this distance plus 0.05 m before retracting by the
+                              same amount.
+        nail_num (int): Total number of nails to place across the plate width; assumed even
+                        so it can be split equally between the two robots.
+        el_dims (list[float]): List containing the sheathing plate’s dimensions; element [1]
+                               (height) bounds the acceptable Y-range for nailing, and
+                               element [2] (thickness) is used to set the initial approach
+                               height.
+        Sht_plate_on_conv_loc (float): Current Y-axis location of the sheathing plate’s
+                                       centre on the conveyor; used to match candidate nail
+                                       positions to the actual plate position.
+
+    Returns:
+        None. The procedure completes after all eligible nail locations have been serviced
+        and both robots return to their home poses.
+
+    Notes:
+        - The function assumes ‘nail_num’ is an even integer; each robot handles exactly
+          half of the nails.
+        - No explicit command to trigger the nail gun hardware is issued; the robots only
+          perform motion plans that position the tool tips for a presumed external nailing
+          action.
+        - The conveyor is repositioned to align the target nail Y-coordinate under the robot
+          workspace before any robotic motion begins.
+        - Each push-in includes a fixed 0.05 m bias in addition to the user-supplied
+          ‘push_to_nail’ depth to guarantee surface contact.
+        - During push and retract phases, collision checking excludes ‘Smart_Conveyor’ and
+          ‘world/obstacles’ primitives, relying on PoseCostMetric for linear Z-axis
+          constraints.
+        - Robots return to their predefined home configurations after finishing their
+          respective nailing sequences.
+
+Design Rules / Framing Order:
+Required operational sequences:
+- Execute the listed actions for each element in the specified order.
+- Use Pass only when it appears in the element sequence.
+- Complete Nail after Place whenever Nail is included.
+- Do not omit, reorder, or infer additional actions.
+
+   • Install Top Plate (H) across the full wall length to establish the upper boundary. [Pick → Pass → Place]
+   • Proceed left-to-right through the wall panel bays:
+   •   • If the bay is a STANDARD wall segment (no opening):
+   •         – Install Vertical Stud (V). [Pick → Place → Nail]
+   •         – (Optional) If the location calls for an L/U Stud, install it immediately after the first standard stud. [Pick → Pass → Place]
+   •   • If the bay is an OPENING zone (door or window):
+   •         – Install King Stud (left). [Pick → Place → Nail]
+   •         – Install King Stud (right). [Pick → Place → Nail]
+   •         – Install Jack Stud (left). [Pick → Place → Nail]
+   •         – Install Jack Stud (right). [Pick → Place → Nail]
+   •         – If the opening header is BEAR LOADING:
+   •               • Install Bear Loading (Header). [Pick → Place → Nail]
+   •               • Install Bear Loading (Header) stacked on plank 1. [Pick → Place → Nail]
+   •           Else (the header is TOP SILL PLATE):
+   •               • Install Top Sill Plate (H). [Pick → Pass → Place → Nail]
+   •               • Moving left-to-right, install Top Cripple Stud(s) (V) above the plate up to the Top Plate. [Pick → Pass → Place → Nail]
+   •         – If the opening type is WINDOW (not a full-height door):
+   •               • Install Lower Sill Plate (H). [Pick → Place → Nail]
+   •               • Moving left-to-right, install Lower Cripple Stud(s) (V) beneath the sill down to Bottom Plate level. [Pick → Place]
+   • Repeat the left-to-right bay sequence until the end of the wall panel is reached and all vertical elements are in place.
+   • Install Bottom Plate (H) across the wall once all studs, kings, jacks, headers/plates, and cripples are secured to lock everything together. [Pick → Place → Nail]
+   • Install OSB Sheathing Plates (V) from left-to-right over the completed frame to finish the wall panel. [Pick → Place → Nail]
+
+Human Trade Knowledge:
+Use these records as construction-process context when selecting and ordering HLAFs.
+
+Component-to-Crew Mapping:
+[
+  [
+    "Vertical Stud",
+    [
+      "Carpenter"
+    ]
+  ],
+  [
+    "King Stud",
+    [
+      "Carpenter"
+    ]
+  ],
+  [
+    "Lower Cripple Stud",
+    [
+      "Carpenter"
+    ]
+  ],
+  [
+    "OSB Sheathing Plate",
+    [
+      "Carpenter"
+    ]
+  ],
+  [
+    "Top Plate",
+    [
+      "Carpenter"
+    ]
+  ],
+  [
+    "Jack Stud",
+    [
+      "Carpenter"
+    ]
+  ],
+  [
+    "Bear Loading",
+    [
+      "Carpenter"
+    ]
+  ],
+  [
+    "L/U Stud",
+    [
+      "Carpenter"
+    ]
+  ],
+  [
+    "Lower Sill Plate",
+    [
+      "Carpenter"
+    ]
+  ],
+  [
+    "Bottom Plate",
+    [
+      "Carpenter"
+    ]
+  ],
+  [
+    "Top Sill Plate",
+    [
+      "Carpenter"
+    ]
+  ],
+  [
+    "Top Cripple Stud",
+    [
+      "Carpenter"
+    ]
+  ]
+]
+
+Crew-to-Task Knowledge:
+[
+  [
+    "Carpenter",
+    [
+      "Follow established safety rules and regulations and maintain a safe and clean environment.",
+      "Measure and mark cutting lines on materials, using a ruler, pencil, chalk, and marking gauge.",
+      "Assemble and fasten materials to make frameworks or props, using hand tools and wood screws, nails, dowel pins, or glue.",
+      "Study specifications in blueprints, sketches, or building plans to prepare project layout and determine dimensions and materials required.",
+      "Shape or cut materials to specified measurements, using hand tools, machines, or power saws.",
+      "Verify trueness of structure, using plumb bob and level.",
+      "Inspect ceiling or floor tile, wall coverings, siding, glass, or woodwork to detect broken or damaged structures.",
+      "Erect scaffolding or ladders for assembling structures above ground level.",
+      "Install structures or fixtures, such as windows, frames, floorings, trim, or hardware, using carpenters' hand or power tools.",
+      "Maintain records, document actions, and present written progress reports.",
+      "Remove damaged or defective parts or sections of structures and repair or replace, using hand tools.",
+      "Maintain job records and schedule work crew.",
+      "Anchor and brace forms and other structures in place, using nails, bolts, anchor rods, steel cables, planks, wedges, and timbers.",
+      "Bore boltholes in timber, masonry or concrete walls, using power drill.",
+      "Install rough door and window frames, subflooring, fixtures, or temporary supports in structures undergoing construction or repair.",
+      "Dig or direct digging of post holes and set poles to support structures.",
+      "Cover subfloors with building paper to keep out moisture and lay hardwood, parquet, or wood-strip-block floors by nailing floors to subfloor or cementing them to mastic or asphalt base.",
+      "Construct forms or chutes for pouring concrete.",
+      "Arrange for subcontractors to deal with special areas, such as heating or electrical wiring work.",
+      "Build or repair cabinets, doors, frameworks, floors, or other wooden fixtures used in buildings, using woodworking machines, carpenter's hand tools, or power tools.",
+      "Finish surfaces of woodwork or wallboard in houses or buildings, using paint, hand tools, or paneling.",
+      "Select and order lumber or other required materials.",
+      "Work with or remove hazardous material.",
+      "Fill cracks or other defects in plaster or plasterboard and sand patch, using patching plaster, trowel, and sanding tool.",
+      "Prepare cost estimates for clients or employers.",
+      "Perform minor plumbing, welding, or concrete mixing work.",
+      "Apply shock-absorbing, sound-deadening, or decorative paneling to ceilings or walls.",
+      "Examine structural timbers and supports to detect decay, and replace timbers as required, using hand tools, nuts, and bolts.",
+      "Build sleds from logs and timbers for use in hauling camp buildings and machinery through wooded areas.",
+      "Use drones for site surveying and to inspect hard-to-reach areas of a structure."
+    ]
+  ]
+]
+
+Worked Sample:
+Not supplied in this condition.
+
+The previous generated sequence was rejected by the local validator for this reason:
+ValueError: Nail_Short_Horizontal_Element_by_Rob2_NailGun omits parameters whose declared default is None: ['conv_current_location'].
+Return a corrected complete sequence for the same target case and experimental condition.

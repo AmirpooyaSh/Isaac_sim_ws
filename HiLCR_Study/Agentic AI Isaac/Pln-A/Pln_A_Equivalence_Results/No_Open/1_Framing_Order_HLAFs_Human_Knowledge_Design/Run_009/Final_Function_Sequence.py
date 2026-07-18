@@ -1,0 +1,101 @@
+# Pln-A case: No_Open
+# Experimental condition: 1_Framing_Order_HLAFs_Human_Knowledge_Design
+# Repetition: 009
+# Execution order: 049
+
+# Install Top Plate: Pick
+Pick_Long_Element_From_Mat_Supply(el_name="Top_Stud", L=3.6576, W=0.04, H=0.1016)
+# Pass Top Plate from Robot2 to Robot1
+Pass_Long_Element_G2G(el_name="Top_Stud", L=3.6576, H=0.1016)
+# Place Top Plate on conveyor with Robot1
+Place_Long_Element_On_Smart_Conveyor_by_Rob1_Gripper(el_name="Top_Stud", X=0.02, Y=1.8288, L=3.6576, H=0.1016)
+# Install First Vertical Stud (F_Stud): Pick
+Pick_8ft_Element_From_Sloped_Table(el_name="F_Stud", L=2.4384, W=0.04, H=0.1016)
+# Place and Hold F_Stud on conveyor
+side_F = Place_and_Hold_8ft_Element_On_Smart_Conveyor(X=1.2592, Y=0.02, L=2.4384, H=0.1016)
+# Nail and Release F_Stud
+Nail_and_Release_Vertical_Element(el_name="F_Stud", X=1.2592, L=2.4384, H=0.1016, Side_Selector=side_F, Is_Held=False)
+# Install L/U Stud (L_U_Element_1): Pick
+Pick_8ft_Element_From_Sloped_Table(el_name="L_U_Element_1", L=2.4384, W=0.04, H=0.1016)
+# Pass L/U Stud from Robot2 to Robot1 (Suction)
+Pass_8ft_Element_G2S(el_name="L_U_Element_1", L=2.4384, H=0.1016)
+# Place L/U Stud with Robot1 Suction
+Place_8ft_Vertical_Element_On_Smart_Conveyor_by_Rob1_Suction(el_name="L_U_Element_1", X=1.2592, Y=0.0908, Z=0.02, L=2.4384, W=0.04, H=0.1016)
+# Install Vertical Stud R_Stud_2: Pick
+Pick_8ft_Element_From_Sloped_Table(el_name="R_Stud_2", L=2.4384, W=0.04, H=0.1016)
+# Place and Hold R_Stud_2
+side_R2 = Place_and_Hold_8ft_Element_On_Smart_Conveyor(X=1.2592, Y=0.3248, L=2.4384, H=0.1016)
+# Nail and Release R_Stud_2
+Nail_and_Release_Vertical_Element(el_name="R_Stud_2", X=1.2592, L=2.4384, H=0.1016, Side_Selector=side_R2, Is_Held=False)
+# Install Vertical Stud R_Stud_4: Pick
+Pick_8ft_Element_From_Sloped_Table(el_name="R_Stud_4", L=2.4384, W=0.04, H=0.1016)
+# Place and Hold R_Stud_4
+side_R4 = Place_and_Hold_8ft_Element_On_Smart_Conveyor(X=1.2592, Y=0.6296, L=2.4384, H=0.1016)
+# Nail and Release R_Stud_4
+Nail_and_Release_Vertical_Element(el_name="R_Stud_4", X=1.2592, L=2.4384, H=0.1016, Side_Selector=side_R4, Is_Held=False)
+# Install Vertical Stud R_Stud_6: Pick
+Pick_8ft_Element_From_Sloped_Table(el_name="R_Stud_6", L=2.4384, W=0.04, H=0.1016)
+# Place and Hold R_Stud_6
+side_R6 = Place_and_Hold_8ft_Element_On_Smart_Conveyor(X=1.2592, Y=0.9344, L=2.4384, H=0.1016)
+# Nail and Release R_Stud_6
+Nail_and_Release_Vertical_Element(el_name="R_Stud_6", X=1.2592, L=2.4384, H=0.1016, Side_Selector=side_R6, Is_Held=False)
+# Install Vertical Stud R_Stud_8: Pick
+Pick_8ft_Element_From_Sloped_Table(el_name="R_Stud_8", L=2.4384, W=0.04, H=0.1016)
+# Place and Hold R_Stud_8
+side_R8 = Place_and_Hold_8ft_Element_On_Smart_Conveyor(X=1.2592, Y=1.2392, L=2.4384, H=0.1016)
+# Nail and Release R_Stud_8
+Nail_and_Release_Vertical_Element(el_name="R_Stud_8", X=1.2592, L=2.4384, H=0.1016, Side_Selector=side_R8, Is_Held=False)
+# Install Vertical Stud R_Stud_10: Pick
+Pick_8ft_Element_From_Sloped_Table(el_name="R_Stud_10", L=2.4384, W=0.04, H=0.1016)
+# Place and Hold R_Stud_10
+side_R10 = Place_and_Hold_8ft_Element_On_Smart_Conveyor(X=1.2592, Y=1.544, L=2.4384, H=0.1016)
+# Nail and Release R_Stud_10
+Nail_and_Release_Vertical_Element(el_name="R_Stud_10", X=1.2592, L=2.4384, H=0.1016, Side_Selector=side_R10, Is_Held=False)
+# Install Vertical Stud R_Stud_12: Pick
+Pick_8ft_Element_From_Sloped_Table(el_name="R_Stud_12", L=2.4384, W=0.04, H=0.1016)
+# Place and Hold R_Stud_12
+side_R12 = Place_and_Hold_8ft_Element_On_Smart_Conveyor(X=1.2592, Y=1.8488, L=2.4384, H=0.1016)
+# Nail and Release R_Stud_12
+Nail_and_Release_Vertical_Element(el_name="R_Stud_12", X=1.2592, L=2.4384, H=0.1016, Side_Selector=side_R12, Is_Held=False)
+# Install Vertical Stud R_Stud_14: Pick
+Pick_8ft_Element_From_Sloped_Table(el_name="R_Stud_14", L=2.4384, W=0.04, H=0.1016)
+# Place and Hold R_Stud_14
+side_R14 = Place_and_Hold_8ft_Element_On_Smart_Conveyor(X=1.2592, Y=2.1536, L=2.4384, H=0.1016)
+# Nail and Release R_Stud_14
+Nail_and_Release_Vertical_Element(el_name="R_Stud_14", X=1.2592, L=2.4384, H=0.1016, Side_Selector=side_R14, Is_Held=False)
+# Install Vertical Stud R_Stud_16: Pick
+Pick_8ft_Element_From_Sloped_Table(el_name="R_Stud_16", L=2.4384, W=0.04, H=0.1016)
+# Place and Hold R_Stud_16
+side_R16 = Place_and_Hold_8ft_Element_On_Smart_Conveyor(X=1.2592, Y=2.4584, L=2.4384, H=0.1016)
+# Nail and Release R_Stud_16
+Nail_and_Release_Vertical_Element(el_name="R_Stud_16", X=1.2592, L=2.4384, H=0.1016, Side_Selector=side_R16, Is_Held=False)
+# Install Vertical Stud R_Stud_18: Pick
+Pick_8ft_Element_From_Sloped_Table(el_name="R_Stud_18", L=2.4384, W=0.04, H=0.1016)
+# Place and Hold R_Stud_18
+side_R18 = Place_and_Hold_8ft_Element_On_Smart_Conveyor(X=1.2592, Y=2.7632, L=2.4384, H=0.1016)
+# Nail and Release R_Stud_18
+Nail_and_Release_Vertical_Element(el_name="R_Stud_18", X=1.2592, L=2.4384, H=0.1016, Side_Selector=side_R18, Is_Held=False)
+# Install Vertical Stud R_Stud_20: Pick
+Pick_8ft_Element_From_Sloped_Table(el_name="R_Stud_20", L=2.4384, W=0.04, H=0.1016)
+# Place and Hold R_Stud_20
+side_R20 = Place_and_Hold_8ft_Element_On_Smart_Conveyor(X=1.2592, Y=3.068, L=2.4384, H=0.1016)
+# Nail and Release R_Stud_20
+Nail_and_Release_Vertical_Element(el_name="R_Stud_20", X=1.2592, L=2.4384, H=0.1016, Side_Selector=side_R20, Is_Held=False)
+# Install Vertical Stud R_Stud_22: Pick
+Pick_8ft_Element_From_Sloped_Table(el_name="R_Stud_22", L=2.4384, W=0.04, H=0.1016)
+# Place and Hold R_Stud_22
+side_R22 = Place_and_Hold_8ft_Element_On_Smart_Conveyor(X=1.2592, Y=3.3728, L=2.4384, H=0.1016)
+# Nail and Release R_Stud_22
+Nail_and_Release_Vertical_Element(el_name="R_Stud_22", X=1.2592, L=2.4384, H=0.1016, Side_Selector=side_R22, Is_Held=False)
+# Install Vertical Stud R_Stud_24: Pick
+Pick_8ft_Element_From_Sloped_Table(el_name="R_Stud_24", L=2.4384, W=0.04, H=0.1016)
+# Place and Hold R_Stud_24
+side_R24 = Place_and_Hold_8ft_Element_On_Smart_Conveyor(X=1.2592, Y=3.6376, L=2.4384, H=0.1016)
+# Nail and Release R_Stud_24
+Nail_and_Release_Vertical_Element(el_name="R_Stud_24", X=1.2592, L=2.4384, H=0.1016, Side_Selector=side_R24, Is_Held=False)
+# Install Bottom Plate: Pick
+Pick_Short_Element_From_Mat_Supply(el_name="Bot_Stud", L=3.6576, W=0.04, H=0.1016)
+# Place Bottom Plate on conveyor with Robot2
+conv_bot = Place_Short_Horizontal_Element_On_Smart_Conveyor_by_Rob2_Gripper(el_name="Bot_Stud", X=2.4984, Y=1.8288, L=3.6576, H=0.1016)
+# Nail Bottom Plate
+Nail_Short_Horizontal_Element_by_Rob2_NailGun(el_pose=[2.4984, 1.8288, 0.06], el_dims=[3.6576, 0.04, 0.1016], conv_current_location=conv_bot)
